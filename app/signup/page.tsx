@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
 import { doc, setDoc } from "firebase/firestore";
@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Signup() {
+function SignupContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const roleParam    = searchParams.get("role");
@@ -364,5 +364,13 @@ export default function Signup() {
         </div>
       </motion.div>
     </main>
+  );
+}
+
+export default function Signup() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#050008] flex items-center justify-center"><div className="w-10 h-10 rounded-full border-2 border-violet-500/30 border-t-violet-400 animate-spin" /></div>}>
+      <SignupContent />
+    </Suspense>
   );
 }

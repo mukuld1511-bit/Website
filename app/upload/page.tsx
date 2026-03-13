@@ -1,14 +1,14 @@
 "use client";
-
+import { useEffect } from "react";
 import { useState, useRef } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage, auth } from "../../lib/firebase";
+import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { uploadToCloudinary } from "../../lib/cloudinary";
 
 const MODEL_EXTENSIONS = ["glb", "gltf", "obj", "fbx", "dwg", "dxf"];
 const BUILD_EXTENSIONS = ["apk", "exe", "ipa", "build", "zip", "dmg", "tar", "gz"];
@@ -20,6 +20,7 @@ export default function UploadContent() {
   const [file, setFile] = useState<File | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState("");
+  const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -79,7 +80,7 @@ export default function UploadContent() {
     setError("");
   };
 
-  const handleThumbnailSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleThumbnailSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
     if (!f.type.startsWith("image/")) {
@@ -90,10 +91,22 @@ export default function UploadContent() {
       setError("Thumbnail must be smaller than 5MB");
       return;
     }
+    
     setThumbnail(f);
     const reader = new FileReader();
     reader.onload = e => setThumbnailPreview(e.target?.result as string);
     reader.readAsDataURL(f);
+
+    try {
+      setUploadProgress(25);
+      const url = await uploadToCloudinary(f, "image");
+      setThumbnailUrl(url);
+      setUploadProgress(0);
+    } catch (e) {
+      setError("Failed to upload thumbnail");
+      setThumbnail(null);
+      setThumbnailPreview("");
+    }
   };
 
   const handleAddTag = () => {
@@ -117,19 +130,18 @@ export default function UploadContent() {
     setUploadProgress(0);
 
     try {
-      const fileRef = ref(storage, `${uploadType === "model" ? "models" : "builds"}/${user.uid}/${Date.now()}_${file.name}`);
-      await uploadBytes(fileRef, file);
-      const fileUrl = await getDownloadURL(fileRef);
+      // Upload file to Cloudinary
+      const fileUrl = await uploadToCloudinary(file, "auto");
       setUploadProgress(50);
 
-      let thumbnailUrl = "";
-      if (thumbnail) {
-        const thumbRef = ref(storage, `${uploadType === "model" ? "models" : "builds"}/${user.uid}/thumb_${Date.now()}.jpg`);
-        await uploadBytes(thumbRef, thumbnail);
-        thumbnailUrl = await getDownloadURL(thumbRef);
+      // Upload thumbnail to Cloudinary (if not already uploaded)
+      let finalThumbnailUrl = thumbnailUrl;
+      if (thumbnail && !thumbnailUrl) {
+        finalThumbnailUrl = await uploadToCloudinary(thumbnail, "image");
       }
       setUploadProgress(75);
 
+      // Get user data from Firebase
       const { getDocs, query, collection: dbCollection, where } = await import("firebase/firestore");
       const userDoc = await getDocs(query(dbCollection(db, "users"), where("uid", "==", user.uid)));
       const userData = userDoc.docs[0]?.data() || { displayName: "Anonymous", photoURL: "" };
@@ -138,8 +150,8 @@ export default function UploadContent() {
         title,
         description,
         fileSize: parseFloat((file.size / (1024 * 1024)).toFixed(2)),
-        fileUrl,
-        thumbnailUrl,
+        fileUrl, // ✅ Cloudinary URL
+        thumbnailUrl: finalThumbnailUrl, // ✅ Cloudinary URL
         isPaid,
         price: isPaid ? price : 0,
         authorId: user.uid,
@@ -150,6 +162,7 @@ export default function UploadContent() {
         uploadedAt: serverTimestamp(),
       };
 
+      // Save to Firebase Firestore (database only)
       if (uploadType === "model") {
         const ext = file.name.split(".").pop()?.toLowerCase() ?? "glb";
         const fileType = ["dwg", "dxf"].includes(ext) ? ext : ["obj", "fbx"].includes(ext) ? ext : "glb";
@@ -277,8 +290,8 @@ export default function UploadContent() {
                       <svg className="w-12 h-12 mb-3 text-cyan-400/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      <p className="text-white/60 font-black text-sm">Thumbnail</p>
-                      <p className="text-white/30 text-xs mt-1">Optional</p>
+                      <p className="text-white/60 font-black text-sm">Thumbnail (Cloudinary)</p>
+                      <p className="text-white/30 text-xs mt-1">Optional (max 5MB)</p>
                     </>
                   )}
                 </div>
@@ -438,6 +451,7 @@ export default function UploadContent() {
                 <p className="text-white/50 text-xs"><strong>Title:</strong> {title}</p>
                 <p className="text-white/50 text-xs"><strong>Type:</strong> {uploadType === "model" ? "3D Model" : uploadType === "ar-build" ? "AR Build" : "VR Build"}</p>
                 <p className="text-white/50 text-xs"><strong>Size:</strong> {file ? (file.size / (1024 * 1024)).toFixed(2) : 0}MB</p>
+                <p className="text-white/50 text-xs"><strong>Storage:</strong> ✅ Cloudinary (all files)</p>
                 <p className="text-white/50 text-xs"><strong>Price:</strong> {isPaid ? `₹${price}` : "Free"}</p>
               </div>
 

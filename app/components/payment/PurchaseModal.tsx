@@ -46,7 +46,7 @@ export default function PurchaseModal({ model, user, onClose, onSuccess }: Purch
         email: user.email ?? "",
         contact: "",
         prefill: { name: user.displayName ?? "" },
-        onSuccess: async (paymentData) => {
+        onSuccess: async (paymentData: any) =>  {
           const verifyRes = await fetch("/api/razorpay/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

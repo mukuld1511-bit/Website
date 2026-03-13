@@ -1,12 +1,11 @@
-export async function uploadToCloudinary(file: File) {
-
+export async function uploadToCloudinary(file: File, resourceType: "image" | "auto" = "image") {
   const formData = new FormData();
   formData.append("file", file);
-
   formData.append("upload_preset", "zenith-cloud");
+  formData.append("resource_type", resourceType);
 
   const res = await fetch(
-    "https://api.cloudinary.com/v1_1/dq5mkuj9y/image/upload",
+    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/${resourceType === "image" ? "image" : "raw"}/upload`,
     {
       method: "POST",
       body: formData
@@ -21,11 +20,9 @@ export async function uploadToCloudinary(file: File) {
 
   let url = data.secure_url;
 
-  // PERFORMANCE OPTIMIZATION
-  url = url.replace(
-    "/upload/",
-    "/upload/w_600,q_auto,f_auto/"
-  );
+  if (resourceType === "image") {
+    url = url.replace("/upload/", "/upload/w_600,q_auto,f_auto/");
+  }
 
   return url;
 }

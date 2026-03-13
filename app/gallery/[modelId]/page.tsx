@@ -306,7 +306,7 @@ export default function ModelDetailPage() {
         currency:    "INR",
         description: model.title,
         prefill:     { name: user.displayName ?? "", email: user.email ?? "" },
-        onSuccess: async (data) => {
+        onSuccess: async (data: any) => {
           await addDoc(collection(db,"purchases"), {
             modelId,
             userId:              user.uid,

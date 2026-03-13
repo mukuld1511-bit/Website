@@ -309,8 +309,9 @@ export default function ModelDetailPage() {
     try {
       // Inject fl_attachment into the Cloudinary URL so the browser downloads
       // the file directly instead of opening it (no CORS fetch needed)
+      // *Wait*: Cloudinary doesn't allow transformations on `raw` files!
       let downloadUrl = model.modelUrl;
-      if (downloadUrl.includes("cloudinary.com")) {
+      if (downloadUrl.includes("cloudinary.com") && !downloadUrl.includes("/raw/upload/")) {
         downloadUrl = downloadUrl.replace("/upload/", "/upload/fl_attachment/");
       }
       const ext      = downloadUrl.split("?")[0].split(".").pop() ?? "glb";

@@ -63,14 +63,14 @@ export default function DashboardRouter() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[#050008] flex items-center justify-center">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="text-center">
         {status === "error" ? (
           <>
-            <p className="text-rose-400 text-sm mb-3">Something went wrong</p>
-            <p className="text-white/30 text-xs mb-5">{msg}</p>
+            <p className="text-red-500 text-sm mb-3 font-semibold">Something went wrong</p>
+            <p className="text-gray-500 text-xs mb-5 font-medium">{msg}</p>
             <button onClick={() => router.push("/")}
-              className="px-5 py-2.5 rounded-xl border border-white/8 text-white/40 text-sm font-bold hover:border-white/20 transition duration-200">
+              className="px-5 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 text-sm font-bold hover:bg-gray-50 transition duration-200 shadow-sm">
               Go Home
             </button>
           </>
@@ -80,9 +80,9 @@ export default function DashboardRouter() {
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               style={{ willChange:"transform" }}
-              className="w-10 h-10 rounded-full border-2 border-violet-500/30 border-t-violet-400 mx-auto mb-4"
+              className="w-10 h-10 rounded-full border-2 border-gray-200 border-t-blue-500 mx-auto mb-4"
             />
-            <p className="text-white/30 text-sm">Loading your dashboard…</p>
+            <p className="text-gray-500 text-sm font-medium">Loading your dashboard…</p>
           </>
         )}
       </div>

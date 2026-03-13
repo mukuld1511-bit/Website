@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { supabase } from "../../lib/supabase";
+import { uploadToSupabase } from "../../lib/supabase";
 
 const MODEL_EXTENSIONS = ["glb", "gltf", "obj", "fbx", "dwg", "dxf"];
 const BUILD_EXTENSIONS = ["zip"];
@@ -113,20 +113,11 @@ export default function UploadContent() {
       setUploadProgress(25);
       const safeThumbName = f.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
       const thumbPath = `${user.uid}/${Date.now()}_thumb_${safeThumbName}`;
-      const { error: thumbError } = await supabase.storage
-        .from("thumbnails")
-        .upload(thumbPath, f, { cacheControl: "3600", upsert: false });
-
-      if (thumbError) throw new Error("Thumbnail upload failed: " + thumbError.message);
-
-      const { data: { publicUrl: url } } = supabase.storage
-        .from("thumbnails")
-        .getPublicUrl(thumbPath);
-
+      const url = await uploadToSupabase("thumbnails", thumbPath, f);
       setThumbnailUrl(url);
       setUploadProgress(0);
-    } catch {
-      setError("Failed to upload thumbnail");
+    } catch (e) {
+      setError("Failed to upload thumbnail: " + (e as Error).message);
       setThumbnail(null);
       setThumbnailPreview("");
     }
@@ -158,18 +149,10 @@ export default function UploadContent() {
     setError("");
 
     try {
-      // Upload Payload
+      // Upload main file directly via REST API (bypasses SDK JWT)
       const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
       const filePath = `${user.uid}/${Date.now()}_${safeName}`;
-      const { error: fileError } = await supabase.storage
-        .from("models")
-        .upload(filePath, file, { cacheControl: "3600", upsert: false });
-
-      if (fileError) throw new Error("File upload failed: " + fileError.message);
-
-      const { data: { publicUrl: fileUrl } } = supabase.storage
-        .from("models")
-        .getPublicUrl(filePath);
+      const fileUrl = await uploadToSupabase("models", filePath, file, setUploadProgress);
 
       setUploadProgress(60);
 
@@ -178,16 +161,7 @@ export default function UploadContent() {
       if (thumbnail && !thumbnailUrl) {
          const safeThumbName2 = thumbnail.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
          const thumbPath = `${user.uid}/${Date.now()}_thumb_${safeThumbName2}`;
-         const { error: thumbError } = await supabase.storage
-           .from("thumbnails")
-           .upload(thumbPath, thumbnail, { cacheControl: "3600", upsert: false });
-
-         if (thumbError) throw new Error("Thumbnail upload failed: " + thumbError.message);
-
-         const { data: { publicUrl: tUrl } } = supabase.storage
-           .from("thumbnails")
-           .getPublicUrl(thumbPath);
-         finalThumbnailUrl = tUrl;
+         finalThumbnailUrl = await uploadToSupabase("thumbnails", thumbPath, thumbnail);
       }
       setUploadProgress(80);
 

@@ -4,7 +4,7 @@ import { useState, useRef, ChangeEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { supabase } from "@/lib/supabase";
+import { uploadToSupabase } from "@/lib/supabase";
 import type { User } from "firebase/auth";
 import type { AccessType, FileType } from "@/types/gallery";
 
@@ -60,43 +60,19 @@ export default function UploadModel({ user, onClose, onUploaded }: UploadModelPr
     if (!modelFile || !form.title) return;
     setUploading(true); setError(null);
     try {
-      // 1. Upload Model to Supabase
+      // 1. Upload Model via direct REST API (no JWT)
       const safeName = modelFile.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
       const modelPath = `${user.uid}/${Date.now()}_${safeName}`;
-      const { error: modelError } = await supabase.storage
-        .from("models")
-        .upload(modelPath, modelFile, {
-          cacheControl: "3600",
-          upsert: false,
-        });
-
-      if (modelError) throw new Error("Model upload failed: " + modelError.message);
-      
-      const { data: { publicUrl: modelUrl } } = supabase.storage
-        .from("models")
-        .getPublicUrl(modelPath);
+      const modelUrl = await uploadToSupabase("models", modelPath, modelFile, setProgress);
 
       setProgress(50);
 
-      // 2. Upload Thumbnail to Supabase
+      // 2. Upload Thumbnail
       let thumbnailUrl = "";
       if (thumbnailFile) {
         const safeThumbName = thumbnailFile.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
         const thumbPath = `${user.uid}/${Date.now()}_thumb_${safeThumbName}`;
-        const { error: thumbError } = await supabase.storage
-          .from("thumbnails")
-          .upload(thumbPath, thumbnailFile, {
-            cacheControl: "3600",
-            upsert: false,
-          });
-
-        if (thumbError) throw new Error("Thumbnail upload failed: " + thumbError.message);
-
-        const { data: { publicUrl: tUrl } } = supabase.storage
-          .from("thumbnails")
-          .getPublicUrl(thumbPath);
-          
-        thumbnailUrl = tUrl;
+        thumbnailUrl = await uploadToSupabase("thumbnails", thumbPath, thumbnailFile);
       }
 
       setProgress(85);

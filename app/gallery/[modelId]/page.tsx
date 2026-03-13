@@ -27,7 +27,6 @@ const DIVISOR      = 0.83;
 function getBuyerPrice(x: number)  { return Math.ceil(x / DIVISOR); }
 function getPlatformFee(x: number) { return Math.ceil(x * PLATFORM_FEE); }
 function getRazorpayFee(x: number) { return Math.ceil(x * RAZORPAY_FEE); }
-const [liked, setLiked] = useState(false);
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Model {
   id: string;

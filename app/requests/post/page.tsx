@@ -209,9 +209,10 @@ export default function PostRequestPage() {
                     </button>
                   </div>
                 </div>
-
               </div>
             </div>
+            
+            <button type="submit" disabled={loading || success}
               className="w-full py-4 rounded-2xl bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white font-black text-lg disabled:opacity-50 transition duration-200">
               {loading ? "Posting..." : "Post Request →"}
             </button>

@@ -473,12 +473,6 @@ export default function HomePage() {
         </motion.div>
       </div>
 
-      {/* 3D Cube + Revolving Dots */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <RotatingCube />
-        <RevolvingDots />
-      </div>
-
       <div className="relative z-10">
 
         {/* HERO */}

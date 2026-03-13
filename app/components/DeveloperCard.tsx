@@ -8,7 +8,7 @@ export default function DeveloperCard({ dev }: any) {
   const skills = Array.isArray(dev.skills) ? dev.skills.join(", ") : dev.skills;
 
   return (
-    <Link href={`/developer/${dev.id}`} style={{ textDecoration: "none" }}>
+    <Link href={`/developer/${dev.userId || dev.id}`} style={{ textDecoration: "none" }}>
       <motion.div
         whileHover={{ y: -2 }}
         transition={{ type: "spring", stiffness: 350, damping: 24 }}

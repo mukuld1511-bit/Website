@@ -26,7 +26,7 @@ export default function PurchaseModal({ model, user, onClose, onSuccess }: Purch
       const loaded = await loadRazorpayScript();
       if (!loaded) { setState("coming_soon"); return; }
 
-      const orderRes = await fetch("/api/razorpay/create-order", {
+      const orderRes = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: model.price, modelId: model.id }),
@@ -47,7 +47,7 @@ export default function PurchaseModal({ model, user, onClose, onSuccess }: Purch
         contact: "",
         prefill: { name: user.displayName ?? "" },
         onSuccess: async (paymentData: any) =>  {
-          const verifyRes = await fetch("/api/razorpay/verify", {
+          const verifyRes = await fetch("/api/verify-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ ...paymentData, modelId: model.id, userId: user.uid }),

@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { uploadToCloudinary } from "../../lib/cloudinary";
+import { supabase } from "../../lib/supabase";
 
 const MODEL_EXTENSIONS = ["glb", "gltf", "obj", "fbx", "dwg", "dxf"];
 const BUILD_EXTENSIONS = ["zip"];
@@ -111,7 +111,17 @@ export default function UploadContent() {
 
     try {
       setUploadProgress(25);
-      const url = await uploadToCloudinary(f, (pct) => setUploadProgress(Math.round(pct * 0.25)), "zenith-cloud");
+      const thumbPath = `${user.uid}/${Date.now()}_thumb_${f.name}`;
+      const { error: thumbError } = await supabase.storage
+        .from("thumbnails")
+        .upload(thumbPath, f, { cacheControl: "3600", upsert: false });
+
+      if (thumbError) throw new Error("Thumbnail upload failed: " + thumbError.message);
+
+      const { data: { publicUrl: url } } = supabase.storage
+        .from("thumbnails")
+        .getPublicUrl(thumbPath);
+
       setThumbnailUrl(url);
       setUploadProgress(0);
     } catch {
@@ -147,12 +157,34 @@ export default function UploadContent() {
     setError("");
 
     try {
-      const fileUrl = await uploadToCloudinary(file, (pct) => setUploadProgress(Math.round(pct * 0.6)), "zenith uploads");
+      // Upload Payload
+      const filePath = `${user.uid}/${Date.now()}_${file.name}`;
+      const { error: fileError } = await supabase.storage
+        .from("models")
+        .upload(filePath, file, { cacheControl: "3600", upsert: false });
+
+      if (fileError) throw new Error("File upload failed: " + fileError.message);
+
+      const { data: { publicUrl: fileUrl } } = supabase.storage
+        .from("models")
+        .getPublicUrl(filePath);
+
       setUploadProgress(60);
 
+      // Finalize Thumbnail
       let finalThumbnailUrl = thumbnailUrl;
       if (thumbnail && !thumbnailUrl) {
-        finalThumbnailUrl = await uploadToCloudinary(thumbnail, undefined, "zenith-cloud");
+         const thumbPath = `${user.uid}/${Date.now()}_thumb_${thumbnail.name}`;
+         const { error: thumbError } = await supabase.storage
+           .from("thumbnails")
+           .upload(thumbPath, thumbnail, { cacheControl: "3600", upsert: false });
+
+         if (thumbError) throw new Error("Thumbnail upload failed: " + thumbError.message);
+
+         const { data: { publicUrl: tUrl } } = supabase.storage
+           .from("thumbnails")
+           .getPublicUrl(thumbPath);
+         finalThumbnailUrl = tUrl;
       }
       setUploadProgress(80);
 

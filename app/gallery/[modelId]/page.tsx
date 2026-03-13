@@ -91,7 +91,7 @@ function ModelViewer({ modelUrl, fileType }: { modelUrl: string; fileType: strin
     const W = container.clientWidth;
     const H = container.clientHeight;
     const scene    = new THREE.Scene();
-    scene.background = new THREE.Color(0x050008);
+    scene.background = new THREE.Color(0xf9fafb);
     const camera   = new THREE.PerspectiveCamera(60, W / H, 0.01, 1000);
     camera.position.set(0, 1.5, 4);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -100,11 +100,11 @@ function ModelViewer({ modelUrl, fileType }: { modelUrl: string; fileType: strin
     renderer.shadowMap.enabled = true;
     container.innerHTML = "";
     container.appendChild(renderer.domElement);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-    const dir = new THREE.DirectionalLight(0xffffff, 1.2);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+    const dir = new THREE.DirectionalLight(0xffffff, 1.0);
     dir.position.set(5, 8, 5); dir.castShadow = true; scene.add(dir);
-    const v = new THREE.PointLight(0xa78bfa, 1.5, 20); v.position.set(-4,3,-2); scene.add(v);
-    const c = new THREE.PointLight(0x22d3ee, 1.0, 20); c.position.set(4,-2,3); scene.add(c);
+    const dir2 = new THREE.DirectionalLight(0xf1f5f9, 0.5);
+    dir2.position.set(-5, 4, -5); scene.add(dir2);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true; controls.dampingFactor = 0.05;
     controls.minDistance = 0.5; controls.maxDistance = 50;
@@ -126,7 +126,7 @@ function ModelViewer({ modelUrl, fileType }: { modelUrl: string; fileType: strin
         undefined, () => { setIsLoading(false); setLoadError(true); });
     } else if (ext === "obj") {
       new OBJLoader().load(modelUrl, (obj) => {
-        const mat = new THREE.MeshStandardMaterial({ color: 0xa78bfa, roughness: 0.5, metalness: 0.3 });
+        const mat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.5, metalness: 0.1 });
         obj.traverse(c => { if ((c as THREE.Mesh).isMesh) (c as THREE.Mesh).material = mat; });
         scene.add(obj); centerModel(obj);
       }, undefined, () => { setIsLoading(false); setLoadError(true); });
@@ -147,33 +147,34 @@ function ModelViewer({ modelUrl, fileType }: { modelUrl: string; fileType: strin
   }, [modelUrl, fileType]);
 
   if (isCad) return (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-4"
-      style={{ background:"linear-gradient(135deg,rgba(251,191,36,0.06),rgba(0,0,0,0))" }}>
-      <svg className="w-16 h-16 text-amber-400/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
-      </svg>
-      <p className="text-amber-400/60 text-sm font-bold">{fileType?.toUpperCase()} Drawing</p>
-      <p className="text-white/25 text-xs">In-browser preview not available for CAD files</p>
+    <div className="w-full h-full flex flex-col items-center justify-center gap-4 bg-amber-50 rounded-2xl border border-amber-200">
+      <div className="w-16 h-16 rounded-2xl bg-amber-100 flex items-center justify-center">
+        <svg className="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
+        </svg>
+      </div>
+      <p className="text-amber-800 text-sm font-extrabold">{fileType?.toUpperCase()} Drawing</p>
+      <p className="text-amber-600/70 text-xs font-medium">In-browser preview not available for CAD files</p>
     </div>
   );
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-200">
       <div ref={mountRef} className="w-full h-full" />
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#050008]">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-10 h-10 rounded-full border-2 border-violet-500/30 border-t-violet-400 animate-spin" />
-            <p className="text-white/30 text-xs font-semibold">Loading model…</p>
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 rounded-full border-2 border-blue-200 border-t-blue-600 animate-spin flex-shrink-0" />
+            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Loading model…</p>
           </div>
         </div>
       )}
       {loadError && !isLoading && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#050008]">
-          <svg className="w-12 h-12 text-white/10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gray-50">
+          <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
           </svg>
-          <p className="text-white/25 text-sm">Preview unavailable</p>
+          <p className="text-gray-400 text-sm font-bold">Preview unavailable</p>
         </div>
       )}
     </div>

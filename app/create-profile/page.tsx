@@ -8,6 +8,7 @@ import app from "../../lib/firebase";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Navbar from "../components/Navbar";
 
 export default function CreateProfile() {
   const auth = getAuth(app);
@@ -35,7 +36,7 @@ export default function CreateProfile() {
     setLoading(false);
   };
 
-  const inputClass = "w-full bg-white/[0.03] border border-white/8 text-white placeholder-white/25 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-violet-500/50 focus:shadow-[0_0_20px_rgba(139,92,246,0.08)] transition duration-200";
+  const inputClass = "w-full bg-white border border-gray-300 text-gray-900 placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm transition duration-200";
 
   const fields = [
     { label: "Your Name", placeholder: "e.g. Mukul Sharma", value: name, set: setName, icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z", type: "input" },
@@ -44,70 +45,64 @@ export default function CreateProfile() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#050008] flex items-center justify-center px-4 py-24 relative overflow-hidden">
-
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(ellipse, rgba(124,58,237,0.13) 0%, transparent 70%)", filter: "blur(100px)" }} />
-      <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(6,182,212,0.07) 0%, transparent 70%)", filter: "blur(80px)" }} />
-
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-24 relative overflow-hidden font-sans">
+      <Navbar />
+      
       <motion.div
-        initial={{ opacity: 0, y: 28 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55 }}
-        className="relative z-10 w-full max-w-lg"
+        transition={{ duration: 0.5 }}
+        className="relative z-10 w-full max-w-lg mt-12"
       >
         {/* Header */}
         <div className="text-center mb-10">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-violet-500/20 bg-violet-500/5 backdrop-blur-sm mb-6"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-200 bg-blue-50 mb-6 shadow-sm"
           >
-            <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
-            <span className="text-violet-300/90 text-sm font-semibold uppercase tracking-widest">Developer Profile</span>
+            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+            <span className="text-blue-700 text-xs font-bold uppercase tracking-widest">Developer Profile</span>
           </motion.div>
-          <h1 className="text-5xl font-black tracking-tighter text-white leading-none mb-3">
+          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 leading-none mb-3">
             Create Your{" "}
-            <span style={{ backgroundImage: "linear-gradient(90deg, #a78bfa, #22d3ee)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
               Profile
             </span>
           </h1>
-          <p className="text-white/35 text-sm">Set up your developer identity on SYNTHÉ.</p>
+          <p className="text-gray-500 text-sm font-medium">Set up your developer identity on SYNTHÉ.</p>
         </div>
 
         {/* Card */}
-        <div className="relative rounded-3xl overflow-hidden border border-white/6 bg-white/[0.025] backdrop-blur-xl">
-          <div className="absolute top-0 left-0 right-0 h-[1px]"
-            style={{ background: "linear-gradient(90deg, transparent, rgba(167,139,250,0.4), rgba(34,211,238,0.3), transparent)" }} />
-
-          <form onSubmit={handleSave} className="p-8 flex flex-col gap-6">
+        <div className="relative rounded-3xl overflow-hidden border border-gray-200 bg-white shadow-sm p-8">
+          
+          <form onSubmit={handleSave} className="flex flex-col gap-6">
 
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl border border-rose-500/20 bg-rose-500/8"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl border border-red-200 bg-red-50"
               >
-                <svg className="w-4 h-4 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="text-rose-400 text-sm">{error}</p>
+                <p className="text-red-700 font-bold text-sm">{error}</p>
               </motion.div>
             )}
 
             {fields.map((f, i) => (
               <motion.div
                 key={f.label}
-                initial={{ opacity: 0, x: -12 }}
+                initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 + i * 0.08 }}
+                transition={{ duration: 0.4, delay: 0.1 + i * 0.05 }}
               >
-                <label className="block text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">{f.label}</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">{f.label}</label>
                 <div className="relative group">
-                  <div className="absolute left-4 top-4 text-white/25 group-focus-within:text-violet-400 transition duration-200">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="absolute left-4 top-4 text-gray-400 group-focus-within:text-blue-600 transition duration-200">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={f.icon} />
                     </svg>
                   </div>
@@ -117,37 +112,26 @@ export default function CreateProfile() {
                       value={f.value}
                       onChange={(e) => f.set(e.target.value)}
                       rows={4}
-                      className={inputClass + " pl-10 resize-none"}
+                      className={inputClass + " pl-12 resize-none"}
                     />
                   ) : (
                     <input
                       placeholder={f.placeholder}
                       value={f.value}
                       onChange={(e) => f.set(e.target.value)}
-                      className={inputClass + " pl-10"}
+                      className={inputClass + " pl-12"}
                     />
                   )}
                 </div>
-                {f.hint && <p className="text-white/20 text-xs mt-1.5 pl-1">{f.hint}</p>}
+                {f.hint && <p className="text-gray-400 font-medium text-[10px] tracking-widest uppercase mt-1.5 pl-1">{f.hint}</p>}
               </motion.div>
             ))}
 
             <motion.button
               type="submit"
               disabled={loading || !name}
-              whileHover={{ scale: loading ? 1 : 1.02 }}
-              whileTap={{ scale: loading ? 1 : 0.98 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              style={{ willChange: "transform", background: loading ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #7c3aed, #0891b2)" }}
-              className="relative w-full py-4 text-base font-black text-white rounded-2xl overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              className="relative w-full py-3.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-sm transition"
             >
-              {!loading && (
-                <motion.div
-                  animate={{ x: ["-200%", "200%"] }}
-                  transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 4, ease: "linear" }}
-                  style={{ willChange: "transform", position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)", transform: "skewX(-20deg)", pointerEvents: "none" }}
-                />
-              )}
               <span className="relative z-10 flex items-center justify-center gap-2">
                 {loading ? (
                   <><svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Saving...</>
@@ -157,9 +141,9 @@ export default function CreateProfile() {
               </span>
             </motion.button>
 
-            <p className="text-center text-white/20 text-xs">
+            <p className="text-center text-gray-500 font-medium text-sm mt-2">
               Already have a profile?{" "}
-              <Link href="/profile"><span className="text-violet-400/70 hover:text-violet-300 cursor-pointer transition duration-200">View it here</span></Link>
+              <Link href="/profile"><span className="text-blue-600 font-bold hover:text-blue-700 hover:underline cursor-pointer transition duration-200">View it here</span></Link>
             </p>
           </form>
         </div>

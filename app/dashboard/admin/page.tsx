@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { db } from "../../../lib/firebase";
 import {
   collection, getDocs, updateDoc, deleteDoc,
-  doc, query, where, orderBy,
+  doc, query, orderBy,
 } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 export default function AdminDashboard() {
   const [activeTab,     setActiveTab]     = useState<"overview"|"models"|"users"|"applications"|"certifications">("overview");
@@ -96,10 +98,10 @@ export default function AdminDashboard() {
   const pendingCerts= certRequests.filter(c => c.status === "pending");
 
   const STATS = [
-    { label:"Total Models",    val: models.length,       color:"#a78bfa", icon:"M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
-    { label:"Total Users",     val: users.length,        color:"#22d3ee", icon:"M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
-    { label:"Developers",      val: developers.length,   color:"#34d399", icon:"M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" },
-    { label:"Pending Actions", val: pendingApps.length + pendingCerts.length, color:"#fbbf24", icon:"M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { label:"Total Models",    val: models.length,       colorClass:"text-blue-600", bgClass:"bg-blue-50", icon:"M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
+    { label:"Total Users",     val: users.length,        colorClass:"text-cyan-600", bgClass:"bg-cyan-50", icon:"M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+    { label:"Developers",      val: developers.length,   colorClass:"text-emerald-600", bgClass:"bg-emerald-50", icon:"M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" },
+    { label:"Pending Actions", val: pendingApps.length + pendingCerts.length, colorClass:"text-amber-600", bgClass:"bg-amber-50", icon:"M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
   ];
 
   const TABS: { id: typeof activeTab; label: string; badge?: number }[] = [
@@ -110,9 +112,16 @@ export default function AdminDashboard() {
     { id:"certifications",label:"Certifications",badge: pendingCerts.length || undefined },
   ];
 
-  const FILE_COLORS: Record<string,string> = {
-    glb:"#a78bfa", gltf:"#a78bfa", obj:"#22d3ee", fbx:"#22d3ee", dwg:"#fbbf24", dxf:"#fbbf24",
+  const FILE_COLORS: Record<string, { colorClass: string; bgClass: string; borderClass: string; hex: string }> = {
+    glb:  { colorClass: "text-indigo-600", bgClass: "bg-indigo-50", borderClass: "border-indigo-200", hex: "#4f46e5" },
+    gltf: { colorClass: "text-indigo-600", bgClass: "bg-indigo-50", borderClass: "border-indigo-200", hex: "#4f46e5" },
+    obj:  { colorClass: "text-cyan-600", bgClass: "bg-cyan-50", borderClass: "border-cyan-200", hex: "#0891b2" },
+    fbx:  { colorClass: "text-cyan-600", bgClass: "bg-cyan-50", borderClass: "border-cyan-200", hex: "#0891b2" },
+    dwg:  { colorClass: "text-amber-600", bgClass: "bg-amber-50", borderClass: "border-amber-200", hex: "#d97706" },
+    dxf:  { colorClass: "text-amber-600", bgClass: "bg-amber-50", borderClass: "border-amber-200", hex: "#d97706" },
   };
+
+  const getFileStyle = (ext: string) => FILE_COLORS[ext] ?? FILE_COLORS.glb;
 
   function timeAgo(ts: any): string {
     if (!ts) return "";
@@ -125,97 +134,92 @@ export default function AdminDashboard() {
   }
 
   const statusPill = (s: string) => {
-    const m: Record<string,string> = {
-      pending: "border-amber-500/25 bg-amber-500/10 text-amber-300",
-      approved:"border-emerald-500/25 bg-emerald-500/10 text-emerald-300",
-      rejected:"border-rose-500/25 bg-rose-500/10 text-rose-300",
+    const m: Record<string, string> = {
+      pending: "border-amber-200 bg-amber-50 text-amber-700",
+      approved:"border-green-200 bg-green-50 text-green-700",
+      rejected:"border-red-200 bg-red-50 text-red-700",
     };
-    return `px-2.5 py-1 rounded-lg text-[9px] font-black border ${m[s] ?? "border-white/10 bg-white/5 text-white/30"}`;
+    return `px-2.5 py-1 rounded-md text-[9px] font-black tracking-widest uppercase border shadow-sm ${m[s] ?? "border-gray-200 bg-gray-50 text-gray-500"}`;
   };
 
   const rolePill = (r: string) => {
-    const m: Record<string,string> = {
-      admin:    "border-rose-500/25 bg-rose-500/10 text-rose-300",
-      developer:"border-violet-500/25 bg-violet-500/10 text-violet-300",
-      user:     "border-white/10 bg-white/5 text-white/30",
+    const m: Record<string, string> = {
+      admin:    "border-red-200 bg-red-50 text-red-700",
+      developer:"border-blue-200 bg-blue-50 text-blue-700",
+      user:     "border-gray-200 bg-white text-gray-500",
     };
-    return `px-2.5 py-1 rounded-lg text-[9px] font-black border ${m[r] ?? m.user}`;
+    return `px-2.5 py-1 rounded-md text-[9px] font-black tracking-widest uppercase border shadow-sm ${m[r] ?? m.user}`;
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-[#050008] flex items-center justify-center">
-      <div className="w-12 h-12 rounded-full border-2 border-violet-500/30 border-t-violet-400 animate-spin" />
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
+      <div className="w-12 h-12 rounded-full border-2 border-gray-200 border-t-blue-600 animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#050008]">
+    <div className="min-h-screen bg-gray-50 font-sans">
+      <Navbar />
 
-      {/* Background */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full pointer-events-none"
-        style={{ background:"radial-gradient(ellipse,rgba(124,58,237,0.1) 0%,transparent 70%)", filter:"blur(80px)" }} />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 pt-28 pb-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 pt-32 pb-20">
 
         {/* Header */}
-        <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }} className="mb-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-rose-500/20 bg-rose-500/5 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
-            <span className="text-rose-300/80 text-[10px] font-black uppercase tracking-widest">Control Panel</span>
+        <motion.div initial={{ opacity:0, y:15 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }} className="mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-red-200 bg-red-50 mb-4 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+            <span className="text-red-700 text-[10px] font-black uppercase tracking-widest">Control Panel</span>
           </div>
-          <h1 className="text-4xl font-black text-white tracking-tight mb-1">Admin Dashboard</h1>
-          <p className="text-white/30 text-sm">Manage models, users, applications and certifications.</p>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-2">Admin Dashboard</h1>
+          <p className="text-gray-500 text-sm font-medium">Manage models, users, applications and certifications.</p>
         </motion.div>
 
         {/* Stats */}
-        <motion.div initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.1 }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.1 }}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
           {STATS.map((s,i) => (
-            <div key={i} className="relative p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-white/10 transition duration-200">
-              <div className="absolute top-0 left-0 right-0 h-[1px] rounded-t-2xl"
-                style={{ background:`linear-gradient(90deg,transparent,${s.color}30,transparent)` }} />
-              <svg className="w-5 h-5 mb-3 opacity-50" style={{ color:s.color }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={s.icon} />
+            <div key={i} className="relative p-6 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-gray-300 transition duration-200">
+              <svg className={`w-6 h-6 mb-4 ${s.colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={s.icon} />
               </svg>
-              <p className="text-2xl font-black mb-0.5"
-                style={{ backgroundImage:`linear-gradient(135deg,${s.color},white)`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
-                {s.val}
-              </p>
-              <p className="text-white/25 text-[9px] font-semibold uppercase tracking-widest">{s.label}</p>
+              <p className={`text-3xl font-black mb-1 ${s.colorClass}`}>{s.val}</p>
+              <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest">{s.label}</p>
             </div>
           ))}
         </motion.div>
 
         {/* Secondary stats row */}
         <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.15 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+          className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
           {[
-            { label:"Free Models",    val: freeModels.length,   color:"#34d399" },
-            { label:"Paid Models",    val: paidModels.length,   color:"#fbbf24" },
-            { label:"Pending Apps",   val: pendingApps.length,  color:"#fb7185" },
-            { label:"Pending Certs",  val: pendingCerts.length, color:"#818cf8" },
+            { label:"Free Models",    val: freeModels.length,   colorClass:"text-green-600", bgClass:"bg-green-50", border:"border-green-200" },
+            { label:"Paid Models",    val: paidModels.length,   colorClass:"text-yellow-600", bgClass:"bg-yellow-50", border:"border-yellow-200" },
+            { label:"Pending Apps",   val: pendingApps.length,  colorClass:"text-blue-600", bgClass:"bg-blue-50", border:"border-blue-200" },
+            { label:"Pending Certs",  val: pendingCerts.length, colorClass:"text-indigo-600", bgClass:"bg-indigo-50", border:"border-indigo-200" },
           ].map((s,i) => (
-            <div key={i} className="p-4 rounded-xl border border-white/5 bg-white/[0.015] flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background:s.color, boxShadow:`0 0 6px ${s.color}` }} />
+            <div key={i} className="p-4 rounded-xl border border-gray-200 bg-white shadow-sm flex items-center gap-4">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm ${s.bgClass} ${s.borderClass}`}>
+                <span className={`text-lg font-black ${s.colorClass}`}>{s.val}</span>
+              </div>
               <div>
-                <p className="text-white font-black text-lg leading-none">{s.val}</p>
-                <p className="text-white/25 text-[9px] uppercase tracking-wider mt-0.5">{s.label}</p>
+                <p className="text-gray-900 font-extrabold text-sm">{s.val}</p>
+                <p className="text-gray-500 text-[9px] font-black uppercase tracking-widest mt-0.5">{s.label}</p>
               </div>
             </div>
           ))}
         </motion.div>
 
         {/* Tabs */}
-        <div className="flex gap-1 border-b border-white/6 mb-8 overflow-x-auto">
+        <div className="flex gap-2 border-b border-gray-200 mb-8 overflow-x-auto pb-px">
           {TABS.map(t => (
             <button key={t.id} onClick={() => setActiveTab(t.id)}
-              className={`flex items-center gap-2 px-5 py-3 text-xs font-black uppercase tracking-widest whitespace-nowrap transition duration-200 border-b-2 ${
-                activeTab===t.id ? "border-violet-500 text-violet-300" : "border-transparent text-white/30 hover:text-white/60"
+              className={`flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap transition duration-200 border-b-2 ${
+                activeTab===t.id ? "border-blue-600 text-blue-700 bg-blue-50/50 rounded-t-lg" : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-t-lg"
               }`}>
               {t.label}
               {t.badge !== undefined && t.badge > 0 && (
-                <span className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black"
-                  style={{ background: activeTab===t.id?"rgba(167,139,250,0.3)":"rgba(251,113,133,0.2)", color: activeTab===t.id?"#a78bfa":"#fb7185" }}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black ${
+                  activeTab===t.id ? "bg-blue-200 text-blue-800" : "bg-gray-200 text-gray-600"
+                }`}>
                   {t.badge}
                 </span>
               )}
@@ -228,37 +232,34 @@ export default function AdminDashboard() {
           {/* ── OVERVIEW ── */}
           {activeTab === "overview" && (
             <motion.div key="overview" initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {/* Recent models */}
-                <div className="relative rounded-3xl border border-white/6 bg-white/[0.025] backdrop-blur-xl p-6">
-                  <div className="absolute top-0 left-0 right-0 h-[1px]"
-                    style={{ background:"linear-gradient(90deg,transparent,rgba(167,139,250,0.3),transparent)" }} />
-                  <div className="flex items-center justify-between mb-5">
-                    <h3 className="font-black text-white text-sm">Recent Uploads</h3>
-                    <button onClick={() => setActiveTab("models")} className="text-violet-400/60 text-xs hover:text-violet-300 transition duration-150">View all →</button>
+                <div className="relative rounded-3xl border border-gray-200 bg-white shadow-sm p-6 overflow-hidden">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="font-extrabold text-gray-900 text-sm">Recent Uploads</h3>
+                    <button onClick={() => setActiveTab("models")} className="text-blue-600 font-bold text-xs hover:text-blue-700 hover:underline transition duration-150">View all →</button>
                   </div>
                   {models.length === 0 ? (
-                    <p className="text-white/20 text-sm text-center py-8">No models yet</p>
+                    <p className="text-gray-500 font-medium text-sm text-center py-8">No models yet</p>
                   ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {models.slice(0,5).map(m => {
                         const ext = m.fileType?.toLowerCase() ?? "glb";
-                        const c = FILE_COLORS[ext] ?? "#a78bfa";
+                        const style = getFileStyle(ext);
                         return (
-                          <div key={m.id} className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/8 bg-white/[0.03] flex-shrink-0 flex items-center justify-center"
-                              style={{ background:`${c}10` }}>
+                          <div key={m.id} className="flex items-center gap-4">
+                            <div className={`w-12 h-12 rounded-xl overflow-hidden border flex-shrink-0 flex items-center justify-center ${style.bgClass} ${style.borderClass} shadow-sm`}>
                               {m.thumbnailUrl
                                 ? <img src={m.thumbnailUrl} className="w-full h-full object-cover" />
-                                : <svg className="w-4 h-4 opacity-30" style={{ color:c }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                                : <svg className={`w-5 h-5 ${style.colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
                               }
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-white/70 text-xs font-bold truncate">{m.title || "Untitled"}</p>
-                              <p className="text-white/25 text-[10px]">{m.authorName} · {timeAgo(m.uploadedAt)}</p>
+                              <p className="text-gray-900 text-sm font-extrabold truncate mb-0.5">{m.title || "Untitled"}</p>
+                              <p className="text-gray-500 font-medium text-[10px]">{m.authorName} · {timeAgo(m.uploadedAt)}</p>
                             </div>
-                            <span className="text-[9px] font-black px-2 py-0.5 rounded-md" style={{ color:c, background:`${c}18`, border:`1px solid ${c}30` }}>
+                            <span className={`text-[9px] font-black px-2 py-1 rounded-md border shadow-sm ${style.bgClass} ${style.borderClass} ${style.colorClass}`}>
                               {ext.toUpperCase()}
                             </span>
                           </div>
@@ -269,49 +270,50 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Pending actions */}
-                <div className="relative rounded-3xl border border-white/6 bg-white/[0.025] backdrop-blur-xl p-6">
-                  <div className="absolute top-0 left-0 right-0 h-[1px]"
-                    style={{ background:"linear-gradient(90deg,transparent,rgba(251,191,36,0.3),transparent)" }} />
-                  <h3 className="font-black text-white text-sm mb-5">Pending Actions</h3>
-                  <div className="space-y-3">
+                <div className="relative rounded-3xl border border-gray-200 bg-white shadow-sm p-6 overflow-hidden">
+                  <h3 className="font-extrabold text-gray-900 text-sm mb-6">Pending Actions</h3>
+                  <div className="space-y-4">
                     {pendingApps.length === 0 && pendingCerts.length === 0 ? (
-                      <div className="text-center py-8">
-                        <p className="text-emerald-400/60 text-sm font-bold">✓ All clear!</p>
-                        <p className="text-white/20 text-xs mt-1">No pending actions</p>
+                      <div className="text-center py-12 rounded-2xl border border-green-200 bg-green-50 shadow-sm">
+                        <div className="w-12 h-12 rounded-full border border-green-200 bg-green-100 flex items-center justify-center mx-auto mb-3">
+                          <span className="text-green-600 text-xl">✓</span>
+                        </div>
+                        <p className="text-green-800 text-sm font-bold">All clear!</p>
+                        <p className="text-green-600 font-medium text-xs mt-1">No pending actions</p>
                       </div>
                     ) : (
                       <>
                         {pendingApps.slice(0,3).map(a => (
-                          <div key={a.id} className="flex items-center justify-between gap-3 p-3 rounded-xl border border-amber-500/15 bg-amber-500/5">
+                          <div key={a.id} className="flex items-center justify-between gap-3 p-4 rounded-xl border border-blue-200 bg-blue-50 shadow-sm">
                             <div className="min-w-0">
-                              <p className="text-white/70 text-xs font-bold truncate">{a.name}</p>
-                              <p className="text-amber-400/60 text-[10px]">Developer application</p>
+                              <p className="text-blue-900 text-xs font-bold truncate mb-0.5">{a.name}</p>
+                              <p className="text-blue-700 font-medium text-[10px]">Developer application</p>
                             </div>
-                            <div className="flex gap-1.5 flex-shrink-0">
+                            <div className="flex gap-2 flex-shrink-0">
                               <button onClick={() => approveApplication(a)}
-                                className="px-2.5 py-1 rounded-lg text-[10px] font-black border border-emerald-500/25 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 transition duration-150">
+                                className="w-8 h-8 rounded-lg flex items-center justify-center font-black shadow-sm border border-green-200 bg-green-50 text-green-600 hover:bg-green-100 transition duration-150">
                                 ✓
                               </button>
                               <button onClick={() => rejectApplication(a.id)}
-                                className="px-2.5 py-1 rounded-lg text-[10px] font-black border border-rose-500/25 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 transition duration-150">
+                                className="w-8 h-8 rounded-lg flex items-center justify-center font-black shadow-sm border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition duration-150">
                                 ✕
                               </button>
                             </div>
                           </div>
                         ))}
                         {pendingCerts.slice(0,3).map(c => (
-                          <div key={c.id} className="flex items-center justify-between gap-3 p-3 rounded-xl border border-violet-500/15 bg-violet-500/5">
+                          <div key={c.id} className="flex items-center justify-between gap-3 p-4 rounded-xl border border-indigo-200 bg-indigo-50 shadow-sm">
                             <div className="min-w-0">
-                              <p className="text-white/70 text-xs font-bold truncate">{c.name}</p>
-                              <p className="text-violet-400/60 text-[10px]">Certification request</p>
+                              <p className="text-indigo-900 text-xs font-bold truncate mb-0.5">{c.name}</p>
+                              <p className="text-indigo-700 font-medium text-[10px]">Certification request</p>
                             </div>
-                            <div className="flex gap-1.5 flex-shrink-0">
+                            <div className="flex gap-2 flex-shrink-0">
                               <button onClick={() => approveCert(c.id, c.userId)}
-                                className="px-2.5 py-1 rounded-lg text-[10px] font-black border border-emerald-500/25 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 transition duration-150">
+                                className="w-8 h-8 rounded-lg flex items-center justify-center font-black shadow-sm border border-green-200 bg-green-50 text-green-600 hover:bg-green-100 transition duration-150">
                                 ✓
                               </button>
                               <button onClick={() => rejectCert(c.id)}
-                                className="px-2.5 py-1 rounded-lg text-[10px] font-black border border-rose-500/25 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 transition duration-150">
+                                className="w-8 h-8 rounded-lg flex items-center justify-center font-black shadow-sm border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition duration-150">
                                 ✕
                               </button>
                             </div>
@@ -328,73 +330,70 @@ export default function AdminDashboard() {
           {/* ── MODELS ── */}
           {activeTab === "models" && (
             <motion.div key="models" initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
-              <div className="flex items-center justify-between mb-5">
-                <p className="text-white/30 text-sm">{models.length} model{models.length!==1?"s":""} on platform</p>
+              <div className="flex items-center justify-between mb-6">
+                <p className="text-gray-500 font-medium text-sm">{models.length} model{models.length!==1?"s":""} on platform</p>
                 <Link href="/upload">
-                  <motion.div whileHover={{ scale:1.03 }} whileTap={{ scale:0.97 }}
-                    style={{ willChange:"transform", background:"linear-gradient(135deg,#7c3aed,#0891b2)" }}
-                    className="px-4 py-2 rounded-xl font-black text-white text-xs cursor-pointer relative overflow-hidden">
-                    <motion.div animate={{ x:["-200%","200%"] }} transition={{ duration:2.5, repeat:Infinity, repeatDelay:4, ease:"linear" }}
-                      style={{ willChange:"transform", position:"absolute", inset:0, background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)", transform:"skewX(-20deg)", pointerEvents:"none" }} />
-                    <span className="relative z-10">+ Upload Model</span>
-                  </motion.div>
+                  <button className="px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-blue-600 hover:bg-blue-700 shadow-sm transition">
+                    + Upload Model
+                  </button>
                 </Link>
               </div>
 
               {models.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-24 text-center border border-white/5 rounded-3xl bg-white/[0.01]">
-                  <p className="text-white/30 font-black text-lg">No models uploaded yet</p>
+                <div className="flex flex-col items-center justify-center py-24 text-center border border-gray-200 rounded-3xl bg-white shadow-sm">
+                  <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center text-3xl mb-4 shadow-sm">
+                    📦
+                  </div>
+                  <p className="text-gray-900 font-extrabold text-lg">No models uploaded yet</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {models.map((m,i) => {
                     const ext = m.fileType?.toLowerCase() ?? "glb";
-                    const c = FILE_COLORS[ext] ?? "#a78bfa";
+                    const style = getFileStyle(ext);
                     return (
                       <motion.div key={m.id} initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.03 }}
-                        className="relative rounded-2xl border border-white/6 bg-white/[0.025] overflow-hidden hover:border-white/12 transition duration-200">
-                        <div className="h-[1px]" style={{ background:`linear-gradient(90deg,transparent,${c}35,transparent)` }} />
-
+                        className="relative rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition duration-200 flex flex-col overflow-hidden">
+                        
                         {/* Thumb */}
-                        <div className="relative h-36 overflow-hidden" style={{ background:`${c}10` }}>
+                        <div className={`relative h-40 overflow-hidden flex-shrink-0 ${style.bgClass}`}>
                           {m.thumbnailUrl
-                            ? <img src={m.thumbnailUrl} alt={m.title} className="w-full h-full object-cover" />
-                            : <div className="w-full h-full flex items-center justify-center">
-                                <svg className="w-8 h-8 opacity-15" style={{ color:c }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            ? <img src={m.thumbnailUrl} alt={m.title} className="w-full h-full object-cover border-b border-gray-100" />
+                            : <div className="w-full h-full flex items-center justify-center border-b border-gray-100">
+                                <svg className={`w-10 h-10 ${style.colorClass} opacity-50`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                 </svg>
                               </div>
                           }
-                          <div className="absolute top-2 left-2 px-2 py-0.5 rounded text-[9px] font-black"
-                            style={{ color:c, background:`${c}25`, border:`1px solid ${c}40` }}>
-                            {ext.toUpperCase()}
+                          <div className={`absolute top-3 left-3 px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest shadow-sm border bg-white ${style.borderClass} ${style.colorClass}`}>
+                            {ext}
                           </div>
                           {m.isPaid && (
-                            <div className="absolute top-2 right-2 px-2 py-0.5 rounded text-[9px] font-black border border-emerald-500/30 bg-emerald-500/20 text-emerald-300">
+                            <div className="absolute top-3 right-3 px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest border border-green-200 bg-green-50 text-green-700 shadow-sm">
                               ₹{m.price}
                             </div>
                           )}
                         </div>
 
-                        <div className="p-4">
-                          <p className="text-white/80 text-sm font-black truncate mb-1">{m.title || "Untitled"}</p>
-                          <div className="flex items-center justify-between text-white/25 text-xs mb-3">
-                            <span>{m.authorName}</span>
-                            <span>{timeAgo(m.uploadedAt)}</span>
+                        <div className="p-5 flex-1 flex flex-col">
+                          <p className="text-gray-900 text-sm font-extrabold truncate mb-1">{m.title || "Untitled"}</p>
+                          <div className="flex items-center justify-between text-gray-500 font-medium text-xs mb-4">
+                            <span className="truncate mr-2">{m.authorName}</span>
+                            <span className="flex-shrink-0">{timeAgo(m.uploadedAt)}</span>
                           </div>
-                          <div className="flex items-center gap-3 text-white/20 text-[10px] mb-4">
-                            <span>👁 {m.views ?? 0}</span>
-                            <span>⬇ {m.downloads ?? 0}</span>
-                            <span>♥ {m.likes ?? 0}</span>
+                          <div className="flex items-center gap-4 text-gray-400 font-bold text-[10px] mb-5">
+                            <span className="flex items-center gap-1"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> {m.views ?? 0}</span>
+                            <span className="flex items-center gap-1"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg> {m.downloads ?? 0}</span>
+                            <span className="flex items-center gap-1"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg> {m.likes ?? 0}</span>
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex gap-3 mt-auto">
                             <Link href={`/gallery/${m.id}`} className="flex-1">
-                              <div className="py-2 rounded-xl text-center text-xs font-bold border border-white/8 text-white/40 hover:border-white/16 hover:text-white/60 transition duration-200 cursor-pointer">
-                                View →
+                              <div className="py-2.5 rounded-xl text-center text-xs font-bold border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 shadow-sm transition duration-200 cursor-pointer">
+                                View
                               </div>
                             </Link>
                             <button onClick={() => deleteModel(m.id)}
-                              className="flex-1 py-2 rounded-xl text-xs font-bold border border-rose-500/20 bg-rose-500/8 text-rose-400 hover:bg-rose-500/15 transition duration-200">
+                              className="flex-1 py-2.5 rounded-xl text-xs font-bold border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 shadow-sm transition duration-200">
                               Delete
                             </button>
                           </div>
@@ -410,38 +409,41 @@ export default function AdminDashboard() {
           {/* ── USERS ── */}
           {activeTab === "users" && (
             <motion.div key="users" initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
-              <p className="text-white/30 text-sm mb-5">{users.length} registered users</p>
+              <p className="text-gray-500 font-medium text-sm mb-6">{users.length} registered users</p>
               {users.length === 0 ? (
-                <div className="text-center py-24 text-white/20">No users yet</div>
+                <div className="text-center py-24 text-gray-400 font-medium">No users yet</div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {users.map((u,i) => (
                     <motion.div key={u.id} initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.02 }}
-                      className="flex items-center gap-4 p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-white/10 transition duration-200">
-                      <div className="w-10 h-10 rounded-2xl overflow-hidden border border-white/8 bg-white/[0.03] flex items-center justify-center flex-shrink-0 font-black text-white/25 text-sm"
-                        style={{ background: u.role==="developer"?"rgba(124,58,237,0.1)":u.role==="admin"?"rgba(251,113,133,0.1)":"rgba(255,255,255,0.02)" }}>
+                      className="flex items-center gap-4 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition duration-200">
+                      <div className={`w-12 h-12 rounded-2xl overflow-hidden border shadow-sm flex items-center justify-center flex-shrink-0 font-black text-sm uppercase ${
+                        u.role === "developer" ? "border-blue-200 bg-blue-50 text-blue-700" :
+                        u.role === "admin" ? "border-red-200 bg-red-50 text-red-700" :
+                        "border-gray-200 bg-gray-50 text-gray-500"
+                      }`}>
                         {u.profileImage && u.profileImage !== "/avatar.png"
                           ? <img src={u.profileImage} className="w-full h-full object-cover" onError={e=>{(e.target as HTMLImageElement).style.display="none"}} />
                           : (u.name?.[0] ?? u.email?.[0] ?? "?")
                         }
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-white/70 text-sm font-bold truncate">{u.name || "No name"}</p>
-                        <p className="text-white/25 text-xs truncate">{u.email}</p>
+                        <p className="text-gray-900 text-sm font-extrabold truncate mb-0.5">{u.name || "No name"}</p>
+                        <p className="text-gray-500 font-medium text-xs truncate">{u.email}</p>
                       </div>
-                      <div className="flex items-center gap-3 flex-shrink-0">
+                      <div className="flex items-center gap-3 flex-shrink-0 flex-wrap justify-end">
                         <span className={rolePill(u.role)}>{u.role}</span>
-                        {u.certified && <span className="px-2.5 py-1 rounded-lg text-[9px] font-black border border-amber-500/25 bg-amber-500/10 text-amber-300">⭐ Certified</span>}
+                        {u.certified && <span className="px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border border-yellow-300 bg-yellow-50 text-yellow-700 shadow-sm">⭐ Certified</span>}
                         {u.role === "user" && (
                           <button onClick={() => promoteUser(u.id)}
-                            className="px-3 py-1.5 rounded-xl text-[10px] font-black border border-violet-500/20 bg-violet-500/8 text-violet-300 hover:bg-violet-500/15 transition duration-200">
-                            Promote
+                            className="px-3 py-1.5 rounded-lg text-[10px] font-bold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-sm transition duration-200">
+                            Promote to Dev
                           </button>
                         )}
                         {u.role === "developer" && (
                           <button onClick={() => demoteUser(u.id)}
-                            className="px-3 py-1.5 rounded-xl text-[10px] font-black border border-white/8 text-white/30 hover:border-rose-500/20 hover:text-rose-400 transition duration-200">
-                            Demote
+                            className="px-3 py-1.5 rounded-lg text-[10px] font-bold border border-gray-200 bg-white text-gray-600 hover:border-red-200 hover:bg-red-50 hover:text-red-600 shadow-sm transition duration-200">
+                            Demote to User
                           </button>
                         )}
                       </div>
@@ -455,47 +457,52 @@ export default function AdminDashboard() {
           {/* ── APPLICATIONS ── */}
           {activeTab === "applications" && (
             <motion.div key="applications" initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
-              <p className="text-white/30 text-sm mb-5">{applications.length} total · {pendingApps.length} pending</p>
+              <p className="text-gray-500 font-medium text-sm mb-6">{applications.length} total · {pendingApps.length} pending</p>
               {applications.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-24 text-center">
-                  <p className="text-white/30 font-black text-lg">No applications yet</p>
+                <div className="flex flex-col items-center justify-center py-24 text-center rounded-3xl border border-gray-200 bg-white shadow-sm">
+                  <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center text-3xl mb-4 shadow-sm">
+                    📝
+                  </div>
+                  <p className="text-gray-900 font-extrabold text-lg">No applications yet</p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {applications.map((a,i) => (
                     <motion.div key={a.id} initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.03 }}
-                      className={`p-5 rounded-2xl border transition duration-200 ${
-                        a.status==="pending" ? "border-amber-500/15 bg-amber-500/[0.03]" : "border-white/5 bg-white/[0.02]"
+                      className={`p-6 rounded-2xl border shadow-sm transition duration-200 ${
+                        a.status==="pending" ? "border-blue-200 bg-blue-50/50" : "border-gray-200 bg-white"
                       }`}>
-                      <div className="flex items-start justify-between gap-4 flex-wrap">
+                      <div className="flex items-start justify-between gap-5 flex-wrap">
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-2 flex-wrap">
-                            <p className="text-white/80 font-black text-sm">{a.name}</p>
-                            <span className={statusPill(a.status)}>{a.status.toUpperCase()}</span>
+                          <div className="flex items-center gap-3 mb-3 flex-wrap">
+                            <p className="text-gray-900 font-extrabold text-lg">{a.name}</p>
+                            <span className={statusPill(a.status)}>{a.status}</span>
                           </div>
                           {a.skills && (
-                            <div className="flex flex-wrap gap-1.5 mb-2">
+                            <div className="flex flex-wrap gap-2 mb-4">
                               {(Array.isArray(a.skills) ? a.skills : a.skills.split(",")).slice(0,6).map((s: string) => (
-                                <span key={s} className="px-2 py-0.5 rounded-md text-[9px] font-bold border border-violet-500/20 bg-violet-500/8 text-violet-300/70">{s.trim()}</span>
+                                <span key={s} className="px-2.5 py-1 rounded-md text-[10px] font-bold border shadow-sm border-gray-200 bg-white text-gray-600">{s.trim()}</span>
                               ))}
                             </div>
                           )}
-                          {a.bio && <p className="text-white/30 text-xs line-clamp-2">{a.bio}</p>}
-                          <div className="flex gap-3 mt-2 text-white/20 text-xs">
-                            {a.portfolio && <a href={a.portfolio} target="_blank" className="text-violet-400/50 hover:text-violet-300 transition duration-150">Portfolio ↗</a>}
-                            {a.linkedin && <a href={a.linkedin} target="_blank" className="text-cyan-400/50 hover:text-cyan-300 transition duration-150">LinkedIn ↗</a>}
+                          {a.bio && (
+                            <div className="mb-4 bg-gray-50 rounded-xl p-4 border border-gray-100 shadow-inner">
+                              <p className="text-gray-700 text-sm font-medium leading-relaxed">{a.bio}</p>
+                            </div>
+                          )}
+                          <div className="flex gap-4 mt-2 text-sm font-bold">
+                            {a.portfolio && <a href={a.portfolio} target="_blank" className="text-indigo-600 hover:text-indigo-700 hover:underline transition">Portfolio ↗</a>}
+                            {a.linkedin && <a href={a.linkedin} target="_blank" className="text-cyan-600 hover:text-cyan-700 hover:underline transition">LinkedIn ↗</a>}
                           </div>
                         </div>
                         {a.status === "pending" && (
-                          <div className="flex gap-2 flex-shrink-0">
-                            <motion.button onClick={() => approveApplication(a)}
-                              whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
-                              style={{ willChange:"transform", background:"linear-gradient(135deg,#059669,#0891b2)" }}
-                              className="px-4 py-2 rounded-xl font-black text-white text-xs">
+                          <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0 w-full sm:w-auto">
+                            <button onClick={() => approveApplication(a)}
+                              className="px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-green-600 hover:bg-green-700 shadow-sm transition">
                               ✓ Approve
-                            </motion.button>
+                            </button>
                             <button onClick={() => rejectApplication(a.id)}
-                              className="px-4 py-2 rounded-xl font-bold text-rose-400 text-xs border border-rose-500/20 hover:bg-rose-500/8 transition duration-200">
+                              className="px-5 py-2.5 rounded-xl font-bold text-red-600 text-xs border border-red-200 bg-red-50 hover:bg-red-100 shadow-sm transition">
                               ✕ Reject
                             </button>
                           </div>
@@ -511,44 +518,50 @@ export default function AdminDashboard() {
           {/* ── CERTIFICATIONS ── */}
           {activeTab === "certifications" && (
             <motion.div key="certifications" initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
-              <p className="text-white/30 text-sm mb-5">{certRequests.length} total · {pendingCerts.length} pending</p>
+              <p className="text-gray-500 font-medium text-sm mb-6">{certRequests.length} total · {pendingCerts.length} pending</p>
               {certRequests.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-24 text-center">
-                  <p className="text-white/30 font-black text-lg">No certification requests yet</p>
+                <div className="flex flex-col items-center justify-center py-24 text-center rounded-3xl border border-gray-200 bg-white shadow-sm">
+                  <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center text-3xl mb-4 shadow-sm">
+                    🎓
+                  </div>
+                  <p className="text-gray-900 font-extrabold text-lg">No certification requests yet</p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {certRequests.map((c,i) => (
                     <motion.div key={c.id} initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.03 }}
-                      className={`p-5 rounded-2xl border transition duration-200 ${
-                        c.status==="pending" ? "border-violet-500/15 bg-violet-500/[0.03]" : "border-white/5 bg-white/[0.02]"
+                      className={`p-6 rounded-2xl border shadow-sm transition duration-200 ${
+                        c.status==="pending" ? "border-indigo-200 bg-indigo-50/50" : "border-gray-200 bg-white"
                       }`}>
-                      <div className="flex items-start justify-between gap-4 flex-wrap">
+                      <div className="flex items-start justify-between gap-5 flex-wrap">
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-2 flex-wrap">
-                            <p className="text-white/80 font-black text-sm">{c.name}</p>
-                            <span className={statusPill(c.status)}>{c.status.toUpperCase()}</span>
+                          <div className="flex items-center gap-3 mb-2 flex-wrap">
+                            <p className="text-gray-900 font-extrabold text-lg">{c.name}</p>
+                            <span className={statusPill(c.status)}>{c.status}</span>
                           </div>
-                          <p className="text-white/30 text-xs mb-1">{c.email}</p>
+                          <p className="text-gray-500 font-medium text-sm mb-4">{c.email}</p>
+                          
                           {c.reason && (
-                            <p className="text-white/40 text-xs leading-relaxed line-clamp-2 mb-2">"{c.reason}"</p>
+                            <div className="mb-4 bg-gray-50 rounded-xl p-4 border border-gray-100 shadow-inner">
+                              <p className="text-gray-400 text-[10px] uppercase font-black tracking-widest mb-1.5">Why they should be certified</p>
+                              <p className="text-gray-700 text-sm font-medium leading-relaxed">{c.reason}</p>
+                            </div>
                           )}
-                          <div className="flex gap-3 text-xs">
-                            {c.portfolio && <a href={c.portfolio} target="_blank" className="text-violet-400/50 hover:text-violet-300 transition duration-150">Portfolio ↗</a>}
-                            {c.linkedin && <a href={c.linkedin} target="_blank" className="text-cyan-400/50 hover:text-cyan-300 transition duration-150">LinkedIn ↗</a>}
-                            {c.experience && <span className="text-white/20">{c.experience} yrs exp</span>}
+                          
+                          <div className="flex flex-wrap items-center gap-4 text-sm font-bold mt-4">
+                            {c.portfolio && <a href={c.portfolio} target="_blank" className="text-indigo-600 hover:text-indigo-700 hover:underline transition">Portfolio ↗</a>}
+                            {c.linkedin && <a href={c.linkedin} target="_blank" className="text-cyan-600 hover:text-cyan-700 hover:underline transition">LinkedIn ↗</a>}
+                            {c.experience && <span className="px-2.5 py-1 rounded bg-gray-100 text-gray-600 text-[10px] uppercase tracking-widest border border-gray-200 shadow-sm">{c.experience} yrs exp</span>}
                           </div>
                         </div>
                         {c.status === "pending" && (
-                          <div className="flex gap-2 flex-shrink-0">
-                            <motion.button onClick={() => approveCert(c.id, c.userId)}
-                              whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
-                              style={{ willChange:"transform", background:"linear-gradient(135deg,#d97706,#7c3aed)" }}
-                              className="px-4 py-2 rounded-xl font-black text-white text-xs">
+                          <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0 w-full sm:w-auto">
+                            <button onClick={() => approveCert(c.id, c.userId)}
+                              className="px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-indigo-600 hover:bg-indigo-700 shadow-sm transition flex items-center justify-center gap-1.5">
                               ⭐ Certify
-                            </motion.button>
+                            </button>
                             <button onClick={() => rejectCert(c.id)}
-                              className="px-4 py-2 rounded-xl font-bold text-rose-400 text-xs border border-rose-500/20 hover:bg-rose-500/8 transition duration-200">
+                              className="px-5 py-2.5 rounded-xl font-bold text-red-600 text-xs border border-red-200 bg-red-50 hover:bg-red-100 shadow-sm transition">
                               ✕ Reject
                             </button>
                           </div>
@@ -572,8 +585,8 @@ export default function AdminDashboard() {
             animate={{ opacity:1, y:0, scale:1 }}
             exit={{ opacity:0, y:20, scale:0.95 }}
             transition={{ duration:0.3 }}
-            className="fixed bottom-6 right-6 z-50 px-6 py-3.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/15 backdrop-blur-xl text-emerald-300 text-sm font-bold shadow-[0_8px_32px_rgba(52,211,153,0.2)]">
-            ✓ {toast}
+            className="fixed bottom-6 right-6 z-50 px-6 py-4 rounded-2xl border border-green-200 bg-green-50 text-green-800 text-sm font-bold shadow-lg flex items-center gap-2">
+            <span className="w-5 h-5 rounded-full bg-green-200 text-green-700 flex items-center justify-center text-xs">✓</span> {toast}
           </motion.div>
         )}
       </AnimatePresence>

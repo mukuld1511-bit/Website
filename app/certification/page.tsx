@@ -109,60 +109,54 @@ export default function CertificationPage() {
   }
 
   const inp = (key: string) =>
-    `w-full bg-white/[0.04] border ${errors[key] ? "border-rose-500/50" : "border-white/8"} text-white placeholder-white/20 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-violet-500/50 transition duration-200`;
-  const lbl = "block text-[10px] font-black uppercase tracking-[0.25em] text-white/35 mb-2";
+    `w-full bg-white border ${errors[key] ? "border-red-300" : "border-gray-200"} text-gray-900 placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm transition duration-200`;
+  const lbl = "block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-2";
 
   if (authLoading) return (
-    <div className="min-h-screen bg-[#050008] flex items-center justify-center">
-      <div className="w-10 h-10 rounded-full border-2 border-violet-500/30 border-t-violet-400 animate-spin" />
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-10 h-10 rounded-full border-2 border-blue-200 border-t-blue-600 animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#050008]">
+    <div className="min-h-screen bg-gray-50 font-sans">
       <Navbar />
 
-      <div className="relative pt-28 pb-24 px-4 overflow-x-hidden">
-        {/* Ambient glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(ellipse,rgba(167,139,250,0.1) 0%,transparent 70%)", filter: "blur(80px)" }} />
-
+      <div className="relative pt-32 pb-24 px-4 overflow-x-hidden">
         <div className="relative z-10 max-w-2xl mx-auto">
 
           {/* Hero */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
             className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-violet-500/25 bg-violet-500/8 backdrop-blur-sm mb-6">
-              <span className="text-violet-400 text-sm">✦</span>
-              <span className="text-violet-300/90 text-sm font-semibold uppercase tracking-widest">Synthé Certification</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-200 bg-blue-50 mb-6 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+              <span className="text-blue-700 text-xs font-bold uppercase tracking-widest">Synthé Certification</span>
             </div>
-            <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-white leading-none mb-5">
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 leading-none mb-4">
               Get{" "}
-              <span style={{ backgroundImage: "linear-gradient(90deg,#a78bfa,#22d3ee)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
                 Certified
               </span>
             </h1>
-            <p className="text-white/40 text-base max-w-lg mx-auto leading-relaxed">
+            <p className="text-gray-500 text-base max-w-lg mx-auto font-medium leading-relaxed">
               Apply to become a Synthé-verified developer. Certified developers get a badge on their profile, appear first on the Connect page, and are trusted by clients across the platform.
             </p>
           </motion.div>
 
           {/* Benefits strip */}
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
-            className="relative rounded-3xl border border-white/6 bg-white/[0.02] p-6 mb-10 overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-[1px]"
-              style={{ background: "linear-gradient(90deg,transparent,rgba(167,139,250,0.4),rgba(34,211,238,0.3),transparent)" }} />
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
+            className="relative rounded-3xl border border-gray-200 bg-white p-6 mb-10 overflow-hidden shadow-sm">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
               {[
-                { icon: "✦", label: "Verified Badge",    desc: "Shown on your profile & developer cards" },
+                { icon: "⭐", label: "Verified Badge",    desc: "Shown on your profile & developer cards" },
                 { icon: "🔝", label: "Top Listing",       desc: "Appear first in Connect page searches" },
                 { icon: "💰", label: "More Earnings",     desc: "Clients prefer certified developers" },
                 { icon: "🛡️", label: "Platform Trust",    desc: "Vetted quality mark from Synthé team" },
               ].map((b, i) => (
                 <div key={i}>
-                  <div className="text-2xl mb-2">{b.icon}</div>
-                  <p className="text-white/70 font-black text-xs mb-1">{b.label}</p>
-                  <p className="text-white/25 text-[10px] leading-snug">{b.desc}</p>
+                  <div className="text-2xl mb-3">{b.icon}</div>
+                  <p className="text-gray-900 font-extrabold text-xs mb-1">{b.label}</p>
+                  <p className="text-gray-500 text-[10px] font-medium leading-relaxed">{b.desc}</p>
                 </div>
               ))}
             </div>
@@ -171,69 +165,63 @@ export default function CertificationPage() {
           {/* Already certified / pending */}
           {alreadyDone && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-              className={`relative rounded-3xl border p-8 text-center mb-10 ${
+              className={`relative rounded-3xl border p-10 text-center mb-10 shadow-sm ${
                 alreadyDone === "approved"
-                  ? "border-emerald-500/25 bg-emerald-500/5"
-                  : "border-amber-500/20 bg-amber-500/5"
+                  ? "border-green-200 bg-green-50"
+                  : "border-yellow-200 bg-yellow-50"
               }`}>
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 ${
-                alreadyDone === "approved" ? "bg-emerald-500/15" : "bg-amber-500/15"
+              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm border ${
+                alreadyDone === "approved" ? "bg-green-100 border-green-200" : "bg-yellow-100 border-yellow-200"
               }`}>
-                <span className="text-3xl">{alreadyDone === "approved" ? "✦" : "⏳"}</span>
+                <span className="text-3xl">{alreadyDone === "approved" ? "⭐" : "⏳"}</span>
               </div>
-              <h3 className="text-white font-black text-xl mb-2">
+              <h3 className={`font-extrabold text-xl mb-2 ${alreadyDone === "approved" ? "text-green-900" : "text-yellow-900"}`}>
                 {alreadyDone === "approved" ? "You Are Certified!" : "Application Under Review"}
               </h3>
-              <p className={`text-sm leading-relaxed mb-6 ${alreadyDone === "approved" ? "text-emerald-300/70" : "text-white/40"}`}>
+              <p className={`text-sm font-medium leading-relaxed mb-8 ${alreadyDone === "approved" ? "text-green-700" : "text-yellow-700"}`}>
                 {alreadyDone === "approved"
                   ? "Your Synthé certification is active. You appear as a verified developer across the platform."
                   : "We're reviewing your application. You'll hear back within 48 hours."
                 }
               </p>
               <Link href="/dashboard">
-                <motion.div whileHover={{ scale: 1.03 }} style={{
-                  willChange: "transform",
-                  background: alreadyDone === "approved"
-                    ? "linear-gradient(135deg,#059669,#0891b2)"
-                    : "linear-gradient(135deg,#7c3aed,#0891b2)",
-                }}
-                  className="inline-flex px-6 py-3 rounded-2xl font-black text-white text-sm cursor-pointer">
+                <button className={`px-8 py-3.5 rounded-2xl font-bold text-white shadow-sm transition ${
+                  alreadyDone === "approved" ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
+                }`}>
                   Go to Dashboard →
-                </motion.div>
+                </button>
               </Link>
             </motion.div>
           )}
 
           {/* Application Form */}
           {!submitted && !alreadyDone && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
-              <div className="relative rounded-3xl border border-white/8 bg-white/[0.025] overflow-hidden p-8">
-                <div className="absolute top-0 left-0 right-0 h-[1px]"
-                  style={{ background: "linear-gradient(90deg,transparent,rgba(167,139,250,0.5),rgba(34,211,238,0.3),transparent)" }} />
-
-                <h2 className="text-2xl font-black text-white mb-1">Apply for Certification</h2>
-                <p className="text-white/30 text-sm mb-7">
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
+              <div className="relative rounded-3xl border border-gray-200 bg-white overflow-hidden p-8 shadow-sm">
+                
+                <h2 className="text-xl font-extrabold text-gray-900 mb-2">Apply for Certification</h2>
+                <p className="text-gray-500 font-medium text-sm mb-8">
                   Fill in the form below. Our team reviews every application manually.
                 </p>
 
                 {!user && (
-                  <div className="p-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 text-center mb-6">
-                    <p className="text-amber-300/80 text-sm">
-                      <Link href="/login" className="underline text-amber-300 font-bold hover:text-amber-200">Log in</Link>
+                  <div className="p-4 rounded-2xl border border-blue-200 bg-blue-50 text-center mb-6 shadow-sm">
+                    <p className="text-blue-800 font-medium text-sm">
+                      <Link href="/login" className="underline font-bold hover:text-blue-600">Log in</Link>
                       {" "}or{" "}
-                      <Link href="/signup" className="underline text-amber-300 font-bold hover:text-amber-200">sign up</Link>
+                      <Link href="/signup" className="underline font-bold hover:text-blue-600">sign up</Link>
                       {" "}to apply for certification.
                     </p>
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="grid sm:grid-cols-2 gap-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid sm:grid-cols-2 gap-5">
                     <div>
                       <label className={lbl}>Full Name *</label>
                       <input value={form.name} onChange={e => set("name", e.target.value)}
                         placeholder="Your full name" className={inp("name")} />
-                      {errors.name && <p className="text-rose-400 text-xs mt-1">{errors.name}</p>}
+                      {errors.name && <p className="text-red-500 font-bold text-xs mt-1.5">{errors.name}</p>}
                     </div>
                     <div>
                       <label className={lbl}>Email</label>
@@ -245,28 +233,28 @@ export default function CertificationPage() {
                   <div>
                     <label className={lbl}>Portfolio URL *</label>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-xs">www.</span>
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">www.</span>
                       <input value={form.portfolio} onChange={e => set("portfolio", e.target.value)}
                         placeholder="yourportfolio.com" className={inp("portfolio") + " pl-12"} />
                     </div>
-                    {errors.portfolio && <p className="text-rose-400 text-xs mt-1">{errors.portfolio}</p>}
+                    {errors.portfolio && <p className="text-red-500 font-bold text-xs mt-1.5">{errors.portfolio}</p>}
                   </div>
 
-                  <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="grid sm:grid-cols-2 gap-5">
                     <div>
                       <label className={lbl}>LinkedIn</label>
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-xs">www.</span>
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">in/</span>
                         <input value={form.linkedin} onChange={e => set("linkedin", e.target.value)}
-                          placeholder="linkedin.com/in/name" className={inp("linkedin") + " pl-12"} />
+                          placeholder="linkedin.com/in/name" className={inp("linkedin") + " pl-10"} />
                       </div>
                     </div>
                     <div>
                       <label className={lbl}>GitHub</label>
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-xs">github.com/</span>
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">@</span>
                         <input value={form.github} onChange={e => set("github", e.target.value)}
-                          placeholder="username" className={inp("github") + " pl-24"} />
+                          placeholder="username" className={inp("github") + " pl-8"} />
                       </div>
                     </div>
                   </div>
@@ -275,7 +263,7 @@ export default function CertificationPage() {
                     <label className={lbl}>Experience in AR/VR/3D *</label>
                     <input value={form.experience} onChange={e => set("experience", e.target.value)}
                       placeholder="e.g. 2 years in Blender, Unity, and WebXR" className={inp("experience")} />
-                    {errors.experience && <p className="text-rose-400 text-xs mt-1">{errors.experience}</p>}
+                    {errors.experience && <p className="text-red-500 font-bold text-xs mt-1.5">{errors.experience}</p>}
                   </div>
 
                   <div>
@@ -290,23 +278,20 @@ export default function CertificationPage() {
                     <textarea value={form.reason} onChange={e => set("reason", e.target.value)} rows={4}
                       placeholder="Tell us about your work, skills, and what makes you stand out on Synthé…"
                       className={inp("reason") + " resize-none"} />
-                    {errors.reason && <p className="text-rose-400 text-xs mt-1">{errors.reason}</p>}
+                    {errors.reason && <p className="text-red-500 font-bold text-xs mt-1.5">{errors.reason}</p>}
                   </div>
 
                   {errors.submit && (
-                    <div className="p-4 rounded-xl border border-rose-500/20 bg-rose-500/8 text-rose-400 text-sm">
+                    <div className="p-4 rounded-xl border border-red-200 bg-red-50 text-red-700 font-bold text-sm shadow-sm">
                       {errors.submit}
                     </div>
                   )}
 
-                  <motion.button type="submit" disabled={submitting || !user}
-                    whileHover={{ scale: submitting ? 1 : 1.02 }} whileTap={{ scale: submitting ? 1 : 0.98 }}
-                    style={{ willChange: "transform", background: submitting ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg,#7c3aed,#0891b2)" }}
-                    className="w-full py-4 rounded-2xl font-black text-white text-sm disabled:opacity-50 relative overflow-hidden">
-                    <motion.div animate={{ x: ["-200%", "200%"] }} transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 4, ease: "linear" }}
-                      style={{ willChange: "transform", position: "absolute", inset: 0, background: "linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)", transform: "skewX(-20deg)", pointerEvents: "none" }} />
-                    <span className="relative z-10">{submitting ? "Submitting…" : "✦ Apply for Synthé Certification →"}</span>
-                  </motion.button>
+                  <button type="submit" disabled={submitting || !user}
+                    className="w-full py-3.5 rounded-xl font-bold text-white shadow-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                  >
+                    {submitting ? "Submitting…" : "Apply for Synthé Certification →"}
+                  </button>
                 </form>
               </div>
             </motion.div>
@@ -315,22 +300,19 @@ export default function CertificationPage() {
           {/* Success */}
           <AnimatePresence>
             {submitted && (
-              <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center py-20 text-center">
-                <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 0.6, delay: 0.2 }}
-                  className="w-24 h-24 rounded-3xl flex items-center justify-center mb-8"
-                  style={{ background: "linear-gradient(135deg,#7c3aed,#0891b2)", boxShadow: "0 0 60px rgba(124,58,237,0.4)" }}>
-                  <span className="text-4xl">✦</span>
-                </motion.div>
-                <h2 className="text-4xl font-black text-white mb-3">Application Submitted!</h2>
-                <p className="text-white/40 text-base max-w-md leading-relaxed mb-8">
+              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                className="flex flex-col items-center justify-center py-20 text-center rounded-3xl border border-gray-200 bg-white shadow-sm mt-8">
+                <div className="w-20 h-20 rounded-3xl flex items-center justify-center mb-6 shadow-sm border border-blue-200 bg-blue-50">
+                  <span className="text-4xl text-blue-600">✓</span>
+                </div>
+                <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Application Submitted!</h2>
+                <p className="text-gray-500 font-medium text-sm max-w-sm mx-auto leading-relaxed mb-8">
                   Your certification application is under review. We'll notify you within 48 hours once a decision is made.
                 </p>
                 <Link href="/dashboard">
-                  <motion.div whileHover={{ scale: 1.04 }} style={{ willChange: "transform", background: "linear-gradient(135deg,#7c3aed,#0891b2)" }}
-                    className="px-8 py-3.5 rounded-2xl font-black text-white text-sm cursor-pointer">
+                  <button className="px-8 py-3.5 rounded-2xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition">
                     Go to Dashboard →
-                  </motion.div>
+                  </button>
                 </Link>
               </motion.div>
             )}

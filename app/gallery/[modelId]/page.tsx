@@ -282,9 +282,26 @@ export default function ModelDetailPage() {
   async function handleDownload() {
     if (!model) return;
     if (model.isPaid && !hasAccess) { showToast("Purchase required to download."); return; }
-    await updateDoc(doc(db,"models",modelId), { downloads: increment(1) });
-    window.open(model.modelUrl, "_blank");
-    showToast("Download started!");
+    showToast("Preparing download…");
+    try {
+      const response = await fetch(model.modelUrl);
+      const blob     = await response.blob();
+      const url      = URL.createObjectURL(blob);
+      const a        = document.createElement("a");
+      const ext      = model.modelUrl.split("?")[0].split(".").pop() ?? "glb";
+      const filename = (model.title || "model").replace(/\s+/g, "_") + "." + ext;
+      a.href         = url;
+      a.download     = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      await updateDoc(doc(db, "models", modelId), { downloads: increment(1) });
+      showToast("Download started!");
+    } catch (e) {
+      console.error(e);
+      showToast("Download failed. Try again.");
+    }
   }
 
   async function handlePurchase() {

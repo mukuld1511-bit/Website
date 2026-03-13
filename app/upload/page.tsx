@@ -94,34 +94,10 @@ export default function UploadContent() {
   };
 
   const handleThumbnailSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    if (!f.type.startsWith("image/")) {
-      setError("Thumbnail must be an image");
-      return;
-    }
-    if (f.size > 5 * 1024 * 1024) {
-      setError("Thumbnail must be smaller than 5MB");
-      return;
-    }
-    setThumbnail(f);
-    const reader = new FileReader();
-    reader.onload = (e) => setThumbnailPreview(e.target?.result as string);
-    reader.readAsDataURL(f);
-
-    try {
-      setUploadProgress(25);
-      const safeThumbName = f.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
-      const thumbPath = `${user.uid}/${Date.now()}_thumb_${safeThumbName}`;
-      const url = await uploadToSupabase("thumbnails", thumbPath, f);
-      setThumbnailUrl(url);
-      setUploadProgress(0);
-    } catch (e) {
-      setError("Failed to upload thumbnail: " + (e as Error).message);
-      setThumbnail(null);
-      setThumbnailPreview("");
-    }
+    // TEMPORARILY DISABLED
+    return;
   };
+
 
   const handleAddTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {

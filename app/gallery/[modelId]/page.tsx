@@ -186,6 +186,8 @@ export default function ModelDetailPage() {
   const router  = useRouter();
   const modelId = params?.modelId as string;
 
+  const [isMounted,   setIsMounted]   = useState(false);
+
   const [model,       setModel]       = useState<Model | null>(null);
   const [user,        setUser]        = useState<any>(null);
   const [loading,     setLoading]     = useState(true);
@@ -203,6 +205,7 @@ export default function ModelDetailPage() {
   const [activeTab,   setActiveTab]   = useState<"details"|"comments">("details");
 
   useEffect(() => {
+    setIsMounted(true);
     const unsub = onAuthStateChanged(auth, u => setUser(u ?? null));
     return () => unsub();
   }, []);
@@ -411,7 +414,7 @@ export default function ModelDetailPage() {
                 <div className="absolute top-0 left-0 right-0 h-[1px]"
                   style={{ background:`linear-gradient(90deg,transparent,${badgeColor}40,transparent)` }} />
                 {model.modelUrl ? (
-                  <ModelViewer modelUrl={model.modelUrl} fileType={model.fileType} />
+                  isMounted && <ModelViewer modelUrl={model.modelUrl} fileType={model.fileType} />
                 ) : model.thumbnailUrl ? (
                   <img src={model.thumbnailUrl} alt={model.title} className="w-full h-full object-cover" />
                 ) : (

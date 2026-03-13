@@ -416,8 +416,8 @@ export default function AdminDashboard() {
                     <motion.div key={u.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
                       className="flex items-center gap-4 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition duration-200">
                       <div className={`w-12 h-12 rounded-2xl overflow-hidden border shadow-sm flex items-center justify-center flex-shrink-0 font-black text-sm uppercase ${u.role === "developer" ? "border-blue-200 bg-blue-50 text-blue-700" :
-                          u.role === "admin" ? "border-red-200 bg-red-50 text-red-700" :
-                            "border-gray-200 bg-gray-50 text-gray-500"
+                        u.role === "admin" ? "border-red-200 bg-red-50 text-red-700" :
+                          "border-gray-200 bg-gray-50 text-gray-500"
                         }`}>
                         {u.profileImage && u.profileImage !== "/avatar.png"
                           ? <img src={u.profileImage} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = "none" }} />

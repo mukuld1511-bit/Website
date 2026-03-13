@@ -69,37 +69,7 @@ function FloatBadge({ label, icon, color, x, y, delay, rotate = 0 }: {
   );
 }
 
-// ─── Beam scan ──────────────────────────────────────────────────────────────
-function BeamScan() {
-  return (
-    <motion.div
-      className="absolute inset-x-0 h-px pointer-events-none z-0"
-      style={{ background:"linear-gradient(90deg,transparent,rgba(167,139,250,0.55),rgba(34,211,238,0.4),transparent)" }}
-      animate={{ top:["8%","92%","8%"] }}
-      transition={{ duration:9, repeat:Infinity, ease:"easeInOut" }}
-    />
-  );
-}
-
-// ─── Orbital ring ────────────────────────────────────────────────────────────
-function OrbitalRing({ size, color, speed, opacity, dashed=false }: {
-  size:number; color:string; speed:number; opacity:number; dashed?:boolean;
-}) {
-  return (
-    <motion.div
-      className="absolute rounded-full pointer-events-none"
-      style={{
-        width:size, height:size,
-        border:`1px ${dashed?"dashed":"solid"} ${color}`,
-        opacity, left:"50%", top:"50%",
-        marginLeft:-size/2, marginTop:-size/2,
-        willChange:"transform",
-      }}
-      animate={{ rotate:[0,360] }}
-      transition={{ duration:speed, repeat:Infinity, ease:"linear" }}
-    />
-  );
-}
+// ─── (OrbitalRing and BeamScan removed per handoff v8 requirements) ──────────
 
 // ─── Stat pill ───────────────────────────────────────────────────────────────
 function StatPill({ val, label, color, loading, delay }:{
@@ -189,15 +159,7 @@ export default function HeroComponent({ user, stats, statsLoading }: HeroProps) 
       {/* Grid canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-90" />
 
-      {/* Beam scan */}
-      <BeamScan />
 
-      {/* Orbital rings */}
-      <div className="absolute inset-0 pointer-events-none">
-        <OrbitalRing size={460} color="rgba(124,58,237,0.09)" speed={30} opacity={1} />
-        <OrbitalRing size={640} color="rgba(8,145,178,0.06)"  speed={44} opacity={1} dashed />
-        <OrbitalRing size={840} color="rgba(167,139,250,0.04)"speed={58} opacity={1} />
-      </div>
 
       {/* Floating badges */}
       {BADGES.map(b => <FloatBadge key={b.label} {...b} />)}

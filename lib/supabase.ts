@@ -1,3 +1,4 @@
+// Supabase Storage client — used for model/thumbnail uploads (v2)
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl =

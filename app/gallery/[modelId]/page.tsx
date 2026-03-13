@@ -311,10 +311,6 @@ export default function ModelDetailPage() {
     // 1. Trigger the download immediately
     try {
       let downloadUrl = model.modelUrl;
-      // If it's cloudinary and not a raw file, append fl_attachment to force download header
-      if (downloadUrl.includes("cloudinary.com") && !downloadUrl.includes("/raw/upload/")) {
-        downloadUrl = downloadUrl.replace("/upload/", "/upload/fl_attachment/");
-      }
 
       const ext      = downloadUrl.split("?")[0].split(".").pop() ?? "glb";
       const filename = (model.title || "model").replace(/\s+/g, "_") + "." + ext;

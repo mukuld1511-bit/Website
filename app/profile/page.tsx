@@ -1,6 +1,6 @@
 "use client";
 
-import { uploadToCloudinary } from "../../lib/cloudinary";
+import { supabase } from "../../lib/supabase";
 import { useEffect, useState } from "react";
 import { auth, db } from "../../lib/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -42,7 +42,19 @@ export default function Profile() {
     if (!user) return;
     setSaving(true);
     let imageUrl = profile.profileImage;
-    if (image) imageUrl = await uploadToCloudinary(image);
+    if (image) {
+      try {
+        const safeName = image.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+        const avatarPath = `${user.uid}/${Date.now()}_${safeName}`;
+        const { error: upErr } = await supabase.storage
+          .from("avatars")
+          .upload(avatarPath, image, { cacheControl: "3600", upsert: true });
+        if (!upErr) {
+          const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(avatarPath);
+          imageUrl = publicUrl;
+        }
+      } catch { /* keep existing image on error */ }
+    }
     await updateDoc(doc(db, "users", user.uid), { name, bio, portfolio, profileImage: imageUrl });
     setProfile((p: any) => ({ ...p, name, bio, portfolio, profileImage: imageUrl }));
     setSaving(false);

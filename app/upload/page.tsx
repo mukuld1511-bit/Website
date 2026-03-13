@@ -472,10 +472,30 @@ export default function UploadContent() {
                 )}
               </div>
 
+              {/* Pricing Section Moved to Step 2 */}
+              <div className="pt-2 border-t border-gray-100 mt-4">
+                <div className="flex items-center gap-4 p-5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 transition cursor-pointer mt-4" onClick={()=>setIsPaid(!isPaid)}>
+                  <input type="checkbox" checked={isPaid} onChange={(e) => setIsPaid(e.target.checked)} className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" onClick={e=>e.stopPropagation()} />
+                  <label className="text-gray-900 font-bold text-base cursor-pointer">Monetize this content (Razorpay)</label>
+                </div>
+
+                {isPaid && (
+                  <motion.div initial={{opacity:0, height:0}} animate={{opacity:1, height:'auto'}} className="pt-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">Price (₹ INR)</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₹</span>
+                      <input type="number" value={price || ""} onChange={(e) => setPrice(parseFloat(e.target.value) || 0)} placeholder="99" min="0" required={isPaid}
+                        className="w-full bg-white border border-gray-300 rounded-xl pl-8 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm font-semibold" />
+                    </div>
+                    <p className="text-gray-500 text-xs font-semibold mt-2">15% platform fee applies to all sales.</p>
+                  </motion.div>
+                )}
+              </div>
+
               <div className="flex gap-4 justify-between border-t border-gray-100 pt-8 mt-4">
                 <button onClick={() => setStep(1)} className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-gray-50 transition">← Back</button>
                 <button onClick={() => setStep(3)}
-                  disabled={!title || (uploadType !== "model" && !genre) || (uploadType !== "model" && !platforms.length)}
+                  disabled={!title || (uploadType !== "model" && !genre) || (uploadType !== "model" && !platforms.length) || (isPaid && (!price || price <= 0))}
                   className="px-10 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-sm disabled:opacity-50 disabled:bg-gray-400 text-white font-bold transition">
                   Continue
                 </button>
@@ -534,22 +554,6 @@ export default function UploadContent() {
                 <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Final Step</p>
                 <h2 className="text-3xl font-extrabold text-gray-900">Distribution & Publish</h2>
               </div>
-
-              <div className="flex items-center gap-4 p-5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 transition cursor-pointer" onClick={()=>setIsPaid(!isPaid)}>
-                <input type="checkbox" checked={isPaid} onChange={(e) => setIsPaid(e.target.checked)} className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" onClick={e=>e.stopPropagation()} />
-                <label className="text-gray-900 font-bold text-base cursor-pointer">Monetize this content</label>
-              </div>
-
-              {isPaid && (
-                <motion.div initial={{opacity:0, height:0}} animate={{opacity:1, height:'auto'}} className="pt-2">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Price (₹ INR)</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₹</span>
-                    <input type="number" value={price || ""} onChange={(e) => setPrice(parseFloat(e.target.value) || 0)} placeholder="99" min="0"
-                      className="w-full bg-white border border-gray-300 rounded-xl pl-8 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm font-semibold" />
-                  </div>
-                </motion.div>
-              )}
 
               <div className="p-6 rounded-xl border border-gray-200 bg-gray-50 mt-4">
                 <p className="text-gray-900 font-black mb-4">Summary Configuration</p>

@@ -111,7 +111,8 @@ export default function UploadContent() {
 
     try {
       setUploadProgress(25);
-      const thumbPath = `${user.uid}/${Date.now()}_thumb_${f.name}`;
+      const safeThumbName = f.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+      const thumbPath = `${user.uid}/${Date.now()}_thumb_${safeThumbName}`;
       const { error: thumbError } = await supabase.storage
         .from("thumbnails")
         .upload(thumbPath, f, { cacheControl: "3600", upsert: false });
@@ -158,7 +159,8 @@ export default function UploadContent() {
 
     try {
       // Upload Payload
-      const filePath = `${user.uid}/${Date.now()}_${file.name}`;
+      const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+      const filePath = `${user.uid}/${Date.now()}_${safeName}`;
       const { error: fileError } = await supabase.storage
         .from("models")
         .upload(filePath, file, { cacheControl: "3600", upsert: false });
@@ -174,7 +176,8 @@ export default function UploadContent() {
       // Finalize Thumbnail
       let finalThumbnailUrl = thumbnailUrl;
       if (thumbnail && !thumbnailUrl) {
-         const thumbPath = `${user.uid}/${Date.now()}_thumb_${thumbnail.name}`;
+         const safeThumbName2 = thumbnail.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+         const thumbPath = `${user.uid}/${Date.now()}_thumb_${safeThumbName2}`;
          const { error: thumbError } = await supabase.storage
            .from("thumbnails")
            .upload(thumbPath, thumbnail, { cacheControl: "3600", upsert: false });
@@ -244,6 +247,7 @@ export default function UploadContent() {
         window.location.href = `/gallery?mode=${uploadType === "ar-build" ? "ar" : uploadType === "vr-build" ? "vr" : "3d"}`;
       }, 2000);
     } catch (e) {
+      console.error("Supabase Upload Error:", e);
       setError((e as Error).message);
       setUploading(false);
     }

@@ -61,7 +61,8 @@ export default function UploadModel({ user, onClose, onUploaded }: UploadModelPr
     setUploading(true); setError(null);
     try {
       // 1. Upload Model to Supabase
-      const modelPath = `${user.uid}/${Date.now()}_${modelFile.name}`;
+      const safeName = modelFile.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+      const modelPath = `${user.uid}/${Date.now()}_${safeName}`;
       const { error: modelError } = await supabase.storage
         .from("models")
         .upload(modelPath, modelFile, {
@@ -80,7 +81,8 @@ export default function UploadModel({ user, onClose, onUploaded }: UploadModelPr
       // 2. Upload Thumbnail to Supabase
       let thumbnailUrl = "";
       if (thumbnailFile) {
-        const thumbPath = `${user.uid}/${Date.now()}_thumb_${thumbnailFile.name}`;
+        const safeThumbName = thumbnailFile.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+        const thumbPath = `${user.uid}/${Date.now()}_thumb_${safeThumbName}`;
         const { error: thumbError } = await supabase.storage
           .from("thumbnails")
           .upload(thumbPath, thumbnailFile, {
@@ -114,6 +116,7 @@ export default function UploadModel({ user, onClose, onUploaded }: UploadModelPr
 
       setProgress(100); setStep(4); onUploaded?.();
     } catch (e: unknown) {
+      console.error("Supabase Upload Error:", e);
       setError("Upload failed: " + (e instanceof Error ? e.message : String(e)));
     }
     setUploading(false);

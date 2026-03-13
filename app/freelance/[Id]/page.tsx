@@ -65,7 +65,7 @@ function timeAgo(ts: any): string {
 
 export default function FreelanceProjectPage() {
   const params    = useParams();
-  const projectId = params?.id as string;
+  const projectId = (params?.Id || params?.id) as string;
 
   const [project,    setProject]    = useState<Project | null>(null);
   const [bids,       setBids]       = useState<Bid[]>([]);

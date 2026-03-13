@@ -165,7 +165,7 @@ export default function DeveloperDashboard() {
         >
           {[
             { label: "Upload Model",    icon: "⬆", href: "/upload",        gradient: "linear-gradient(135deg,#7c3aed,#0891b2)" },
-            { label: "Post a Request",  icon: "📋", href: "/requests/post", gradient: "linear-gradient(135deg,#0891b2,#0369a1)" },
+            { label: "Public Requests", icon: "📋", href: "/requests/open", cascade: "linear-gradient(135deg,#0891b2,#0369a1)" },
             { label: "Connect Page",    icon: "🔗", href: "/connect",       gradient: "linear-gradient(135deg,#0891b2,#22d3ee88)" },
             { label: "Get Certified",   icon: "🎓", href: "/certification", gradient: "linear-gradient(135deg,#d97706,#f59e0b)" },
           ].map((q, i) => (
@@ -250,10 +250,10 @@ export default function DeveloperDashboard() {
           )}
         </DashSection>
 
-        {/* Connect Sessions */}
-        <DashSection title="Connect Sessions" subtitle="Incoming student requests via the Connect page" delay={0.28} accent="#22d3ee">
+        {/* Connect Sessions -> Project Requests */}
+        <DashSection title="My Project Requests" subtitle="Incoming project requests assigned directly to you" delay={0.28} accent="#22d3ee">
           {sessions.length === 0 ? (
-            <Empty icon="🎓" text="No connect sessions yet." />
+            <Empty icon="📋" text="No project requests received yet." />
           ) : (
             <div className="flex flex-col gap-3">
               {sessions.map((s) => (

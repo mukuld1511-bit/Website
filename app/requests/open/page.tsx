@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { collection, query, where, orderBy, getDocs, Timestamp } from "firebase/firestore";
-import { db, auth } from "../../lib/firebase";
+import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 interface ProjectRequest {
   id: string;

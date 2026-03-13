@@ -1,14 +1,23 @@
+/**
+ * Upload a file to Cloudinary.
+ * @param file       – The File to upload
+ * @param onProgress – Optional progress callback (0–100)
+ * @param preset     – Cloudinary upload preset name (defaults to env var or "zenith-cloud")
+ */
 export async function uploadToCloudinary(
   file: File,
-  onProgress?: (pct: number) => void
+  onProgress?: (pct: number) => void,
+  preset?: string,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
+    const uploadPreset =
+      preset ??
+      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ??
+      "zenith-cloud";
+
     const formData = new FormData();
     formData.append("file", file);
-    formData.append(
-      "upload_preset",
-      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ?? "zenith-cloud"
-    );
+    formData.append("upload_preset", uploadPreset);
 
     const xhr = new XMLHttpRequest();
 

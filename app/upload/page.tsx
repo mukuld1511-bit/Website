@@ -111,7 +111,8 @@ export default function UploadContent() {
 
     try {
       setUploadProgress(25);
-      const url = await uploadToCloudinary(f, (pct) => setUploadProgress(Math.round(pct * 0.25)));
+      // Thumbnails always go to the image preset (zenith-cloud)
+      const url = await uploadToCloudinary(f, (pct) => setUploadProgress(Math.round(pct * 0.25)), "zenith-cloud");
       setThumbnailUrl(url);
       setUploadProgress(0);
     } catch {
@@ -147,12 +148,14 @@ export default function UploadContent() {
     setUploadProgress(0);
 
     try {
-      const fileUrl = await uploadToCloudinary(file, (pct) => setUploadProgress(Math.round(pct * 0.6)));
+      // 3D models / builds go to the dedicated raw-files preset (zenith uploads)
+      const fileUrl = await uploadToCloudinary(file, (pct) => setUploadProgress(Math.round(pct * 0.6)), "zenith uploads");
       setUploadProgress(60);
 
       let finalThumbnailUrl = thumbnailUrl;
       if (thumbnail && !thumbnailUrl) {
-        finalThumbnailUrl = await uploadToCloudinary(thumbnail);
+        // Fallback in-publish thumbnail upload also uses image preset
+        finalThumbnailUrl = await uploadToCloudinary(thumbnail, undefined, "zenith-cloud");
       }
       setUploadProgress(80);
 

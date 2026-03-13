@@ -1,36 +1,43 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { auth, db } from "../../../lib/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function UserDashboard() {
-  const [requests, setRequests] = useState<any[]>([]);
-  const [saved, setSaved] = useState<any[]>([]);
-  const [reviews, setReviews] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const [requests,     setRequests]     = useState<any[]>([]);
+  const [saved,        setSaved]        = useState<any[]>([]);
+  const [reviews,      setReviews]      = useState<any[]>([]);
+  const [projectChats, setProjectChats] = useState<any[]>([]);
+  const [loading,      setLoading]      = useState(true);
 
   useEffect(() => {
     const load = async () => {
       const user = auth.currentUser;
       if (!user) return;
 
-      const reqQuery = query(collection(db, "tutorialRequests"), where("userId", "==", user.uid));
-      const revQuery = query(collection(db, "reviews"), where("userId", "==", user.uid));
-      const savedQuery = query(collection(db, "savedProjects"), where("userId", "==", user.uid));
+      const reqQuery   = query(collection(db, "tutorialRequests"), where("userId",   "==", user.uid));
+      const revQuery   = query(collection(db, "reviews"),          where("userId",   "==", user.uid));
+      const savedQuery = query(collection(db, "savedProjects"),    where("userId",   "==", user.uid));
+      const chatQuery  = query(collection(db, "projectChats"),     where("clientId", "==", user.uid));
 
-      const reqSnap = await getDocs(reqQuery);
-      const revSnap = await getDocs(revQuery);
-      const savedSnap = await getDocs(savedQuery);
+      const [reqSnap, revSnap, savedSnap, chatSnap] = await Promise.all([
+        getDocs(reqQuery), getDocs(revQuery), getDocs(savedQuery), getDocs(chatQuery),
+      ]);
 
-      const reqList: any[] = []; reqSnap.forEach((doc) => reqList.push(doc.data()));
-      const revList: any[] = []; revSnap.forEach((doc) => revList.push(doc.data()));
-      const savedList: any[] = []; savedSnap.forEach((doc) => savedList.push(doc.data()));
+      const reqList:  any[] = []; reqSnap.forEach  (d => reqList.push(d.data()));
+      const revList:  any[] = []; revSnap.forEach  (d => revList.push(d.data()));
+      const savedList:any[] = []; savedSnap.forEach(d => savedList.push(d.data()));
+      const chatList: any[] = []; chatSnap.forEach (d => chatList.push({ id: d.id, ...d.data() }));
 
       setRequests(reqList);
       setReviews(revList);
       setSaved(savedList);
+      setProjectChats(chatList.sort((a,b) => (b.lastMessageAt?.seconds ?? 0) - (a.lastMessageAt?.seconds ?? 0)));
       setLoading(false);
     };
     load();
@@ -56,9 +63,10 @@ export default function UserDashboard() {
   ];
 
   const quickActions = [
-    { label: "Find Developers", href: "/connect", gradient: "from-cyan-500 to-blue-600", icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
-    { label: "Explore 3D Galleria", href: "/gallery", gradient: "from-blue-500 to-purple-600", icon: "M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" },
-    { label: "Request Custom Project", href: "/gyop", gradient: "from-purple-500 to-pink-600", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
+    { label: "Find Developers",      href: "/connect",        gradient: "from-cyan-500 to-blue-600",   icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+    { label: "Explore 3D Galleria",  href: "/gallery",        gradient: "from-blue-500 to-purple-600",  icon: "M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" },
+    { label: "Post a Project Request",href: "/requests/post", gradient: "from-violet-500 to-cyan-600",  icon: "M12 4v16m8-8H4" },
+    { label: "View Open Projects",   href: "/requests/open",  gradient: "from-emerald-500 to-teal-600", icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" },
   ];
 
   return (
@@ -160,6 +168,52 @@ export default function UserDashboard() {
                 ))}
               </div>
           }
+        </UserSection>
+
+        {/* PROJECT MESSAGES */}
+        <UserSection title="Project Chats" subtitle="Conversations with developers on your requests" delay={0.45}>
+          {projectChats.length === 0 ? (
+            <div className="w-full py-8 text-center flex flex-col items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-700/50 flex items-center justify-center">
+                <svg className="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <p className="text-slate-500 text-sm">No project chats yet.</p>
+              <Link href="/requests/open">
+                <button className="px-4 py-2 mt-1 text-xs font-bold rounded-xl bg-gradient-to-r from-violet-600 to-cyan-600 text-white">
+                  Browse Open Projects →
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {projectChats.slice(0, 5).map((c) => (
+                <div key={c.id} onClick={() => router.push(`/project-chat/${c.id}`)}
+                  className="group cursor-pointer flex items-center gap-3 bg-slate-800/40 border border-slate-700/40 rounded-xl p-4 hover:border-violet-500/30 transition duration-200">
+                  {c.developerPhoto
+                    ? <img src={c.developerPhoto} className="w-9 h-9 rounded-full object-cover flex-shrink-0" />
+                    : <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black text-white flex-shrink-0"
+                        style={{ background: "linear-gradient(135deg,#7c3aed,#0891b2)" }}>
+                        {c.developerName?.[0] ?? "D"}
+                      </div>
+                  }
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-semibold text-sm truncate">{c.requestTitle || "Project Chat"}</p>
+                    <p className="text-slate-500 text-xs">with {c.developerName}</p>
+                  </div>
+                  {c.funded && (
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full border text-emerald-400 bg-emerald-400/10 border-emerald-400/20 flex-shrink-0">
+                      Funded ₹{c.fundedAmount?.toLocaleString("en-IN")}
+                    </span>
+                  )}
+                  <svg className="w-4 h-4 text-slate-600 group-hover:text-violet-400 flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              ))}
+            </div>
+          )}
         </UserSection>
 
         {/* RECENT ACTIVITY */}

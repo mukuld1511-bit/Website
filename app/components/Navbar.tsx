@@ -170,6 +170,21 @@ export default function Navbar() {
               </button>
             </Link>
 
+            {/* Post Request */}
+            <Link href="/requests/post">
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black text-white"
+                style={{ background: "linear-gradient(135deg,#7c3aed,#0891b2)", boxShadow: "0 0 16px rgba(124,58,237,0.25)" }}
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                </svg>
+                Post Request
+              </motion.button>
+            </Link>
+
             {/* Developers */}
             <Link href="/connect">
               <button className={linkCls(isActive("/connect"), "cyan")}>Developers</button>

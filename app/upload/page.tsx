@@ -7,8 +7,8 @@ import { db, storage, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const MODEL_EXTENSIONS = ["glb", "gltf", "obj", "fbx", "dwg", "dxf"];
 const BUILD_EXTENSIONS = ["apk", "exe", "ipa", "build", "zip", "dmg", "tar", "gz"];

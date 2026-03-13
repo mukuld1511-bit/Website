@@ -56,6 +56,7 @@ export default function RequestsPage() {
   const [user, setUser] = useState<any>(null);
   const [search, setSearch] = useState("");
   const [initiatingChat, setInitiatingChat] = useState<string | null>(null);
+  const [initiatingChatWithClient, setInitiatingChatWithClient] = useState<string | null>(null);
 
   // Application flow state
   const [applyingTo, setApplyingTo] = useState<ProjectRequest | null>(null);
@@ -192,6 +193,55 @@ export default function RequestsPage() {
       alert("Failed to approve application.");
     } finally {
       setInitiatingChat(null);
+    }
+  }
+
+  async function chatWithClient(req: ProjectRequest) {
+    if (!user) return;
+    setInitiatingChatWithClient(req.id);
+    try {
+      // Check if chat already exists
+      const q = query(
+        collection(db, "projectChats"), 
+        where("requestId", "==", req.id), 
+        where("developerId", "==", user.uid)
+      );
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        router.push(`/project-chat/${snap.docs[0].id}`);
+        return;
+      }
+
+      const chatsRef = collection(db, "projectChats");
+      const chatDoc = await addDoc(chatsRef, {
+        requestId:     req.id,
+        requestTitle:  req.title,
+        clientId:      req.userId,
+        clientName:    req.userName,
+        clientPhoto:   req.userPhoto,
+        developerId:   user.uid,
+        developerName: user.displayName || "Developer",
+        developerPhoto: user.photoURL || "/avatar.png",
+        status:        "active",
+        funded:        false,
+        fundedAmount:  0,
+        createdAt:     serverTimestamp(),
+        lastMessage:   "",
+        lastMessageAt: serverTimestamp(),
+      });
+
+      await addDoc(collection(db, "projectChats", chatDoc.id, "messages"), {
+        type:      "system",
+        text:      `💬 ${user.displayName || 'A developer'} started a chat regarding your project "${req.title}".`,
+        createdAt: serverTimestamp(),
+      });
+
+      router.push(`/project-chat/${chatDoc.id}`);
+    } catch (e) {
+      console.error(e);
+      alert("Failed to initiate chat.");
+    } finally {
+      setInitiatingChatWithClient(null);
     }
   }
 
@@ -350,12 +400,21 @@ export default function RequestsPage() {
                               Review Applicants
                             </button>
                           ) : user ? (
-                            <button
-                              onClick={() => setApplyingTo(req)}
-                              className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition flex-shrink-0"
-                            >
-                              Apply
-                            </button>
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <button
+                                onClick={() => chatWithClient(req)}
+                                disabled={initiatingChatWithClient === req.id}
+                                className="px-4 py-2 border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-lg transition whitespace-nowrap disabled:opacity-50"
+                              >
+                                {initiatingChatWithClient === req.id ? "Opening..." : "Chat"}
+                              </button>
+                              <button
+                                onClick={() => setApplyingTo(req)}
+                                className="flex items-center justify-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition whitespace-nowrap"
+                              >
+                                Apply
+                              </button>
+                            </div>
                           ) : (
                             <Link href="/login">
                               <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg transition whitespace-nowrap">

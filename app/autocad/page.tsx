@@ -32,9 +32,9 @@ interface Model {
 const CAD_CATEGORIES = ["All","Architecture","Mechanical","Structural","Electrical","Plumbing","Interior","Civil","Other"];
 
 const CAD_FEATURES = [
-  { icon:"M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18", title:"DWG Files", desc:"Industry-standard AutoCAD drawing files, ready to open in AutoCAD, BricsCAD or LibreCAD.", color:"#fbbf24" },
-  { icon:"M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z", title:"DXF Format", desc:"Universal exchange format compatible with virtually all CAD software including CATIA and SolidWorks.", color:"#fb7185" },
-  { icon:"M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2", title:"Verified Drawings", desc:"All CAD files are reviewed for layer structure, scale accuracy, and drawing standards compliance.", color:"#34d399" },
+  { icon:"M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18", title:"DWG Files", desc:"Industry-standard AutoCAD drawing files, ready to open in AutoCAD, BricsCAD or LibreCAD.", color:"amber" },
+  { icon:"M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z", title:"DXF Format", desc:"Universal exchange format compatible with virtually all CAD software including CATIA and SolidWorks.", color:"rose" },
+  { icon:"M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2", title:"Verified Drawings", desc:"All CAD files are reviewed for layer structure, scale accuracy, and drawing standards compliance.", color:"green" },
 ];
 
 export default function AutoCADPage() {
@@ -94,12 +94,12 @@ export default function AutoCADPage() {
 
   function Skeleton() {
     return (
-      <div className="rounded-3xl border border-white/5 bg-white/[0.02] overflow-hidden">
-        <div className="aspect-video bg-white/[0.04] animate-pulse" />
-        <div className="p-5 space-y-3">
-          <div className="h-4 bg-white/[0.04] rounded-full animate-pulse w-3/4" />
-          <div className="h-3 bg-white/[0.03] rounded-full animate-pulse w-1/2" />
-          <div className="h-9 bg-white/[0.03] rounded-xl animate-pulse mt-4" />
+      <div className="rounded-3xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+        <div className="aspect-video bg-gray-100 animate-pulse" />
+        <div className="p-6 space-y-4">
+          <div className="h-4 bg-gray-200 rounded-full animate-pulse w-3/4" />
+          <div className="h-3 bg-gray-100 rounded-full animate-pulse w-1/2" />
+          <div className="h-10 bg-gray-100 rounded-xl animate-pulse mt-4" />
         </div>
       </div>
     );
@@ -107,82 +107,75 @@ export default function AutoCADPage() {
 
   function CADCard({ m, i }: { m:Model; i:number }) {
     const isDWG = m.fileType?.toLowerCase() === "dwg";
-    const badgeColor = isDWG ? "#fbbf24" : "#fb7185";
-
-    const ctaStyle: React.CSSProperties = {
-      willChange: "transform",
-      background: m.isPaid ? "linear-gradient(135deg,#d97706,#dc2626)" : "linear-gradient(135deg,#d97706,#0891b2)",
-    };
+    const badgeColor = isDWG ? "amber" : "rose";
 
     return (
       <motion.div
-        initial={{ opacity:0, y:20 }}
-        animate={{ opacity:1, y:0 }}
-        transition={{ duration:0.4, delay:i*0.04 }}
-        className="group relative rounded-3xl border border-white/6 bg-white/[0.025] backdrop-blur-sm overflow-hidden hover:border-amber-500/20 transition duration-300"
+        initial={{ opacity:0, y:30 }}
+        whileInView={{ opacity:1, y:0 }}
+        viewport={{ once:true, margin:"-50px" }}
+        transition={{ duration:0.5, delay: i * 0.05 }}
+        whileHover={{ y: -4 }}
+        className="group relative rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition duration-300 overflow-hidden flex flex-col h-full"
       >
-        <div className="absolute top-0 left-0 right-0 h-[1px]"
-          style={{ background:"linear-gradient(90deg,transparent,rgba(251,191,36,0.3),transparent)" }} />
+        <div className={`absolute top-0 left-0 right-0 h-1 bg-${badgeColor}-500 opacity-0 group-hover:opacity-100 transition duration-300`} />
 
         {/* thumbnail / CAD preview */}
-        <div className="relative aspect-video overflow-hidden bg-white/[0.03]">
+        <div className="relative aspect-video overflow-hidden bg-gray-50 border-b border-gray-100">
           {m.thumbnailUrl ? (
             <img src={m.thumbnailUrl} alt={m.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center gap-2" style={{ background:"linear-gradient(135deg,rgba(251,191,36,0.04),rgba(0,0,0,0))" }}>
-              <svg className="w-12 h-12" style={{ color:"rgba(251,191,36,0.2)" }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
+            <div className={`w-full h-full flex flex-col items-center justify-center gap-2 bg-${badgeColor}-50`}>
+              <svg className={`w-12 h-12 text-${badgeColor}-300`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
               </svg>
-              <p className="text-amber-400/30 text-xs font-bold">{m.fileType?.toUpperCase()} Drawing</p>
+              <p className={`text-${badgeColor}-600 text-xs font-bold`}>{m.fileType?.toUpperCase()} Drawing</p>
             </div>
           )}
 
           <div className="absolute top-3 left-3">
-            <div className="px-2.5 py-1 rounded-lg border text-[10px] font-black"
-              style={{ color:badgeColor, background:`${badgeColor}18`, borderColor:`${badgeColor}35` }}>
+            <div className={`px-2.5 py-1 rounded-lg border text-[10px] font-black bg-${badgeColor}-50 text-${badgeColor}-700 border-${badgeColor}-200 shadow-sm`}>
               .{m.fileType?.toUpperCase()}
             </div>
           </div>
 
           <div className="absolute top-3 right-3">
             {m.isPaid ? (
-              <div className="px-2.5 py-1 rounded-lg border border-emerald-500/30 bg-emerald-500/15 text-emerald-300 text-[10px] font-black">₹{m.price}</div>
+              <div className="px-2.5 py-1 rounded-lg border border-green-200 bg-green-50 text-green-700 text-[10px] font-black shadow-sm">₹{m.price}</div>
             ) : (
-              <div className="px-2.5 py-1 rounded-lg border border-white/10 bg-black/50 text-white/60 text-[10px] font-black backdrop-blur-sm">Free</div>
+              <div className="px-2.5 py-1 rounded-lg border border-gray-200 bg-white text-gray-700 text-[10px] font-black shadow-sm">Free</div>
             )}
           </div>
 
-          <div className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
             <Link href={`/gallery/${m.id}`}>
-              <motion.div whileHover={{ scale:1.05 }} whileTap={{ scale:0.95 }}
-                style={{ willChange:"transform" }}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/15 border border-white/20 backdrop-blur-sm text-white text-xs font-bold cursor-pointer">
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm font-bold shadow-lg hover:scale-105 transition">
+                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
-                Download
-              </motion.div>
+                View & Download
+              </button>
             </Link>
           </div>
         </div>
 
-        <div className="p-5">
-          <h3 className="text-white font-black text-sm mb-1 line-clamp-1">{m.title}</h3>
-          {m.description && <p className="text-white/35 text-xs leading-relaxed line-clamp-2 mb-3">{m.description}</p>}
+        <div className="p-6 flex flex-col flex-1">
+          <h3 className="text-gray-900 font-extrabold text-lg mb-1.5 line-clamp-1">{m.title}</h3>
+          {m.description && <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-4 font-medium">{m.description}</p>}
 
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-5 mt-auto">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full overflow-hidden border border-white/10 bg-white/[0.05] flex items-center justify-center flex-shrink-0">
+              <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-200 bg-gray-100 flex items-center justify-center flex-shrink-0">
                 {m.authorPhoto
                   ? <img src={m.authorPhoto} className="w-full h-full object-cover" onError={e=>{(e.target as HTMLImageElement).style.display="none"}} />
-                  : <span className="text-white/30 text-[9px] font-black">{m.authorName?.[0]}</span>
+                  : <span className="text-gray-500 text-[9px] font-bold">{m.authorName?.[0]}</span>
                 }
               </div>
-              <span className="text-white/35 text-xs truncate max-w-[90px]">{m.authorName}</span>
+              <span className="text-gray-600 text-xs font-semibold truncate max-w-[90px]">{m.authorName}</span>
             </div>
-            <div className="flex items-center gap-2 text-white/20 text-[10px]">
+            <div className="flex items-center gap-2 text-gray-400 text-xs font-semibold">
               <span className="flex items-center gap-1">
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 {m.downloads??0}
@@ -191,26 +184,24 @@ export default function AutoCADPage() {
           </div>
 
           {m.tags?.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-4">
+            <div className="flex flex-wrap gap-1.5 mb-5">
               {m.tags.slice(0,3).map(t=>(
-                <span key={t} className="px-2 py-0.5 rounded-md text-[10px] border" style={{ background:"rgba(251,191,36,0.05)", borderColor:"rgba(251,191,36,0.15)", color:"rgba(251,191,36,0.5)" }}>{t}</span>
+                <span key={t} className="px-2.5 py-1 rounded-md text-[10px] font-bold border border-gray-200 bg-gray-50 text-gray-600">{t}</span>
               ))}
             </div>
           )}
 
           <Link href={`/gallery/${m.id}`}>
-            <motion.div whileHover={{ scale:1.02 }} whileTap={{ scale:0.98 }}
-              style={ctaStyle}
-              className="w-full py-3 rounded-2xl font-black text-white text-xs text-center relative overflow-hidden cursor-pointer">
-              <motion.div animate={{ x:["-200%","200%"] }} transition={{ duration:2.5, repeat:Infinity, repeatDelay:5, ease:"linear" }}
-                style={{ willChange:"transform", position:"absolute", inset:0, background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent)", transform:"skewX(-20deg)", pointerEvents:"none" }} />
-              <span className="relative z-10 flex items-center justify-center gap-1.5">
-                {m.isPaid ? `Buy ₹${m.price}` : "Download Free"}
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            <button className={`w-full py-3.5 rounded-xl font-bold text-sm text-center transition shadow-sm border ${
+              m.isPaid ? 'bg-white text-gray-900 border-gray-300 hover:bg-gray-50' : 'bg-blue-600 text-white border-transparent hover:bg-blue-700'
+            }`}>
+              <span className="flex items-center justify-center gap-2">
+                {m.isPaid ? `Buy for ₹${m.price}` : "Download Free"}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
               </span>
-            </motion.div>
+            </button>
           </Link>
         </div>
       </motion.div>
@@ -218,183 +209,178 @@ export default function AutoCADPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050008]">
+    <div className="min-h-screen bg-gray-50 font-sans flex flex-col">
       <Navbar />
 
-      <div className="relative pt-28 pb-24 px-4 overflow-x-hidden">
+      <div className="flex-grow pt-[100px] pb-24 px-4 overflow-x-hidden">
 
-        {/* Amber ambient */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full pointer-events-none"
-          style={{ background:"radial-gradient(ellipse,rgba(251,191,36,0.1) 0%,transparent 70%)", filter:"blur(80px)" }} />
-
-        <div className="relative z-10 max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto">
 
           {/* Header */}
-          <div className="mb-10">
+          <div className="mb-12 text-center mt-10">
             <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-amber-500/20 bg-amber-500/5 backdrop-blur-sm mb-5">
-              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-              <span className="text-amber-300/90 text-sm font-semibold uppercase tracking-widest">AutoCAD Hub</span>
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-800 shadow-sm mb-6">
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+              <span className="text-xs font-bold uppercase tracking-widest">AutoCAD Hub</span>
             </motion.div>
 
             <motion.h1 initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.1 }}
-              className="text-5xl md:text-7xl font-black tracking-tighter text-white leading-none mb-4">
-              AutoCAD{" "}
-              <span style={{ backgroundImage:"linear-gradient(90deg,#fbbf24,#fb7185)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
-                Drawings
-              </span>
+              className="text-4xl md:text-6xl font-black tracking-tight text-gray-900 mb-6">
+              AutoCAD Drawings
             </motion.h1>
 
-            <motion.p initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.15 }}
-              className="text-white/35 text-lg max-w-xl mb-6">
+            <motion.p initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.2 }}
+              className="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed">
               Professional DWG and DXF files for Architecture, Mechanical, Structural and more. All verified and ready to use.
             </motion.p>
 
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex justify-center items-center gap-4 flex-wrap">
               {user && (
                 <Link href="/upload">
-                  <motion.div whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
-                    style={{ willChange:"transform", background:"linear-gradient(135deg,#d97706,#dc2626)" }}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-white text-xs cursor-pointer relative overflow-hidden">
-                    <motion.div animate={{ x:["-200%","200%"] }} transition={{ duration:2.5, repeat:Infinity, repeatDelay:4, ease:"linear" }}
-                      style={{ willChange:"transform", position:"absolute", inset:0, background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)", transform:"skewX(-20deg)", pointerEvents:"none" }} />
-                    <svg className="w-3.5 h-3.5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  <button className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-white text-sm bg-blue-600 hover:bg-blue-700 shadow-sm transition">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
                     </svg>
-                    <span className="relative z-10">Upload CAD File</span>
-                  </motion.div>
+                    Upload CAD File
+                  </button>
                 </Link>
               )}
               <Link href="/gallery">
-                <motion.div whileHover={{ scale:1.03 }} whileTap={{ scale:0.97 }} style={{ willChange:"transform" }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-white/40 text-xs border border-white/8 hover:border-white/20 hover:text-white/60 transition duration-200 cursor-pointer">
+                <button className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-gray-700 text-sm border border-gray-300 bg-white hover:bg-gray-50 shadow-sm transition">
                   ← All Models
-                </motion.div>
+                </button>
               </Link>
             </div>
           </div>
 
           {/* Features strip */}
-          <motion.div initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.2 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+          <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.25 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14">
             {CAD_FEATURES.map((f,i) => (
-              <div key={i} className="flex items-start gap-4 p-5 rounded-2xl border border-white/6 bg-white/[0.02]">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background:`${f.color}18`, border:`1px solid ${f.color}25` }}>
-                  <svg className="w-5 h-5" style={{ color:f.color }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={f.icon} />
+              <div key={i} className="flex items-start gap-4 p-6 rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-${f.color}-50 border border-${f.color}-100 text-${f.color}-600`}>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={f.icon} />
                   </svg>
                 </div>
                 <div>
-                  <p className="text-white font-black text-sm mb-1">{f.title}</p>
-                  <p className="text-white/30 text-xs leading-relaxed">{f.desc}</p>
+                  <p className="text-gray-900 font-extrabold text-base mb-1.5">{f.title}</p>
+                  <p className="text-gray-500 text-sm leading-relaxed font-medium">{f.desc}</p>
                 </div>
               </div>
             ))}
           </motion.div>
 
           {/* Filters */}
-          <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.25 }}
-            className="mb-8 space-y-4">
+          <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.3 }}
+            className="mb-10 p-6 md:p-8 rounded-3xl border border-gray-200 bg-white shadow-sm space-y-5">
 
             {/* Search + Sort */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="relative flex-1 group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25 group-focus-within:text-amber-400 transition duration-200">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
                 <input value={search} onChange={e=>setSearch(e.target.value)}
                   placeholder="Search drawings, categories, tags…"
-                  className="w-full bg-white/[0.03] border border-white/8 text-white placeholder-white/25 text-sm rounded-2xl pl-11 pr-4 py-3.5 focus:outline-none focus:border-amber-500/50 transition duration-200" />
+                  className="w-full bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm md:text-base rounded-2xl pl-12 pr-4 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-inner" />
               </div>
               <div className="relative">
                 <select value={sortBy} onChange={e=>setSortBy(e.target.value)}
-                  className="bg-white/[0.03] border border-white/8 text-white text-sm rounded-2xl px-4 py-3.5 pr-10 focus:outline-none appearance-none cursor-pointer min-w-[160px]">
-                  <option value="newest" className="bg-[#0a0010]">Newest</option>
-                  <option value="popular" className="bg-[#0a0010]">Most Viewed</option>
-                  <option value="downloads" className="bg-[#0a0010]">Most Downloaded</option>
+                  className="bg-white border border-gray-300 text-gray-700 font-bold text-sm md:text-base rounded-2xl pl-5 pr-12 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 appearance-none cursor-pointer w-full sm:min-w-[180px] shadow-sm">
+                  <option value="newest">Sort by: Newest</option>
+                  <option value="popular">Sort by: Most Viewed</option>
+                  <option value="downloads">Sort by: Most Downloaded</option>
                 </select>
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
               </div>
             </div>
 
             {/* File type + Category + Price */}
-            <div className="flex flex-wrap gap-3 items-center">
+            <div className="flex flex-wrap gap-4 items-center">
               {/* File type tabs */}
-              <div className="flex gap-2">
+              <div className="flex gap-2.5 bg-gray-50 p-1 rounded-xl border border-gray-200 flex-wrap">
                 {(["all","dwg","dxf"] as const).map(t => (
                   <button key={t} onClick={()=>setFileType(t)}
-                    className="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition duration-200"
-                    style={fileType===t ? { background:"rgba(251,191,36,0.15)", borderColor:"rgba(251,191,36,0.4)", color:"#fbbf24" } : { background:"rgba(255,255,255,0.02)", borderColor:"rgba(255,255,255,0.08)", color:"rgba(255,255,255,0.35)" }}>
+                    className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${
+                      fileType===t ? "bg-white text-blue-600 shadow-sm border border-gray-200" : "text-gray-500 hover:text-gray-700 hover:bg-gray-100 border border-transparent"
+                    }`}>
                     {t === "all" ? "All Formats" : `.${t.toUpperCase()}`}
                   </button>
                 ))}
               </div>
 
-              <div className="w-[1px] h-6 bg-white/8" />
-
-              {/* Category */}
-              <div className="flex flex-wrap gap-2">
-                {CAD_CATEGORIES.slice(0,6).map(c => (
-                  <button key={c} onClick={()=>setCategory(c)}
-                    className="px-3 py-2 rounded-xl text-xs font-bold border transition duration-200"
-                    style={category===c ? { background:"rgba(251,191,36,0.12)", borderColor:"rgba(251,191,36,0.35)", color:"#fbbf24" } : { background:"rgba(255,255,255,0.02)", borderColor:"rgba(255,255,255,0.07)", color:"rgba(255,255,255,0.35)" }}>
-                    {c}
-                  </button>
-                ))}
-              </div>
-
-              <div className="w-[1px] h-6 bg-white/8" />
-
               {/* Price */}
-              <div className="flex gap-2">
+              <div className="flex gap-2.5 bg-gray-50 p-1 rounded-xl border border-gray-200 flex-wrap">
                 {(["all","free","paid"] as const).map(p => (
                   <button key={p} onClick={()=>setPriceFilter(p)}
-                    className="px-3 py-2 rounded-xl text-xs font-bold border transition duration-200"
-                    style={priceFilter===p ? { background:"rgba(52,211,153,0.12)", borderColor:"rgba(52,211,153,0.35)", color:"#34d399" } : { background:"rgba(255,255,255,0.02)", borderColor:"rgba(255,255,255,0.07)", color:"rgba(255,255,255,0.35)" }}>
-                    {p==="all"?"All":p==="free"?"Free":"Paid"}
+                    className={`px-4 py-2 rounded-lg text-xs font-bold transition ${
+                      priceFilter===p ? "bg-white text-blue-600 shadow-sm border border-gray-200" : "text-gray-500 hover:text-gray-700 hover:bg-gray-100 border border-transparent"
+                    }`}>
+                    {p==="all"?"All Pricing":p==="free"?"Free Only":"Paid Only"}
                   </button>
                 ))}
               </div>
             </div>
 
-            <p className="text-white/20 text-xs">
-              {loading ? "Loading…" : `${filtered.length} drawing${filtered.length!==1?"s":""} found`}
-            </p>
+            {/* Category */}
+            <div className="flex flex-wrap gap-2.5 pt-1">
+              {CAD_CATEGORIES.slice(0,8).map(c => (
+                <button key={c} onClick={()=>setCategory(c)}
+                  className={`px-4 py-2 rounded-xl text-sm font-bold border transition duration-200 ${
+                    category===c ? "bg-blue-600 border-blue-600 text-white shadow-sm" : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                  }`}>
+                  {c}
+                </button>
+              ))}
+            </div>
+
+            <div className="pt-2 border-t border-gray-100 flex justify-between items-center">
+              <p className="text-gray-500 font-semibold text-sm">
+                {loading ? "Loading drawings…" : `${filtered.length} drawing${filtered.length!==1?"s":""} found`}
+              </p>
+              {(search || category !== "All" || fileType !== "all" || priceFilter !== "all" || sortBy !== "newest") && (
+                <button onClick={()=>{ setSearch(""); setCategory("All"); setFileType("all"); setPriceFilter("all"); setSortBy("newest"); }} className="text-blue-600 text-sm font-bold hover:underline">Reset Filters</button>
+              )}
+            </div>
           </motion.div>
 
           {/* Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {Array.from({length:8}).map((_,i)=><Skeleton key={i} />)}
             </div>
           ) : filtered.length === 0 ? (
-            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} className="flex flex-col items-center justify-center py-32 text-center">
-              <div className="w-20 h-20 rounded-3xl border border-amber-500/15 bg-amber-500/5 flex items-center justify-center mb-6">
-                <svg className="w-10 h-10 text-amber-400/25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
+            <motion.div initial={{ opacity:0, y: 20 }} animate={{ opacity:1, y: 0 }} className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-3xl border border-gray-200 shadow-sm">
+              <div className="w-24 h-24 rounded-full bg-gray-50 flex items-center justify-center mb-6">
+                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
                 </svg>
               </div>
-              <h3 className="text-white/60 font-black text-xl mb-2">No CAD drawings yet</h3>
-              <p className="text-white/25 text-sm mb-6">Be the first to upload DWG or DXF files to the platform.</p>
-              {user && (
-                <Link href="/upload">
-                  <motion.div whileHover={{ scale:1.03 }} whileTap={{ scale:0.97 }}
-                    style={{ willChange:"transform", background:"linear-gradient(135deg,#d97706,#dc2626)" }}
-                    className="px-6 py-3 rounded-2xl font-black text-white text-sm cursor-pointer">
-                    Upload CAD File →
-                  </motion.div>
-                </Link>
-              )}
+              <h3 className="text-gray-900 font-extrabold text-2xl mb-2">No CAD drawings found</h3>
+              <p className="text-gray-500 text-base mb-8 max-w-sm">Try adjusting your filters or be the first to upload a drawing.</p>
+              <div className="flex gap-4">
+                <button onClick={()=>{ setSearch(""); setCategory("All"); setFileType("all"); setPriceFilter("all"); }}
+                  className="px-6 py-3.5 rounded-xl bg-gray-100 text-gray-800 font-bold hover:bg-gray-200 transition shadow-sm">
+                  Clear Filters
+                </button>
+                {user && (
+                  <Link href="/upload">
+                    <button className="px-6 py-3.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition shadow-sm">
+                      Upload CAD File
+                    </button>
+                  </Link>
+                )}
+              </div>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
               {filtered.map((m,i)=><CADCard key={m.id} m={m} i={i} />)}
             </div>
           )}

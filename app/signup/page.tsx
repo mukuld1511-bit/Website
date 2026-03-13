@@ -11,29 +11,29 @@ import { motion, AnimatePresence } from "framer-motion";
 export const dynamic = "force-dynamic";
 
 function SignupContent() {
-  const router       = useRouter();
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const roleParam    = searchParams.get("role");
+  const roleParam = searchParams.get("role");
 
-  const [name,     setName]     = useState("");
-  const [email,    setEmail]    = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirm,  setConfirm]  = useState("");
-  const [role,     setRole]     = useState<"user" | "developer">(
+  const [confirm, setConfirm] = useState("");
+  const [role, setRole] = useState<"user" | "developer">(
     roleParam === "developer" ? "developer" : "user"
   );
   const [showPass, setShowPass] = useState(false);
   const [showConf, setShowConf] = useState(false);
-  const [loading,  setLoading]  = useState(false);
-  const [error,    setError]    = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // Password strength
   const strength = (() => {
     if (!password) return 0;
     let s = 0;
-    if (password.length >= 8)          s++;
-    if (/[A-Z]/.test(password))        s++;
-    if (/[0-9]/.test(password))        s++;
+    if (password.length >= 8) s++;
+    if (/[A-Z]/.test(password)) s++;
+    if (/[0-9]/.test(password)) s++;
     if (/[^A-Za-z0-9]/.test(password)) s++;
     return s;
   })();
@@ -44,9 +44,9 @@ function SignupContent() {
     e.preventDefault();
     setError("");
 
-    if (!name.trim())         { setError("Please enter your full name."); return; }
-    if (password.length < 6)  { setError("Password must be at least 6 characters."); return; }
-    if (password !== confirm)  { setError("Passwords do not match."); return; }
+    if (!name.trim()) { setError("Please enter your full name."); return; }
+    if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
+    if (password !== confirm) { setError("Passwords do not match."); return; }
 
     setLoading(true);
     try {
@@ -60,15 +60,15 @@ function SignupContent() {
 
       // ✅ Save to Firestore with userId field for querying
       await setDoc(doc(db, "users", user.uid), {
-        userId:       user.uid,
-        name:         name.trim(),
-        displayName:  name.trim(),
-        email:        email.trim().toLowerCase(),
-        role:         role,
+        userId: user.uid,
+        name: name.trim(),
+        displayName: name.trim(),
+        email: email.trim().toLowerCase(),
+        role: role,
         profileImage: "/avatar.png",
-        photoURL:     "/avatar.png",
-        certified:    false,
-        createdAt:    serverTimestamp(),
+        photoURL: "/avatar.png",
+        certified: false,
+        createdAt: serverTimestamp(),
       });
 
       // ✅ Route based on selected role
@@ -79,9 +79,9 @@ function SignupContent() {
       }
     } catch (err: any) {
       const map: Record<string, string> = {
-        "auth/email-already-in-use":   "An account with this email already exists.",
-        "auth/invalid-email":          "Please enter a valid email address.",
-        "auth/weak-password":          "Password is too weak. Use at least 6 characters.",
+        "auth/email-already-in-use": "An account with this email already exists.",
+        "auth/invalid-email": "Please enter a valid email address.",
+        "auth/weak-password": "Password is too weak. Use at least 6 characters.",
         "auth/network-request-failed": "Network error. Check your connection.",
       };
       setError(map[err.code] ?? err.message ?? "Sign up failed. Please try again.");
@@ -272,8 +272,8 @@ function SignupContent() {
               </label>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { val: "user"      as const, label: "👤 User",      desc: "Browse & download models",  color: "#22d3ee" },
-                  { val: "developer" as const, label: "⚡ Developer", desc: "Upload & sell models",      color: "#a78bfa" },
+                  { val: "user" as const, label: "👤 User", desc: "Browse & download models", color: "#22d3ee" },
+                  { val: "developer" as const, label: "⚡ Developer", desc: "Upload & sell models", color: "#a78bfa" },
                 ].map((r) => (
                   <button
                     key={r.val}
@@ -282,8 +282,8 @@ function SignupContent() {
                     className="relative p-4 rounded-2xl border-2 text-center transition duration-200 hover:scale-[1.02] active:scale-[0.98]"
                     style={{
                       borderColor: role === r.val ? r.color : "rgba(255,255,255,0.06)",
-                      background:  role === r.val ? `${r.color}12` : "rgba(255,255,255,0.02)",
-                      willChange:  "transform",
+                      background: role === r.val ? `${r.color}12` : "rgba(255,255,255,0.02)",
+                      willChange: "transform",
                     }}
                   >
                     {/* Selected indicator */}

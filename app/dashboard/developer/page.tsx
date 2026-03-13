@@ -17,11 +17,12 @@ type FirestoreDoc = {
 export default function DeveloperDashboard() {
   const router = useRouter();
 
-  const [uploads, setUploads]       = useState<FirestoreDoc[]>([]);
-  const [sessions, setSessions]     = useState<FirestoreDoc[]>([]);
-  const [purchases, setPurchases]   = useState<FirestoreDoc[]>([]);
-  const [certStatus, setCertStatus] = useState<string | null>(null);
-  const [loading, setLoading]       = useState(true);
+  const [uploads, setUploads]           = useState<FirestoreDoc[]>([]);
+  const [sessions, setSessions]         = useState<FirestoreDoc[]>([]);
+  const [purchases, setPurchases]       = useState<FirestoreDoc[]>([]);
+  const [projectChats, setProjectChats] = useState<FirestoreDoc[]>([]);
+  const [certStatus, setCertStatus]     = useState<string | null>(null);
+  const [loading, setLoading]           = useState(true);
 
   useEffect(() => {
     const unsub = auth.onAuthStateChanged((user) => {
@@ -37,8 +38,17 @@ export default function DeveloperDashboard() {
       loadSessions(uid),
       loadPurchases(uid),
       loadCert(uid),
+      loadProjectChats(uid),
     ]);
     setLoading(false);
+  };
+
+  const loadProjectChats = async (uid: string) => {
+    const q = query(collection(db, "projectChats"), where("developerId", "==", uid));
+    const snap = await getDocs(q);
+    const list: FirestoreDoc[] = snap.docs.map((d) => ({ id: d.id, ...d.data() } as FirestoreDoc));
+    list.sort((a, b) => (b.lastMessageAt?.seconds ?? 0) - (a.lastMessageAt?.seconds ?? 0));
+    setProjectChats(list);
   };
 
   const loadUploads = async (uid: string) => {
@@ -289,7 +299,47 @@ export default function DeveloperDashboard() {
           )}
         </DashSection>
 
+        {/* Project Messages */}
+        <DashSection title="Project Messages" subtitle="Active chats from public project requests" delay={0.3} accent="#f472b6">
+          {projectChats.length === 0 ? (
+            <Empty icon="💬" text="No project chats yet. Browse Public Requests to start one." />
+          ) : (
+            <div className="flex flex-col gap-3">
+              {projectChats.slice(0, 5).map((c) => (
+                <div
+                  key={c.id}
+                  onClick={() => router.push(`/project-chat/${c.id}`)}
+                  className="group cursor-pointer rounded-2xl border border-white/6 bg-white/[0.02] hover:border-pink-500/25 p-4 flex items-center gap-4 transition duration-200"
+                >
+                  {c.clientPhoto
+                    ? <img src={c.clientPhoto} alt={c.clientName} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                    : (
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-black text-white"
+                        style={{ background: "linear-gradient(135deg,#f472b6,#7c3aed)" }}>
+                        {c.clientName?.[0]?.toUpperCase() ?? "C"}
+                      </div>
+                    )
+                  }
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-bold text-sm truncate">{c.requestTitle || "Project Chat"}</p>
+                    <p className="text-white/35 text-xs truncate">with {c.clientName}</p>
+                  </div>
+                  {c.funded && (
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full border text-emerald-300 bg-emerald-400/10 border-emerald-400/20">
+                      Funded ₹{c.fundedAmount?.toLocaleString("en-IN")}
+                    </span>
+                  )}
+                  <svg className="w-4 h-4 text-white/20 group-hover:text-pink-400 flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              ))}
+            </div>
+          )}
+        </DashSection>
+
         {/* Certification */}
+
         <DashSection title="Certification" subtitle="Your developer certification status on Synthe" delay={0.32} accent="#818cf8">
           <div className="rounded-2xl border border-white/6 bg-white/[0.025] p-6 flex flex-col sm:flex-row sm:items-center gap-6">
             <div className="flex-1">

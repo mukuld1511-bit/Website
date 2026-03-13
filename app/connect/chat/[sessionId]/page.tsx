@@ -162,60 +162,59 @@ function ChatContent() {
 
   // ────────────────────────────────────────────────────────────────────────────
   if (loading) return (
-    <div className="min-h-screen bg-[#050008] flex items-center justify-center">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
       <div className="flex flex-col items-center gap-4">
-        <svg className="w-8 h-8 animate-spin text-violet-400" fill="none" viewBox="0 0 24 24">
+        <svg className="w-8 h-8 animate-spin text-blue-600" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
         </svg>
-        <p className="text-white/40 text-sm font-semibold">Loading session…</p>
+        <p className="text-gray-500 text-sm font-bold uppercase tracking-widest">Loading session…</p>
       </div>
     </div>
   );
 
   if (denied || !session) return (
-    <div className="min-h-screen bg-[#050008] flex flex-col items-center justify-center text-center px-4">
-      <div className="w-20 h-20 rounded-3xl border border-rose-500/20 bg-rose-500/8 flex items-center justify-center mb-6">
-        <svg className="w-10 h-10 text-rose-400/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center text-center px-4 font-sans">
+      <div className="w-20 h-20 rounded-[2rem] border border-red-200 bg-red-50 flex items-center justify-center mb-6 shadow-sm">
+        <svg className="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
         </svg>
       </div>
-      <h2 className="text-white font-black text-2xl mb-3">Session Not Found</h2>
-      <p className="text-white/35 text-sm mb-8 max-w-sm leading-relaxed">This chat session doesn't exist or you don't have access. Sessions are unlocked when a tutor accepts your lesson request.</p>
+      <h2 className="text-gray-900 font-black text-2xl mb-3">Session Not Found</h2>
+      <p className="text-gray-500 text-sm mb-8 max-w-sm leading-relaxed font-medium">This chat session doesn't exist or you don't have access. Sessions are unlocked when a tutor accepts your lesson request.</p>
       <Link href="/connect">
-        <motion.div whileHover={{ scale:1.04 }} style={{ willChange:"transform", background:"linear-gradient(135deg,#7c3aed,#0891b2)" }}
-          className="px-6 py-3 rounded-2xl font-black text-white text-sm cursor-pointer">
+        <button className="px-6 py-3 rounded-xl font-bold text-white text-sm bg-blue-600 hover:bg-blue-700 shadow-sm transition">
           Back to Connect & Learn
-        </motion.div>
+        </button>
       </Link>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#050008] flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
       <Navbar />
 
       {/* ── Chat layout */}
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pt-20 pb-0">
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pt-24 pb-0">
 
         {/* Session header */}
         <motion.div initial={{ opacity:0, y:-10 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.4 }}
-          className="flex items-center justify-between py-4 border-b border-white/6 mb-0">
-          <div className="flex items-center gap-3">
+          className="flex items-center justify-between py-4 border-b border-gray-200 mb-0 bg-white px-6 rounded-t-3xl shadow-sm mt-4">
+          <div className="flex items-center gap-4">
             <Link href="/connect">
-              <button className="w-9 h-9 rounded-xl bg-white/[0.04] border border-white/8 flex items-center justify-center text-white/40 hover:text-white/80 transition duration-200 mr-1">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              <button className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition shadow-sm mr-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
               </button>
             </Link>
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black flex-shrink-0"
-              style={{ background:`${accentColor}25`, border:`1px solid ${accentColor}40`, color:accentColor }}>
-              {otherAvatar ? <img src={otherAvatar} className="w-full h-full rounded-xl object-cover" /> : otherName.split(" ").map((n:string)=>n[0]).join("").slice(0,2)}
+            <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-base font-black flex-shrink-0 shadow-sm"
+              style={{ background:`${accentColor}15`, border:`1px solid ${accentColor}30`, color:accentColor }}>
+              {otherAvatar ? <img src={otherAvatar} className="w-full h-full rounded-2xl object-cover" /> : otherName.split(" ").map((n:string)=>n[0]).join("").slice(0,2)}
             </div>
             <div>
-              <p className="text-white font-black text-sm">{otherName}</p>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <p className="text-white/30 text-[10px]">{session.subject}</p>
+              <p className="text-gray-900 font-extrabold text-sm">{otherName}</p>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <p className="text-gray-500 font-bold text-[10px] uppercase tracking-widest">{session.subject}</p>
               </div>
             </div>
           </div>
@@ -245,26 +244,26 @@ function ChatContent() {
         </motion.div>
 
         {/* Subject badge */}
-        <div className="py-4 flex justify-center">
-          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-semibold"
-            style={{ borderColor:`${accentColor}25`, background:`${accentColor}08`, color:`${accentColor}` }}>
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+        <div className="py-4 bg-white px-6 border-b border-gray-100 flex justify-center">
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-lg border text-[10px] font-black uppercase tracking-widest shadow-sm"
+            style={{ borderColor:`${accentColor}30`, background:`${accentColor}08`, color:`${accentColor}` }}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
             Session: {session.subject}
           </div>
         </div>
 
         {/* Messages area */}
-        <div className="flex-1 overflow-y-auto space-y-1 pb-4" style={{ minHeight:0, maxHeight:"calc(100vh - 280px)" }}>
+        <div className="flex-1 overflow-y-auto space-y-2 pb-6 pt-6 px-6 bg-gray-50" style={{ minHeight:0, maxHeight:"calc(100vh - 280px)" }}>
           {messages.length===0 && (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
-                style={{ background:`${accentColor}18`, border:`1px solid ${accentColor}30` }}>
-                <svg className="w-7 h-7" style={{ color:accentColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center mb-5 shadow-sm bg-white border border-gray-200"
+                style={{ color:accentColor }}>
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
-              <p className="text-white/50 font-black text-base mb-2">Start the conversation!</p>
-              <p className="text-white/25 text-sm max-w-xs leading-relaxed">
+              <p className="text-gray-900 font-extrabold text-lg mb-2">Start the conversation!</p>
+              <p className="text-gray-500 text-sm max-w-xs leading-relaxed font-medium">
                 {isTutor
                   ? "Welcome! Share your booking link so the student can schedule a slot."
                   : "Say hi to your tutor! Ask your questions and discuss your learning goals."
@@ -276,12 +275,12 @@ function ChatContent() {
           {grouped.map(group => (
             <div key={group.date}>
               {/* Date separator */}
-              <div className="flex items-center gap-3 my-5">
-                <div className="flex-1 h-px bg-white/[0.05]" />
-                <span className="text-white/25 text-[10px] font-semibold px-3 py-1 rounded-full border border-white/[0.06] bg-white/[0.02]">
+              <div className="flex items-center justify-center gap-3 my-6">
+                <div className="h-px w-10 bg-gray-200" />
+                <span className="text-gray-400 text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-gray-100 rounded-lg">
                   {group.date}
                 </span>
-                <div className="flex-1 h-px bg-white/[0.05]" />
+                <div className="h-px w-10 bg-gray-200" />
               </div>
 
               {group.msgs.map((m, idx) => {
@@ -289,63 +288,60 @@ function ChatContent() {
                 const showAvatar = !mine && (idx===0 || group.msgs[idx-1]?.senderId!==m.senderId);
 
                 if (m.type==="system") return (
-                  <div key={m.id} className="flex justify-center my-3">
-                    <span className="text-white/25 text-[10px] font-semibold px-3 py-1 rounded-full border border-white/[0.06] bg-white/[0.02]">{m.text}</span>
+                  <div key={m.id} className="flex justify-center my-4">
+                    <span className="text-gray-400 text-xs font-bold px-4 py-2 rounded-xl bg-white border border-gray-200 shadow-sm">{m.text}</span>
                   </div>
                 );
 
                 if (m.type==="booking_link") return (
                   <motion.div key={m.id} initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }}
-                    className={`flex ${mine?"justify-end":"justify-start"} mb-2`}>
-                    <div className="max-w-sm p-4 rounded-2xl border"
-                      style={{ background:`${accentColor}12`, borderColor:`${accentColor}30` }}>
-                      <div className="flex items-center gap-2 mb-2">
-                        <svg className="w-4 h-4 flex-shrink-0" style={{ color:accentColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    className={`flex ${mine?"justify-end":"justify-start"} mb-3`}>
+                    <div className="max-w-sm p-5 rounded-[1.5rem] border shadow-sm bg-white"
+                      style={{ borderColor:`${accentColor}30` }}>
+                      <div className="flex items-center gap-2 mb-3">
+                        <svg className="w-5 h-5 flex-shrink-0" style={{ color:accentColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <span className="text-xs font-black" style={{ color:accentColor }}>Booking Link Shared</span>
+                        <span className="text-sm font-extrabold" style={{ color:accentColor }}>Booking Link Shared</span>
                       </div>
-                      <p className="text-white/60 text-xs leading-relaxed mb-3">{m.text}</p>
+                      <p className="text-gray-600 text-sm leading-relaxed mb-4 font-medium">{m.text}</p>
                       {session.tutorBookingLink && !mine && (
                         <a href={session.tutorBookingLink} target="_blank" rel="noopener noreferrer">
-                          <motion.div whileHover={{ scale:1.03 }} style={{ willChange:"transform", background:`linear-gradient(135deg,${accentColor},#0891b2)` }}
-                            className="w-full py-2 rounded-xl text-xs font-black text-white text-center cursor-pointer">
+                          <motion.div whileHover={{ scale:1.02 }} style={{ willChange:"transform", background:`linear-gradient(135deg,${accentColor},#0891b2)` }}
+                            className="w-full py-3.5 rounded-xl font-bold text-white text-sm text-center shadow-sm cursor-pointer transition">
                             Open Booking Page →
                           </motion.div>
                         </a>
                       )}
-                      <p className="text-white/20 text-[10px] mt-2 text-right">{formatTime(m.createdAt)}</p>
+                      <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mt-3 text-right">{formatTime(m.createdAt)}</p>
                     </div>
                   </motion.div>
                 );
 
                 return (
                   <motion.div key={m.id} initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }}
-                    className={`flex items-end gap-2 mb-1 ${mine?"justify-end":"justify-start"}`}>
+                    className={`flex items-end gap-2 mb-2 ${mine?"justify-end":"justify-start"}`}>
 
-                    {!mine && (
-                      <div className="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] font-black flex-shrink-0 mb-0.5"
-                        style={showAvatar
-                          ? { background:`${accentColor}25`, border:`1px solid ${accentColor}40`, color:accentColor }
-                          : { background:"transparent", border:"none" }
-                        }>
-                        {showAvatar && (m.senderAvatar ? <img src={m.senderAvatar} className="w-full h-full rounded-xl object-cover" /> : m.senderName[0])}
+                    {!mine && showAvatar && (
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black flex-shrink-0 mb-1 shadow-sm"
+                        style={{ background:`${accentColor}15`, border:`1px solid ${accentColor}30`, color:accentColor }}>
+                        {m.senderAvatar ? <img src={m.senderAvatar} className="w-full h-full rounded-full object-cover" /> : m.senderName[0]}
                       </div>
                     )}
+                    {!mine && !showAvatar && <div className="w-8 flex-shrink-0" />}
 
                     <div className={`max-w-xs sm:max-w-sm lg:max-w-md`}>
                       {showAvatar && !mine && (
-                        <p className="text-white/30 text-[10px] font-semibold mb-1 ml-1">{m.senderName}</p>
+                        <p className="text-gray-400 text-[10px] uppercase tracking-widest font-black mb-1 ml-1">{m.senderName}</p>
                       )}
-                      <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
+                      <div className={`px-5 py-3.5 text-sm leading-relaxed font-medium shadow-sm ${
                         mine
-                          ? "rounded-br-md text-white"
-                          : "rounded-bl-md text-white/80 bg-white/[0.06] border border-white/[0.06]"
-                      }`}
-                        style={mine ? { background:"linear-gradient(135deg,#7c3aed,#0891b2)" } : {}}>
+                          ? "rounded-2xl rounded-br-sm text-white bg-blue-600"
+                          : "rounded-2xl rounded-bl-sm text-gray-800 bg-white border border-gray-200"
+                      }`}>
                         {m.text}
                       </div>
-                      <p className={`text-white/20 text-[9px] mt-1 ${mine?"text-right mr-1":"ml-1"}`}>
+                      <p className={`text-gray-400 text-[9px] uppercase tracking-widest font-bold mt-1.5 ${mine?"text-right mr-1":"ml-1"}`}>
                         {formatTime(m.createdAt)}
                       </p>
                     </div>
@@ -358,10 +354,10 @@ function ChatContent() {
         </div>
 
         {/* ── Input bar */}
-        <div className="border-t border-white/6 py-4 bg-[#050008] sticky bottom-0">
+        <div className="border-t border-gray-200 py-4 px-6 bg-white rounded-b-3xl mb-6 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
           {session.status==="closed" ? (
-            <div className="flex items-center justify-center py-3">
-              <span className="text-white/30 text-xs font-semibold">This session has ended.</span>
+            <div className="flex items-center justify-center py-4">
+              <span className="px-4 py-2 rounded-lg bg-gray-100 text-gray-500 text-xs font-bold shadow-inner">This session has ended.</span>
             </div>
           ) : (
             <div className="flex items-end gap-3">
@@ -372,24 +368,21 @@ function ChatContent() {
                   onChange={e=>setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Type a message…"
-                  className="w-full bg-white/[0.04] border border-white/8 text-white placeholder-white/20 text-sm rounded-2xl px-4 py-3.5 pr-12 focus:outline-none focus:border-violet-500/40 transition duration-200 resize-none"
+                  className="w-full bg-gray-50 border border-gray-200 text-gray-900 font-medium placeholder-gray-400 text-sm rounded-2xl px-5 py-4 pr-12 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition duration-200 shadow-inner"
                 />
                 {input.length > 0 && (
-                  <button onClick={()=>setInput("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition duration-200">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  <button onClick={()=>setInput("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition duration-200">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
                   </button>
                 )}
               </div>
               <motion.button
                 onClick={()=>sendMessage()}
                 disabled={!input.trim() || sending}
-                whileHover={{ scale:1.06 }}
-                whileTap={{ scale:0.94 }}
-                style={{ willChange:"transform", background:"linear-gradient(135deg,#7c3aed,#0891b2)", opacity:(!input.trim()||sending)?0.5:1 }}
-                className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 cursor-pointer transition duration-200">
+                className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center flex-shrink-0 cursor-pointer transition shadow-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white">
                 {sending
-                  ? <svg className="w-5 h-5 animate-spin text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                  : <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                  ? <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                  : <svg className="w-5 h-5 text-white transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                 }
               </motion.button>
             </div>
@@ -402,7 +395,7 @@ function ChatContent() {
 
 export default function ChatPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#050008]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-gray-50" />}>
       <ChatContent />
     </Suspense>
   );

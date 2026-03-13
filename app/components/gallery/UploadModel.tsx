@@ -99,49 +99,42 @@ export default function UploadModel({ user, onClose, onUploaded }: UploadModelPr
     setUploading(false);
   }
 
-  const inputCls = "w-full bg-white/[0.03] border border-white/8 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-500/40 focus:shadow-[0_0_16px_rgba(139,92,246,0.08)] transition duration-200 placeholder:text-white/20";
-  const pillCls = (active: boolean, color = "violet") =>
-    `py-3 rounded-xl font-bold text-sm border transition duration-200 ${active
-      ? color === "cyan" ? "bg-cyan-500/12 border-cyan-500/30 text-cyan-300" : "bg-violet-500/18 border-violet-500/40 text-violet-300"
-      : "bg-white/[0.03] border-white/8 text-white/40 hover:border-white/15"}`;
+  const inputCls = "w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/10 transition duration-200 placeholder:text-gray-400 font-medium shadow-inner";
+  const pillCls = (active: boolean, color = "blue") =>
+    `py-3 rounded-xl font-extrabold text-sm border shadow-sm transition duration-200 ${active
+      ? color === "cyan" ? "bg-cyan-50 border-cyan-200 text-cyan-700" : "bg-blue-50 border-blue-200 text-blue-700"
+      : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-gray-900"}`;
 
   const steps = ["Select File", "Details", "Pricing", "Done!"];
 
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 font-sans"
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       >
-        <motion.div className="absolute inset-0 bg-black/75 backdrop-blur-md" onClick={onClose} />
+        {/* Backdrop */}
+        <motion.div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onClick={onClose} />
 
         <motion.div
-          className="relative z-10 w-full max-w-lg rounded-3xl border border-white/8 bg-[#07000e] shadow-[0_40px_100px_rgba(0,0,0,0.7)] overflow-hidden"
+          className="relative z-10 w-full max-w-lg rounded-[2rem] border border-gray-200 bg-white shadow-2xl overflow-hidden"
           initial={{ scale: 0.9, y: 24, opacity: 0 }}
           animate={{ scale: 1, y: 0, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 28 }}
         >
-          {/* Glow */}
-          <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-80 h-40 rounded-full"
-            style={{ background: "radial-gradient(ellipse, rgba(124,58,237,0.2) 0%, transparent 70%)", filter: "blur(40px)" }} />
-
-          {/* Top shimmer */}
-          <div className="absolute top-0 left-0 right-0 h-[1px]"
-            style={{ background: "linear-gradient(90deg, transparent, rgba(167,139,250,0.5), rgba(34,211,238,0.3), transparent)" }} />
-
           {/* Header */}
-          <div className="px-8 pt-8 pb-6 border-b border-white/6">
+          <div className="px-8 pt-8 pb-6 border-b border-gray-100 bg-gray-50/50">
             <div className="flex items-start justify-between mb-5">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-violet-400/70 mb-1">Upload to Gallery</p>
-                <h2 className="text-xl font-black text-white">
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-gray-400 mb-1.5">Upload to Gallery</p>
+                <h2 className="text-2xl font-black text-gray-900 tracking-tight">
                   {steps[(step - 1)]}
                 </h2>
               </div>
               <button onClick={onClose}
-                className="w-8 h-8 rounded-xl border border-white/8 bg-white/[0.04] text-white/35 hover:text-white/70 hover:border-white/20 transition duration-200 flex items-center justify-center flex-shrink-0">
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                className="w-8 h-8 rounded-xl border border-gray-200 bg-white text-gray-400 hover:text-gray-900 hover:bg-gray-50 shadow-sm transition duration-200 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -149,14 +142,13 @@ export default function UploadModel({ user, onClose, onUploaded }: UploadModelPr
 
             {/* Step indicators */}
             {step < 4 && (
-              <div className="flex gap-1.5">
+              <div className="flex gap-2">
                 {[1, 2, 3].map((s) => (
-                  <div key={s} className="relative h-1 flex-1 rounded-full bg-white/8 overflow-hidden">
+                  <div key={s} className="relative h-1.5 flex-1 rounded-full bg-gray-100 overflow-hidden shadow-inner">
                     <motion.div
                       animate={{ width: s <= step ? "100%" : "0%" }}
                       transition={{ duration: 0.4, ease: "easeOut" }}
-                      className="absolute inset-y-0 left-0 rounded-full"
-                      style={{ background: "linear-gradient(90deg, #7c3aed, #0891b2)" }}
+                      className="absolute inset-y-0 left-0 rounded-full bg-blue-600"
                     />
                   </div>
                 ))}
@@ -165,7 +157,7 @@ export default function UploadModel({ user, onClose, onUploaded }: UploadModelPr
           </div>
 
           {/* Body */}
-          <div className="px-8 py-7 max-h-[70vh] overflow-y-auto">
+          <div className="px-8 py-7 max-h-[70vh] overflow-y-auto bg-white">
             <AnimatePresence mode="wait">
 
               {/* STEP 1 — file drop */}
@@ -173,98 +165,103 @@ export default function UploadModel({ user, onClose, onUploaded }: UploadModelPr
                 <motion.div key="s1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }}>
                   <div
                     onClick={() => fileRef.current?.click()}
-                    className="border-2 border-dashed border-white/10 hover:border-violet-500/35 rounded-2xl p-14 text-center cursor-pointer transition duration-200 group"
+                    className="border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-blue-50 hover:border-blue-300 hover:shadow-inner rounded-3xl p-14 text-center cursor-pointer transition duration-200 group flex flex-col items-center justify-center min-h-[300px]"
                   >
                     <input ref={fileRef} type="file" accept={ACCEPTED_TYPES} onChange={handleModelFile} className="hidden" />
-                    <div className="w-14 h-14 rounded-2xl border border-white/10 bg-white/[0.03] flex items-center justify-center mx-auto mb-5 group-hover:border-violet-500/30 group-hover:bg-violet-500/5 transition duration-200">
-                      <svg className="w-7 h-7 text-white/25 group-hover:text-violet-400 transition duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-16 h-16 rounded-2xl border border-gray-200 bg-white flex items-center justify-center mx-auto mb-5 shadow-sm group-hover:border-blue-200 group-hover:bg-blue-100 transition duration-200">
+                      <svg className="w-8 h-8 text-gray-400 group-hover:text-blue-600 transition duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                       </svg>
                     </div>
-                    <p className="text-white/55 font-bold mb-2">Drop your 3D file here</p>
-                    <p className="text-white/25 text-sm">GLB · GLTF · OBJ · FBX · DWG · DXF</p>
-                    {error && <p className="text-rose-400 text-xs mt-4 flex items-center justify-center gap-1.5">
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {error}
-                    </p>}
+                    <p className="text-gray-900 font-extrabold text-lg mb-2 group-hover:text-blue-700 transition">Drop your 3D file here</p>
+                    <p className="text-gray-500 font-bold text-xs uppercase tracking-widest">GLB · GLTF · OBJ · FBX · DWG · DXF</p>
+                    
+                    {error && (
+                      <div className="mt-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-red-200 bg-red-50 text-red-600 text-xs font-bold shadow-sm">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {error}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               )}
 
               {/* STEP 2 — details */}
               {step === 2 && (
-                <motion.div key="s2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="space-y-4">
-                  <p className="text-xs text-violet-400/60 font-bold uppercase tracking-widest flex items-center gap-2">
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    {modelFile?.name}
-                  </p>
+                <motion.div key="s2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="space-y-5">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] text-blue-600 border border-blue-200 bg-blue-50 px-2.5 py-1 rounded-md shadow-sm font-black uppercase tracking-widest inline-flex items-center gap-2">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {modelFile?.name}
+                    </p>
+                  </div>
 
                   {/* Thumbnail */}
                   <div
                     onClick={() => thumbRef.current?.click()}
-                    className="relative aspect-video rounded-xl border-2 border-dashed border-white/8 hover:border-violet-500/25 overflow-hidden cursor-pointer transition duration-200 flex items-center justify-center group"
+                    className="relative aspect-video rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-blue-50 hover:border-blue-300 hover:shadow-inner overflow-hidden cursor-pointer transition duration-200 flex items-center justify-center group"
                   >
                     <input ref={thumbRef} type="file" accept="image/*" onChange={handleThumbnail} className="hidden" />
                     {thumbnailPreview
                       ? <img src={thumbnailPreview} className="w-full h-full object-cover" alt="thumb" />
                       : <div className="text-center">
-                          <div className="w-8 h-8 rounded-xl border border-white/8 bg-white/[0.02] flex items-center justify-center mx-auto mb-2 group-hover:border-violet-500/25 transition duration-200">
-                            <svg className="w-4 h-4 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          <div className="w-10 h-10 rounded-xl border border-gray-200 bg-white flex items-center justify-center mx-auto mb-3 shadow-sm group-hover:border-blue-200 group-hover:bg-blue-100 transition duration-200">
+                            <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                           </div>
-                          <p className="text-white/25 text-xs">Add thumbnail</p>
+                          <p className="text-gray-500 font-bold text-xs uppercase tracking-widest group-hover:text-blue-600 transition">Add Thumbnail Image</p>
                         </div>
                     }
                   </div>
 
-                  <input value={form.title} onChange={(e) => setF("title", e.target.value)} placeholder="Model title *" className={inputCls} />
-                  <textarea value={form.description} onChange={(e) => setF("description", e.target.value)} rows={2} placeholder="Description" className={inputCls + " resize-none"} />
+                  <div className="space-y-4">
+                    <input value={form.title} onChange={(e) => setF("title", e.target.value)} placeholder="Model Title *" className={inputCls} />
+                    <textarea value={form.description} onChange={(e) => setF("description", e.target.value)} rows={3} placeholder="Description (Optional)" className={inputCls + " resize-none"} />
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="relative">
-                      <select value={form.category} onChange={(e) => setF("category", e.target.value)} className={inputCls + " appearance-none pr-8"}>
-                        {CATEGORIES.map((c) => <option key={c} className="bg-[#080012]">{c}</option>)}
-                      </select>
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none">
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="relative">
+                        <select value={form.category} onChange={(e) => setF("category", e.target.value)} className={inputCls + " appearance-none cursor-pointer pr-10"}>
+                          {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </div>
                       </div>
+                      <input value={form.polygons} onChange={(e) => setF("polygons", e.target.value)} placeholder="Polygons (e.g. 15k)" className={inputCls} />
                     </div>
-                    <input value={form.polygons} onChange={(e) => setF("polygons", e.target.value)} placeholder="Polygon count" className={inputCls} />
+                    
+                    <input value={form.tags} onChange={(e) => setF("tags", e.target.value)} placeholder="Tags — separated by commas" className={inputCls} />
                   </div>
-                  <input value={form.tags} onChange={(e) => setF("tags", e.target.value)} placeholder="Tags — comma separated" className={inputCls} />
 
-                  <motion.button
+                  <button
                     onClick={() => setStep(3)}
                     disabled={!form.title}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.98 }}
-                    style={{ willChange: "transform", background: "linear-gradient(135deg, #7c3aed, #0891b2)" }}
-                    className="w-full py-4 rounded-2xl font-black text-white text-sm disabled:opacity-40 transition mt-2"
+                    className="w-full py-4 rounded-xl font-extrabold text-white text-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition shadow-sm mt-4"
                   >
                     Continue →
-                  </motion.button>
+                  </button>
                 </motion.div>
               )}
 
               {/* STEP 3 — pricing */}
               {step === 3 && (
-                <motion.div key="s3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="space-y-5">
+                <motion.div key="s3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="space-y-6">
 
                   <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/25 mb-3">Pricing Model</p>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button onClick={() => setF("isPaid", false)} className={pillCls(!form.isPaid)}>
-                        🔓 Free
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-3 block border-b border-gray-100 pb-2">Pricing Structure</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <button onClick={() => { setF("isPaid", false); setF("price", ""); }} className={pillCls(!form.isPaid, "gray")}>
+                        🔓 Free Access
                       </button>
-                      <button onClick={() => setF("isPaid", true)} className={pillCls(form.isPaid)}>
-                        💰 Paid
+                      <button onClick={() => setF("isPaid", true)} className={pillCls(form.isPaid, "green")}>
+                        💰 Paid Model
                       </button>
                     </div>
                   </div>
@@ -276,29 +273,30 @@ export default function UploadModel({ user, onClose, onUploaded }: UploadModelPr
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="space-y-4"
+                        className="space-y-6 overflow-hidden"
                       >
-                        <div>
-                          <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/25 mb-2">Price (₹)</p>
-                          <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-sm font-bold">₹</span>
+                        <div className="pt-2">
+                          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-3 block border-b border-gray-100 pb-2">Set Price</p>
+                          <div className="relative flex items-center">
+                            <span className="absolute left-5 text-gray-500 font-black text-lg">₹</span>
                             <input
                               type="number"
+                              min="0"
                               value={form.price}
                               onChange={(e) => setF("price", e.target.value)}
-                              placeholder="e.g. 499"
-                              className={inputCls + " pl-8"}
+                              placeholder="0.00"
+                              className="w-full border-2 border-green-200 bg-green-50 rounded-xl py-4 pl-10 pr-4 text-green-800 text-xl font-black placeholder-green-300 outline-none focus:border-green-400 focus:ring-4 focus:ring-green-500/10 transition duration-200 shadow-inner"
                             />
                           </div>
                         </div>
 
                         <div>
-                          <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/25 mb-2">Access Type</p>
-                          <div className="grid grid-cols-2 gap-3">
-                            <button onClick={() => setF("accessType", "purchase")} className={pillCls(form.accessType === "purchase", "cyan") + " text-xs"}>
-                              Direct Purchase
+                          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-3 block border-b border-gray-100 pb-2">Access Type</p>
+                          <div className="grid grid-cols-2 gap-4">
+                            <button onClick={() => setF("accessType", "purchase")} className={pillCls(form.accessType === "purchase", "indigo")}>
+                              Instant Purchase
                             </button>
-                            <button onClick={() => setF("accessType", "request")} className={pillCls(form.accessType === "request", "cyan") + " text-xs"}>
+                            <button onClick={() => setF("accessType", "request")} className={pillCls(form.accessType === "request", "indigo")}>
                               Request Access
                             </button>
                           </div>
@@ -308,83 +306,59 @@ export default function UploadModel({ user, onClose, onUploaded }: UploadModelPr
                   </AnimatePresence>
 
                   {error && (
-                    <p className="text-rose-400 text-xs flex items-center gap-1.5">
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-red-200 bg-red-50 text-red-600 text-xs font-bold shadow-sm">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       {error}
-                    </p>
-                  )}
-
-                  {uploading && (
-                    <div>
-                      <div className="flex justify-between text-xs text-white/35 mb-2">
-                        <span>Uploading...</span>
-                        <span>{progress}%</span>
-                      </div>
-                      <div className="h-1.5 rounded-full bg-white/8 overflow-hidden">
-                        <motion.div
-                          animate={{ width: `${progress}%` }}
-                          transition={{ ease: "easeOut" }}
-                          className="h-full rounded-full"
-                          style={{ background: "linear-gradient(90deg, #7c3aed, #22d3ee)" }}
-                        />
-                      </div>
                     </div>
                   )}
 
-                  <motion.button
-                    onClick={handleUpload}
-                    disabled={uploading || (form.isPaid && !form.price)}
-                    whileHover={{ scale: uploading ? 1 : 1.01 }}
-                    whileTap={{ scale: uploading ? 1 : 0.98 }}
-                    style={{ willChange: "transform", background: uploading ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #7c3aed, #0891b2)" }}
-                    className="w-full py-4 rounded-2xl font-black text-white text-sm disabled:opacity-40 transition relative overflow-hidden"
-                  >
-                    {!uploading && (
-                      <motion.div
-                        animate={{ x: ["-200%", "200%"] }}
-                        transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 4, ease: "linear" }}
-                        style={{ willChange: "transform", position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)", transform: "skewX(-20deg)", pointerEvents: "none" }}
-                      />
-                    )}
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      {uploading ? (
-                        <>
-                          <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          Uploading...
-                        </>
-                      ) : "🚀 Publish Model"}
-                    </span>
-                  </motion.button>
+                  <div className="mt-8 pt-4 border-t border-gray-100">
+                    <button
+                      onClick={handleUpload}
+                      disabled={uploading || (form.isPaid && !form.price) || (form.isPaid && parseFloat(form.price) <= 0)}
+                      className="relative w-full py-4 rounded-xl font-black text-white text-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition shadow-sm overflow-hidden flex items-center justify-center gap-2"
+                    >
+                      {uploading && (
+                        <div className="absolute inset-y-0 left-0 bg-blue-500/50" style={{ width: `${progress}%`, transition: 'width 0.2s ease-out' }} />
+                      )}
+                      
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        {uploading ? (
+                          <>
+                            <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Uploading... {progress}%
+                          </>
+                        ) : "🚀 Publish Model"}
+                      </span>
+                    </button>
+                  </div>
                 </motion.div>
               )}
 
               {/* STEP 4 — done */}
               {step === 4 && (
-                <motion.div key="s4" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} className="text-center py-10">
+                <motion.div key="s4" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} className="text-center py-12">
                   <motion.div
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 0.6 }}
-                    className="w-20 h-20 rounded-3xl border border-emerald-500/20 bg-emerald-500/8 flex items-center justify-center mx-auto mb-6"
+                    animate={{ scale: [1, 1.15, 1] }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    className="w-24 h-24 rounded-full border-4 border-green-100 bg-green-50 flex items-center justify-center mx-auto mb-6 shadow-sm"
                   >
-                    <svg className="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                     </svg>
                   </motion.div>
-                  <h3 className="text-2xl font-black text-white mb-2">Model Published!</h3>
-                  <p className="text-white/35 text-sm mb-8">Your model is now live in the SYNTHÉ gallery.</p>
-                  <motion.button
+                  <h3 className="text-2xl font-black text-gray-900 mb-2 tracking-tight">Model Published!</h3>
+                  <p className="text-gray-500 font-medium text-sm mb-8">Your 3D model is now live in the Synthe Gallery.</p>
+                  <button
                     onClick={onClose}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    style={{ willChange: "transform", background: "linear-gradient(135deg, #7c3aed, #0891b2)" }}
-                    className="px-8 py-3.5 rounded-2xl font-black text-white text-sm"
+                    className="px-8 py-3.5 rounded-xl font-extrabold text-white text-sm bg-blue-600 hover:bg-blue-700 shadow-sm transition"
                   >
-                    View Gallery →
-                  </motion.button>
+                    Back to Gallery →
+                  </button>
                 </motion.div>
               )}
 

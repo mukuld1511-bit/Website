@@ -98,10 +98,10 @@ export default function AdminDashboard() {
   const pendingCerts= certRequests.filter(c => c.status === "pending");
 
   const STATS = [
-    { label:"Total Models",    val: models.length,       colorClass:"text-blue-600", bgClass:"bg-blue-50", icon:"M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
-    { label:"Total Users",     val: users.length,        colorClass:"text-cyan-600", bgClass:"bg-cyan-50", icon:"M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
-    { label:"Developers",      val: developers.length,   colorClass:"text-emerald-600", bgClass:"bg-emerald-50", icon:"M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" },
-    { label:"Pending Actions", val: pendingApps.length + pendingCerts.length, colorClass:"text-amber-600", bgClass:"bg-amber-50", icon:"M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { label:"Total Models",    val: models.length,       colorClass:"text-blue-600", bgClass:"bg-blue-50", borderClass:"border-blue-200", icon:"M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
+    { label:"Total Users",     val: users.length,        colorClass:"text-cyan-600", bgClass:"bg-cyan-50", borderClass:"border-cyan-200", icon:"M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+    { label:"Developers",      val: developers.length,   colorClass:"text-emerald-600", bgClass:"bg-emerald-50", borderClass:"border-emerald-200", icon:"M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" },
+    { label:"Pending Actions", val: pendingApps.length + pendingCerts.length, colorClass:"text-amber-600", bgClass:"bg-amber-50", borderClass:"border-amber-200", icon:"M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
   ];
 
   const TABS: { id: typeof activeTab; label: string; badge?: number }[] = [
@@ -191,10 +191,10 @@ export default function AdminDashboard() {
         <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.15 }}
           className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
           {[
-            { label:"Free Models",    val: freeModels.length,   colorClass:"text-green-600", bgClass:"bg-green-50", border:"border-green-200" },
-            { label:"Paid Models",    val: paidModels.length,   colorClass:"text-yellow-600", bgClass:"bg-yellow-50", border:"border-yellow-200" },
-            { label:"Pending Apps",   val: pendingApps.length,  colorClass:"text-blue-600", bgClass:"bg-blue-50", border:"border-blue-200" },
-            { label:"Pending Certs",  val: pendingCerts.length, colorClass:"text-indigo-600", bgClass:"bg-indigo-50", border:"border-indigo-200" },
+            { label:"Free Models",    val: freeModels.length,   colorClass:"text-green-600", bgClass:"bg-green-50", borderClass:"border-green-200" },
+            { label:"Paid Models",    val: paidModels.length,   colorClass:"text-yellow-600", bgClass:"bg-yellow-50", borderClass:"border-yellow-200" },
+            { label:"Pending Apps",   val: pendingApps.length,  colorClass:"text-blue-600", bgClass:"bg-blue-50", borderClass:"border-blue-200" },
+            { label:"Pending Certs",  val: pendingCerts.length, colorClass:"text-indigo-600", bgClass:"bg-indigo-50", borderClass:"border-indigo-200" },
           ].map((s,i) => (
             <div key={i} className="p-4 rounded-xl border border-gray-200 bg-white shadow-sm flex items-center gap-4">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm ${s.bgClass} ${s.borderClass}`}>

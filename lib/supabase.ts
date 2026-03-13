@@ -7,7 +7,7 @@ const SUPABASE_URL =
 
 const SUPABASE_KEY =
   (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "").replace(/['"]/g, "").trim() ||
-  "sb_publishable_JKnQ3Wj2w6CWdLPexQ0jfQ_b3nl";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhtemt1eWhsdHZvaXVtbWVieHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MjQ0NDYsImV4cCI6MjA4OTAwMDQ0Nn0.4yNPom7LPv8-VpYH-1KtAsvL10OoflWdntloKcZC2u8";
 
 /**
  * Upload a file to Supabase Storage via direct REST API (no SDK / no JWT parsing).

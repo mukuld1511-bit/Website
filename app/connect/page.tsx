@@ -159,7 +159,7 @@ function RequestModal({ dev, user, onClose, onSuccess }: {
 }
 
 // ── Dev Card ──────────────────────────────────────────────────────────────────
-function DevCard({ dev, user, onConnect }: { dev:Developer; user:any; onConnect:(d:Developer)=>void }) {
+function DevCard({ dev, user, onConnect, onChat, onTute }: { dev:Developer; user:any; onConnect:(d:Developer)=>void; onChat:(d:Developer)=>void; onTute:(d:Developer)=>void; }) {
   const color = dev.color ?? "blue";
 
   return (
@@ -236,24 +236,33 @@ function DevCard({ dev, user, onConnect }: { dev:Developer; user:any; onConnect:
         </div>
 
         {/* Footer buttons — pinned to bottom */}
-        <div className="mt-auto pt-5 border-t border-gray-100 flex items-center gap-3">
-          <Link href={`/developer/${dev.userId || dev.id}`} className="flex-1">
-            <button className="w-full py-3 rounded-xl border border-gray-300 text-gray-700 text-sm font-bold text-center hover:bg-gray-50 transition duration-200">
-              View Profile
-            </button>
-          </Link>
+        <div className="mt-auto pt-5 border-t border-gray-100 flex flex-col gap-2">
           {user ? (
-            <button onClick={() => onConnect(dev)}
-              className={`flex-1 py-3 rounded-xl font-bold text-white text-sm bg-blue-600 hover:bg-blue-700 shadow-sm transition`}>
-              Request Project
-            </button>
+            <div className="flex flex-wrap gap-2 w-full">
+              <button onClick={() => onConnect(dev)} className={`flex-1 min-w-[30%] py-2.5 rounded-lg font-bold text-white text-[11px] bg-blue-600 hover:bg-blue-700 shadow-sm transition`}>
+                Request
+              </button>
+              <button onClick={() => onChat(dev)} className={`flex-1 min-w-[30%] py-2.5 rounded-lg font-bold text-blue-700 text-[11px] bg-blue-50 border border-blue-200 hover:bg-blue-100 shadow-sm transition`}>
+                Chat
+              </button>
+              {dev.bookingLink ? (
+                <button onClick={() => onTute(dev)} className={`flex-1 min-w-[30%] py-2.5 rounded-lg font-bold text-gray-700 text-[11px] bg-gray-50 border border-gray-200 hover:bg-gray-100 shadow-sm transition`}>
+                  Tute
+                </button>
+              ) : null}
+            </div>
           ) : (
-            <Link href="/login" className="flex-1">
-              <button className="w-full py-3 rounded-xl font-bold text-white text-sm text-center bg-blue-600 hover:bg-blue-700 shadow-sm transition">
-                Sign In
+            <Link href="/login" className="w-full">
+              <button className="w-full py-2.5 rounded-lg font-bold text-gray-700 text-sm bg-gray-100 hover:bg-gray-200 transition">
+                Sign In to Connect
               </button>
             </Link>
           )}
+          <Link href={`/developer/${dev.userId || dev.id}`} className="w-full">
+            <button className="w-full py-2.5 rounded-lg border border-gray-300 text-gray-700 text-[11px] font-bold text-center hover:bg-gray-50 transition duration-200">
+              View Profile
+            </button>
+          </Link>
         </div>
       </div>
     </div>
@@ -270,7 +279,8 @@ export default function ConnectPage() {
   const [search,      setSearch]      = useState("");
   const [skillFilter, setSkillFilter] = useState("All");
   const [certOnly,    setCertOnly]    = useState(false);
-  const [connectDev,  setConnectDev]  = useState<Developer | null>(null);
+  const [bookingDev,  setBookingDev]  = useState<Developer | null>(null);
+  const [initiatingChatWithDev, setInitiatingChatWithDev] = useState<string|null>(null);
   const [toast,       setToast]       = useState("");
 
   useEffect(() => {
@@ -323,10 +333,66 @@ export default function ConnectPage() {
 
   function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(""), 3000); }
 
-  function handleSessionCreated(sessionId: string) {
-    setConnectDev(null);
+  function handleRequestSuccess(reqId: string) {
+    setBookingDev(null);
     showToast("Request sent! Opening chat…");
-    setTimeout(() => router.push(`/connect/${sessionId}`), 800);
+    if (!reqId) return;
+    router.push(`/project-chat/${reqId}`);
+  }
+
+  async function handleChat(dev: Developer) {
+    if (!user) { router.push("/login"); return; }
+    setInitiatingChatWithDev(dev.id);
+    try {
+      // Check if chat already exists
+      const q = query(
+        collection(db, "projectChats"), 
+        where("developerId", "==", dev.userId || dev.id), 
+        where("clientId", "==", user.uid)
+      );
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        router.push(`/project-chat/${snap.docs[0].id}`);
+        return;
+      }
+
+      // Create new direct message chat
+      const chatsRef = collection(db, "projectChats");
+      const chatDoc = await addDoc(chatsRef, {
+        requestId:     "direct",
+        requestTitle:  "Direct Message",
+        clientId:      user.uid,
+        clientName:    user.displayName || "Client",
+        clientPhoto:   user.photoURL || "/avatar.png",
+        developerId:   dev.userId || dev.id,
+        developerName: dev.name,
+        developerPhoto: dev.profileImage || "/avatar.png",
+        status:        "active",
+        funded:        false,
+        fundedAmount:  0,
+        createdAt:     serverTimestamp(),
+        lastMessage:   "",
+        lastMessageAt: serverTimestamp(),
+      });
+
+      await addDoc(collection(db, "projectChats", chatDoc.id, "messages"), {
+        type:      "system",
+        text:      `💬 ${user.displayName || 'A client'} started a direct chat with you.`,
+        createdAt: serverTimestamp(),
+      });
+
+      router.push(`/project-chat/${chatDoc.id}`);
+    } catch (e) {
+      console.error(e);
+      alert("Failed to initiate chat.");
+    } finally {
+       setInitiatingChatWithDev(null);
+    }
+  }
+
+  function handleTute(dev: Developer) {
+    if (!dev.bookingLink) { alert("This developer has not provided a booking link."); return; }
+    window.open(dev.bookingLink, "_blank");
   }
 
   return (
@@ -444,7 +510,7 @@ export default function ConnectPage() {
                 <motion.div key={dev.id} initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-50px" }}
                   transition={{ duration:0.5, delay: i * 0.05 }} className="flex">
                   <div className="w-full">
-                    <DevCard dev={dev} user={user} onConnect={setConnectDev} />
+                    <DevCard dev={dev} user={user} onConnect={setBookingDev} onChat={handleChat} onTute={handleTute} />
                   </div>
                 </motion.div>
               ))}
@@ -484,11 +550,11 @@ export default function ConnectPage() {
       <Footer />
 
       <AnimatePresence>
-        {connectDev && user && (
-          <RequestModal dev={connectDev} user={user}
-            onClose={() => setConnectDev(null)}
-            onSuccess={handleSessionCreated} />
-        )}
+        {bookingDev && (
+        <RequestModal dev={bookingDev} user={user}
+          onClose={()=>setBookingDev(null)}
+          onSuccess={handleRequestSuccess} />
+      )}
       </AnimatePresence>
 
       <AnimatePresence>

@@ -2,9 +2,9 @@
 
 import { useState, useRef, ChangeEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { db, storage } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { supabase } from "@/lib/supabase";
 import type { User } from "firebase/auth";
 import type { AccessType, FileType } from "@/types/gallery";
 
@@ -60,24 +60,44 @@ export default function UploadModel({ user, onClose, onUploaded }: UploadModelPr
     if (!modelFile || !form.title) return;
     setUploading(true); setError(null);
     try {
-      const mRef = ref(storage, `models/${user.uid}/${Date.now()}_${modelFile.name}`);
-      const mUpload = uploadBytesResumable(mRef, modelFile);
-      const modelUrl: string = await new Promise((resolve, reject) => {
-        mUpload.on("state_changed",
-          (snap) => setProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 80)),
-          reject,
-          async () => resolve(await getDownloadURL(mUpload.snapshot.ref))
-        );
-      });
+      // 1. Upload Model to Supabase
+      const modelPath = `${user.uid}/${Date.now()}_${modelFile.name}`;
+      const { error: modelError } = await supabase.storage
+        .from("models")
+        .upload(modelPath, modelFile, {
+          cacheControl: "3600",
+          upsert: false,
+        });
 
+      if (modelError) throw new Error("Model upload failed: " + modelError.message);
+      
+      const { data: { publicUrl: modelUrl } } = supabase.storage
+        .from("models")
+        .getPublicUrl(modelPath);
+
+      setProgress(50);
+
+      // 2. Upload Thumbnail to Supabase
       let thumbnailUrl = "";
       if (thumbnailFile) {
-        setProgress(85);
-        const tRef = ref(storage, `thumbnails/${user.uid}/${Date.now()}_thumb`);
-        const tUp = uploadBytesResumable(tRef, thumbnailFile);
-        await new Promise<void>((res, rej) => tUp.on("state_changed", undefined, rej, res));
-        thumbnailUrl = await getDownloadURL(tRef);
+        const thumbPath = `${user.uid}/${Date.now()}_thumb_${thumbnailFile.name}`;
+        const { error: thumbError } = await supabase.storage
+          .from("thumbnails")
+          .upload(thumbPath, thumbnailFile, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (thumbError) throw new Error("Thumbnail upload failed: " + thumbError.message);
+
+        const { data: { publicUrl: tUrl } } = supabase.storage
+          .from("thumbnails")
+          .getPublicUrl(thumbPath);
+          
+        thumbnailUrl = tUrl;
       }
+
+      setProgress(85);
 
       setProgress(95);
       const fileExt = modelFile.name.split(".").pop()?.toLowerCase() as FileType;

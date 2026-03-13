@@ -1,0 +1,16 @@
+Synthe - 3D Developer & Client Collaboration Platform
+
+Synthe is an innovative web platform built with Next.js that bridges the gap between 3D model developers (creators) and clients. It provides a comprehensive ecosystem for posting projects, reviewing applications, real-time negotiations, secure payments via Razorpay, and direct 1-on-1 mentorship bookings.
+
+Key Features:
+1. Public Project Requests: Clients can post open jobs. Developers can apply with a bid and proposal.
+2. Real-Time Project Chat: An integrated messaging system where approved developers and clients can discuss requirements securely.
+3. Integrated Razorpay Billing: Clients can directly fund projects and pay developers within the chat interface.
+4. Mentorship / Tutoring: Developers can set hourly rates and clients can book structured tutoring sessions.
+5. 3D Model Gallery: A dedicated space to showcase and sell 3D models (GLB, OBJ, FBX) and AutoCAD designs.
+6. Modern UI: Professional, minimal light theme aesthetic with smooth Framer Motion animations.
+
+Tech Stack:
+- Frontend: Next.js 14, React, Tailwind CSS, Framer Motion, Three.js (React Three Fiber)
+- Backend/Database: Firebase Auth + Firestore, Supabase Storage (for large model files)
+- Payments: Razorpay API integration

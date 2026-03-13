@@ -8,6 +8,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
+export const dynamic = "force-dynamic";
+
 function SignupContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();

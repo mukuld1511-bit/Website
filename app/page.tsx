@@ -549,37 +549,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Open requests */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-white/50 text-xs font-black uppercase tracking-widest">Open Requests</p>
-                  <Link href="/requests"><span className="text-pink-400/70 text-xs font-black hover:text-pink-300 transition duration-200">Post one →</span></Link>
-                </div>
-                <div className="space-y-2">
-                  <motion.div initial={{ opacity:0, x:-12 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }}>
-                    <Link href="/requests/post">
-                      <div className="group flex items-center gap-3 p-4 rounded-2xl border border-dashed border-white/10 hover:border-pink-500/30 transition duration-200 cursor-pointer">
-                        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-black" style={{ background:"#fb718518", border:"1px solid #fb718530", color:"#fb7185" }}>+</div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-white/60 text-xs font-black group-hover:text-white transition duration-200">Post a Project Request</p>
-                          <p className="text-white/25 text-[10px] mt-0.5">Developers will apply with proposals</p>
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                  <motion.div initial={{ opacity:0, x:-12 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ delay:0.08 }}>
-                    <Link href="/connect">
-                      <div className="group flex items-center gap-3 p-4 rounded-2xl border border-white/6 bg-white/[0.025] hover:border-white/14 transition duration-200 cursor-pointer">
-                        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-black" style={{ background:"#a78bfa18", border:"1px solid #a78bfa30", color:"#a78bfa" }}>↗</div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-white text-xs font-black truncate">Hire a Developer Directly</p>
-                          <p className="text-white/30 text-[10px] mt-0.5">Browse verified 3D/AR/VR developers</p>
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                </div>
-              </div>
+
 
               {/* Live tutors */}
               <div>

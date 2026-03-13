@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -68,7 +68,7 @@ function SignupContent() {
         profileImage: "/avatar.png",
         photoURL:     "/avatar.png",
         certified:    false,
-        createdAt:    new Date(),
+        createdAt:    serverTimestamp(),
       });
 
       // ✅ Route based on selected role

@@ -15,12 +15,6 @@ const GALLERY_DROPDOWN = [
   { label: "AutoCAD",    href: "/autocad",           color: "#fbbf24", desc: "DWG · DXF Files" },
 ];
 
-const FREELANCE_DROPDOWN = [
-  { label: "Browse Projects", href: "/freelance",       color: "#34d399", desc: "Find work as a developer" },
-  { label: "Post a Project",  href: "/freelance/post",  color: "#22d3ee", desc: "Hire a 3D / CAD developer" },
-  { label: "Public Requests", href: "/requests",        color: "#a78bfa", desc: "Community model requests" },
-  { label: "Post a Request",  href: "/requests/post",   color: "#818cf8", desc: "Request a model publicly" },
-];
 
 const MOBILE_PLATFORM = [
   { label: "AutoCAD",      href: "/autocad",       icon: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18",                                                                                                                                                                                                                                                          color: "#fbbf24" },
@@ -36,13 +30,13 @@ export default function Navbar() {
   const [scrolled,      setScrolled]      = useState(false);
   const [mobileOpen,    setMobileOpen]    = useState(false);
   const [galleryOpen,   setGalleryOpen]   = useState(false);
-  const [freelanceOpen, setFreelanceOpen] = useState(false);
+
   const [profileOpen,   setProfileOpen]   = useState(false);
 
   const pathname     = usePathname();
   const router       = useRouter();
   const galleryRef   = useRef<HTMLDivElement>(null);
-  const freelanceRef = useRef<HTMLDivElement>(null);
+
   const profileRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,7 +53,6 @@ export default function Navbar() {
   useEffect(() => {
     function handler(e: MouseEvent) {
       if (galleryRef.current   && !galleryRef.current.contains(e.target as Node))   setGalleryOpen(false);
-      if (freelanceRef.current && !freelanceRef.current.contains(e.target as Node)) setFreelanceOpen(false);
       if (profileRef.current   && !profileRef.current.contains(e.target as Node))   setProfileOpen(false);
     }
     document.addEventListener("mousedown", handler);
@@ -137,7 +130,7 @@ export default function Navbar() {
 
             {/* Gallery dropdown */}
             <div ref={galleryRef} className="relative">
-              <button onClick={() => { setGalleryOpen(v => !v); setFreelanceOpen(false); }}
+              <button onClick={() => { setGalleryOpen(v => !v); }}
                 className={`flex items-center gap-1.5 ${linkCls(isActive("/gallery"))}`}>
                 Gallery
                 <svg className={`w-3 h-3 transition-transform duration-200 ${galleryOpen ? "rotate-180" : ""}`}
@@ -168,42 +161,12 @@ export default function Navbar() {
               </button>
             </Link>
 
-            {/* Freelance + Requests dropdown */}
-            <div ref={freelanceRef} className="relative">
-              <button onClick={() => { setFreelanceOpen(v => !v); setGalleryOpen(false); }}
-                className={`flex items-center gap-1.5 ${linkCls(isActive("/freelance") || isActive("/requests"), "emerald")}`}>
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                Freelance
-                <svg className={`w-3 h-3 transition-transform duration-200 ${freelanceOpen ? "rotate-180" : ""}`}
-                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+            {/* Requests */}
+            <Link href="/requests">
+              <button className={linkCls(isActive("/requests"), "emerald")}>
+                Requests
               </button>
-              <AnimatePresence>
-                {freelanceOpen && (
-                  <motion.div {...dropAnim} className={dropPanel}>
-                    <div className="absolute top-0 left-0 right-0 h-[1px]"
-                      style={{ background:"linear-gradient(90deg,transparent,rgba(52,211,153,0.4),transparent)" }} />
-                    <div className="px-3 pt-3 pb-1">
-                      <p className="text-[9px] font-black uppercase tracking-[0.25em] text-emerald-400/60">Freelance</p>
-                    </div>
-                    <div className="px-2 pb-1">
-                      {FREELANCE_DROPDOWN.slice(0,2).map(item => <DropItem key={item.href} item={item} onClose={() => setFreelanceOpen(false)} />)}
-                    </div>
-                    <div className="h-[1px] bg-white/5 mx-3" />
-                    <div className="px-3 pt-2 pb-1">
-                      <p className="text-[9px] font-black uppercase tracking-[0.25em] text-violet-400/60">Public Requests</p>
-                    </div>
-                    <div className="px-2 pb-2">
-                      {FREELANCE_DROPDOWN.slice(2).map(item => <DropItem key={item.href} item={item} onClose={() => setFreelanceOpen(false)} />)}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            </Link>
 
             {/* Developers */}
             <Link href="/connect">
@@ -264,7 +227,6 @@ export default function Navbar() {
                           { label:"Upload Model", href:"/upload",        icon:"M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
                           { label:"My Requests",  href:"/requests",      icon:"M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" },
                           { label:"Post Request", href:"/requests/post", icon:"M12 4v16m8-8H4" },
-                          { label:"Freelance",    href:"/freelance",     icon:"M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
                           { label:"GYOP",         href:"/gyop",          icon:"M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
                         ].map(item => (
                           <Link key={item.href} href={item.href} onClick={() => setProfileOpen(false)}>
@@ -352,41 +314,20 @@ export default function Navbar() {
 
               <div className="h-[1px] bg-white/5 my-1" />
 
-              {/* Freelance section */}
-              <p className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400/50 px-3 pt-1 pb-2">Freelance</p>
-              {FREELANCE_DROPDOWN.slice(0,2).map((item, i) => (
-                <motion.div key={item.href} initial={{ opacity:0, x:-12 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.25, delay:0.18+i*0.04 }}>
-                  <Link href={item.href} onClick={() => setMobileOpen(false)}>
-                    <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition duration-150 cursor-pointer">
-                      <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background:`${item.color}18` }}>
-                        <div className="w-1.5 h-1.5 rounded-full" style={{ background:item.color }} />
-                      </div>
-                      <div>
-                        <p className="text-white/80 text-sm font-bold">{item.label}</p>
-                        <p className="text-white/25 text-[10px]">{item.desc}</p>
-                      </div>
+              {/* Requests section */}
+              <motion.div initial={{ opacity:0, x:-12 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.25, delay:0.18 }}>
+                <Link href="/requests" onClick={() => setMobileOpen(false)}>
+                  <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition duration-150 cursor-pointer">
+                    <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background:"#a78bfa18" }}>
+                      <div className="w-1.5 h-1.5 rounded-full" style={{ background:"#a78bfa" }} />
                     </div>
-                  </Link>
-                </motion.div>
-              ))}
-
-              {/* Public Requests section */}
-              <p className="text-[9px] font-black uppercase tracking-[0.3em] text-violet-400/50 px-3 pt-2 pb-2">Public Requests</p>
-              {FREELANCE_DROPDOWN.slice(2).map((item, i) => (
-                <motion.div key={item.href} initial={{ opacity:0, x:-12 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.25, delay:0.28+i*0.04 }}>
-                  <Link href={item.href} onClick={() => setMobileOpen(false)}>
-                    <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition duration-150 cursor-pointer">
-                      <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background:`${item.color}18` }}>
-                        <div className="w-1.5 h-1.5 rounded-full" style={{ background:item.color }} />
-                      </div>
-                      <div>
-                        <p className="text-white/80 text-sm font-bold">{item.label}</p>
-                        <p className="text-white/25 text-[10px]">{item.desc}</p>
-                      </div>
+                    <div>
+                      <p className="text-white/80 text-sm font-bold">Requests</p>
+                      <p className="text-white/25 text-[10px]">Post or browse project requests</p>
                     </div>
-                  </Link>
-                </motion.div>
-              ))}
+                  </div>
+                </Link>
+              </motion.div>
 
               <div className="h-[1px] bg-white/5 my-1" />
 
@@ -429,7 +370,6 @@ export default function Navbar() {
                     { href:"/dashboard",    label:"Dashboard" },
                     { href:"/profile",      label:"Profile" },
                     { href:"/upload",       label:"Upload Model" },
-                    { href:"/freelance",    label:"Freelance" },
                     { href:"/requests/post",label:"Post Request" },
                     { href:"/gyop",         label:"GYOP" },
                   ].map(item => (

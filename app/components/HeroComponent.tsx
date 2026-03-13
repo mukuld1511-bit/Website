@@ -147,7 +147,6 @@ export default function HeroComponent({ user, stats, statsLoading }: HeroProps) 
     { label:"3D Gallery",    color:"#a78bfa", href:"/gallery"         },
     { label:"AR / VR",       color:"#34d399", href:"/gallery?mode=ar" },
     { label:"AutoCAD Hub",   color:"#fbbf24", href:"/autocad"         },
-    { label:"Freelance",     color:"#fb7185", href:"/freelance"       },
     { label:"Certification", color:"#818cf8", href:"/certification"   },
     { label:"PIET Collab",   color:"#22d3ee", href:"/collaborators"   },
     { label:"Requests",      color:"#38bdf8", href:"/requests"        },

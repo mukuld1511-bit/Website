@@ -11,7 +11,6 @@ import { motion, useSpring, useMotionValue, AnimatePresence } from "framer-motio
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 import HeroComponent from "./components/HeroComponent";
 
 const ScrollingGallery = dynamic(() => import("./components/ScrollingGallery"), { ssr: false });
@@ -28,10 +27,6 @@ interface TutorProfile {
   id: string; name: string; avatar: string; skills: string[];
   hourlyRate: number; currency: string; rating: number; totalSessions: number; color: string;
 }
-interface FreelanceProject {
-  id: string; title: string; category: string; budget: string; status: string;
-  skills: string[]; clientId: string; bidsCount: number; createdAt: any;
-}
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const FILE_COLORS: Record<string, string> = {
@@ -39,7 +34,7 @@ const FILE_COLORS: Record<string, string> = {
 };
 
 const PLATFORM_TICKER = [
-  "3D Models","AR Ready","VR Ready","AutoCAD","Freelance","Certification",
+  "3D Models","AR Ready","VR Ready","AutoCAD","Requests","Certification",
   "Connect & Learn","PIET Collab","Shader Art","Real-time 3D",
 ];
 
@@ -59,9 +54,6 @@ const FEATURES = [
   { title:"Certification",     href:"/certification",     color:"#818cf8", tag:"Verified",
     desc:"Apply for developer certification. Unlock verified badge, priority listing and exclusive opportunities.",
     icon:"M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" },
-  { title:"Freelance Market",  href:"/freelance",         color:"#fb7185", tag:"Hire now",
-    desc:"Post projects, receive developer bids and collaborate via milestone-based escrow payments.",
-    icon:"M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
   { title:"Public Requests",   href:"/requests",          color:"#38bdf8", tag:"Open bids",
     desc:"Publicly request a custom 3D model. Developers apply with proposals — you pick the best.",
     icon:"M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" },
@@ -308,30 +300,6 @@ function FeatureCard({ f, i }: { f:typeof FEATURES[0]; i:number }) {
   );
 }
 
-// ─── Project pill ─────────────────────────────────────────────────────────────
-function ProjectPill({ p, i }: { p:FreelanceProject; i:number }) {
-  const colors = ["#a78bfa","#22d3ee","#34d399","#fbbf24","#fb7185","#818cf8","#38bdf8"];
-  const color  = colors[i % colors.length];
-  return (
-    <motion.div initial={{ opacity:0, scale:0.9 }} whileInView={{ opacity:1, scale:1 }}
-      viewport={{ once:true }} transition={{ delay:i*0.07 }}>
-      <Link href={`/freelance/${p.id}`}>
-        <div className="group flex items-center gap-3 p-4 rounded-2xl border border-white/6 bg-white/[0.025] hover:border-white/14 transition duration-200 cursor-pointer">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-black"
-            style={{ background:`${color}18`, border:`1px solid ${color}30`, color }}>
-            {p.category?.slice(0,2).toUpperCase() || "3D"}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-white text-xs font-black truncate">{p.title}</p>
-            <p className="text-white/30 text-[10px] mt-0.5">{p.budget} · {p.bidsCount ?? 0} bids</p>
-          </div>
-          <div className="px-2 py-0.5 rounded-md text-[9px] font-black border"
-            style={{ background:"#22c55e18", borderColor:"#22c55e35", color:"#4ade80" }}>Open</div>
-        </div>
-      </Link>
-    </motion.div>
-  );
-}
 
 // ─── Tutor card ───────────────────────────────────────────────────────────────
 function TutorCard({ t, i }: { t:TutorProfile; i:number }) {
@@ -376,7 +344,6 @@ export default function HomePage() {
   const [recentModels,  setRecentModels]  = useState<RecentModel[]>([]);
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [tutors,        setTutors]        = useState<TutorProfile[]>([]);
-  const [openProjects,  setOpenProjects]  = useState<FreelanceProject[]>([]);
   const [stats,         setStats]         = useState({ models:0, developers:0, downloads:0, certifications:0 });
   const [statsLoading,  setStatsLoading]  = useState(true);
 
@@ -449,7 +416,7 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    getDocs(query(collection(db,"models"), where("status","==","published"), orderBy("uploadedAt","desc"), limit(8)))
+    getDocs(query(collection(db,"models"), orderBy("uploadedAt","desc"), limit(8)))
       .then(s => setRecentModels(s.docs.map(d=>({id:d.id,...d.data()} as RecentModel))))
       .catch(console.error);
   }, []);
@@ -466,11 +433,6 @@ export default function HomePage() {
       .catch(console.error);
   }, []);
 
-  useEffect(() => {
-    getDocs(query(collection(db,"freelanceProjects"), where("status","==","open"), orderBy("createdAt","desc"), limit(5)))
-      .then(s => setOpenProjects(s.docs.map(d=>({id:d.id,...d.data()} as FreelanceProject))))
-      .catch(console.error);
-  }, []);
 
   const STATS_CFG = [
     { label:"3D Models",     val:stats.models,        color:"#a78bfa" },
@@ -586,19 +548,35 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Open projects */}
+              {/* Open requests */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <p className="text-white/50 text-xs font-black uppercase tracking-widest">Open Projects</p>
-                  <Link href="/freelance"><span className="text-pink-400/70 text-xs font-black hover:text-pink-300 transition duration-200">View all →</span></Link>
+                  <p className="text-white/50 text-xs font-black uppercase tracking-widest">Open Requests</p>
+                  <Link href="/requests"><span className="text-pink-400/70 text-xs font-black hover:text-pink-300 transition duration-200">Post one →</span></Link>
                 </div>
                 <div className="space-y-2">
-                  {openProjects.length > 0
-                    ? openProjects.map((p,i) => <ProjectPill key={p.id} p={p} i={i} />)
-                    : Array.from({length:5}).map((_,i) => (
-                        <div key={i} className="h-16 rounded-2xl bg-white/[0.02] border border-white/4 animate-pulse" />
-                      ))
-                  }
+                  <motion.div initial={{ opacity:0, x:-12 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }}>
+                    <Link href="/requests/post">
+                      <div className="group flex items-center gap-3 p-4 rounded-2xl border border-dashed border-white/10 hover:border-pink-500/30 transition duration-200 cursor-pointer">
+                        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-black" style={{ background:"#fb718518", border:"1px solid #fb718530", color:"#fb7185" }}>+</div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white/60 text-xs font-black group-hover:text-white transition duration-200">Post a Project Request</p>
+                          <p className="text-white/25 text-[10px] mt-0.5">Developers will apply with proposals</p>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                  <motion.div initial={{ opacity:0, x:-12 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ delay:0.08 }}>
+                    <Link href="/connect">
+                      <div className="group flex items-center gap-3 p-4 rounded-2xl border border-white/6 bg-white/[0.025] hover:border-white/14 transition duration-200 cursor-pointer">
+                        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-black" style={{ background:"#a78bfa18", border:"1px solid #a78bfa30", color:"#a78bfa" }}>↗</div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white text-xs font-black truncate">Hire a Developer Directly</p>
+                          <p className="text-white/30 text-[10px] mt-0.5">Browse verified 3D/AR/VR developers</p>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
                 </div>
               </div>
 
@@ -736,7 +714,7 @@ export default function HomePage() {
                   { label:"Browse Gallery",  href:"/gallery",       color:"#a78bfa" },
                   { label:"Find Developers", href:"/connect",       color:"#22d3ee" },
                   { label:"AutoCAD Hub",     href:"/autocad",       color:"#fbbf24" },
-                  { label:"Freelance",       href:"/freelance",     color:"#34d399" },
+                  { label:"Post a Request",  href:"/requests/post", color:"#34d399" },
                   { label:"PIET Collab",     href:"/collaborators", color:"#818cf8" },
                   { label:"Get Certified",   href:"/certification", color:"#fb7185" },
                 ].map((l,i) => (

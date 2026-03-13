@@ -3,11 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db } from "../../../lib/firebase";
-import { collection, getDocs, query, where, Timestamp } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { motion } from "framer-motion";
 
 const PLATFORM_FEE = 0.15;
-const RAZORPAY_FEE = 0.02;
 
 type FirestoreDoc = {
   id: string;
@@ -19,7 +18,6 @@ export default function DeveloperDashboard() {
   const router = useRouter();
 
   const [uploads, setUploads]       = useState<FirestoreDoc[]>([]);
-  const [bids, setBids]             = useState<FirestoreDoc[]>([]);
   const [sessions, setSessions]     = useState<FirestoreDoc[]>([]);
   const [purchases, setPurchases]   = useState<FirestoreDoc[]>([]);
   const [certStatus, setCertStatus] = useState<string | null>(null);
@@ -36,7 +34,6 @@ export default function DeveloperDashboard() {
   const loadAll = async (uid: string) => {
     await Promise.all([
       loadUploads(uid),
-      loadBids(uid),
       loadSessions(uid),
       loadPurchases(uid),
       loadCert(uid),
@@ -50,13 +47,6 @@ export default function DeveloperDashboard() {
     setUploads(snap.docs.map((d) => ({ id: d.id, ...d.data() } as FirestoreDoc)));
   };
 
-  const loadBids = async (uid: string) => {
-    const q = query(collection(db, "freelanceBids"), where("developerId", "==", uid));
-    const snap = await getDocs(q);
-    const list: FirestoreDoc[] = snap.docs.map((d) => ({ id: d.id, ...d.data() } as FirestoreDoc));
-    list.sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0));
-    setBids(list);
-  };
 
   const loadSessions = async (uid: string) => {
     const q = query(collection(db, "chatSessions"), where("tutorUserId", "==", uid));
@@ -84,10 +74,10 @@ export default function DeveloperDashboard() {
   const grossRevenue = purchases.reduce((s, p) => s + (p.amount ?? 0), 0);
   const netEarnings  = purchases.reduce((s, p) => {
     const gross = p.amount ?? 0;
-    return s + gross * (1 - PLATFORM_FEE - RAZORPAY_FEE);
+    return s + gross * (1 - PLATFORM_FEE);
+
   }, 0);
 
-  const activeBids     = bids.filter((b) => b.status === "pending").length;
   const activeSessions = sessions.filter((s) => s.status === "active").length;
 
   const statusBadge = (s: string) => {
@@ -152,7 +142,6 @@ export default function DeveloperDashboard() {
           {[
             { label: "Uploads",          val: uploads.length,               color: "#a78bfa" },
             { label: "Net Earnings",     val: `₹${netEarnings.toFixed(0)}`, color: "#34d399" },
-            { label: "Active Bids",      val: activeBids,                   color: "#fbbf24", highlight: activeBids > 0 },
             { label: "Connect Sessions", val: activeSessions,               color: "#22d3ee", highlight: activeSessions > 0 },
           ].map((s, i) => (
             <div
@@ -175,10 +164,10 @@ export default function DeveloperDashboard() {
           className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10"
         >
           {[
-            { label: "Upload Model",     icon: "⬆", href: "/upload",        gradient: "linear-gradient(135deg,#7c3aed,#0891b2)" },
-            { label: "Browse Freelance", icon: "💼", href: "/freelance",     gradient: "linear-gradient(135deg,#0891b2,#0369a1)" },
-            { label: "Connect Page",     icon: "🔗", href: "/connect",       gradient: "linear-gradient(135deg,#0891b2,#22d3ee88)" },
-            { label: "Get Certified",    icon: "🎓", href: "/certification", gradient: "linear-gradient(135deg,#d97706,#f59e0b)" },
+            { label: "Upload Model",    icon: "⬆", href: "/upload",        gradient: "linear-gradient(135deg,#7c3aed,#0891b2)" },
+            { label: "Post a Request",  icon: "📋", href: "/requests/post", gradient: "linear-gradient(135deg,#0891b2,#0369a1)" },
+            { label: "Connect Page",    icon: "🔗", href: "/connect",       gradient: "linear-gradient(135deg,#0891b2,#22d3ee88)" },
+            { label: "Get Certified",   icon: "🎓", href: "/certification", gradient: "linear-gradient(135deg,#d97706,#f59e0b)" },
           ].map((q, i) => (
             <motion.button
               key={i}
@@ -254,35 +243,6 @@ export default function DeveloperDashboard() {
                       </div>
                       <p className="text-white/30 text-xs mt-1.5 line-clamp-1">{m.description}</p>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </DashSection>
-
-        {/* My Bids */}
-        <DashSection title="My Bids" subtitle="Your proposals on freelance projects" delay={0.24} accent="#fbbf24">
-          {bids.length === 0 ? (
-            <Empty icon="💼" text="No bids placed yet. Browse the Freelance Market!" />
-          ) : (
-            <div className="flex flex-col gap-3">
-              {bids.map((b) => (
-                <div key={b.id} className="rounded-2xl border border-white/6 bg-white/[0.02] p-5 flex flex-col sm:flex-row sm:items-center gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="text-white font-bold text-sm truncate">{b.projectTitle ?? "Freelance Project"}</span>
-                      <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border ${statusBadge(b.status ?? "pending")}`}>
-                        {b.status ?? "pending"}
-                      </span>
-                    </div>
-                    <p className="text-white/40 text-xs line-clamp-1">{b.proposal}</p>
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    <p className="text-amber-300 font-black text-lg">₹{b.amount?.toLocaleString()}</p>
-                    <p className="text-white/25 text-xs">
-                      You earn ₹{(b.amount * (1 - PLATFORM_FEE - RAZORPAY_FEE)).toFixed(0)}
-                    </p>
                   </div>
                 </div>
               ))}

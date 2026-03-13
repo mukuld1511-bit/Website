@@ -66,7 +66,6 @@ export default function JoinPage() {
                   <div className="space-y-2.5 mb-7">
                     {[
                       "Browse & download 3D/AR/VR content",
-                      "Post projects on the Freelance Market",
                       "Hire developers directly",
                       "Access AutoCAD files and designs",
                     ].map((f,i) => (
@@ -131,7 +130,6 @@ export default function JoinPage() {
                     {[
                       "Upload & sell 3D models and AR/VR builds",
                       "Receive direct project requests from clients",
-                      "Bid on Freelance Market projects",
                       "Get certified — earn more & rank higher",
                     ].map((f,i) => (
                       <div key={i} className="flex items-center gap-2.5">

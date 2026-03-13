@@ -18,13 +18,13 @@ const OPTIONS = [
   },
   {
     num:   "02",
-    title: "Freelance Market",
-    desc:  "Post your project publicly. Verified developers submit competitive bids with proposals and timelines. Compare, choose, and build.",
-    href:  "/freelance",
+    title: "Post a Request",
+    desc:  "Describe your project publicly. Verified developers apply with proposals, timelines and pricing. Review, choose the best fit, and build.",
+    href:  "/requests/post",
     color: "#34d399",
-    tags:  ["Open Bidding","Compare Proposals","Escrow Payments"],
-    icon:  "M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
-    cta:   "View Projects →",
+    tags:  ["Open Proposals","Compare Bids","Secure Payments"],
+    icon:  "M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z",
+    cta:   "Post a Request →",
   },
 ];
 

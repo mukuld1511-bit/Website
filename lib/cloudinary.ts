@@ -1,5 +1,6 @@
 export async function uploadToCloudinary(
   file: File,
+  resourceType: "image" | "video" | "raw" | "auto" = "auto",
   onProgress?: (pct: number) => void
 ): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -42,7 +43,7 @@ export async function uploadToCloudinary(
 
     xhr.open(
       "POST",
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`
     );
     xhr.send(formData);
   });

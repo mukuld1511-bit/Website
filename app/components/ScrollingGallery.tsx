@@ -19,57 +19,55 @@ interface Model {
 }
 
 const FILE_COLORS: Record<string, string> = {
-  glb:"#a78bfa", gltf:"#a78bfa",
-  obj:"#22d3ee", fbx:"#22d3ee",
-  dwg:"#fbbf24", dxf:"#fbbf24",
+  glb:"#3b82f6", gltf:"#3b82f6",
+  obj:"#10b981", fbx:"#10b981",
+  dwg:"#f59e0b", dxf:"#f59e0b",
 };
 
 function MarqueeRow({ items, reverse = false }: { items: Model[]; reverse?: boolean }) {
   if (!items.length) return null;
   const doubled = [...items, ...items];
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden w-full">
       <motion.div
         className="flex gap-4"
-        animate={{ x: reverse ? ["0%","50%"] : ["0%","-50%"] }}
+        animate={{ x: reverse ? ["0%","-50%"] : ["-50%","0%"] }}
         transition={{ duration: items.length * 4, repeat:Infinity, ease:"linear" }}
         style={{ willChange:"transform", width:"max-content" }}
       >
         {doubled.map((m,i) => {
           const ext   = m.fileType?.toLowerCase() ?? "glb";
-          const color = FILE_COLORS[ext] ?? "#a78bfa";
+          const color = FILE_COLORS[ext] ?? "#3b82f6";
           return (
             <Link key={`${m.id}-${i}`} href={`/gallery/${m.id}`}>
               <motion.div
-                whileHover={{ y:-4, scale:1.02 }}
+                whileHover={{ y:-4 }}
                 transition={{ type:"spring", stiffness:400, damping:25 }}
                 style={{ willChange:"transform", width:220, flexShrink:0 }}
-                className="relative rounded-2xl border border-white/8 bg-white/[0.03] overflow-hidden cursor-pointer hover:border-white/16 transition duration-300 group"
+                className="relative rounded-2xl border border-gray-200 bg-white overflow-hidden cursor-pointer hover:border-blue-300 hover:shadow-md shadow-sm transition duration-300 group"
               >
                 {/* Thumbnail */}
-                <div className="relative h-36 overflow-hidden"
-                  style={{ background:`linear-gradient(135deg,${color}18,rgba(0,0,0,0.4))` }}>
+                <div className="relative h-36 overflow-hidden bg-gray-50">
                   {m.thumbnailUrl ? (
                     <img src={m.thumbnailUrl} alt={m.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <svg className="w-10 h-10 opacity-20" style={{ color }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                      <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                       </svg>
                     </div>
                   )}
-                  <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[9px] font-black uppercase"
-                    style={{ background:`${color}25`, border:`1px solid ${color}40`, color }}>
+                  <div className="absolute top-2 left-2 px-2 py-0.5 rounded text-[9px] font-bold uppercase shadow-sm bg-white text-gray-700 border border-gray-100">
                     {ext.toUpperCase()}
                   </div>
                   <div className="absolute top-2 right-2">
                     {m.isPaid ? (
-                      <div className="px-2 py-0.5 rounded-md text-[9px] font-black border border-emerald-500/40 bg-emerald-500/20 text-emerald-300">
+                      <div className="px-2 py-0.5 rounded text-[9px] font-bold border border-green-200 bg-green-50 text-green-700 shadow-sm">
                         ₹{m.price}
                       </div>
                     ) : (
-                      <div className="px-2 py-0.5 rounded-md text-[9px] font-black border border-white/10 bg-black/50 text-white/50">
+                      <div className="px-2 py-0.5 rounded text-[9px] font-bold border border-gray-200 bg-gray-100 text-gray-600 shadow-sm">
                         Free
                       </div>
                     )}
@@ -77,12 +75,12 @@ function MarqueeRow({ items, reverse = false }: { items: Model[]; reverse?: bool
                 </div>
 
                 <div className="p-3">
-                  <p className="text-white/80 text-xs font-bold line-clamp-1 mb-0.5">{m.title}</p>
+                  <p className="text-gray-900 text-xs font-bold line-clamp-1 mb-0.5">{m.title}</p>
                   <div className="flex items-center justify-between">
-                    <p className="text-white/30 text-[10px] truncate max-w-[100px]">{m.authorName}</p>
-                    <span className="flex items-center gap-1 text-white/20 text-[10px]">
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    <p className="text-gray-500 font-medium text-[10px] truncate max-w-[100px]">{m.authorName}</p>
+                    <span className="flex items-center gap-1 text-gray-400 font-bold text-[10px]">
+                      <svg className="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                       </svg>
                       {m.likes ?? 0}
                     </span>
@@ -131,32 +129,31 @@ export default function ScrollingGallery() {
   const row2 = models.slice(mid);
 
   return (
-    <section className="relative py-16 overflow-hidden" id="gallery-strip">
+    <section className="relative overflow-hidden w-full bg-white" id="gallery-strip">
       {/* Edge fades */}
-      <div className="absolute inset-y-0 left-0 w-32 z-10 pointer-events-none"
-        style={{ background:"linear-gradient(90deg,#050008,transparent)" }} />
-      <div className="absolute inset-y-0 right-0 w-32 z-10 pointer-events-none"
-        style={{ background:"linear-gradient(270deg,#050008,transparent)" }} />
+      <div className="absolute inset-y-0 left-0 w-8 md:w-32 z-10 pointer-events-none"
+        style={{ background:"linear-gradient(90deg,white,transparent)" }} />
+      <div className="absolute inset-y-0 right-0 w-8 md:w-32 z-10 pointer-events-none"
+        style={{ background:"linear-gradient(270deg,white,transparent)" }} />
 
-      <div className="mb-6 px-4 flex items-center justify-between max-w-7xl mx-auto">
+      <div className="mb-8 px-4 flex py-2 items-center justify-between max-w-7xl mx-auto w-full">
         <div>
-          <p className="text-white/20 text-[10px] font-black uppercase tracking-[0.3em] mb-1">Live from the platform</p>
-          <h2 className="text-2xl font-black tracking-tighter text-white">
+          <h2 className="text-2xl font-black tracking-tight text-gray-900">
             Latest{" "}
-            <span style={{ backgroundImage:"linear-gradient(90deg,#a78bfa,#22d3ee)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
+            <span className="text-blue-600">
               Models
             </span>
           </h2>
         </div>
         <Link href="/gallery">
           <motion.div whileHover={{ scale:1.03 }} whileTap={{ scale:0.97 }} style={{ willChange:"transform" }}
-            className="text-xs font-black text-violet-400/70 hover:text-violet-300 transition duration-200 cursor-pointer">
+            className="text-xs font-bold text-blue-600 hover:text-blue-700 transition duration-200 cursor-pointer flex items-center gap-1">
             View all →
           </motion.div>
         </Link>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-5 w-full">
         <MarqueeRow items={row1} reverse={false} />
         {row2.length > 0 && <MarqueeRow items={row2} reverse={true} />}
       </div>

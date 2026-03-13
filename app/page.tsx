@@ -94,17 +94,17 @@ function FloatingModelCard({ m, i }: { m:RecentModel; i:number }) {
       onMouseLeave={() => setTilt({ rx:0, ry:0 })}
       style={{ willChange:"transform", transform:`perspective(600px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`, transition:"transform 0.1s ease" }}>
       <Link href={`/gallery/${m.id}`}>
-        <div className="group relative rounded-2xl bg-white border border-gray-200 overflow-hidden hover:shadow-lg transition duration-300 cursor-pointer shadow-sm">
-          <div className="relative aspect-square overflow-hidden bg-gray-50">
+        <div className="group relative rounded-2xl bg-white border border-gray-200 overflow-hidden hover:shadow-md transition duration-300 cursor-pointer shadow-sm flex flex-col h-full">
+          <div className="relative aspect-square overflow-hidden bg-white border-b border-gray-100 flex items-center justify-center p-2">
             {m.thumbnailUrl
-              ? <img src={m.thumbnailUrl} alt={m.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-              : <div className="w-full h-full flex items-center justify-center">
+              ? <img src={m.thumbnailUrl} alt={m.title} className="max-w-full max-h-full object-contain group-hover:scale-105 transition duration-500 rounded" />
+              : <div className="w-full h-full flex items-center justify-center bg-gray-50 rounded">
                   <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
                 </div>
             }
-            <div className="absolute top-2 left-2 px-2 py-0.5 rounded text-[9px] font-bold bg-white text-gray-700 shadow-sm border border-gray-100">
+            <div className="absolute top-2 left-2 px-2 py-0.5 rounded text-[9px] font-bold uppercase bg-white text-gray-700 shadow-sm border border-gray-100">
               {ext.toUpperCase()}
             </div>
             {m.isPaid
@@ -112,9 +112,9 @@ function FloatingModelCard({ m, i }: { m:RecentModel; i:number }) {
               : <div className="absolute top-2 right-2 px-2 py-0.5 rounded text-[9px] font-bold bg-gray-100 text-gray-600 border border-gray-200 shadow-sm">Free</div>
             }
           </div>
-          <div className="p-3">
-            <p className="text-gray-900 text-xs font-bold line-clamp-1">{m.title}</p>
-            <p className="text-gray-500 text-[10px] truncate mt-0.5">{m.authorName}</p>
+          <div className="p-4 flex-1 flex flex-col justify-end">
+            <p className="text-gray-900 text-sm font-bold line-clamp-1">{m.title}</p>
+            <p className="text-gray-500 font-medium text-[10px] truncate mt-1">{m.authorName}</p>
           </div>
         </div>
       </Link>
@@ -373,10 +373,10 @@ export default function HomePage() {
           <section className="py-24 px-4 bg-gray-50">
             <div className="max-w-7xl mx-auto">
               <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
-                className="flex items-end justify-between mb-10">
+                className="flex items-center justify-between mb-10 pb-4 border-b border-gray-200">
                 <div>
-                  <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900">
-                    Recently Added
+                  <h2 className="text-2xl md:text-3xl font-black tracking-tight text-gray-900">
+                    Featured Models
                   </h2>
                 </div>
                 <Link href="/gallery">

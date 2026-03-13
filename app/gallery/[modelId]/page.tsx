@@ -306,28 +306,56 @@ export default function ModelDetailPage() {
   async function handleDownload() {
     if (!model) return;
     if (model.isPaid && !hasAccess) { showToast("Purchase required to download."); return; }
+    
+    // 1. Trigger the download immediately
     try {
-      // Inject fl_attachment into the Cloudinary URL so the browser downloads
-      // the file directly instead of opening it (no CORS fetch needed)
-      // *Wait*: Cloudinary doesn't allow transformations on `raw` files!
       let downloadUrl = model.modelUrl;
+      // If it's cloudinary and not a raw file, append fl_attachment to force download header
       if (downloadUrl.includes("cloudinary.com") && !downloadUrl.includes("/raw/upload/")) {
         downloadUrl = downloadUrl.replace("/upload/", "/upload/fl_attachment/");
       }
+
       const ext      = downloadUrl.split("?")[0].split(".").pop() ?? "glb";
       const filename = (model.title || "model").replace(/\s+/g, "_") + "." + ext;
-      const a        = document.createElement("a");
-      a.href         = downloadUrl;
-      a.download     = filename;
-      a.target       = "_blank";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      await updateDoc(doc(db, "models", modelId), { downloads: increment(1) });
+      
+      try {
+        // We fetch the blob directly so it downloads silently without a blank tab popup and respects the filename.
+        // If this URL is blocked by CORS (some buckets), it falls back to the old method.
+        const res = await fetch(downloadUrl);
+        if (!res.ok) throw new Error("Fetch failed");
+        const blob = await res.blob();
+        const localUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = localUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(localUrl);
+        document.body.removeChild(a);
+      } catch (err) {
+        // Fallback: direct navigation
+        console.warn("Direct blob download failed, falling back to direct navigation", err);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = filename; // Might be ignored cross-origin, but we try
+        a.target = "_blank";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+
       showToast("Download started!");
     } catch (e) {
       console.error(e);
       showToast("Download failed. Try again.");
+    }
+
+    // 2. Passively update download count (swallow permission errors for guests)
+    try {
+      await updateDoc(doc(db, "models", modelId), { downloads: increment(1) });
+    } catch (dbErr) {
+      console.warn("Could not increment downloads (likely guest user):", dbErr);
     }
   }
 

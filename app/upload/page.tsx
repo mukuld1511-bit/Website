@@ -331,16 +331,16 @@ export default function UploadContent() {
 
                 {/* Thumbnail */}
                 <div onClick={() => thumbnailInputRef.current?.click()} 
-                     className={`group border-2 border-dashed rounded-2xl p-4 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition text-center flex flex-col justify-center min-h-[220px] overflow-hidden
+                     className={`group relative border-2 border-dashed rounded-2xl p-4 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition text-center flex flex-col justify-center min-h-[220px] overflow-hidden
                        ${uploadType !== "model" && !thumbnailPreview ? "border-amber-300 bg-amber-50/30" : "border-gray-300"}`}>
                   <input ref={thumbnailInputRef} type="file" onChange={handleThumbnailSelect} className="hidden" accept="image/*" />
                   
                   {thumbnailPreview ? (
-                    <img src={thumbnailPreview} className="w-full h-full object-cover rounded-xl shadow-sm absolute inset-0 -z-10" alt="thumbnail" />
+                    <img src={thumbnailPreview} className="w-full h-full object-cover rounded-xl shadow-sm absolute inset-0 z-0" alt="thumbnail" />
                   ) : null}
 
-                  <div className={`relative z-10 w-full h-full flex flex-col items-center justify-center ${thumbnailPreview ? "bg-white/80 p-4 rounded-xl opacity-0 hover:opacity-100 transition" : ""}`}>
-                    <div className="w-16 h-16 rounded-full bg-gray-50 group-hover:bg-white flex items-center justify-center mx-auto mb-4 border border-gray-100 shadow-sm transition">
+                  <div className={`relative z-10 w-full h-full flex flex-col items-center justify-center ${thumbnailPreview ? "absolute inset-0 bg-white/80 p-4 rounded-xl opacity-0 hover:opacity-100 transition" : ""}`}>
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border shadow-sm transition ${thumbnailPreview ? "bg-white border-gray-200" : "bg-gray-50 group-hover:bg-white border-gray-100"}`}>
                       <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>

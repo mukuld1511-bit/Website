@@ -1,8 +1,54 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Points, PointMaterial } from "@react-three/drei";
+
+// ─── 3D Starfield / Globe ──────────────────────────────────────────────────────
+function ParticleSphere(props: any) {
+  const ref = useRef<any>(null);
+  
+  // Generate points on a sphere
+  const sphere = useMemo(() => {
+    const numPoints = 2000;
+    const positions = new Float32Array(numPoints * 3);
+    for (let i = 0; i < numPoints; i++) {
+        const u = Math.random();
+        const v = Math.random();
+        const theta = 2 * Math.PI * u;
+        const phi = Math.acos(2 * v - 1);
+        const r = 1.5; // radius
+        const sinPhi = Math.sin(phi);
+        positions[i * 3] = r * sinPhi * Math.cos(theta);
+        positions[i * 3 + 1] = r * sinPhi * Math.sin(theta);
+        positions[i * 3 + 2] = r * Math.cos(phi);
+    }
+    return positions;
+  }, []);
+
+  useFrame((state, delta) => {
+    if (ref.current) {
+      ref.current.rotation.x -= delta / 10;
+      ref.current.rotation.y -= delta / 15;
+    }
+  });
+
+  return (
+    <group rotation={[0, 0, Math.PI / 4]}>
+      <Points ref={ref} positions={sphere} stride={3} frustumCulled={false} {...props}>
+        <PointMaterial
+          transparent
+          color="#3b82f6" // blue-500
+          size={0.015}
+          sizeAttenuation={true}
+          depthWrite={false}
+        />
+      </Points>
+    </group>
+  );
+}
 
 interface HeroProps {
   user: any;
@@ -21,10 +67,19 @@ export default function HeroComponent({ user, stats, statsLoading }: HeroProps) 
   ];
 
   return (
-    <section className="relative px-4 pt-20 pb-16 md:pt-32 md:pb-24 text-center max-w-5xl mx-auto font-sans">
+    <section className="relative px-4 pt-20 pb-16 md:pt-32 md:pb-24 text-center max-w-5xl mx-auto font-sans min-h-[500px] flex flex-col justify-center">
       
       {/* Decorative Background Elements */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-gradient-to-b from-blue-50/50 to-transparent pointer-events-none -z-10" />
+      <div className="absolute inset-0 pointer-events-none -z-20">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-to-b from-blue-50/80 to-transparent" />
+      </div>
+
+      {/* 3D Canvas Layer */}
+      <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden flex items-center justify-center opacity-40">
+        <Canvas camera={{ position: [0, 0, 3] }}>
+          <ParticleSphere />
+        </Canvas>
+      </div>
 
       {/* Pill */}
       <motion.div

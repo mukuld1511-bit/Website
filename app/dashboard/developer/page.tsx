@@ -91,37 +91,32 @@ export default function DeveloperDashboard() {
   const activeSessions = sessions.filter((s) => s.status === "active").length;
 
   const statusBadge = (s: string) => {
-    if (s === "pending") return "text-amber-300 bg-amber-400/10 border-amber-400/20";
+    if (s === "pending") return "text-amber-700 bg-amber-50 border-amber-200";
     if (s === "accepted" || s === "approved" || s === "active" || s === "in_progress")
-      return "text-emerald-300 bg-emerald-400/10 border-emerald-400/20";
-    return "text-rose-300 bg-rose-500/10 border-rose-500/20";
+      return "text-green-700 bg-green-50 border-green-200";
+    return "text-red-700 bg-red-50 border-red-200";
   };
 
   const certBadge = () => {
-    if (!certStatus)                return { label: "Not Applied",      color: "text-white/30 bg-white/5 border-white/10" };
-    if (certStatus === "approved")  return { label: "✓ Certified",      color: "text-emerald-300 bg-emerald-400/10 border-emerald-400/20" };
-    if (certStatus === "pending")   return { label: "⏳ Pending Review", color: "text-amber-300 bg-amber-400/10 border-amber-400/20" };
-    return { label: "✕ Rejected", color: "text-rose-300 bg-rose-500/10 border-rose-500/20" };
+    if (!certStatus)                return { label: "Not Applied",      color: "text-gray-600 bg-gray-100 border-gray-200" };
+    if (certStatus === "approved")  return { label: "✓ Certified",      color: "text-green-700 bg-green-50 border-green-200" };
+    if (certStatus === "pending")   return { label: "⏳ Pending Review", color: "text-amber-700 bg-amber-50 border-amber-200" };
+    return { label: "✕ Rejected", color: "text-red-700 bg-red-50 border-red-200" };
   };
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#050008] flex items-center justify-center">
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 rounded-full border-2 border-violet-500/30 border-t-violet-400 animate-spin" />
-          <p className="text-white/30 text-sm">Loading your dashboard…</p>
+          <div className="w-10 h-10 rounded-full border-2 border-gray-200 border-t-blue-500 animate-spin" />
+          <p className="text-gray-500 text-sm font-medium">Loading your dashboard…</p>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#050008] px-4 sm:px-6 lg:px-8 py-28 relative overflow-hidden">
-
-      {/* Ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(ellipse, rgba(124,58,237,0.1) 0%, transparent 70%)", filter: "blur(80px)" }}
-      />
+    <main className="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8 py-28 relative overflow-hidden font-sans">
 
       <div className="relative z-10 max-w-5xl mx-auto">
 
@@ -132,14 +127,11 @@ export default function DeveloperDashboard() {
           transition={{ duration: 0.55 }}
           className="mb-10"
         >
-          <p className="text-violet-400/70 text-xs uppercase tracking-[0.3em] font-semibold mb-2">Developer Portal</p>
-          <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-white leading-none mb-3">
-            Your{" "}
-            <span style={{ backgroundImage: "linear-gradient(90deg,#a78bfa,#22d3ee)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-              Dashboard
-            </span>
+          <p className="text-blue-600 text-xs uppercase tracking-[0.2em] font-bold mb-2">Developer Portal</p>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 leading-tight mb-3">
+            Your Dashboard
           </h1>
-          <p className="text-white/30 text-sm">Track your uploads, earnings, bids, and connect sessions.</p>
+          <p className="text-gray-500 text-sm font-medium">Track your uploads, earnings, bids, and connect sessions.</p>
         </motion.div>
 
         {/* Stat Cards */}
@@ -150,18 +142,18 @@ export default function DeveloperDashboard() {
           className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10"
         >
           {[
-            { label: "Uploads",          val: uploads.length,               color: "#a78bfa" },
-            { label: "Net Earnings",     val: `₹${netEarnings.toFixed(0)}`, color: "#34d399" },
-            { label: "Connect Sessions", val: activeSessions,               color: "#22d3ee", highlight: activeSessions > 0 },
+            { label: "Uploads",          val: uploads.length,               color: "blue" },
+            { label: "Net Earnings",     val: `₹${netEarnings.toFixed(0)}`, color: "emerald" },
+            { label: "Connect Sessions", val: activeSessions,               color: "cyan", highlight: activeSessions > 0 },
           ].map((s, i) => (
             <div
               key={i}
-              className={`rounded-2xl p-5 border transition duration-200 ${
-                s.highlight ? "border-amber-400/30 bg-amber-400/[0.04]" : "border-white/6 bg-white/[0.025]"
+              className={`rounded-2xl p-5 border shadow-sm transition duration-200 ${
+                s.highlight ? "border-amber-200 bg-amber-50" : "border-gray-200 bg-white"
               }`}
             >
-              <p className="text-3xl font-black mb-1" style={{ color: s.color }}>{s.val}</p>
-              <p className="text-white/35 text-xs font-medium">{s.label}</p>
+              <p className={`text-3xl font-black mb-1 text-${s.color}-600`}>{s.val}</p>
+              <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">{s.label}</p>
             </div>
           ))}
         </motion.div>
@@ -174,10 +166,10 @@ export default function DeveloperDashboard() {
           className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10"
         >
           {[
-            { label: "Upload Model",    icon: "⬆", href: "/upload",        gradient: "linear-gradient(135deg,#7c3aed,#0891b2)" },
-            { label: "Public Requests", icon: "📋", href: "/requests/open", cascade: "linear-gradient(135deg,#0891b2,#0369a1)" },
-            { label: "Connect Page",    icon: "🔗", href: "/connect",       gradient: "linear-gradient(135deg,#0891b2,#22d3ee88)" },
-            { label: "Get Certified",   icon: "🎓", href: "/certification", gradient: "linear-gradient(135deg,#d97706,#f59e0b)" },
+            { label: "Upload Model",    icon: "⬆", href: "/upload",        border: "border-blue-200", bg: "bg-blue-50 text-blue-700 hover:bg-blue-100" },
+            { label: "Public Requests", icon: "📋", href: "/requests/open", border: "border-indigo-200", bg: "bg-indigo-50 text-indigo-700 hover:bg-indigo-100" },
+            { label: "Connect Page",    icon: "🔗", href: "/connect",       border: "border-cyan-200", bg: "bg-cyan-50 text-cyan-700 hover:bg-cyan-100" },
+            { label: "Get Certified",   icon: "🎓", href: "/certification", border: "border-amber-200", bg: "bg-amber-50 text-amber-700 hover:bg-amber-100" },
           ].map((q, i) => (
             <motion.button
               key={i}
@@ -185,32 +177,26 @@ export default function DeveloperDashboard() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              style={{ willChange: "transform", background: q.gradient }}
-              className="relative overflow-hidden rounded-2xl px-4 py-3.5 text-sm font-black text-white text-left flex items-center gap-2.5"
+              className={`rounded-xl px-4 py-3.5 text-sm font-bold text-left flex items-center gap-2.5 border shadow-sm transition duration-200 ${q.border} ${q.bg}`}
             >
               <span className="text-base">{q.icon}</span>
               {q.label}
-              <motion.div
-                animate={{ x: ["-200%", "200%"] }}
-                transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 4, ease: "linear" }}
-                style={{ willChange: "transform", position: "absolute", inset: 0, background: "linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)", transform: "skewX(-20deg)", pointerEvents: "none" }}
-              />
             </motion.button>
           ))}
         </motion.div>
 
         {/* Earnings Summary */}
-        <DashSection title="Earnings Summary" subtitle="Revenue from model purchases (after platform & payment fees)" delay={0.16} accent="#34d399">
+        <DashSection title="Earnings Summary" subtitle="Revenue from model purchases (after platform & payment fees)" delay={0.16} accent="bg-emerald-500">
           <div className="grid sm:grid-cols-3 gap-4 mb-4">
             {[
-              { label: "Gross Revenue",      val: `₹${grossRevenue.toFixed(2)}`,                   sub: "Total paid by buyers",  color: "#22d3ee" },
-              { label: "Platform Fee (15%)", val: `−₹${(grossRevenue * PLATFORM_FEE).toFixed(2)}`, sub: "Synthe commission",     color: "#fb7185" },
-              { label: "Net Earnings",       val: `₹${netEarnings.toFixed(2)}`,                    sub: "You receive",           color: "#34d399" },
+              { label: "Gross Revenue",      val: `₹${grossRevenue.toFixed(2)}`,                   sub: "Total paid by buyers",  color: "cyan" },
+              { label: "Platform Fee (15%)", val: `−₹${(grossRevenue * PLATFORM_FEE).toFixed(2)}`, sub: "Synthe commission",     color: "rose" },
+              { label: "Net Earnings",       val: `₹${netEarnings.toFixed(2)}`,                    sub: "You receive",           color: "emerald" },
             ].map((e, i) => (
-              <div key={i} className="rounded-2xl border border-white/6 bg-white/[0.025] p-5">
-                <p className="text-2xl font-black mb-1" style={{ color: e.color }}>{e.val}</p>
-                <p className="text-white font-semibold text-sm">{e.label}</p>
-                <p className="text-white/30 text-xs mt-0.5">{e.sub}</p>
+              <div key={i} className="rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
+                <p className={`text-2xl font-black mb-1 text-${e.color}-600`}>{e.val}</p>
+                <p className="text-gray-900 font-bold text-sm">{e.label}</p>
+                <p className="text-gray-500 text-xs mt-0.5 font-medium">{e.sub}</p>
               </div>
             ))}
           </div>
@@ -218,7 +204,7 @@ export default function DeveloperDashboard() {
         </DashSection>
 
         {/* My Uploads */}
-        <DashSection title="My Uploads" subtitle="Models you've published to the gallery" delay={0.2} accent="#a78bfa">
+        <DashSection title="My Uploads" subtitle="Models you've published to the gallery" delay={0.2} accent="bg-violet-500">
           {uploads.length === 0 ? (
             <Empty icon="🚀" text="No models uploaded yet." />
           ) : (
@@ -227,31 +213,30 @@ export default function DeveloperDashboard() {
                 <div
                   key={m.id}
                   onClick={() => router.push(`/gallery/${m.id}`)}
-                  className="group cursor-pointer bg-white/[0.025] border border-white/6 rounded-2xl p-5 hover:border-violet-500/25 transition duration-200"
+                  className="group cursor-pointer bg-white border border-gray-200 shadow-sm rounded-2xl p-5 hover:border-violet-300 hover:shadow-md transition duration-200"
                 >
                   <div className="flex items-start gap-3">
                     {m.thumbnailUrl ? (
-                      <img src={m.thumbnailUrl} alt={m.title} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+                      <img src={m.thumbnailUrl} alt={m.title} className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-gray-100" />
                     ) : (
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                        style={{ background: "linear-gradient(135deg,#7c3aed,#0891b2)" }}>
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-gray-100 border border-gray-200">
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                         </svg>
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-white font-bold text-sm truncate group-hover:text-violet-300 transition">{m.title}</h3>
-                      <div className="flex items-center gap-2 mt-1 flex-wrap">
-                        <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border text-violet-300 bg-violet-400/10 border-violet-400/20">
+                      <h3 className="text-gray-900 font-bold text-sm truncate group-hover:text-violet-600 transition">{m.title}</h3>
+                      <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                        <span className="text-[9px] font-bold uppercase py-0.5 px-2 rounded bg-violet-50 text-violet-700 border border-violet-200">
                           {m.category ?? "3D"}
                         </span>
                         {m.price > 0
-                          ? <span className="text-[9px] font-black px-2 py-0.5 rounded-full border text-amber-300 bg-amber-400/10 border-amber-400/20">₹{m.price}</span>
-                          : <span className="text-[9px] font-black px-2 py-0.5 rounded-full border text-emerald-300 bg-emerald-400/10 border-emerald-400/20">Free</span>
+                          ? <span className="text-[9px] font-bold py-0.5 px-2 rounded bg-amber-50 text-amber-700 border border-amber-200">₹{m.price}</span>
+                          : <span className="text-[9px] font-bold py-0.5 px-2 rounded bg-green-50 text-green-700 border border-green-200">Free</span>
                         }
                       </div>
-                      <p className="text-white/30 text-xs mt-1.5 line-clamp-1">{m.description}</p>
+                      <p className="text-gray-500 font-medium text-xs mt-1.5 line-clamp-1">{m.description}</p>
                     </div>
                   </div>
                 </div>
@@ -261,7 +246,7 @@ export default function DeveloperDashboard() {
         </DashSection>
 
         {/* Connect Sessions -> Project Requests */}
-        <DashSection title="My Project Requests" subtitle="Incoming project requests assigned directly to you" delay={0.28} accent="#22d3ee">
+        <DashSection title="My Project Requests" subtitle="Incoming project requests assigned directly to you" delay={0.28} accent="bg-cyan-500">
           {sessions.length === 0 ? (
             <Empty icon="📋" text="No project requests received yet." />
           ) : (
@@ -270,27 +255,26 @@ export default function DeveloperDashboard() {
                 <div
                   key={s.id}
                   onClick={() => router.push(`/connect/${s.id}`)}
-                  className="group cursor-pointer rounded-2xl border border-white/6 bg-white/[0.02] hover:border-cyan-500/25 p-5 flex items-center gap-4 transition duration-200"
+                  className="group cursor-pointer rounded-2xl border border-gray-200 bg-white shadow-sm hover:border-cyan-300 hover:shadow-md p-5 flex items-center gap-4 transition duration-200"
                 >
                   {s.studentAvatar
-                    ? <img src={s.studentAvatar} alt={s.studentName} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                    ? <img src={s.studentAvatar} alt={s.studentName} className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-gray-100" />
                     : (
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-black text-white"
-                        style={{ background: "linear-gradient(135deg,#0891b2,#7c3aed)" }}>
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-black text-cyan-700 bg-cyan-50 border border-cyan-200">
                         {s.studentName?.[0]?.toUpperCase() ?? "S"}
                       </div>
                     )
                   }
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                      <span className="text-white font-bold text-sm">{s.studentName}</span>
-                      <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border ${statusBadge(s.status)}`}>
+                      <span className="text-gray-900 font-bold text-sm">{s.studentName}</span>
+                      <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${statusBadge(s.status)}`}>
                         {s.status}
                       </span>
                     </div>
-                    <p className="text-white/40 text-xs truncate">Subject: {s.subject}</p>
+                    <p className="text-gray-500 font-medium text-xs truncate">Subject: {s.subject}</p>
                   </div>
-                  <svg className="w-4 h-4 text-white/20 group-hover:text-cyan-400 flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-gray-300 group-hover:text-cyan-500 flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
@@ -300,7 +284,7 @@ export default function DeveloperDashboard() {
         </DashSection>
 
         {/* Project Messages */}
-        <DashSection title="Project Messages" subtitle="Active chats from public project requests" delay={0.3} accent="#f472b6">
+        <DashSection title="Project Messages" subtitle="Active chats from public project requests" delay={0.3} accent="bg-pink-500">
           {projectChats.length === 0 ? (
             <Empty icon="💬" text="No project chats yet. Browse Public Requests to start one." />
           ) : (
@@ -309,27 +293,26 @@ export default function DeveloperDashboard() {
                 <div
                   key={c.id}
                   onClick={() => router.push(`/project-chat/${c.id}`)}
-                  className="group cursor-pointer rounded-2xl border border-white/6 bg-white/[0.02] hover:border-pink-500/25 p-4 flex items-center gap-4 transition duration-200"
+                  className="group cursor-pointer rounded-2xl border border-gray-200 bg-white shadow-sm hover:border-pink-300 hover:shadow-md p-4 flex items-center gap-4 transition duration-200"
                 >
                   {c.clientPhoto
-                    ? <img src={c.clientPhoto} alt={c.clientName} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                    ? <img src={c.clientPhoto} alt={c.clientName} className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-gray-100" />
                     : (
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-black text-white"
-                        style={{ background: "linear-gradient(135deg,#f472b6,#7c3aed)" }}>
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-black text-pink-700 bg-pink-50 border border-pink-200">
                         {c.clientName?.[0]?.toUpperCase() ?? "C"}
                       </div>
                     )
                   }
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-bold text-sm truncate">{c.requestTitle || "Project Chat"}</p>
-                    <p className="text-white/35 text-xs truncate">with {c.clientName}</p>
+                    <p className="text-gray-900 font-bold text-sm truncate">{c.requestTitle || "Project Chat"}</p>
+                    <p className="text-gray-500 font-medium text-xs truncate">with {c.clientName}</p>
                   </div>
                   {c.funded && (
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full border text-emerald-300 bg-emerald-400/10 border-emerald-400/20">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded border text-green-700 bg-green-50 border-green-200">
                       Funded ₹{c.fundedAmount?.toLocaleString("en-IN")}
                     </span>
                   )}
-                  <svg className="w-4 h-4 text-white/20 group-hover:text-pink-400 flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-gray-300 group-hover:text-pink-500 flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
@@ -340,17 +323,17 @@ export default function DeveloperDashboard() {
 
         {/* Certification */}
 
-        <DashSection title="Certification" subtitle="Your developer certification status on Synthe" delay={0.32} accent="#818cf8">
-          <div className="rounded-2xl border border-white/6 bg-white/[0.025] p-6 flex flex-col sm:flex-row sm:items-center gap-6">
+        <DashSection title="Certification" subtitle="Your developer certification status on Synthe" delay={0.32} accent="bg-indigo-500">
+          <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col sm:flex-row sm:items-center gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-2xl">🎓</span>
                 <div>
-                  <p className="text-white font-bold text-sm">Certification Status</p>
-                  <p className="text-white/30 text-xs">Certified developers appear first on the Connect page</p>
+                  <p className="text-gray-900 font-bold text-sm">Certification Status</p>
+                  <p className="text-gray-500 font-medium text-xs">Certified developers appear first on the Connect page</p>
                 </div>
               </div>
-              <span className={`inline-block text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full border ${certBadge().color}`}>
+              <span className={`inline-block text-xs font-bold uppercase px-3 py-1 rounded border mt-2 ${certBadge().color}`}>
                 {certBadge().label}
               </span>
             </div>
@@ -359,16 +342,9 @@ export default function DeveloperDashboard() {
                 onClick={() => router.push("/certification")}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                style={{ willChange: "transform", background: "linear-gradient(135deg,#7c3aed,#0891b2)" }}
-                className="relative overflow-hidden px-6 py-3 rounded-xl text-sm font-black text-white flex-shrink-0"
+                className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-sm transition"
               >
                 {certStatus === "pending" ? "View Application" : "Apply Now"}
-                <motion.div
-                  animate={{ x: ["-200%", "200%"] }}
-                  transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 4, ease: "linear" }}
-                  style={{ willChange: "transform", position: "absolute", inset: 0, background: "linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)", transform: "skewX(-20deg)", pointerEvents: "none" }}
-                />
               </motion.button>
             )}
           </div>
@@ -379,7 +355,7 @@ export default function DeveloperDashboard() {
   );
 }
 
-function DashSection({ title, subtitle, delay, children, accent = "#a78bfa" }: {
+function DashSection({ title, subtitle, delay, children, accent = "bg-blue-500" }: {
   title: string; subtitle: string; delay: number; children: React.ReactNode; accent?: string;
 }) {
   return (
@@ -390,10 +366,10 @@ function DashSection({ title, subtitle, delay, children, accent = "#a78bfa" }: {
       className="mb-10"
     >
       <div className="flex items-center gap-3 mb-5">
-        <div className="w-1.5 h-7 rounded-full" style={{ background: `linear-gradient(to bottom, ${accent}, ${accent}88)` }} />
+        <div className={`w-1.5 h-7 rounded-sm ${accent}`} />
         <div>
-          <h2 className="text-xl font-black text-white tracking-tight">{title}</h2>
-          <p className="text-white/30 text-xs mt-0.5">{subtitle}</p>
+          <h2 className="text-xl font-bold text-gray-900 tracking-tight">{title}</h2>
+          <p className="text-gray-500 font-medium text-xs mt-0.5">{subtitle}</p>
         </div>
       </div>
       {children}
@@ -403,9 +379,9 @@ function DashSection({ title, subtitle, delay, children, accent = "#a78bfa" }: {
 
 function Empty({ icon, text }: { icon: string; text: string }) {
   return (
-    <div className="w-full py-10 text-center border border-white/5 rounded-2xl bg-white/[0.01] flex flex-col items-center gap-3">
-      <span className="text-3xl">{icon}</span>
-      <p className="text-white/25 text-sm">{text}</p>
+    <div className="w-full py-10 text-center border border-gray-200 border-dashed rounded-2xl bg-white flex flex-col items-center gap-3 shadow-sm">
+      <span className="text-3xl grayscale opacity-60">{icon}</span>
+      <p className="text-gray-500 font-medium text-sm">{text}</p>
     </div>
   );
 }

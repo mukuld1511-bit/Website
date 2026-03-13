@@ -151,39 +151,35 @@ export default function JoinDeveloperPage() {
   }
 
   const inp = (key: string) =>
-    `w-full bg-white/[0.04] border ${errors[key]?"border-rose-500/50":"border-white/8"} text-white placeholder-white/20 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-violet-500/50 transition duration-200`;
-  const lbl = "block text-[10px] font-black uppercase tracking-[0.25em] text-white/35 mb-2";
+    `w-full bg-white border ${errors[key]?"border-red-300 ring-4 ring-red-50":"border-gray-300"} text-gray-900 placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition duration-200 shadow-sm`;
+  
+  const lbl = "block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2";
 
   if (authLoading) return (
-    <div className="min-h-screen bg-[#050008] flex items-center justify-center">
-      <div className="w-10 h-10 rounded-full border-2 border-violet-500/30 border-t-violet-400 animate-spin" />
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
+      <div className="w-10 h-10 rounded-full border-2 border-gray-200 border-t-blue-600 animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#050008]">
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
       <Navbar />
 
-      <div className="relative pt-28 pb-24 px-4 overflow-x-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full pointer-events-none"
-          style={{ background:"radial-gradient(ellipse,rgba(124,58,237,0.12) 0%,transparent 70%)", filter:"blur(80px)" }} />
+      <main className="relative pt-28 pb-24 px-4 overflow-x-hidden flex-1 flex flex-col items-center justify-center">
 
-        <div className="relative z-10 max-w-2xl mx-auto">
+        <div className="relative z-10 max-w-2xl mx-auto w-full">
 
           {/* Header */}
           <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }}
             className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-violet-500/20 bg-violet-500/5 mb-5">
-              <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
-              <span className="text-violet-300/90 text-sm font-semibold uppercase tracking-widest">Join as Developer</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-200 bg-violet-50 mb-5 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-violet-600 animate-pulse" />
+              <span className="text-violet-800 text-xs font-bold uppercase tracking-widest">Join as Developer</span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white mb-3">
-              Build Your{" "}
-              <span style={{ backgroundImage:"linear-gradient(90deg,#a78bfa,#22d3ee)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
-                Career
-              </span>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-3">
+              Build Your Career
             </h1>
-            <p className="text-white/35 text-base max-w-md mx-auto leading-relaxed">
+            <p className="text-gray-500 text-base max-w-md mx-auto leading-relaxed font-medium">
               Join the Synthé developer network. Get hired, earn revenue, and get certified.
             </p>
           </motion.div>
@@ -191,19 +187,19 @@ export default function JoinDeveloperPage() {
           {/* Already applied state */}
           {alreadyApplied && !submitted && (
             <motion.div initial={{ opacity:0, scale:0.95 }} animate={{ opacity:1, scale:1 }}
-              className="relative rounded-3xl border border-amber-500/20 bg-amber-500/5 p-8 text-center mb-8">
-              <div className="w-16 h-16 rounded-2xl bg-amber-500/15 flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              className="relative rounded-3xl border border-amber-200 bg-amber-50 p-8 text-center mb-8 shadow-sm">
+              <div className="w-16 h-16 rounded-2xl bg-amber-100 flex items-center justify-center mx-auto mb-4 border border-amber-200">
+                <svg className="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-white font-black text-xl mb-2">Application Under Review</h3>
-              <p className="text-white/40 text-sm leading-relaxed mb-4">
+              <h3 className="text-gray-900 font-extrabold text-2xl mb-2">Application Under Review</h3>
+              <p className="text-gray-600 text-sm leading-relaxed mb-6 font-medium">
                 You've already submitted a developer application. We're reviewing it — you'll be notified once approved.
               </p>
               <Link href="/dashboard">
-                <motion.div whileHover={{ scale:1.03 }} style={{ willChange:"transform", background:"linear-gradient(135deg,#7c3aed,#0891b2)" }}
-                  className="inline-flex px-6 py-3 rounded-2xl font-black text-white text-sm cursor-pointer">
+                <motion.div whileHover={{ scale:1.03 }}
+                  className="inline-flex px-8 py-3.5 rounded-xl font-bold text-white text-sm cursor-pointer shadow-sm bg-blue-600 hover:bg-blue-700 transition">
                   Go to Dashboard →
                 </motion.div>
               </Link>
@@ -215,19 +211,18 @@ export default function JoinDeveloperPage() {
             <motion.div initial={{ opacity:0, scale:0.92 }} animate={{ opacity:1, scale:1 }}
               className="flex flex-col items-center justify-center py-20 text-center">
               <motion.div animate={{ scale:[1,1.1,1] }} transition={{ duration:0.6, delay:0.2 }}
-                className="w-24 h-24 rounded-3xl flex items-center justify-center mb-8"
-                style={{ background:"linear-gradient(135deg,#7c3aed,#0891b2)", boxShadow:"0 0 60px rgba(124,58,237,0.4)" }}>
+                className="w-24 h-24 rounded-3xl flex items-center justify-center mb-8 bg-blue-600 shadow-lg shadow-blue-500/30">
                 <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                 </svg>
               </motion.div>
-              <h2 className="text-4xl font-black text-white mb-3">Application Submitted!</h2>
-              <p className="text-white/40 text-base max-w-md leading-relaxed mb-8">
+              <h2 className="text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">Application Submitted!</h2>
+              <p className="text-gray-500 font-medium text-base max-w-md leading-relaxed mb-8">
                 We'll review your application within 48 hours. You'll receive a notification once approved.
               </p>
               <Link href="/dashboard">
-                <motion.div whileHover={{ scale:1.04 }} style={{ willChange:"transform", background:"linear-gradient(135deg,#7c3aed,#0891b2)" }}
-                  className="px-8 py-3.5 rounded-2xl font-black text-white text-sm cursor-pointer">
+                <motion.div whileHover={{ scale:1.04 }}
+                  className="px-8 py-3.5 rounded-xl font-bold text-white text-sm cursor-pointer shadow-sm bg-blue-600 hover:bg-blue-700 transition">
                   Go to Dashboard →
                 </motion.div>
               </Link>
@@ -241,16 +236,15 @@ export default function JoinDeveloperPage() {
               <div className="flex items-center gap-2 mb-8">
                 {[1,2,3].map(n => (
                   <div key={n} className="flex items-center gap-2 flex-1">
-                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black transition duration-300 ${
+                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold transition duration-300 ${
                       step >= n
-                        ? "text-white"
-                        : "border border-white/10 text-white/20"
-                    }`}
-                      style={step >= n ? { background:"linear-gradient(135deg,#7c3aed,#0891b2)" } : {}}>
+                        ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                        : "border-gray-300 bg-gray-50 text-gray-400"
+                    }`}>
                       {step > n ? "✓" : n}
                     </div>
                     {n < 3 && (
-                      <div className={`flex-1 h-[1px] transition duration-500 ${step > n ? "bg-violet-500/50" : "bg-white/8"}`} />
+                      <div className={`flex-1 h-1 rounded-full transition duration-500 ${step > n ? "bg-blue-600" : "bg-gray-200"}`} />
                     )}
                   </div>
                 ))}
@@ -258,11 +252,11 @@ export default function JoinDeveloperPage() {
 
               {/* Not logged in */}
               {!user && (
-                <div className="p-5 rounded-2xl border border-amber-500/20 bg-amber-500/5 text-center mb-6">
-                  <p className="text-amber-300/80 text-sm">
-                    <Link href="/login" className="underline text-amber-300 font-bold hover:text-amber-200">Log in</Link>
+                <div className="p-5 rounded-2xl border border-amber-200 bg-amber-50 text-center mb-6 shadow-sm">
+                  <p className="text-amber-700 font-medium text-sm">
+                    <Link href="/login" className="underline text-amber-800 font-bold hover:text-amber-900">Log in</Link>
                     {" "}or{" "}
-                    <Link href="/signup" className="underline text-amber-300 font-bold hover:text-amber-200">sign up</Link>
+                    <Link href="/signup" className="underline text-amber-800 font-bold hover:text-amber-900">sign up</Link>
                     {" "}to apply as a developer.
                   </p>
                 </div>
@@ -270,23 +264,21 @@ export default function JoinDeveloperPage() {
 
               <motion.div key={step} initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }}
                 transition={{ duration:0.3 }}
-                className="relative rounded-3xl border border-white/8 bg-white/[0.025] overflow-hidden p-7">
-                <div className="absolute top-0 left-0 right-0 h-[1px]"
-                  style={{ background:"linear-gradient(90deg,transparent,rgba(167,139,250,0.4),rgba(34,211,238,0.3),transparent)" }} />
+                className="relative rounded-3xl border border-gray-200 bg-white shadow-xl shadow-gray-200/50 overflow-hidden p-8 md:p-10">
 
                 {/* Step 1 — Personal Info */}
                 {step === 1 && (
-                  <div className="space-y-5">
-                    <div>
-                      <h2 className="text-xl font-black text-white mb-1">Personal Information</h2>
-                      <p className="text-white/30 text-sm">Tell us about yourself and your experience.</p>
+                  <div className="space-y-6">
+                    <div className="border-b border-gray-100 pb-4 mb-2">
+                      <h2 className="text-2xl font-extrabold text-gray-900 mb-1 tracking-tight">Personal Information</h2>
+                      <p className="text-gray-500 font-medium text-sm">Tell us about yourself and your experience.</p>
                     </div>
 
                     <div>
                       <label className={lbl}>Full Name *</label>
                       <input value={form.name} onChange={e=>set("name",e.target.value)}
                         placeholder="Your full name" className={inp("name")} />
-                      {errors.name && <p className="text-rose-400 text-xs mt-1">{errors.name}</p>}
+                      {errors.name && <p className="text-red-500 font-semibold text-xs mt-2">{errors.name}</p>}
                     </div>
 
                     <div>
@@ -296,7 +288,7 @@ export default function JoinDeveloperPage() {
                         className={inp("bio") + " resize-none"} />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-5">
                       <div>
                         <label className={lbl}>Qualification *</label>
                         <select value={form.qualification} onChange={e=>set("qualification",e.target.value)}
@@ -304,72 +296,72 @@ export default function JoinDeveloperPage() {
                           <option value="">Select…</option>
                           {QUALIFICATIONS.map(q => <option key={q} value={q}>{q}</option>)}
                         </select>
-                        {errors.qualification && <p className="text-rose-400 text-xs mt-1">{errors.qualification}</p>}
+                        {errors.qualification && <p className="text-red-500 font-semibold text-xs mt-2">{errors.qualification}</p>}
                       </div>
                       <div>
                         <label className={lbl}>Years of Experience *</label>
                         <input value={form.experience} onChange={e=>set("experience",e.target.value)}
                           placeholder="e.g. 2 years" className={inp("experience")} />
-                        {errors.experience && <p className="text-rose-400 text-xs mt-1">{errors.experience}</p>}
+                        {errors.experience && <p className="text-red-500 font-semibold text-xs mt-2">{errors.experience}</p>}
                       </div>
                     </div>
 
                     <div>
-                      <label className={lbl}>Skills * <span className="text-white/20 normal-case font-normal">({form.skills.length} selected)</span></label>
+                      <label className={lbl}>Skills * <span className="text-gray-400 normal-case font-medium">({form.skills.length} selected)</span></label>
                       <div className="flex flex-wrap gap-2">
                         {SKILLS.map(s => (
                           <button key={s} type="button" onClick={()=>toggleSkill(s)}
-                            className="px-3 py-2 rounded-xl text-xs font-bold border transition duration-200"
+                            className="px-4 py-2 rounded-xl text-xs font-bold border transition duration-200 shadow-sm"
                             style={form.skills.includes(s)
-                              ? { background:"rgba(167,139,250,0.15)", borderColor:"rgba(167,139,250,0.4)", color:"#a78bfa" }
-                              : { background:"rgba(255,255,255,0.02)", borderColor:"rgba(255,255,255,0.08)", color:"rgba(255,255,255,0.4)" }
+                              ? { background:"#e0e7ff", borderColor:"#c7d2fe", color:"#4f46e5" }
+                              : { background:"#f9fafb", borderColor:"#e5e7eb", color:"#6b7280" }
                             }>{s}</button>
                         ))}
                       </div>
-                      {errors.skills && <p className="text-rose-400 text-xs mt-1">{errors.skills}</p>}
+                      {errors.skills && <p className="text-red-500 font-semibold text-xs mt-2">{errors.skills}</p>}
                     </div>
                   </div>
                 )}
 
                 {/* Step 2 — Links */}
                 {step === 2 && (
-                  <div className="space-y-5">
-                    <div>
-                      <h2 className="text-xl font-black text-white mb-1">Portfolio & Links</h2>
-                      <p className="text-white/30 text-sm">Show us your work. Portfolio is required.</p>
+                  <div className="space-y-6">
+                    <div className="border-b border-gray-100 pb-4 mb-2">
+                      <h2 className="text-2xl font-extrabold text-gray-900 mb-1 tracking-tight">Portfolio & Links</h2>
+                      <p className="text-gray-500 font-medium text-sm">Show us your work. Portfolio is required.</p>
                     </div>
 
                     <div>
                       <label className={lbl}>Portfolio URL *</label>
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-xs">www.</span>
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold text-sm">www.</span>
                         <input value={form.portfolio} onChange={e=>set("portfolio",e.target.value)}
-                          placeholder="yourportfolio.com" className={inp("portfolio") + " pl-12"} />
+                          placeholder="yourportfolio.com" className={inp("portfolio") + " pl-14"} />
                       </div>
-                      {errors.portfolio && <p className="text-rose-400 text-xs mt-1">{errors.portfolio}</p>}
+                      {errors.portfolio && <p className="text-red-500 font-semibold text-xs mt-2">{errors.portfolio}</p>}
                     </div>
 
                     <div>
                       <label className={lbl}>LinkedIn URL</label>
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-xs">www.</span>
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold text-sm">www.</span>
                         <input value={form.linkedin} onChange={e=>set("linkedin",e.target.value)}
-                          placeholder="linkedin.com/in/yourname" className={inp("linkedin") + " pl-12"} />
+                          placeholder="linkedin.com/in/yourname" className={inp("linkedin") + " pl-14"} />
                       </div>
                     </div>
 
                     <div>
                       <label className={lbl}>GitHub Username</label>
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-xs">github.com/</span>
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold text-sm">github.com/</span>
                         <input value={form.github} onChange={e=>set("github",e.target.value)}
-                          placeholder="yourusername" className={inp("github") + " pl-24"} />
+                          placeholder="yourusername" className={inp("github") + " pl-28"} />
                       </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl border border-violet-500/15 bg-violet-500/5">
-                      <p className="text-violet-300/80 text-xs font-black mb-1">💡 Tip</p>
-                      <p className="text-white/30 text-xs leading-relaxed">
+                    <div className="p-5 rounded-2xl border border-blue-200 bg-blue-50 shadow-sm">
+                      <p className="text-blue-800 text-sm font-extrabold mb-1">💡 Tip</p>
+                      <p className="text-blue-700/80 text-xs font-medium leading-relaxed">
                         A strong portfolio significantly increases your chances of approval. Include your best AR/VR/3D work.
                       </p>
                     </div>
@@ -378,10 +370,10 @@ export default function JoinDeveloperPage() {
 
                 {/* Step 3 — Review */}
                 {step === 3 && (
-                  <div className="space-y-5">
-                    <div>
-                      <h2 className="text-xl font-black text-white mb-1">Review & Submit</h2>
-                      <p className="text-white/30 text-sm">Check your details before submitting.</p>
+                  <div className="space-y-6">
+                    <div className="border-b border-gray-100 pb-4 mb-2">
+                      <h2 className="text-2xl font-extrabold text-gray-900 mb-1 tracking-tight">Review & Submit</h2>
+                      <p className="text-gray-500 font-medium text-sm">Check your details before submitting.</p>
                     </div>
 
                     <div className="space-y-3">
@@ -394,49 +386,43 @@ export default function JoinDeveloperPage() {
                         { label:"LinkedIn",      val: form.linkedin || "—" },
                         { label:"GitHub",        val: form.github ? `github.com/${form.github}` : "—" },
                       ].map((item,i) => (
-                        <div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-white/[0.02]">
-                          <p className="text-white/25 text-xs w-24 flex-shrink-0">{item.label}</p>
-                          <p className="text-white/70 text-xs font-semibold break-all">{item.val}</p>
+                        <div key={i} className="flex items-start gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50 shadow-sm">
+                          <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px] w-24 flex-shrink-0 pt-0.5">{item.label}</p>
+                          <p className="text-gray-900 text-sm font-bold break-all">{item.val}</p>
                         </div>
                       ))}
                     </div>
 
                     {errors.submit && (
-                      <div className="p-4 rounded-xl border border-rose-500/20 bg-rose-500/8 text-rose-400 text-sm">
+                      <div className="p-4 rounded-xl border border-red-200 bg-red-50 text-red-700 font-semibold text-sm shadow-sm">
                         {errors.submit}
                       </div>
                     )}
 
-                    <div className="p-4 rounded-2xl border border-emerald-500/15 bg-emerald-500/5 text-xs text-white/30 leading-relaxed">
+                    <div className="p-5 rounded-2xl border border-green-200 bg-green-50 text-sm font-medium text-green-800 leading-relaxed shadow-sm">
                       ✓ Applications are reviewed within 48 hours. You'll be notified via the platform once approved.
                     </div>
                   </div>
                 )}
 
                 {/* Navigation */}
-                <div className="flex gap-3 mt-7">
+                <div className="flex gap-4 mt-8 pt-6 border-t border-gray-100">
                   {step > 1 && (
                     <button onClick={() => setStep(s => s-1)}
-                      className="flex-1 py-3.5 rounded-2xl border border-white/8 text-white/40 font-bold text-sm hover:border-white/20 hover:text-white/60 transition duration-200">
+                      className="flex-1 py-3.5 rounded-xl border border-gray-300 bg-white text-gray-700 font-bold text-sm hover:bg-gray-50 shadow-sm transition duration-200">
                       ← Back
                     </button>
                   )}
                   {step < 3 ? (
                     <motion.button onClick={nextStep}
                       whileHover={{ scale:1.02 }} whileTap={{ scale:0.98 }}
-                      style={{ willChange:"transform", background:"linear-gradient(135deg,#7c3aed,#0891b2)" }}
-                      className="flex-1 py-3.5 rounded-2xl font-black text-white text-sm relative overflow-hidden">
-                      <motion.div animate={{ x:["-200%","200%"] }} transition={{ duration:2.5, repeat:Infinity, repeatDelay:4, ease:"linear" }}
-                        style={{ willChange:"transform", position:"absolute", inset:0, background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent)", transform:"skewX(-20deg)", pointerEvents:"none" }} />
+                      className="flex-1 py-3.5 rounded-xl font-bold text-white text-sm relative overflow-hidden shadow-md bg-blue-600 hover:bg-blue-700 transition">
                       <span className="relative z-10">Next →</span>
                     </motion.button>
                   ) : (
                     <motion.button onClick={handleSubmit} disabled={submitting || !user}
                       whileHover={{ scale:submitting?1:1.02 }} whileTap={{ scale:submitting?1:0.98 }}
-                      style={{ willChange:"transform", background:submitting?"rgba(255,255,255,0.05)":"linear-gradient(135deg,#7c3aed,#0891b2)" }}
-                      className="flex-1 py-3.5 rounded-2xl font-black text-white text-sm disabled:opacity-50 relative overflow-hidden">
-                      <motion.div animate={{ x:["-200%","200%"] }} transition={{ duration:2.5, repeat:Infinity, repeatDelay:4, ease:"linear" }}
-                        style={{ willChange:"transform", position:"absolute", inset:0, background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent)", transform:"skewX(-20deg)", pointerEvents:"none" }} />
+                      className="flex-1 py-3.5 rounded-xl font-bold text-white text-sm disabled:opacity-50 relative overflow-hidden shadow-md bg-blue-600 hover:bg-blue-700 transition">
                       <span className="relative z-10">{submitting ? "Submitting…" : "Submit Application →"}</span>
                     </motion.button>
                   )}
@@ -446,7 +432,7 @@ export default function JoinDeveloperPage() {
           )}
 
         </div>
-      </div>
+      </main>
       <Footer />
     </div>
   );

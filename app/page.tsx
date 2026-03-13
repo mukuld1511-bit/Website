@@ -11,6 +11,7 @@ import { motion, useSpring, useMotionValue, AnimatePresence } from "framer-motio
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import HeroComponent from "./components/HeroComponent";
 
 const ScrollingGallery = dynamic(() => import("./components/ScrollingGallery"), { ssr: false });

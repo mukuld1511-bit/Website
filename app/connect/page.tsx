@@ -186,7 +186,7 @@ function DevCard({ dev, user, onConnect }: { dev:Developer; user:any; onConnect:
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-start gap-2 flex-wrap mb-1">
-              <Link href={`/developer/${dev.userId}`}>
+              <Link href={`/developer/${dev.userId || dev.id}`}>
                 <h3 className="text-white font-black text-base hover:text-violet-300 transition duration-150 cursor-pointer leading-tight">{dev.name}</h3>
               </Link>
             </div>
@@ -244,7 +244,7 @@ function DevCard({ dev, user, onConnect }: { dev:Developer; user:any; onConnect:
 
         {/* Footer buttons — pinned to bottom */}
         <div className="mt-auto pt-4 border-t border-white/5 flex items-center gap-2">
-          <Link href={`/developer/${dev.userId}`} className="flex-1">
+          <Link href={`/developer/${dev.userId || dev.id}`} className="flex-1">
             <motion.div whileHover={{ scale:1.02 }} whileTap={{ scale:0.98 }} style={{ willChange:"transform" }}
               className="py-2.5 rounded-xl border border-white/8 text-white/40 text-xs font-bold text-center hover:border-white/16 hover:text-white/60 transition duration-200 cursor-pointer">
               View Profile

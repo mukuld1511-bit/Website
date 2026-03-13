@@ -61,24 +61,37 @@ export default function DeveloperProfilePage() {
         if (uSnap.exists()) {
           setDev({ id: uSnap.id, ...uSnap.data() } as Developer);
         } else {
-          const appSnap = await getDocs(
-            query(collection(db, "developerApplications"), where("userId", "==", devId))
-          );
-          if (!appSnap.empty) {
-            const data = appSnap.docs[0].data();
+          let appData: any = null;
+          let appId = "";
+
+          // Try getting by document ID first (for older links)
+          const directAppSnap = await getDoc(doc(db, "developerApplications", devId));
+          if (directAppSnap.exists()) {
+            appData = directAppSnap.data();
+            appId = directAppSnap.id;
+          } else {
+            // Check if devId is the userId field
+            const appSnap = await getDocs(query(collection(db, "developerApplications"), where("userId", "==", devId)));
+            if (!appSnap.empty) {
+              appData = appSnap.docs[0].data();
+              appId = appSnap.docs[0].id;
+            }
+          }
+
+          if (appData) {
             setDev({
-              id: appSnap.docs[0].id,
-              name: data.fullName ?? data.name ?? "Developer",
-              email: data.email ?? "",
+              id: appId,
+              name: appData.fullName ?? appData.name ?? "Developer",
+              email: appData.email ?? "",
               role: "developer",
-              certified: data.status === "approved",
-              profileImage: data.profileImage ?? "",
-              bio: data.bio ?? "",
-              skills: data.skills ?? [],
-              portfolio: data.portfolio ?? "",
-              linkedin: data.linkedin ?? "",
-              github: data.github ?? "",
-              createdAt: data.createdAt,
+              certified: appData.status === "approved",
+              profileImage: appData.profileImage ?? "",
+              bio: appData.bio ?? "",
+              skills: appData.skills ?? [],
+              portfolio: appData.portfolio ?? "",
+              linkedin: appData.linkedin ?? "",
+              github: appData.github ?? "",
+              createdAt: appData.createdAt,
             } as Developer);
           }
         }

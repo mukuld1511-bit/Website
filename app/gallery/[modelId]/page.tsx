@@ -249,7 +249,7 @@ export default function ModelDetailPage() {
         const snap = await getDocs(q);
         if (!snap.empty) { setHasAccess(true); return; }
         if (model!.accessType === "request") {
-          const rq = query(collection(db,"accessRequests"), where("projectId","==",modelId), where("userId","==",user.uid), where("status","==","approved"));
+          const rq = query(collection(db,"accessRequests"), where("modelId","==",modelId), where("userId","==",user.uid), where("status","==","approved"));
           const rSnap = await getDocs(rq);
           if (!rSnap.empty) setHasAccess(true);
         }
@@ -383,7 +383,7 @@ export default function ModelDetailPage() {
     if (!model || !useCase.trim()) return;
     try {
       await addDoc(collection(db,"accessRequests"), {
-        projectId: modelId, userId: user.uid, userEmail: user.email,
+        modelId: modelId, userId: user.uid, userEmail: user.email,
         authorId: model.authorId, useCase: useCase.trim(),
         status: "pending", requestedAt: serverTimestamp(),
       });

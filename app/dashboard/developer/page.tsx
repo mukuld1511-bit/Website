@@ -32,17 +32,6 @@ export default function DeveloperDashboard() {
     return () => unsub();
   }, []);
 
-  const loadAll = async (uid: string) => {
-    await Promise.all([
-      loadUploads(uid),
-      loadSessions(uid),
-      loadPurchases(uid),
-      loadCert(uid),
-      loadProjectChats(uid),
-    ]);
-    setLoading(false);
-  };
-
   const loadProjectChats = async (uid: string) => {
     const q = query(collection(db, "projectChats"), where("developerId", "==", uid));
     const snap = await getDocs(q);
@@ -56,7 +45,6 @@ export default function DeveloperDashboard() {
     const snap = await getDocs(q);
     setUploads(snap.docs.map((d) => ({ id: d.id, ...d.data() } as FirestoreDoc)));
   };
-
 
   const loadSessions = async (uid: string) => {
     const q = query(collection(db, "chatSessions"), where("tutorUserId", "==", uid));
@@ -80,6 +68,18 @@ export default function DeveloperDashboard() {
       setCertStatus(data.status ?? "pending");
     }
   };
+
+  const loadAll = async (uid: string) => {
+    await Promise.all([
+      loadUploads(uid),
+      loadSessions(uid),
+      loadPurchases(uid),
+      loadCert(uid),
+      loadProjectChats(uid),
+    ]);
+    setLoading(false);
+  };
+
 
   const grossRevenue = purchases.reduce((s, p) => s + (p.amount ?? 0), 0);
   const netEarnings  = purchases.reduce((s, p) => {

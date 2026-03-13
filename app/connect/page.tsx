@@ -70,21 +70,21 @@ function RequestModal({ dev, user, onClose, onSuccess }: {
     try {
       // Create chat session
       const sessionRef = await addDoc(collection(db,"chatSessions"), {
-        tutorId:          dev.id,
-        tutorUserId:      dev.userId,
-        tutorName:        dev.name,
-        tutorAvatar:      dev.profileImage ?? "",
-        tutorColor:       dev.color ?? "#a78bfa",
-        tutorBookingLink: dev.bookingLink ?? "",
-        tutorPlatform:    dev.bookingPlatform ?? "Calendly",
-        studentId:        user.uid,
-        studentName:      user.displayName ?? "Student",
-        studentAvatar:    user.photoURL ?? "",
-        subject:          subject.trim(),
-        message:          message.trim(),
-        status:           "active",
-        createdAt:        serverTimestamp(),
-      });
+  tutorId:          dev.id,
+  tutorUserId:      dev.userId || dev.id,   // ← fallback
+  tutorName:        dev.name,
+  tutorAvatar:      dev.profileImage ?? "",
+  tutorColor:       dev.color ?? "#a78bfa",
+  tutorBookingLink: dev.bookingLink ?? "",
+  tutorPlatform:    dev.bookingPlatform ?? "Calendly",
+  studentId:        user.uid,
+  studentName:      user.displayName ?? "Student",
+  studentAvatar:    user.photoURL ?? "",
+  subject:          subject.trim(),
+  message:          message.trim(),
+  status:           "active",
+  createdAt:        serverTimestamp(),
+});
       onSuccess(sessionRef.id);
     } catch(e: any) { setError(e.message); }
     setLoading(false);
@@ -311,10 +311,11 @@ export default function ConnectPage() {
           orderBy("createdAt","desc")
         ));
         const data = snap.docs.map((d, i) => ({
-          id:    d.id,
-          color: COLORS[i % COLORS.length],
-          ...d.data(),
-        } as Developer));
+  id:     d.id,
+  color:  COLORS[i % COLORS.length],
+  userId: d.data().userId ?? d.id,   // ← ye line
+  ...d.data(),
+} as Developer));
         setDevs(data);
       } catch(e) { console.error(e); }
       setLoading(false);

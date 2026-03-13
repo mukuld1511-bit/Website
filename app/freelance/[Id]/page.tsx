@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   doc, getDoc, collection, getDocs, query,
-  where, orderBy, updateDoc, serverTimestamp, addDoc,
+  where, updateDoc, serverTimestamp, addDoc,
 } from "firebase/firestore";
 import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -57,8 +57,8 @@ function timeAgo(ts: any): string {
   if (!ts) return "";
   const d = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
   const s = Math.floor((Date.now() - d.getTime()) / 1000);
-  if (s < 60) return `${s}s ago`;
-  if (s < 3600) return `${Math.floor(s/60)}m ago`;
+  if (s < 60)    return `${s}s ago`;
+  if (s < 3600)  return `${Math.floor(s/60)}m ago`;
   if (s < 86400) return `${Math.floor(s/3600)}h ago`;
   return `${Math.floor(s/86400)}d ago`;
 }
@@ -78,6 +78,7 @@ export default function FreelanceProjectPage() {
   const [bidding,    setBidding]    = useState(false);
   const [alreadyBid, setAlreadyBid] = useState(false);
   const [toast,      setToast]      = useState("");
+  const [sortBy,     setSortBy]     = useState<"newest"|"lowest"|"highest">("newest");
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, u => setUser(u ?? null));
@@ -91,12 +92,14 @@ export default function FreelanceProjectPage() {
       try {
         const snap = await getDoc(doc(db,"freelanceProjects",projectId));
         if (snap.exists()) setProject({ id:snap.id, ...snap.data() } as Project);
+
+        // No orderBy — sort client side (avoids index requirement)
         const bSnap = await getDocs(query(
           collection(db,"freelanceBids"),
-          where("projectId","==",projectId),
-          orderBy("createdAt","desc")
+          where("projectId","==",projectId)
         ));
-        setBids(bSnap.docs.map(d => ({ id:d.id, ...d.data() } as Bid)));
+        const raw = bSnap.docs.map(d => ({ id:d.id, ...d.data() } as Bid));
+        setBids(raw);
       } catch(e) { console.error(e); }
       setLoading(false);
     }
@@ -107,6 +110,14 @@ export default function FreelanceProjectPage() {
     if (!user || bids.length === 0) return;
     setAlreadyBid(bids.some(b => b.developerId === user.uid));
   }, [bids, user]);
+
+  // Sorted bids based on sortBy
+  const sortedBids = [...bids].sort((a,b) => {
+    if (sortBy === "lowest")  return a.amount - b.amount;
+    if (sortBy === "highest") return b.amount - a.amount;
+    // newest
+    return (b.createdAt?.seconds??0) - (a.createdAt?.seconds??0);
+  });
 
   async function submitBid(e: React.FormEvent) {
     e.preventDefault();
@@ -135,12 +146,14 @@ export default function FreelanceProjectPage() {
       await updateDoc(doc(db,"freelanceProjects",projectId), {
         bidsCount: (project.bidsCount ?? 0) + 1,
       });
+
+      // Refresh bids
       const bSnap = await getDocs(query(
         collection(db,"freelanceBids"),
-        where("projectId","==",projectId),
-        orderBy("createdAt","desc")
+        where("projectId","==",projectId)
       ));
-      setBids(bSnap.docs.map(d => ({ id:d.id, ...d.data() } as Bid)));
+      const raw = bSnap.docs.map(d => ({ id:d.id, ...d.data() } as Bid));
+      setBids(raw);
       setShowBid(false);
       setAmount(""); setTimeline(""); setProposal("");
       setAlreadyBid(true);
@@ -149,17 +162,31 @@ export default function FreelanceProjectPage() {
     setBidding(false);
   }
 
-  async function acceptBid(bidId: string) {
+  async function acceptBid(bid: Bid) {
     try {
-      await updateDoc(doc(db,"freelanceBids",bidId), { status:"accepted" });
+      await updateDoc(doc(db,"freelanceBids",bid.id), { status:"accepted" });
+      // Reject all others
+      await Promise.all(
+        bids
+          .filter(b => b.id !== bid.id && b.status === "pending")
+          .map(b => updateDoc(doc(db,"freelanceBids",b.id), { status:"rejected" }))
+      );
       await updateDoc(doc(db,"freelanceProjects",projectId), { status:"in_progress" });
-      setBids(p => p.map(b => ({ ...b, status: b.id===bidId ? "accepted" : b.status })));
+      setBids(p => p.map(b => ({
+        ...b,
+        status: b.id === bid.id ? "accepted" : b.status === "pending" ? "rejected" : b.status,
+      })));
       if (project) setProject({ ...project, status:"in_progress" });
-      showToast("Bid accepted! Project is now in progress.");
+      showToast(`Bid accepted! ₹${(bid.clientPays ?? getBuyerPrice(bid.amount)).toLocaleString()} will be charged.`);
     } catch(e) { console.error(e); }
   }
 
-  function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(""), 3000); }
+  async function rejectBid(bidId: string) {
+    await updateDoc(doc(db,"freelanceBids",bidId), { status:"rejected" });
+    setBids(p => p.map(b => b.id===bidId ? { ...b, status:"rejected" as const } : b));
+  }
+
+  function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(""), 4000); }
 
   const statusColors: Record<string,string> = {
     open:"#34d399", in_progress:"#fbbf24", completed:"#a78bfa", cancelled:"#fb7185",
@@ -197,6 +224,12 @@ export default function FreelanceProjectPage() {
   const isClient = user?.uid === project.clientId;
   const canBid   = user && !isClient && project.status === "open" && !alreadyBid;
 
+  // Bid stats
+  const pendingBids  = bids.filter(b => b.status === "pending");
+  const lowestBid    = pendingBids.length ? Math.min(...pendingBids.map(b=>b.amount)) : null;
+  const highestBid   = pendingBids.length ? Math.max(...pendingBids.map(b=>b.amount)) : null;
+  const avgBid       = pendingBids.length ? Math.round(pendingBids.reduce((s,b)=>s+b.amount,0)/pendingBids.length) : null;
+
   return (
     <div className="min-h-screen bg-[#050008]">
       <Navbar />
@@ -220,9 +253,10 @@ export default function FreelanceProjectPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-7">
 
-            {/* ── Left: Project details ── */}
+            {/* ── Left ── */}
             <div className="lg:col-span-2 space-y-5">
 
+              {/* Project card */}
               <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }}
                 className="relative rounded-3xl border border-white/6 bg-white/[0.025] backdrop-blur-xl overflow-hidden p-7">
                 <div className="absolute top-0 left-0 right-0 h-[1px]"
@@ -243,7 +277,7 @@ export default function FreelanceProjectPage() {
                       style={{ backgroundImage:"linear-gradient(135deg,#34d399,#22d3ee)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
                       ₹{project.budget.toLocaleString()}
                     </p>
-                    <p className="text-white/30 text-xs">{project.budgetType}</p>
+                    <p className="text-white/30 text-xs">{project.budgetType} · dev receives</p>
                   </div>
                 </div>
 
@@ -263,12 +297,12 @@ export default function FreelanceProjectPage() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-5 border-t border-white/5">
                   {[
-                    { label:"Posted by", val: project.clientName },
-                    { label:"Posted",    val: timeAgo(project.createdAt) },
-                    { label:"Deadline",  val: project.deadline ? new Date(project.deadline).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}) : "Flexible" },
-                    { label:"Bids",      val: `${project.bidsCount ?? 0} received` },
-                    { label:"Budget",    val: `₹${project.budget.toLocaleString()} (${project.budgetType})` },
-                    { label:"Client pays", val: `₹${getBuyerPrice(project.budget).toLocaleString()} (incl. fees)` },
+                    { label:"Posted by",    val: project.clientName },
+                    { label:"Posted",       val: timeAgo(project.createdAt) },
+                    { label:"Deadline",     val: project.deadline ? new Date(project.deadline).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}) : "Flexible" },
+                    { label:"Total Bids",   val: `${bids.length}` },
+                    { label:"Budget",       val: `₹${project.budget.toLocaleString()} (${project.budgetType})` },
+                    { label:"Client pays",  val: `₹${getBuyerPrice(project.budget).toLocaleString()} incl. fees` },
                   ].map((m,i) => (
                     <div key={i}>
                       <p className="text-white/20 text-[9px] font-black uppercase tracking-widest mb-0.5">{m.label}</p>
@@ -278,20 +312,43 @@ export default function FreelanceProjectPage() {
                 </div>
               </motion.div>
 
-              {/* Commission info card */}
-              <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.05 }}
+              {/* Bid stats (client only) */}
+              {isClient && bids.length > 0 && (
+                <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.05 }}
+                  className="relative rounded-3xl border border-white/6 bg-white/[0.025] backdrop-blur-xl overflow-hidden p-6">
+                  <div className="absolute top-0 left-0 right-0 h-[1px]"
+                    style={{ background:"linear-gradient(90deg,transparent,rgba(52,211,153,0.3),transparent)" }} />
+                  <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/25 mb-4">Bid Overview</p>
+                  <div className="grid grid-cols-4 gap-3">
+                    {[
+                      { label:"Total Bids",   val: bids.length,                               color:"#a78bfa" },
+                      { label:"Lowest Bid",   val: lowestBid  ? `₹${lowestBid.toLocaleString()}`  : "—", color:"#34d399" },
+                      { label:"Highest Bid",  val: highestBid ? `₹${highestBid.toLocaleString()}` : "—", color:"#fb7185" },
+                      { label:"Average Bid",  val: avgBid     ? `₹${avgBid.toLocaleString()}`     : "—", color:"#22d3ee" },
+                    ].map((s,i) => (
+                      <div key={i} className="p-3 rounded-2xl border border-white/5 bg-white/[0.02] text-center">
+                        <p className="font-black text-sm mb-0.5" style={{ color:s.color }}>{s.val}</p>
+                        <p className="text-white/25 text-[9px] uppercase tracking-widest">{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Commission card */}
+              <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.07 }}
                 className="relative rounded-3xl border border-white/6 bg-white/[0.025] backdrop-blur-xl overflow-hidden p-6">
                 <div className="absolute top-0 left-0 right-0 h-[1px]"
                   style={{ background:"linear-gradient(90deg,transparent,rgba(52,211,153,0.3),transparent)" }} />
-                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/25 mb-4">Platform Commission Breakdown</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/25 mb-4">Fee Structure</p>
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { label:"Dev receives",   val:`₹${project.budget.toLocaleString()}`,             color:"#34d399" },
-                    { label:"Platform (15%)", val:`₹${getPlatformFee(project.budget).toLocaleString()}`, color:"#a78bfa" },
-                    { label:"Client pays",    val:`₹${getBuyerPrice(project.budget).toLocaleString()}`,  color:"#22d3ee" },
+                    { label:"Dev receives",   val:`₹${project.budget.toLocaleString()}`,                  color:"#34d399" },
+                    { label:"Platform (15%)", val:`₹${getPlatformFee(project.budget).toLocaleString()}`,  color:"#a78bfa" },
+                    { label:"Client pays",    val:`₹${getBuyerPrice(project.budget).toLocaleString()}`,   color:"#22d3ee" },
                   ].map((s,i) => (
                     <div key={i} className="p-3 rounded-2xl border border-white/5 bg-white/[0.02] text-center">
-                      <p className="font-black text-base mb-0.5" style={{ color:s.color }}>{s.val}</p>
+                      <p className="font-black text-sm mb-0.5" style={{ color:s.color }}>{s.val}</p>
                       <p className="text-white/25 text-[9px] uppercase tracking-widest">{s.label}</p>
                     </div>
                   ))}
@@ -304,25 +361,49 @@ export default function FreelanceProjectPage() {
                 <div className="absolute top-0 left-0 right-0 h-[1px]"
                   style={{ background:"linear-gradient(90deg,transparent,rgba(34,211,238,0.3),transparent)" }} />
 
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-black text-white">Proposals <span className="text-white/30 text-base">({bids.length})</span></h2>
-                  {!isClient && <p className="text-white/25 text-xs">Only visible to project owner</p>}
+                <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
+                  <h2 className="text-lg font-black text-white">
+                    Proposals <span className="text-white/30 text-base">({bids.length})</span>
+                  </h2>
+
+                  {/* Sort controls */}
+                  {bids.length > 1 && (
+                    <div className="flex items-center gap-2">
+                      {(["newest","lowest","highest"] as const).map(s => (
+                        <button key={s} onClick={() => setSortBy(s)}
+                          className="px-3 py-1.5 rounded-lg text-[10px] font-black border transition duration-200 capitalize"
+                          style={sortBy===s
+                            ? { background:"rgba(167,139,250,0.12)", borderColor:"rgba(167,139,250,0.35)", color:"#a78bfa" }
+                            : { background:"rgba(255,255,255,0.02)", borderColor:"rgba(255,255,255,0.08)", color:"rgba(255,255,255,0.3)" }
+                          }>
+                          {s === "newest" ? "Newest" : s === "lowest" ? "↑ Lowest" : "↓ Highest"}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {bids.length === 0 ? (
-                  <div className="text-center py-12 text-white/20 text-sm">No bids yet — be the first!</div>
+                  <div className="text-center py-12 text-white/20 text-sm">No proposals yet — be the first!</div>
                 ) : (isClient || user) ? (
                   <div className="space-y-4">
-                    {bids.map((b,i) => (
-                      <motion.div key={b.id} initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.05 }}
+                    {sortedBids.map((b,i) => (
+                      <motion.div key={b.id}
+                        initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
+                        transition={{ delay:i*0.04 }}
                         className={`p-5 rounded-2xl border transition duration-200 ${
-                          b.status==="accepted" ? "border-emerald-500/25 bg-emerald-500/5" : "border-white/6 bg-white/[0.02]"
+                          b.status==="accepted"
+                            ? "border-emerald-500/25 bg-emerald-500/5"
+                            : b.status==="rejected"
+                            ? "border-white/4 bg-white/[0.01] opacity-50"
+                            : "border-white/6 bg-white/[0.02]"
                         }`}>
                         <div className="flex items-start gap-4">
                           <Link href={`/developer/${b.developerId}`}>
                             <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 bg-white/[0.05] flex items-center justify-center flex-shrink-0 cursor-pointer hover:border-violet-500/30 transition duration-150">
                               {b.developerPhoto
-                                ? <img src={b.developerPhoto} className="w-full h-full object-cover" onError={e=>{(e.target as HTMLImageElement).style.display="none"}} />
+                                ? <img src={b.developerPhoto} className="w-full h-full object-cover"
+                                    onError={e=>{(e.target as HTMLImageElement).style.display="none"}} />
                                 : <span className="text-white/30 text-xs font-black">{b.developerName?.[0]}</span>
                               }
                             </div>
@@ -331,7 +412,9 @@ export default function FreelanceProjectPage() {
                             <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
                               <div className="flex items-center gap-2">
                                 <Link href={`/developer/${b.developerId}`}>
-                                  <span className="text-white/80 text-sm font-black hover:text-violet-300 transition duration-150 cursor-pointer">{b.developerName}</span>
+                                  <span className="text-white/80 text-sm font-black hover:text-violet-300 transition duration-150 cursor-pointer">
+                                    {b.developerName}
+                                  </span>
                                 </Link>
                                 <span className={`px-2 py-0.5 rounded-md text-[9px] font-black border ${
                                   b.status==="accepted" ? "border-emerald-500/25 bg-emerald-500/12 text-emerald-300" :
@@ -347,16 +430,14 @@ export default function FreelanceProjectPage() {
 
                             <p className="text-white/45 text-sm leading-relaxed mb-3">{b.proposal}</p>
 
-                            {/* Per-bid commission breakdown (visible to client) */}
-                            {isClient && (
-                              <div className="flex items-center gap-3 flex-wrap text-[10px] mb-2">
-                                <span className="text-white/25">Dev earns: <span className="text-emerald-400/70 font-bold">₹{(b.developerEarns ?? getDevEarnings(b.amount)).toLocaleString()}</span></span>
-                                <span className="text-white/15">·</span>
-                                <span className="text-white/25">Platform: <span className="text-violet-400/70 font-bold">₹{(b.platformFee ?? getPlatformFee(b.amount)).toLocaleString()}</span></span>
-                                <span className="text-white/15">·</span>
-                                <span className="text-white/25">You pay: <span className="text-cyan-400/70 font-bold">₹{(b.clientPays ?? getBuyerPrice(b.amount)).toLocaleString()}</span></span>
-                              </div>
-                            )}
+                            {/* Commission breakdown per bid */}
+                            <div className="flex items-center gap-3 flex-wrap text-[10px] mb-2">
+                              <span className="text-white/25">Dev earns: <span className="text-emerald-400/70 font-bold">₹{(b.developerEarns ?? getDevEarnings(b.amount)).toLocaleString()}</span></span>
+                              <span className="text-white/15">·</span>
+                              <span className="text-white/25">Platform: <span className="text-violet-400/70 font-bold">₹{(b.platformFee ?? getPlatformFee(b.amount)).toLocaleString()}</span></span>
+                              <span className="text-white/15">·</span>
+                              <span className="text-white/25">Client pays: <span className="text-cyan-400/70 font-bold">₹{(b.clientPays ?? getBuyerPrice(b.amount)).toLocaleString()}</span></span>
+                            </div>
 
                             <p className="text-white/20 text-[10px]">{timeAgo(b.createdAt)}</p>
                           </div>
@@ -364,17 +445,13 @@ export default function FreelanceProjectPage() {
 
                         {isClient && project.status === "open" && b.status === "pending" && (
                           <div className="flex gap-2 mt-4 pt-4 border-t border-white/5">
-                            <motion.button onClick={() => acceptBid(b.id)}
+                            <motion.button onClick={() => acceptBid(b)}
                               whileHover={{ scale:1.03 }} whileTap={{ scale:0.97 }}
                               style={{ willChange:"transform", background:"linear-gradient(135deg,#059669,#0891b2)" }}
                               className="flex-1 py-2.5 rounded-xl font-black text-white text-xs">
-                              ✓ Accept Bid — Pay ₹{(b.clientPays ?? getBuyerPrice(b.amount)).toLocaleString()}
+                              ✓ Accept — Pay ₹{(b.clientPays ?? getBuyerPrice(b.amount)).toLocaleString()}
                             </motion.button>
-                            <motion.button
-                              onClick={async () => {
-                                await updateDoc(doc(db,"freelanceBids",b.id), { status:"rejected" });
-                                setBids(p => p.map(x => x.id===b.id ? { ...x, status:"rejected" as const } : x));
-                              }}
+                            <motion.button onClick={() => rejectBid(b.id)}
                               whileHover={{ scale:1.03 }} whileTap={{ scale:0.97 }} style={{ willChange:"transform" }}
                               className="flex-1 py-2.5 rounded-xl font-bold text-rose-400/70 text-xs border border-rose-500/20 hover:bg-rose-500/8 transition duration-200">
                               ✕ Reject
@@ -386,13 +463,14 @@ export default function FreelanceProjectPage() {
                   </div>
                 ) : (
                   <div className="text-center py-10 text-white/25 text-sm">
-                    <Link href="/login" className="text-violet-400/70 hover:text-violet-300 transition duration-150 font-semibold">Sign in</Link> to view proposals
+                    <Link href="/login" className="text-violet-400/70 hover:text-violet-300 transition duration-150 font-semibold">Sign in</Link>
+                    {" "}to view proposals
                   </div>
                 )}
               </motion.div>
             </div>
 
-            {/* ── Right sidebar ── */}
+            {/* ── Sidebar ── */}
             <div className="lg:col-span-1 space-y-4">
 
               <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.1 }}
@@ -405,7 +483,7 @@ export default function FreelanceProjectPage() {
                     style={{ backgroundImage:"linear-gradient(135deg,#34d399,#22d3ee)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
                     ₹{project.budget.toLocaleString()}
                   </p>
-                  <p className="text-white/30 text-xs">{project.budgetType} budget (developer receives)</p>
+                  <p className="text-white/30 text-xs">{project.budgetType} budget</p>
                   <p className="text-white/20 text-[10px] mt-1">Client pays ₹{getBuyerPrice(project.budget).toLocaleString()} incl. fees</p>
                 </div>
 
@@ -436,14 +514,14 @@ export default function FreelanceProjectPage() {
                   </div>
                 ) : (
                   <div className="py-3 rounded-xl border border-white/8 bg-white/[0.02] text-white/30 font-bold text-xs text-center">
-                    {project.status === "in_progress" ? "Project is in progress" : "Project is closed"}
+                    {project.status === "in_progress" ? "Project in progress" : "Project closed"}
                   </div>
                 )}
 
-                <div className="grid grid-cols-2 gap-2 pt-2">
+                <div className="grid grid-cols-2 gap-2 pt-1">
                   {[
-                    { label:"Bids",   val: project.bidsCount ?? 0 },
-                    { label:"Budget", val: `₹${(project.budget/1000).toFixed(0)}K` },
+                    { label:"Bids",    val: bids.length },
+                    { label:"Budget",  val: `₹${(project.budget/1000).toFixed(0)}K` },
                   ].map((s,i) => (
                     <div key={i} className="p-3 rounded-xl border border-white/5 bg-white/[0.02] text-center">
                       <p className="text-white font-black text-lg">{s.val}</p>
@@ -456,7 +534,7 @@ export default function FreelanceProjectPage() {
                   <svg className="w-3 h-3 text-emerald-400/50 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
-                  <p className="text-white/20 text-[10px]">Payment secured via Razorpay escrow</p>
+                  <p className="text-white/20 text-[10px]">Payment secured via Razorpay</p>
                 </div>
               </motion.div>
 
@@ -482,10 +560,13 @@ export default function FreelanceProjectPage() {
               className="relative z-10 w-full max-w-md rounded-3xl border border-white/10 bg-[#0a0012] backdrop-blur-xl p-8">
               <div className="absolute top-0 left-0 right-0 h-[1px]"
                 style={{ background:"linear-gradient(90deg,transparent,rgba(34,211,238,0.5),rgba(167,139,250,0.3),transparent)" }} />
+
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h3 className="text-xl font-black text-white">Submit Proposal</h3>
-                  <p className="text-white/35 text-xs mt-1">Client budget: <span className="text-emerald-300 font-black">₹{project.budget.toLocaleString()}</span></p>
+                  <p className="text-white/35 text-xs mt-1">
+                    Client budget: <span className="text-emerald-300 font-black">₹{project.budget.toLocaleString()}</span>
+                  </p>
                 </div>
                 <button onClick={() => setShowBid(false)}
                   className="w-8 h-8 rounded-lg border border-white/8 flex items-center justify-center hover:border-white/20 text-white/40 hover:text-white/70 transition duration-200">
@@ -494,36 +575,44 @@ export default function FreelanceProjectPage() {
                   </svg>
                 </button>
               </div>
+
               <form onSubmit={submitBid} className="space-y-4">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-black uppercase tracking-[0.25em] text-white/30 mb-2">Your Bid (₹) *</label>
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/35 text-sm">₹</span>
-                      <input type="number" min="0" value={amount} onChange={e=>setAmount(e.target.value)} required placeholder="20000" className={inputCls + " pl-7"} />
+                      <input type="number" min="0" value={amount} onChange={e=>setAmount(e.target.value)}
+                        required placeholder="20000" className={inputCls + " pl-7"} />
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-black uppercase tracking-[0.25em] text-white/30 mb-2">Timeline</label>
-                    <input value={timeline} onChange={e=>setTimeline(e.target.value)} placeholder="2 weeks" className={inputCls} />
+                    <input value={timeline} onChange={e=>setTimeline(e.target.value)}
+                      placeholder="e.g. 2 weeks" className={inputCls} />
                   </div>
                 </div>
 
                 {/* Live earnings breakdown */}
                 <AnimatePresence>
                   {bidNum > 0 && (
-                    <motion.div initial={{ opacity:0, height:0 }} animate={{ opacity:1, height:"auto" }} exit={{ opacity:0, height:0 }}
+                    <motion.div initial={{ opacity:0, height:0 }} animate={{ opacity:1, height:"auto" }}
+                      exit={{ opacity:0, height:0 }}
                       className="relative p-4 rounded-2xl border border-white/8 bg-white/[0.02] overflow-hidden">
                       <div className="absolute top-0 left-0 right-0 h-[1px]"
                         style={{ background:"linear-gradient(90deg,transparent,rgba(34,211,238,0.3),transparent)" }} />
                       <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25 mb-3">Your Earnings</p>
                       <div className="space-y-2">
                         <div className="flex justify-between text-xs">
-                          <span className="text-white/40 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-400/60" />Your bid</span>
+                          <span className="text-white/40 flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400/60" />Your bid
+                          </span>
                           <span className="text-emerald-400 font-black">₹{bidNum.toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-white/40 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-violet-400/60" />Platform (15%)</span>
+                          <span className="text-white/40 flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-violet-400/60" />Platform (15%)
+                          </span>
                           <span className="text-white/40">- ₹{getPlatformFee(bidNum).toLocaleString()}</span>
                         </div>
                         <div className="h-[1px] bg-white/6" />
@@ -546,6 +635,7 @@ export default function FreelanceProjectPage() {
                     placeholder="Describe your approach, experience, and why you're the best fit…"
                     className={inputCls + " resize-none"} />
                 </div>
+
                 <div className="flex gap-3">
                   <button type="button" onClick={() => setShowBid(false)}
                     className="flex-1 py-3 rounded-xl border border-white/8 text-white/40 text-sm font-bold hover:border-white/15 transition duration-200">
@@ -567,8 +657,8 @@ export default function FreelanceProjectPage() {
       {/* Toast */}
       <AnimatePresence>
         {toast && (
-          <motion.div initial={{ opacity:0, y:20, scale:0.95 }} animate={{ opacity:1, y:0, scale:1 }} exit={{ opacity:0, y:20, scale:0.95 }}
-            transition={{ duration:0.3 }}
+          <motion.div initial={{ opacity:0, y:20, scale:0.95 }} animate={{ opacity:1, y:0, scale:1 }}
+            exit={{ opacity:0, y:20, scale:0.95 }} transition={{ duration:0.3 }}
             className="fixed bottom-6 right-6 z-50 px-6 py-3.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/15 backdrop-blur-xl text-emerald-300 text-sm font-bold shadow-[0_8px_32px_rgba(52,211,153,0.2)]">
             ✓ {toast}
           </motion.div>

@@ -12,13 +12,13 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 export default function AdminDashboard() {
-  const [activeTab,     setActiveTab]     = useState<"overview"|"models"|"users"|"applications"|"certifications">("overview");
-  const [models,        setModels]        = useState<any[]>([]);
-  const [users,         setUsers]         = useState<any[]>([]);
-  const [applications,  setApplications]  = useState<any[]>([]);
-  const [certRequests,  setCertRequests]  = useState<any[]>([]);
-  const [loading,       setLoading]       = useState(true);
-  const [toast,         setToast]         = useState("");
+  const [activeTab, setActiveTab] = useState<"overview" | "models" | "users" | "applications" | "certifications">("overview");
+  const [models, setModels] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [applications, setApplications] = useState<any[]>([]);
+  const [certRequests, setCertRequests] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState("");
 
   useEffect(() => { loadAll(); }, []);
 
@@ -35,7 +35,7 @@ export default function AdminDashboard() {
       setUsers(uSnap.docs.map(d => ({ id: d.id, ...d.data() })));
       setApplications(aSnap.docs.map(d => ({ id: d.id, ...d.data() })));
       setCertRequests(cSnap.docs.map(d => ({ id: d.id, ...d.data() })));
-    } catch(e) { console.error(e); }
+    } catch (e) { console.error(e); }
     setLoading(false);
   }
 
@@ -90,35 +90,35 @@ export default function AdminDashboard() {
   }
 
   // ── Derived stats ──
-  const developers  = users.filter(u => u.role === "developer");
-  const admins      = users.filter(u => u.role === "admin");
-  const freeModels  = models.filter(m => !m.isPaid);
-  const paidModels  = models.filter(m => m.isPaid);
+  const developers = users.filter(u => u.role === "developer");
+  const admins = users.filter(u => u.role === "admin");
+  const freeModels = models.filter(m => !m.isPaid);
+  const paidModels = models.filter(m => m.isPaid);
   const pendingApps = applications.filter(a => a.status === "pending");
-  const pendingCerts= certRequests.filter(c => c.status === "pending");
+  const pendingCerts = certRequests.filter(c => c.status === "pending");
 
   const STATS = [
-    { label:"Total Models",    val: models.length,       colorClass:"text-blue-600", bgClass:"bg-blue-50", borderClass:"border-blue-200", icon:"M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
-    { label:"Total Users",     val: users.length,        colorClass:"text-cyan-600", bgClass:"bg-cyan-50", borderClass:"border-cyan-200", icon:"M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
-    { label:"Developers",      val: developers.length,   colorClass:"text-emerald-600", bgClass:"bg-emerald-50", borderClass:"border-emerald-200", icon:"M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" },
-    { label:"Pending Actions", val: pendingApps.length + pendingCerts.length, colorClass:"text-amber-600", bgClass:"bg-amber-50", borderClass:"border-amber-200", icon:"M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { label: "Total Models", val: models.length, colorClass: "text-blue-600", bgClass: "bg-blue-50", borderClass: "border-blue-200", icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
+    { label: "Total Users", val: users.length, colorClass: "text-cyan-600", bgClass: "bg-cyan-50", borderClass: "border-cyan-200", icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+    { label: "Developers", val: developers.length, colorClass: "text-emerald-600", bgClass: "bg-emerald-50", borderClass: "border-emerald-200", icon: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" },
+    { label: "Pending Actions", val: pendingApps.length + pendingCerts.length, colorClass: "text-amber-600", bgClass: "bg-amber-50", borderClass: "border-amber-200", icon: "M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
   ];
 
   const TABS: { id: typeof activeTab; label: string; badge?: number }[] = [
-    { id:"overview",      label:"Overview" },
-    { id:"models",        label:"Models",       badge: models.length },
-    { id:"users",         label:"Users",        badge: users.length },
-    { id:"applications",  label:"Applications", badge: pendingApps.length || undefined },
-    { id:"certifications",label:"Certifications",badge: pendingCerts.length || undefined },
+    { id: "overview", label: "Overview" },
+    { id: "models", label: "Models", badge: models.length },
+    { id: "users", label: "Users", badge: users.length },
+    { id: "applications", label: "Applications", badge: pendingApps.length || undefined },
+    { id: "certifications", label: "Certifications", badge: pendingCerts.length || undefined },
   ];
 
   const FILE_COLORS: Record<string, { colorClass: string; bgClass: string; borderClass: string; hex: string }> = {
-    glb:  { colorClass: "text-indigo-600", bgClass: "bg-indigo-50", borderClass: "border-indigo-200", hex: "#4f46e5" },
+    glb: { colorClass: "text-indigo-600", bgClass: "bg-indigo-50", borderClass: "border-indigo-200", hex: "#4f46e5" },
     gltf: { colorClass: "text-indigo-600", bgClass: "bg-indigo-50", borderClass: "border-indigo-200", hex: "#4f46e5" },
-    obj:  { colorClass: "text-cyan-600", bgClass: "bg-cyan-50", borderClass: "border-cyan-200", hex: "#0891b2" },
-    fbx:  { colorClass: "text-cyan-600", bgClass: "bg-cyan-50", borderClass: "border-cyan-200", hex: "#0891b2" },
-    dwg:  { colorClass: "text-amber-600", bgClass: "bg-amber-50", borderClass: "border-amber-200", hex: "#d97706" },
-    dxf:  { colorClass: "text-amber-600", bgClass: "bg-amber-50", borderClass: "border-amber-200", hex: "#d97706" },
+    obj: { colorClass: "text-cyan-600", bgClass: "bg-cyan-50", borderClass: "border-cyan-200", hex: "#0891b2" },
+    fbx: { colorClass: "text-cyan-600", bgClass: "bg-cyan-50", borderClass: "border-cyan-200", hex: "#0891b2" },
+    dwg: { colorClass: "text-amber-600", bgClass: "bg-amber-50", borderClass: "border-amber-200", hex: "#d97706" },
+    dxf: { colorClass: "text-amber-600", bgClass: "bg-amber-50", borderClass: "border-amber-200", hex: "#d97706" },
   };
 
   const getFileStyle = (ext: string) => FILE_COLORS[ext] ?? FILE_COLORS.glb;
@@ -128,25 +128,25 @@ export default function AdminDashboard() {
     const d = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
     const s = Math.floor((Date.now() - d.getTime()) / 1000);
     if (s < 60) return `${s}s ago`;
-    if (s < 3600) return `${Math.floor(s/60)}m ago`;
-    if (s < 86400) return `${Math.floor(s/3600)}h ago`;
-    return `${Math.floor(s/86400)}d ago`;
+    if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+    if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+    return `${Math.floor(s / 86400)}d ago`;
   }
 
   const statusPill = (s: string) => {
     const m: Record<string, string> = {
       pending: "border-amber-200 bg-amber-50 text-amber-700",
-      approved:"border-green-200 bg-green-50 text-green-700",
-      rejected:"border-red-200 bg-red-50 text-red-700",
+      approved: "border-green-200 bg-green-50 text-green-700",
+      rejected: "border-red-200 bg-red-50 text-red-700",
     };
     return `px-2.5 py-1 rounded-md text-[9px] font-black tracking-widest uppercase border shadow-sm ${m[s] ?? "border-gray-200 bg-gray-50 text-gray-500"}`;
   };
 
   const rolePill = (r: string) => {
     const m: Record<string, string> = {
-      admin:    "border-red-200 bg-red-50 text-red-700",
-      developer:"border-blue-200 bg-blue-50 text-blue-700",
-      user:     "border-gray-200 bg-white text-gray-500",
+      admin: "border-red-200 bg-red-50 text-red-700",
+      developer: "border-blue-200 bg-blue-50 text-blue-700",
+      user: "border-gray-200 bg-white text-gray-500",
     };
     return `px-2.5 py-1 rounded-md text-[9px] font-black tracking-widest uppercase border shadow-sm ${m[r] ?? m.user}`;
   };
@@ -164,7 +164,7 @@ export default function AdminDashboard() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 pt-32 pb-20">
 
         {/* Header */}
-        <motion.div initial={{ opacity:0, y:15 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }} className="mb-10">
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-red-200 bg-red-50 mb-4 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
             <span className="text-red-700 text-[10px] font-black uppercase tracking-widest">Control Panel</span>
@@ -174,9 +174,9 @@ export default function AdminDashboard() {
         </motion.div>
 
         {/* Stats */}
-        <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.1 }}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
           className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-          {STATS.map((s,i) => (
+          {STATS.map((s, i) => (
             <div key={i} className="relative p-6 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-gray-300 transition duration-200">
               <svg className={`w-6 h-6 mb-4 ${s.colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={s.icon} />
@@ -188,14 +188,14 @@ export default function AdminDashboard() {
         </motion.div>
 
         {/* Secondary stats row */}
-        <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.15 }}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
           className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
           {[
-            { label:"Free Models",    val: freeModels.length,   colorClass:"text-green-600", bgClass:"bg-green-50", borderClass:"border-green-200" },
-            { label:"Paid Models",    val: paidModels.length,   colorClass:"text-yellow-600", bgClass:"bg-yellow-50", borderClass:"border-yellow-200" },
-            { label:"Pending Apps",   val: pendingApps.length,  colorClass:"text-blue-600", bgClass:"bg-blue-50", borderClass:"border-blue-200" },
-            { label:"Pending Certs",  val: pendingCerts.length, colorClass:"text-indigo-600", bgClass:"bg-indigo-50", borderClass:"border-indigo-200" },
-          ].map((s,i) => (
+            { label: "Free Models", val: freeModels.length, colorClass: "text-green-600", bgClass: "bg-green-50", borderClass: "border-green-200" },
+            { label: "Paid Models", val: paidModels.length, colorClass: "text-yellow-600", bgClass: "bg-yellow-50", borderClass: "border-yellow-200" },
+            { label: "Pending Apps", val: pendingApps.length, colorClass: "text-blue-600", bgClass: "bg-blue-50", borderClass: "border-blue-200" },
+            { label: "Pending Certs", val: pendingCerts.length, colorClass: "text-indigo-600", bgClass: "bg-indigo-50", borderClass: "border-indigo-200" },
+          ].map((s, i) => (
             <div key={i} className="p-4 rounded-xl border border-gray-200 bg-white shadow-sm flex items-center gap-4">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm ${s.bgClass} ${s.borderClass}`}>
                 <span className={`text-lg font-black ${s.colorClass}`}>{s.val}</span>
@@ -212,14 +212,12 @@ export default function AdminDashboard() {
         <div className="flex gap-2 border-b border-gray-200 mb-8 overflow-x-auto pb-px">
           {TABS.map(t => (
             <button key={t.id} onClick={() => setActiveTab(t.id)}
-              className={`flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap transition duration-200 border-b-2 ${
-                activeTab===t.id ? "border-blue-600 text-blue-700 bg-blue-50/50 rounded-t-lg" : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-t-lg"
-              }`}>
+              className={`flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap transition duration-200 border-b-2 ${activeTab === t.id ? "border-blue-600 text-blue-700 bg-blue-50/50 rounded-t-lg" : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-t-lg"
+                }`}>
               {t.label}
               {t.badge !== undefined && t.badge > 0 && (
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black ${
-                  activeTab===t.id ? "bg-blue-200 text-blue-800" : "bg-gray-200 text-gray-600"
-                }`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black ${activeTab === t.id ? "bg-blue-200 text-blue-800" : "bg-gray-200 text-gray-600"
+                  }`}>
                   {t.badge}
                 </span>
               )}
@@ -231,7 +229,7 @@ export default function AdminDashboard() {
 
           {/* ── OVERVIEW ── */}
           {activeTab === "overview" && (
-            <motion.div key="overview" initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
+            <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {/* Recent models */}
@@ -244,7 +242,7 @@ export default function AdminDashboard() {
                     <p className="text-gray-500 font-medium text-sm text-center py-8">No models yet</p>
                   ) : (
                     <div className="space-y-4">
-                      {models.slice(0,5).map(m => {
+                      {models.slice(0, 5).map(m => {
                         const ext = m.fileType?.toLowerCase() ?? "glb";
                         const style = getFileStyle(ext);
                         return (
@@ -283,7 +281,7 @@ export default function AdminDashboard() {
                       </div>
                     ) : (
                       <>
-                        {pendingApps.slice(0,3).map(a => (
+                        {pendingApps.slice(0, 3).map(a => (
                           <div key={a.id} className="flex items-center justify-between gap-3 p-4 rounded-xl border border-blue-200 bg-blue-50 shadow-sm">
                             <div className="min-w-0">
                               <p className="text-blue-900 text-xs font-bold truncate mb-0.5">{a.name}</p>
@@ -301,7 +299,7 @@ export default function AdminDashboard() {
                             </div>
                           </div>
                         ))}
-                        {pendingCerts.slice(0,3).map(c => (
+                        {pendingCerts.slice(0, 3).map(c => (
                           <div key={c.id} className="flex items-center justify-between gap-3 p-4 rounded-xl border border-indigo-200 bg-indigo-50 shadow-sm">
                             <div className="min-w-0">
                               <p className="text-indigo-900 text-xs font-bold truncate mb-0.5">{c.name}</p>
@@ -329,9 +327,9 @@ export default function AdminDashboard() {
 
           {/* ── MODELS ── */}
           {activeTab === "models" && (
-            <motion.div key="models" initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
+            <motion.div key="models" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               <div className="flex items-center justify-between mb-6">
-                <p className="text-gray-500 font-medium text-sm">{models.length} model{models.length!==1?"s":""} on platform</p>
+                <p className="text-gray-500 font-medium text-sm">{models.length} model{models.length !== 1 ? "s" : ""} on platform</p>
                 <Link href="/upload">
                   <button className="px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-blue-600 hover:bg-blue-700 shadow-sm transition">
                     + Upload Model
@@ -348,22 +346,22 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {models.map((m,i) => {
+                  {models.map((m, i) => {
                     const ext = m.fileType?.toLowerCase() ?? "glb";
                     const style = getFileStyle(ext);
                     return (
-                      <motion.div key={m.id} initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.03 }}
+                      <motion.div key={m.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
                         className="relative rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition duration-200 flex flex-col overflow-hidden">
-                        
+
                         {/* Thumb */}
                         <div className={`relative h-40 overflow-hidden flex-shrink-0 ${style.bgClass}`}>
                           {m.thumbnailUrl
                             ? <img src={m.thumbnailUrl} alt={m.title} className="w-full h-full object-cover border-b border-gray-100" />
                             : <div className="w-full h-full flex items-center justify-center border-b border-gray-100">
-                                <svg className={`w-10 h-10 ${style.colorClass} opacity-50`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                </svg>
-                              </div>
+                              <svg className={`w-10 h-10 ${style.colorClass} opacity-50`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                              </svg>
+                            </div>
                           }
                           <div className={`absolute top-3 left-3 px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest shadow-sm border bg-white ${style.borderClass} ${style.colorClass}`}>
                             {ext}
@@ -408,22 +406,21 @@ export default function AdminDashboard() {
 
           {/* ── USERS ── */}
           {activeTab === "users" && (
-            <motion.div key="users" initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
+            <motion.div key="users" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               <p className="text-gray-500 font-medium text-sm mb-6">{users.length} registered users</p>
               {users.length === 0 ? (
                 <div className="text-center py-24 text-gray-400 font-medium">No users yet</div>
               ) : (
                 <div className="space-y-3">
-                  {users.map((u,i) => (
-                    <motion.div key={u.id} initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.02 }}
+                  {users.map((u, i) => (
+                    <motion.div key={u.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
                       className="flex items-center gap-4 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition duration-200">
-                      <div className={`w-12 h-12 rounded-2xl overflow-hidden border shadow-sm flex items-center justify-center flex-shrink-0 font-black text-sm uppercase ${
-                        u.role === "developer" ? "border-blue-200 bg-blue-50 text-blue-700" :
-                        u.role === "admin" ? "border-red-200 bg-red-50 text-red-700" :
-                        "border-gray-200 bg-gray-50 text-gray-500"
-                      }`}>
+                      <div className={`w-12 h-12 rounded-2xl overflow-hidden border shadow-sm flex items-center justify-center flex-shrink-0 font-black text-sm uppercase ${u.role === "developer" ? "border-blue-200 bg-blue-50 text-blue-700" :
+                          u.role === "admin" ? "border-red-200 bg-red-50 text-red-700" :
+                            "border-gray-200 bg-gray-50 text-gray-500"
+                        }`}>
                         {u.profileImage && u.profileImage !== "/avatar.png"
-                          ? <img src={u.profileImage} className="w-full h-full object-cover" onError={e=>{(e.target as HTMLImageElement).style.display="none"}} />
+                          ? <img src={u.profileImage} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = "none" }} />
                           : (u.name?.[0] ?? u.email?.[0] ?? "?")
                         }
                       </div>
@@ -456,7 +453,7 @@ export default function AdminDashboard() {
 
           {/* ── APPLICATIONS ── */}
           {activeTab === "applications" && (
-            <motion.div key="applications" initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
+            <motion.div key="applications" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               <p className="text-gray-500 font-medium text-sm mb-6">{applications.length} total · {pendingApps.length} pending</p>
               {applications.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-24 text-center rounded-3xl border border-gray-200 bg-white shadow-sm">
@@ -467,11 +464,10 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {applications.map((a,i) => (
-                    <motion.div key={a.id} initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.03 }}
-                      className={`p-6 rounded-2xl border shadow-sm transition duration-200 ${
-                        a.status==="pending" ? "border-blue-200 bg-blue-50/50" : "border-gray-200 bg-white"
-                      }`}>
+                  {applications.map((a, i) => (
+                    <motion.div key={a.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
+                      className={`p-6 rounded-2xl border shadow-sm transition duration-200 ${a.status === "pending" ? "border-blue-200 bg-blue-50/50" : "border-gray-200 bg-white"
+                        }`}>
                       <div className="flex items-start justify-between gap-5 flex-wrap">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-3 flex-wrap">
@@ -480,7 +476,7 @@ export default function AdminDashboard() {
                           </div>
                           {a.skills && (
                             <div className="flex flex-wrap gap-2 mb-4">
-                              {(Array.isArray(a.skills) ? a.skills : a.skills.split(",")).slice(0,6).map((s: string) => (
+                              {(Array.isArray(a.skills) ? a.skills : a.skills.split(",")).slice(0, 6).map((s: string) => (
                                 <span key={s} className="px-2.5 py-1 rounded-md text-[10px] font-bold border shadow-sm border-gray-200 bg-white text-gray-600">{s.trim()}</span>
                               ))}
                             </div>
@@ -517,7 +513,7 @@ export default function AdminDashboard() {
 
           {/* ── CERTIFICATIONS ── */}
           {activeTab === "certifications" && (
-            <motion.div key="certifications" initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}>
+            <motion.div key="certifications" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               <p className="text-gray-500 font-medium text-sm mb-6">{certRequests.length} total · {pendingCerts.length} pending</p>
               {certRequests.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-24 text-center rounded-3xl border border-gray-200 bg-white shadow-sm">
@@ -528,11 +524,10 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {certRequests.map((c,i) => (
-                    <motion.div key={c.id} initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.03 }}
-                      className={`p-6 rounded-2xl border shadow-sm transition duration-200 ${
-                        c.status==="pending" ? "border-indigo-200 bg-indigo-50/50" : "border-gray-200 bg-white"
-                      }`}>
+                  {certRequests.map((c, i) => (
+                    <motion.div key={c.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
+                      className={`p-6 rounded-2xl border shadow-sm transition duration-200 ${c.status === "pending" ? "border-indigo-200 bg-indigo-50/50" : "border-gray-200 bg-white"
+                        }`}>
                       <div className="flex items-start justify-between gap-5 flex-wrap">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-2 flex-wrap">
@@ -540,14 +535,14 @@ export default function AdminDashboard() {
                             <span className={statusPill(c.status)}>{c.status}</span>
                           </div>
                           <p className="text-gray-500 font-medium text-sm mb-4">{c.email}</p>
-                          
+
                           {c.reason && (
                             <div className="mb-4 bg-gray-50 rounded-xl p-4 border border-gray-100 shadow-inner">
                               <p className="text-gray-400 text-[10px] uppercase font-black tracking-widest mb-1.5">Why they should be certified</p>
                               <p className="text-gray-700 text-sm font-medium leading-relaxed">{c.reason}</p>
                             </div>
                           )}
-                          
+
                           <div className="flex flex-wrap items-center gap-4 text-sm font-bold mt-4">
                             {c.portfolio && <a href={c.portfolio} target="_blank" className="text-indigo-600 hover:text-indigo-700 hover:underline transition">Portfolio ↗</a>}
                             {c.linkedin && <a href={c.linkedin} target="_blank" className="text-cyan-600 hover:text-cyan-700 hover:underline transition">LinkedIn ↗</a>}
@@ -581,10 +576,10 @@ export default function AdminDashboard() {
       <AnimatePresence>
         {toast && (
           <motion.div
-            initial={{ opacity:0, y:20, scale:0.95 }}
-            animate={{ opacity:1, y:0, scale:1 }}
-            exit={{ opacity:0, y:20, scale:0.95 }}
-            transition={{ duration:0.3 }}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
             className="fixed bottom-6 right-6 z-50 px-6 py-4 rounded-2xl border border-green-200 bg-green-50 text-green-800 text-sm font-bold shadow-lg flex items-center gap-2">
             <span className="w-5 h-5 rounded-full bg-green-200 text-green-700 flex items-center justify-center text-xs">✓</span> {toast}
           </motion.div>

@@ -317,14 +317,14 @@ export default function Navbar() {
 
               {/* Requests section */}
               <motion.div initial={{ opacity:0, x:-12 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.25, delay:0.18 }}>
-                <Link href="/requests" onClick={() => setMobileOpen(false)}>
+                <Link href="/requests/open" onClick={() => setMobileOpen(false)}>
                   <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition duration-150 cursor-pointer">
                     <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background:"#a78bfa18" }}>
                       <div className="w-1.5 h-1.5 rounded-full" style={{ background:"#a78bfa" }} />
                     </div>
                     <div>
-                      <p className="text-white/80 text-sm font-bold">Requests</p>
-                      <p className="text-white/25 text-[10px]">Post or browse project requests</p>
+                      <p className="text-white/80 text-sm font-bold">Public Requests</p>
+                      <p className="text-white/25 text-[10px]">Browse open client projects</p>
                     </div>
                   </div>
                 </Link>

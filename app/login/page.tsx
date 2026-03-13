@@ -48,11 +48,6 @@ export default function Login() {
         style={{ background: "radial-gradient(circle, rgba(6,182,212,0.07) 0%, transparent 70%)", filter: "blur(80px)" }} />
 
       {/* Grid */}
-      <div className="absolute inset-0 opacity-[0.018] pointer-events-none"
-        style={{
-          backgroundImage: "linear-gradient(rgba(167,139,250,1) 1px, transparent 1px), linear-gradient(90deg, rgba(167,139,250,1) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }} />
 
       <motion.div
         initial={{ opacity: 0, y: 28 }}

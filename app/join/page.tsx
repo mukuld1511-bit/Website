@@ -13,8 +13,6 @@ export default function JoinPage() {
       <div className="relative pt-28 pb-24 px-4 overflow-x-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full pointer-events-none"
           style={{ background:"radial-gradient(ellipse,rgba(124,58,237,0.12) 0%,transparent 70%)", filter:"blur(80px)" }} />
-        <div className="absolute inset-0 opacity-[0.018] pointer-events-none"
-          style={{ backgroundImage:"linear-gradient(rgba(167,139,250,1) 1px,transparent 1px),linear-gradient(90deg,rgba(167,139,250,1) 1px,transparent 1px)", backgroundSize:"60px 60px" }} />
 
         <div className="relative z-10 max-w-4xl mx-auto">
 

@@ -77,12 +77,6 @@ export default function UserDashboard() {
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-purple-600/5 rounded-full blur-[80px] pointer-events-none" />
 
       {/* Grid texture */}
-      <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
-        style={{
-          backgroundImage: "linear-gradient(rgba(34,211,238,1) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,1) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
 
       <div className="relative z-10 max-w-5xl mx-auto">
 

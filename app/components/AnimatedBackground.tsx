@@ -106,24 +106,7 @@ export default function AnimatedBackground() {
         }}
       />
 
-      <motion.div
-        animate={{ y: ["0vh", "100vh"] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
-        style={{
-          willChange: "transform",
-          position: "absolute", left: 0, right: 0,
-          height: 1,
-          background: "linear-gradient(90deg, transparent, rgba(139,92,246,0.12), rgba(34,211,238,0.08), transparent)",
-          pointerEvents: "none",
-        }}
-      />
-
-      <div className="absolute inset-0 opacity-[0.018] pointer-events-none"
-        style={{
-          backgroundImage: "linear-gradient(rgba(167,139,250,1) 1px, transparent 1px), linear-gradient(90deg, rgba(167,139,250,1) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
+      {/* scan line and grid removed */}
     </div>
   );
 }

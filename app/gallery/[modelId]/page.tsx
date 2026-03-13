@@ -5,6 +5,7 @@ import {
   doc, getDoc, updateDoc, increment,
   collection, addDoc, getDocs, query,
   orderBy, serverTimestamp, where,
+  setDoc, deleteDoc,
 } from "firebase/firestore";
 import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -226,6 +227,19 @@ export default function ModelDetailPage() {
     loadModel();
   }, [modelId]);
 
+  // Check if current user has already liked this model
+  useEffect(() => {
+    if (!user || !modelId) return;
+    async function checkLike() {
+      try {
+        const likeRef = doc(db, "models", modelId, "likes", user.uid);
+        const likeSnap = await getDoc(likeRef);
+        setLiked(likeSnap.exists());
+      } catch(e) { /* ignore */ }
+    }
+    checkLike();
+  }, [user, modelId]);
+
   useEffect(() => {
     if (!model || !user) return;
     async function checkAccess() {
@@ -257,10 +271,20 @@ export default function ModelDetailPage() {
 
   async function handleLike() {
     if (!user) { router.push("/login"); return; }
-    const newLiked = !liked;
-    setLiked(newLiked);
-    setLikeCount(n => n + (newLiked ? 1 : -1));
-    await updateDoc(doc(db,"models",modelId), { likes: increment(newLiked ? 1 : -1) });
+    const likeRef = doc(db, "models", modelId, "likes", user.uid);
+    if (liked) {
+      // Unlike
+      setLiked(false);
+      setLikeCount(n => Math.max(0, n - 1));
+      await deleteDoc(likeRef);
+      await updateDoc(doc(db, "models", modelId), { likes: increment(-1) });
+    } else {
+      // Like (only once per user)
+      setLiked(true);
+      setLikeCount(n => n + 1);
+      await setDoc(likeRef, { userId: user.uid, createdAt: serverTimestamp() });
+      await updateDoc(doc(db, "models", modelId), { likes: increment(1) });
+    }
   }
 
   async function handleComment(e: React.FormEvent) {
@@ -282,20 +306,22 @@ export default function ModelDetailPage() {
   async function handleDownload() {
     if (!model) return;
     if (model.isPaid && !hasAccess) { showToast("Purchase required to download."); return; }
-    showToast("Preparing download…");
     try {
-      const response = await fetch(model.modelUrl);
-      const blob     = await response.blob();
-      const url      = URL.createObjectURL(blob);
-      const a        = document.createElement("a");
-      const ext      = model.modelUrl.split("?")[0].split(".").pop() ?? "glb";
+      // Inject fl_attachment into the Cloudinary URL so the browser downloads
+      // the file directly instead of opening it (no CORS fetch needed)
+      let downloadUrl = model.modelUrl;
+      if (downloadUrl.includes("cloudinary.com")) {
+        downloadUrl = downloadUrl.replace("/upload/", "/upload/fl_attachment/");
+      }
+      const ext      = downloadUrl.split("?")[0].split(".").pop() ?? "glb";
       const filename = (model.title || "model").replace(/\s+/g, "_") + "." + ext;
-      a.href         = url;
+      const a        = document.createElement("a");
+      a.href         = downloadUrl;
       a.download     = filename;
+      a.target       = "_blank";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
       await updateDoc(doc(db, "models", modelId), { downloads: increment(1) });
       showToast("Download started!");
     } catch (e) {

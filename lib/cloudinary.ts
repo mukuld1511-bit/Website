@@ -1,6 +1,5 @@
 export async function uploadToCloudinary(
   file: File,
-  resourceType: "image" | "video" | "raw" | "auto" = "auto",
   onProgress?: (pct: number) => void
 ): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -41,9 +40,10 @@ export async function uploadToCloudinary(
     xhr.addEventListener("error", () => reject(new Error("Network error during upload")));
     xhr.addEventListener("abort", () => reject(new Error("Upload was aborted")));
 
+    // Use /auto/upload — Cloudinary auto-detects image, video, or raw
     xhr.open(
       "POST",
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`
     );
     xhr.send(formData);
   });

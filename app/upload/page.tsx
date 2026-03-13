@@ -1,6 +1,5 @@
 "use client";
-import { useEffect } from "react";
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -12,8 +11,6 @@ import { uploadToCloudinary } from "../../lib/cloudinary";
 
 const MODEL_EXTENSIONS = ["glb", "gltf", "obj", "fbx", "dwg", "dxf"];
 const BUILD_EXTENSIONS = ["zip"];
-
-type UploadResourceType = "image" | "video" | "raw" | "auto";
 
 export default function UploadContent() {
   const [user, setUser] = useState<any>(null);
@@ -114,8 +111,7 @@ export default function UploadContent() {
 
     try {
       setUploadProgress(25);
-      const resourceType: UploadResourceType = "image";
-      const url = await uploadToCloudinary(f, resourceType);
+      const url = await uploadToCloudinary(f, (pct) => setUploadProgress(Math.round(pct * 0.25)));
       setThumbnailUrl(url);
       setUploadProgress(0);
     } catch {
@@ -151,20 +147,18 @@ export default function UploadContent() {
     setUploadProgress(0);
 
     try {
-      const fileResourceType: UploadResourceType = "auto";
-      const fileUrl = await uploadToCloudinary(file, fileResourceType);
-      setUploadProgress(50);
+      const fileUrl = await uploadToCloudinary(file, (pct) => setUploadProgress(Math.round(pct * 0.6)));
+      setUploadProgress(60);
 
       let finalThumbnailUrl = thumbnailUrl;
       if (thumbnail && !thumbnailUrl) {
-        const thumbResourceType: UploadResourceType = "image";
-        finalThumbnailUrl = await uploadToCloudinary(thumbnail, thumbResourceType);
+        finalThumbnailUrl = await uploadToCloudinary(thumbnail);
       }
-      setUploadProgress(75);
+      setUploadProgress(80);
 
-      const { getDocs, query, collection: dbCollection, where } = await import("firebase/firestore");
-      const userDoc = await getDocs(query(dbCollection(db, "users"), where("uid", "==", user.uid)));
-      const userData = userDoc.docs[0]?.data() || { displayName: "Anonymous", photoURL: "" };
+      const { doc: dbDoc, getDoc } = await import("firebase/firestore");
+      const userSnap = await getDoc(dbDoc(db, "users", user.uid));
+      const userData = userSnap.exists() ? userSnap.data() : { displayName: "Anonymous", photoURL: "" };
 
       const baseData = {
         title,

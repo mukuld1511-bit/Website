@@ -149,7 +149,7 @@ export default function UploadContent() {
         title,
         description,
         fileSize: parseFloat((file.size / (1024 * 1024)).toFixed(2)),
-        fileUrl,
+        modelUrl: fileUrl,
         thumbnailUrl: finalThumbnailUrl,
         isPaid,
         price: isPaid ? price : 0,

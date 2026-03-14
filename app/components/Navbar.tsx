@@ -8,12 +8,11 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../lib/firebase";
 
 const EXPLORE_LINKS = [
-  { label: "3D Gallery",        href: "/gallery",              desc: "Discover 3D models",           icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
-  { label: "AutoCAD Hub",       href: "/autocad",              desc: "DWG & DXF blueprints",         icon: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" },
-  { label: "AR/VR Models",      href: "/gallery?mode=ar",      desc: "Ready for spatial computing",  icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" },
-  { label: "Asset Library",     href: "/gallery?category=props", desc: "Downloadable 3D props",       icon: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" },
-  { label: "WebXR Experiences", href: "/gallery?mode=vr",      desc: "Immersive web demos",          icon: "M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
-  { label: "Upload Creation",   href: "/upload",               desc: "Share your 3D or CAD files",  icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" }
+  { label: "3D Gallery",      href: "/gallery",              desc: "Discover 3D models",             icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
+  { label: "AutoCAD Hub",     href: "/autocad",              desc: "DWG & DXF blueprints",             icon: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" },
+  { label: "AR/VR Models",   href: "/gallery?mode=ar",      desc: "Ready for spatial computing",    icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" },
+  { label: "Unity Asset Library", href: "/asset-library",  desc: "Unity packages & .unitypackage",  icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
+  { label: "Upload Creation", href: "/upload",               desc: "Share your 3D or CAD files",    icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" }
 ];
 
 const LEARN_CONNECT_LINKS = [
@@ -135,11 +134,16 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* CENTER: Desktop Dropdowns */}
-          <div className="hidden lg:flex items-center gap-2">
+          {/* CENTER: Desktop Dropdowns + PIET direct link */}
+          <div className="hidden lg:flex items-center gap-1">
             <DropdownPanel title="Explore" links={EXPLORE_LINKS} />
             <DropdownPanel title="Learn & Connect" links={LEARN_CONNECT_LINKS} />
             <DropdownPanel title="Academy" links={ACADEMY_LINKS} />
+            <Link href="/collaborators"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition text-gray-600 hover:text-gray-900 hover:bg-gray-50">
+              <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+              PIET
+            </Link>
           </div>
 
             {/* RIGHT: Auth & Mobile Menu Toggle */}

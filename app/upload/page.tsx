@@ -101,8 +101,27 @@ export default function UploadContent() {
   };
 
   const handleThumbnailSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // TEMPORARILY DISABLED
-    return;
+    const f = e.target.files?.[0];
+    if (!f) return;
+
+    // Validate file type
+    if (!f.type.startsWith("image/")) {
+      setError("Thumbnail must be an image file (JPG, PNG, WEBP, etc.)");
+      return;
+    }
+    // Validate size — max 5MB
+    if (f.size > 5 * 1024 * 1024) {
+      setError("Thumbnail must be smaller than 5MB");
+      return;
+    }
+
+    setThumbnail(f);
+    setError("");
+
+    // Show local preview immediately
+    const reader = new FileReader();
+    reader.onload = (ev) => setThumbnailPreview(ev.target?.result as string ?? "");
+    reader.readAsDataURL(f);
   };
 
 

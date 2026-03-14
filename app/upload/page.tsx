@@ -155,12 +155,12 @@ export default function UploadContent() {
 
       setUploadProgress(60);
 
-      // Finalize Thumbnail
+      // Upload thumbnail into the same 'models' bucket under a thumbs/ prefix
       let finalThumbnailUrl = thumbnailUrl;
-      if (thumbnail && !thumbnailUrl) {
+      if (thumbnail) {
          const safeThumbName2 = thumbnail.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
-         const thumbPath = `${user.uid}/${Date.now()}_thumb_${safeThumbName2}`;
-         finalThumbnailUrl = await uploadToSupabase("thumbnails", thumbPath, thumbnail);
+         const thumbPath = `thumbs/${user.uid}/${Date.now()}_${safeThumbName2}`;
+         finalThumbnailUrl = await uploadToSupabase("models", thumbPath, thumbnail);
       }
       setUploadProgress(80);
 

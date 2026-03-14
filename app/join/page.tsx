@@ -48,7 +48,7 @@ export default function JoinPage() {
 
                   <h3 className="text-gray-900 font-extrabold text-2xl tracking-tight mb-3">I'm a Client</h3>
                   <p className="text-gray-500 text-sm leading-relaxed flex-grow mb-6 font-medium">
-                    Browse and download 3D models, AR/VR builds. Connect with creators, post projects, and bring your ideas to life.
+                    Browse and download 3D models and XR Apps/Games. Connect with creators, post projects, and bring your ideas to life.
                   </p>
 
                   <div className="space-y-3 mb-8">
@@ -102,12 +102,12 @@ export default function JoinPage() {
 
                   <h3 className="text-gray-900 font-extrabold text-2xl tracking-tight mb-3">I'm a Creator</h3>
                   <p className="text-gray-500 text-sm leading-relaxed flex-grow mb-6 font-medium">
-                    Upload your 3D models, AR/VR builds and AutoCAD files. Connect with peers, earn revenue, and build your reputation on Synthé.
+                    Upload your 3D models, XR games/apps and AutoCAD files. Connect with peers, earn revenue, and build your reputation on Synthé.
                   </p>
 
                   <div className="space-y-3 mb-8">
                     {[
-                      "Upload & sell 3D models and AR/VR builds",
+                      "Upload & sell 3D models and XR Apps/Games",
                       "Connect with peers on learning projects",
                       "Get certified — earn more & rank higher",
                     ].map((f, i) => (

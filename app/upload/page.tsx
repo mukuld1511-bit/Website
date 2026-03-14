@@ -115,10 +115,7 @@ export default function UploadContent() {
       setError("Please select platforms and genre.");
       return;
     }
-    if (uploadType !== "model" && !thumbnailUrl && !thumbnail) {
-      setError("Thumbnail is required for AR/VR builds.");
-      return;
-    }
+
 
     setUploading(true);
     setUploadProgress(0);

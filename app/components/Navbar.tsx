@@ -137,7 +137,7 @@ export default function Navbar() {
           
           {/* LEFT: Logo area */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
-            <span className="font-black text-2xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-500 group-hover:from-pink-500 group-hover:to-orange-400 transition-colors duration-500">SYNTHÉ</span>
+            <span className="font-black text-3xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-500 group-hover:from-pink-500 group-hover:to-orange-400 transition-colors duration-500">SYNTHÉ</span>
             <span className="hidden sm:inline-flex items-center justify-center px-2 py-0.5 rounded-lg text-[10px] font-black tracking-widest uppercase bg-gradient-to-r from-pink-500 to-orange-400 text-white shadow-sm transform -rotate-3 hover:rotate-0 transition-transform">
               <span className="relative z-10">BETA</span>
             </span>

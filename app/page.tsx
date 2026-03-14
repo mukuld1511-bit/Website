@@ -159,29 +159,47 @@ function FeatureCard({ f, i }: { f:typeof FEATURES[0]; i:number }) {
 }
 
 // ─── Tutor card ───────────────────────────────────────────────────────────────
-function TutorCard({ t, i }: { t:TutorProfile; i:number }) {
+function TutorCard({ t, i }: { t:TutorProfile & { certified?: boolean }; i:number }) {
+  const isC = t.certified;
   return (
     <motion.div initial={{ opacity:0, y:10 }} whileInView={{ opacity:1, y:0 }}
       viewport={{ once:true }} transition={{ delay:i*0.05 }}>
       <Link href="/connect">
-        <div className="group flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-200 hover:border-blue-300 hover:shadow-sm transition duration-200 cursor-pointer">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold overflow-hidden bg-gray-100 text-gray-500 border border-gray-200">
+        <div className={`group flex items-center gap-3 p-3 rounded-xl border transition duration-200 cursor-pointer overflow-hidden relative ${
+          isC 
+            ? "border-2 border-[#5B4BDB] bg-[#141414] shadow-[0_0_15px_rgba(91,75,219,0.2)] hover:shadow-[0_0_25px_rgba(91,75,219,0.3)] transform hover:-translate-y-1" 
+            : "bg-white border-gray-200 hover:border-blue-300 hover:shadow-sm"
+        }`}>
+          {isC && <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#5B4BDB] to-purple-400" />}
+          
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold overflow-hidden border ${
+            isC ? "bg-[#5B4BDB]/10 text-[#5B4BDB] border-[#5B4BDB]/20" : "bg-gray-100 text-gray-500 border-gray-200"
+          }`}>
             {t.avatar
               ? <img src={t.avatar} className="w-full h-full object-cover" />
               : t.name?.split(" ").map((n:string)=>n[0]).join("").slice(0,2)
             }
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-gray-900 text-sm font-bold truncate">{t.name}</p>
+            <div className="flex items-center gap-2">
+              <p className={`text-sm font-bold truncate ${isC ? "text-white group-hover:text-[#5B4BDB]" : "text-gray-900"}`}>{t.name}</p>
+              {isC && (
+                <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-[#5B4BDB]/20 text-[#5B4BDB] border border-[#5B4BDB]/30">
+                  Certified
+                </span>
+              )}
+            </div>
             <div className="flex items-center gap-1 mt-0.5">
               <svg className="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
               </svg>
-              <span className="text-gray-700 text-xs font-bold">{t.rating || "New"}</span>
-              <span className="text-gray-400 text-[10px]">· {t.totalSessions || 0} sessions</span>
+              <span className={`text-xs font-bold ${isC ? "text-gray-300" : "text-gray-700"}`}>{t.rating || "New"}</span>
+              <span className={`text-[10px] ${isC ? "text-gray-500" : "text-gray-400"}`}>· {t.totalSessions || 0} sessions</span>
             </div>
           </div>
-          <span className="text-blue-600 text-sm font-extrabold flex-shrink-0">{t.currency||"₹"}{t.hourlyRate||0}<span className="text-xs text-gray-400 font-medium">/hr</span></span>
+          <span className={`text-sm font-extrabold flex-shrink-0 ${isC ? "text-white" : "text-blue-600"}`}>
+            {t.currency||"₹"}{t.hourlyRate||0}<span className={`text-xs font-medium ${isC ? "text-gray-500" : "text-gray-400"}`}>/hr</span>
+          </span>
         </div>
       </Link>
     </motion.div>
@@ -356,7 +374,7 @@ export default function HomePage() {
             <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
               className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-4">
-                Everything You Need
+                The AR/VR Ecosystem
               </h2>
               <p className="text-gray-500 text-lg max-w-2xl mx-auto">
                 One unified platform for 3D creators, AR/VR developers, engineers and global collaborators.

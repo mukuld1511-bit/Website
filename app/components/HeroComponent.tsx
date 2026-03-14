@@ -74,14 +74,14 @@ export default function HeroComponent({ user, stats, statsLoading }: HeroProps) 
               initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
               className="text-5xl md:text-6xl lg:text-[72px] font-extrabold tracking-tight text-white leading-[1.05] mb-6"
             >
-              The Operating System for <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">Spatial Creators</span>
+              The Operating System for <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">AR & VR Creators</span>
             </motion.h1>
 
             <motion.p 
               initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
               className="text-gray-400 text-lg md:text-xl max-w-xl mb-10 leading-relaxed font-light"
             >
-              Upload, discover, and commission AR/VR/3D work. Connect with certified developers globally.
+              Your ultimate AR, VR & 3D Model Marketplace. Upload, discover, and commission spatial computing assets or connect with certified developers globally.
             </motion.p>
 
             <motion.div 

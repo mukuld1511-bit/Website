@@ -391,21 +391,6 @@ export default function ModelDetailPage() {
     }
   }
 
-  async function handleRequestAccess(e: React.FormEvent) {
-    e.preventDefault();
-    if (!user) { router.push("/login"); return; }
-    if (!model || !useCase.trim()) return;
-    try {
-      await addDoc(collection(db,"accessRequests"), {
-        modelId: modelId, userId: user.uid, userEmail: user.email,
-        authorId: model.authorId, useCase: useCase.trim(),
-        status: "pending", requestedAt: serverTimestamp(),
-      });
-      setRequestSent(true); setRequesting(false);
-      showToast("Access request sent!");
-    } catch(e) { console.error(e); }
-  }
-
   function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(""), 3000); }
 
   const ext        = model?.fileType?.toLowerCase() ?? "glb";
@@ -684,7 +669,7 @@ export default function ModelDetailPage() {
                       Download {model.fileType?.toUpperCase()}
                     </span>
                   </motion.button>
-                ) : model.accessType === "purchase" ? (
+                ) : model.isPaid ? (
                   <>
                     {/* Commission breakdown */}
                     <div className="relative p-4 rounded-2xl border border-white/8 bg-white/[0.02] overflow-hidden space-y-2.5">
@@ -724,25 +709,7 @@ export default function ModelDetailPage() {
                       </span>
                     </motion.button>
                   </>
-                ) : requestSent ? (
-                  <div className="w-full py-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/8 text-emerald-300 font-black text-sm text-center">
-                    ✓ Request Sent — Awaiting Approval
-                  </div>
-                ) : (
-                  <motion.button onClick={() => setRequesting(true)}
-                    whileHover={{ scale:1.02 }} whileTap={{ scale:0.98 }}
-                    style={{ willChange:"transform", background:"linear-gradient(135deg,#d97706,#7c3aed)" }}
-                    className="w-full py-4 rounded-2xl font-black text-white text-sm relative overflow-hidden">
-                    <motion.div animate={{ x:["-200%","200%"] }} transition={{ duration:2.5, repeat:Infinity, repeatDelay:4, ease:"linear" }}
-                      style={{ willChange:"transform", position:"absolute", inset:0, background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)", transform:"skewX(-20deg)", pointerEvents:"none" }} />
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                      </svg>
-                      Request Access
-                    </span>
-                  </motion.button>
-                )}
+                ) : null}
 
                 <motion.button onClick={handleLike}
                   whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }} style={{ willChange:"transform" }}
@@ -786,43 +753,6 @@ export default function ModelDetailPage() {
         </div>
       </div>
 
-      {/* Request Access Modal */}
-      <AnimatePresence>
-        {requesting && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
-              className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={() => setRequesting(false)} />
-            <motion.div initial={{ opacity:0, scale:0.95, y:20 }} animate={{ opacity:1, scale:1, y:0 }} exit={{ opacity:0, scale:0.95 }}
-              transition={{ duration:0.3 }}
-              className="relative z-10 w-full max-w-md rounded-3xl border border-white/10 bg-[#0a0012] backdrop-blur-xl p-8">
-              <div className="absolute top-0 left-0 right-0 h-[1px]"
-                style={{ background:"linear-gradient(90deg,transparent,rgba(251,191,36,0.5),rgba(167,139,250,0.3),transparent)" }} />
-              <h3 className="text-xl font-black text-white mb-2">Request Access</h3>
-              <p className="text-white/35 text-sm mb-5 line-clamp-1">{model.title}</p>
-              <form onSubmit={handleRequestAccess} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-[0.25em] text-white/30 mb-2">How will you use this? *</label>
-                  <textarea value={useCase} onChange={e=>setUseCase(e.target.value)} rows={4} required
-                    placeholder="Describe your use case and why you need access to this model…"
-                    className="w-full bg-white/[0.04] border border-white/8 text-white placeholder-white/25 text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-500/50 transition duration-200 resize-none" />
-                </div>
-                <div className="flex gap-3">
-                  <button type="button" onClick={() => setRequesting(false)}
-                    className="flex-1 py-3 rounded-xl border border-white/8 text-white/40 text-sm font-bold hover:border-white/15 transition duration-200">
-                    Cancel
-                  </button>
-                  <motion.button type="submit"
-                    whileHover={{ scale:1.03 }} whileTap={{ scale:0.97 }}
-                    style={{ willChange:"transform", background:"linear-gradient(135deg,#d97706,#7c3aed)" }}
-                    className="flex-1 py-3 rounded-xl font-black text-white text-sm">
-                    Send Request →
-                  </motion.button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* Toast */}
       <AnimatePresence>

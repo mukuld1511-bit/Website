@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db } from "../../../lib/firebase";
-import { collection, getDocs, query, where, Timestamp } from "firebase/firestore";
+import { collection, getDocs, getDoc, doc, updateDoc, query, where, Timestamp } from "firebase/firestore";
 import { motion } from "framer-motion";
 
 const PLATFORM_FEE = 0.15;
@@ -23,6 +23,8 @@ export default function DeveloperDashboard() {
   const [projectChats, setProjectChats] = useState<FirestoreDoc[]>([]);
   const [certStatus, setCertStatus]     = useState<string | null>(null);
   const [loading, setLoading]           = useState(true);
+  const [paymentInfo, setPaymentInfo]   = useState("");
+  const [savingPayment, setSavingPayment] = useState(false);
 
   useEffect(() => {
     const unsub = auth.onAuthStateChanged((user) => {
@@ -59,7 +61,6 @@ export default function DeveloperDashboard() {
     const snap = await getDocs(q);
     setPurchases(snap.docs.map((d) => ({ id: d.id, ...d.data() } as FirestoreDoc)));
   };
-
   const loadCert = async (uid: string) => {
     const q = query(collection(db, "certificationRequests"), where("userId", "==", uid));
     const snap = await getDocs(q);
@@ -70,17 +71,33 @@ export default function DeveloperDashboard() {
   };
 
   const loadAll = async (uid: string) => {
+    setLoading(true);
     await Promise.all([
       loadUploads(uid),
       loadSessions(uid),
       loadPurchases(uid),
       loadCert(uid),
       loadProjectChats(uid),
+      getDoc(doc(db, "users", uid)).then(snap => {
+        if (snap.exists() && snap.data().paymentInfo) setPaymentInfo(snap.data().paymentInfo);
+      }),
     ]);
     setLoading(false);
   };
 
-
+  const savePaymentInfo = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+    setSavingPayment(true);
+    try {
+      await updateDoc(doc(db, "users", user.uid), { paymentInfo });
+      alert("Payment details saved successfully!");
+    } catch (e) {
+      console.error(e);
+      alert("Failed to save payment details.");
+    }
+    setSavingPayment(false);
+  };
   const grossRevenue = purchases.reduce((s, p) => s + (p.amount ?? 0), 0);
   const netEarnings  = purchases.reduce((s, p) => {
     const gross = p.amount ?? 0;
@@ -132,6 +149,31 @@ export default function DeveloperDashboard() {
             Your Dashboard
           </h1>
           <p className="text-gray-500 text-sm font-medium">Track your uploads, earnings, bids, and connect sessions.</p>
+        </motion.div>
+
+        {/* Payout Information */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          className="mb-10 bg-white p-6 rounded-[2rem] border border-gray-200 shadow-sm flex flex-col md:flex-row gap-6 items-center">
+          <div className="flex-1">
+            <h2 className="text-xl font-black text-gray-900 mb-1">Payout Details</h2>
+            <p className="text-sm font-medium text-gray-500">Enter your UPI ID or Bank Details to receive payments for your models.</p>
+          </div>
+          <div className="flex-1 w-full flex gap-3">
+            <input 
+              type="text" 
+              placeholder="UPI ID or Account Number & IFSC..." 
+              value={paymentInfo}
+              onChange={(e) => setPaymentInfo(e.target.value)}
+              className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
+            />
+            <button 
+              onClick={savePaymentInfo}
+              disabled={savingPayment || !paymentInfo.trim()}
+              className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition focus:ring-4 focus:ring-blue-600/20 disabled:opacity-50 whitespace-nowrap"
+            >
+              {savingPayment ? "Saving..." : "Save Details"}
+            </button>
+          </div>
         </motion.div>
 
         {/* Stat Cards */}

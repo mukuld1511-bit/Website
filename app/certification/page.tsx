@@ -119,44 +119,48 @@ export default function CertificationPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 font-sans flex flex-col relative">
       <Navbar />
 
-      <div className="relative pt-32 pb-24 px-4 overflow-x-hidden">
-        <div className="relative z-10 max-w-2xl mx-auto">
+      <div className="relative flex-grow pt-32 pb-24 px-4 overflow-x-hidden z-10">
+        {/* Decorative elements */}
+        <div className="absolute top-20 left-10 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-[-1]" />
+        <div className="absolute top-60 right-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-[-1]" />
+        
+        <div className="relative z-10 max-w-3xl mx-auto">
 
           {/* Hero */}
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
             className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-200 bg-blue-50 mb-6 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-              <span className="text-blue-700 text-xs font-bold uppercase tracking-widest">Synthé Certification</span>
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-2xl border-4 border-white bg-blue-50 mb-8 shadow-md">
+              <span className="w-3 h-3 rounded-full bg-blue-600 animate-pulse" />
+              <span className="text-blue-700 text-xs font-black uppercase tracking-widest">Synthé Certification</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 leading-none mb-4">
+            <h1 className="text-5xl md:text-7xl font-black tracking-tight text-gray-900 leading-tight mb-6 drop-shadow-sm">
               Get{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500">
                 Certified
               </span>
             </h1>
-            <p className="text-gray-500 text-base max-w-lg mx-auto font-medium leading-relaxed">
-              Apply to become a Synthé-verified developer. Certified developers get a badge on their profile, appear first on the Connect page, and are trusted by clients across the platform.
+            <p className="text-gray-600 text-lg md:text-xl max-w-xl mx-auto font-bold leading-relaxed">
+              Apply to become a Synthé-verified creator. Certified creators get a badge on their profile, appear first on the Connect page, and are trusted by clients across the platform.
             </p>
           </motion.div>
 
           {/* Benefits strip */}
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
-            className="relative rounded-3xl border border-gray-200 bg-white p-6 mb-10 overflow-hidden shadow-sm">
+            className="relative rounded-[2rem] border-4 border-indigo-50 bg-white/60 backdrop-blur-md p-8 mb-12 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
               {[
-                { icon: "⭐", label: "Verified Badge",    desc: "Shown on your profile & developer cards" },
+                { icon: "⭐", label: "Verified Badge",    desc: "Shown on your profile & creator cards" },
                 { icon: "🔝", label: "Top Listing",       desc: "Appear first in Connect page searches" },
-                { icon: "💰", label: "More Earnings",     desc: "Clients prefer certified developers" },
+                { icon: "💰", label: "More Earnings",     desc: "Clients prefer certified creators" },
                 { icon: "🛡️", label: "Platform Trust",    desc: "Vetted quality mark from Synthé team" },
               ].map((b, i) => (
-                <div key={i}>
-                  <div className="text-2xl mb-3">{b.icon}</div>
-                  <p className="text-gray-900 font-extrabold text-xs mb-1">{b.label}</p>
-                  <p className="text-gray-500 text-[10px] font-medium leading-relaxed">{b.desc}</p>
+                <div key={i} className="flex flex-col items-center">
+                  <div className="text-3xl mb-4 w-14 h-14 rounded-2xl bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center shadow-sm">{b.icon}</div>
+                  <p className="text-gray-900 font-black text-sm mb-2">{b.label}</p>
+                  <p className="text-gray-600 text-xs font-bold leading-relaxed">{b.desc}</p>
                 </div>
               ))}
             </div>
@@ -165,28 +169,28 @@ export default function CertificationPage() {
           {/* Already certified / pending */}
           {alreadyDone && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-              className={`relative rounded-3xl border p-10 text-center mb-10 shadow-sm ${
+              className={`relative rounded-[2.5rem] border-4 p-12 text-center mb-10 shadow-md backdrop-blur-md ${
                 alreadyDone === "approved"
-                  ? "border-green-200 bg-green-50"
-                  : "border-yellow-200 bg-yellow-50"
+                  ? "border-emerald-100 bg-emerald-50/80"
+                  : "border-amber-100 bg-amber-50/80"
               }`}>
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm border ${
-                alreadyDone === "approved" ? "bg-green-100 border-green-200" : "bg-yellow-100 border-yellow-200"
+              <div className={`w-20 h-20 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-sm border-4 ${
+                alreadyDone === "approved" ? "bg-emerald-100 border-emerald-200" : "bg-amber-100 border-amber-200"
               }`}>
-                <span className="text-3xl">{alreadyDone === "approved" ? "⭐" : "⏳"}</span>
+                <span className="text-4xl">{alreadyDone === "approved" ? "⭐" : "⏳"}</span>
               </div>
-              <h3 className={`font-extrabold text-xl mb-2 ${alreadyDone === "approved" ? "text-green-900" : "text-yellow-900"}`}>
+              <h3 className={`font-black text-3xl mb-4 ${alreadyDone === "approved" ? "text-emerald-900" : "text-amber-900"}`}>
                 {alreadyDone === "approved" ? "You Are Certified!" : "Application Under Review"}
               </h3>
-              <p className={`text-sm font-medium leading-relaxed mb-8 ${alreadyDone === "approved" ? "text-green-700" : "text-yellow-700"}`}>
+              <p className={`text-base font-bold leading-relaxed mb-10 max-w-md mx-auto ${alreadyDone === "approved" ? "text-emerald-700" : "text-amber-700"}`}>
                 {alreadyDone === "approved"
-                  ? "Your Synthé certification is active. You appear as a verified developer across the platform."
+                  ? "Your Synthé certification is active. You appear as a verified creator across the platform."
                   : "We're reviewing your application. You'll hear back within 48 hours."
                 }
               </p>
               <Link href="/dashboard">
-                <button className={`px-8 py-3.5 rounded-2xl font-bold text-white shadow-sm transition ${
-                  alreadyDone === "approved" ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
+                <button className={`px-10 py-5 rounded-2xl font-black text-white text-base shadow-xl border-b-4 active:border-b-0 active:translate-y-1 transition-all ${
+                  alreadyDone === "approved" ? "bg-emerald-500 hover:bg-emerald-400 border-emerald-700" : "bg-blue-600 hover:bg-blue-500 border-blue-800"
                 }`}>
                   Go to Dashboard →
                 </button>
@@ -197,100 +201,101 @@ export default function CertificationPage() {
           {/* Application Form */}
           {!submitted && !alreadyDone && (
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
-              <div className="relative rounded-3xl border border-gray-200 bg-white overflow-hidden p-8 shadow-sm">
+              <div className="relative rounded-[2.5rem] border-4 border-indigo-50 bg-white/80 backdrop-blur overflow-hidden p-8 md:p-12 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] mb-10">
                 
-                <h2 className="text-xl font-extrabold text-gray-900 mb-2">Apply for Certification</h2>
-                <p className="text-gray-500 font-medium text-sm mb-8">
+                <h2 className="text-3xl font-black text-gray-900 mb-4">Apply for Certification</h2>
+                <p className="text-gray-500 font-bold text-base mb-10">
                   Fill in the form below. Our team reviews every application manually.
                 </p>
 
                 {!user && (
-                  <div className="p-4 rounded-2xl border border-blue-200 bg-blue-50 text-center mb-6 shadow-sm">
-                    <p className="text-blue-800 font-medium text-sm">
-                      <Link href="/login" className="underline font-bold hover:text-blue-600">Log in</Link>
+                  <div className="p-6 rounded-2xl border-2 border-indigo-200 bg-indigo-50 text-center mb-8 shadow-sm">
+                    <p className="text-indigo-800 font-bold text-base">
+                      <Link href="/login" className="underline font-black hover:text-blue-600">Log in</Link>
                       {" "}or{" "}
-                      <Link href="/signup" className="underline font-bold hover:text-blue-600">sign up</Link>
+                      <Link href="/signup" className="underline font-black hover:text-blue-600">sign up</Link>
                       {" "}to apply for certification.
                     </p>
                   </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-5">
+                  <div className="grid sm:grid-cols-2 gap-6">
                     <div>
-                      <label className={lbl}>Full Name *</label>
+                      <label className="block text-[11px] font-black uppercase tracking-widest text-indigo-400 mb-2">Full Name *</label>
                       <input value={form.name} onChange={e => set("name", e.target.value)}
-                        placeholder="Your full name" className={inp("name")} />
-                      {errors.name && <p className="text-red-500 font-bold text-xs mt-1.5">{errors.name}</p>}
+                        placeholder="Your full name" className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
+                      {errors.name && <p className="text-red-500 font-black text-xs mt-2">{errors.name}</p>}
                     </div>
                     <div>
-                      <label className={lbl}>Email</label>
+                      <label className="block text-[11px] font-black uppercase tracking-widest text-indigo-400 mb-2">Email</label>
                       <input value={form.email} onChange={e => set("email", e.target.value)}
-                        placeholder="your@email.com" className={inp("email")} />
+                        placeholder="your@email.com" className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
                     </div>
                   </div>
 
                   <div>
-                    <label className={lbl}>Portfolio URL *</label>
+                    <label className="block text-[11px] font-black uppercase tracking-widest text-pink-400 mb-2">Portfolio URL *</label>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">www.</span>
+                      <span className="absolute left-5 top-1/2 -translate-y-1/2 text-pink-300 font-black text-base">www.</span>
                       <input value={form.portfolio} onChange={e => set("portfolio", e.target.value)}
-                        placeholder="yourportfolio.com" className={inp("portfolio") + " pl-12"} />
+                        placeholder="yourportfolio.com" className="w-full bg-white border-2 border-pink-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl pl-16 pr-5 py-4 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100 transition shadow-sm" />
                     </div>
-                    {errors.portfolio && <p className="text-red-500 font-bold text-xs mt-1.5">{errors.portfolio}</p>}
+                    {errors.portfolio && <p className="text-red-500 font-black text-xs mt-2">{errors.portfolio}</p>}
                   </div>
 
-                  <div className="grid sm:grid-cols-2 gap-5">
+                  <div className="grid sm:grid-cols-2 gap-6">
                     <div>
-                      <label className={lbl}>LinkedIn</label>
+                      <label className="block text-[11px] font-black uppercase tracking-widest text-blue-400 mb-2">LinkedIn</label>
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">in/</span>
+                        <span className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-300 font-black text-base">in/</span>
                         <input value={form.linkedin} onChange={e => set("linkedin", e.target.value)}
-                          placeholder="linkedin.com/in/name" className={inp("linkedin") + " pl-10"} />
+                          placeholder="linkedin.com/in/name" className="w-full bg-white border-2 border-blue-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl pl-12 pr-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
                       </div>
                     </div>
                     <div>
-                      <label className={lbl}>GitHub</label>
+                      <label className="block text-[11px] font-black uppercase tracking-widest text-gray-500 mb-2">GitHub</label>
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">@</span>
+                        <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-black text-base">@</span>
                         <input value={form.github} onChange={e => set("github", e.target.value)}
-                          placeholder="username" className={inp("github") + " pl-8"} />
+                          placeholder="username" className="w-full bg-white border-2 border-gray-200 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl pl-10 pr-5 py-4 focus:outline-none focus:border-gray-400 focus:ring-4 focus:ring-gray-100 transition shadow-sm" />
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <label className={lbl}>Experience in AR/VR/3D *</label>
+                    <label className="block text-[11px] font-black uppercase tracking-widest text-emerald-400 mb-2">Experience in AR/VR/3D *</label>
                     <input value={form.experience} onChange={e => set("experience", e.target.value)}
-                      placeholder="e.g. 2 years in Blender, Unity, and WebXR" className={inp("experience")} />
-                    {errors.experience && <p className="text-red-500 font-bold text-xs mt-1.5">{errors.experience}</p>}
+                      placeholder="e.g. 2 years in Blender, Unity, and WebXR" className="w-full bg-white border-2 border-emerald-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl p-5 focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition shadow-sm" />
+                    {errors.experience && <p className="text-red-500 font-black text-xs mt-2">{errors.experience}</p>}
                   </div>
 
                   <div>
-                    <label className={lbl}>Project Links</label>
+                    <label className="block text-[11px] font-black uppercase tracking-widest text-indigo-400 mb-2">Project Links</label>
                     <textarea value={form.projectLinks} onChange={e => set("projectLinks", e.target.value)} rows={2}
                       placeholder="Links to your best work (one per line)…"
-                      className={inp("projectLinks") + " resize-none"} />
+                      className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl p-5 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm resize-none" />
                   </div>
 
                   <div>
-                    <label className={lbl}>Why should you be certified? *</label>
+                    <label className="block text-[11px] font-black uppercase tracking-widest text-amber-400 mb-2">Why should you be certified? *</label>
                     <textarea value={form.reason} onChange={e => set("reason", e.target.value)} rows={4}
                       placeholder="Tell us about your work, skills, and what makes you stand out on Synthé…"
-                      className={inp("reason") + " resize-none"} />
-                    {errors.reason && <p className="text-red-500 font-bold text-xs mt-1.5">{errors.reason}</p>}
+                      className="w-full bg-white border-2 border-amber-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl p-5 focus:outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-100 transition shadow-sm resize-none" />
+                    {errors.reason && <p className="text-red-500 font-black text-xs mt-2">{errors.reason}</p>}
                   </div>
 
                   {errors.submit && (
-                    <div className="p-4 rounded-xl border border-red-200 bg-red-50 text-red-700 font-bold text-sm shadow-sm">
+                    <div className="p-4 rounded-xl border-2 border-red-200 bg-red-50 text-red-700 font-black text-sm shadow-sm flex items-center gap-2">
+                       <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                       {errors.submit}
                     </div>
                   )}
 
                   <button type="submit" disabled={submitting || !user}
-                    className="w-full py-3.5 rounded-xl font-bold text-white shadow-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    className="w-full py-5 rounded-3xl bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 text-white font-black text-xl shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-6"
                   >
-                    {submitting ? "Submitting…" : "Apply for Synthé Certification →"}
+                    {submitting ? "Submitting…" : "Apply for Synthé Certification 🚀"}
                   </button>
                 </form>
               </div>
@@ -301,16 +306,16 @@ export default function CertificationPage() {
           <AnimatePresence>
             {submitted && (
               <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center py-20 text-center rounded-3xl border border-gray-200 bg-white shadow-sm mt-8">
-                <div className="w-20 h-20 rounded-3xl flex items-center justify-center mb-6 shadow-sm border border-blue-200 bg-blue-50">
-                  <span className="text-4xl text-blue-600">✓</span>
+                className="flex flex-col items-center justify-center p-12 text-center rounded-[2.5rem] border-4 border-emerald-100 bg-emerald-50/80 backdrop-blur-md shadow-md mt-10">
+                <div className="w-24 h-24 rounded-3xl flex items-center justify-center mb-6 shadow-sm border-4 border-emerald-200 bg-emerald-100">
+                  <span className="text-5xl text-emerald-600">✓</span>
                 </div>
-                <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Application Submitted!</h2>
-                <p className="text-gray-500 font-medium text-sm max-w-sm mx-auto leading-relaxed mb-8">
+                <h2 className="text-3xl font-black text-gray-900 mb-4">Application Submitted!</h2>
+                <p className="text-emerald-700 font-bold text-base max-w-sm mx-auto leading-relaxed mb-10">
                   Your certification application is under review. We'll notify you within 48 hours once a decision is made.
                 </p>
                 <Link href="/dashboard">
-                  <button className="px-8 py-3.5 rounded-2xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition">
+                  <button className="px-10 py-5 rounded-3xl font-black text-white text-lg bg-emerald-500 hover:bg-emerald-400 border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1 shadow-xl transition-all">
                     Go to Dashboard →
                   </button>
                 </Link>

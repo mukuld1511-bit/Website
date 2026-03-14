@@ -39,36 +39,40 @@ export default function Login() {
   const inputClass = "w-full bg-white border border-gray-300 text-gray-900 placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition duration-200 shadow-sm";
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-24 relative overflow-hidden font-sans">
+    <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 flex items-center justify-center px-4 py-24 relative overflow-hidden font-sans">
+      {/* Decorative blobs */}
+      <div className="absolute top-0 right-0 w-80 h-80 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-[0]" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-pink-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-[0]" />
+
       <motion.div
-        initial={{ opacity: 0, y: 28 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55 }}
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
         className="relative z-10 w-full max-w-md"
       >
         {/* Logo */}
         <div className="text-center mb-10">
           <Link href="/">
             <div className="inline-flex items-center gap-3 mb-6 cursor-pointer">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-600 shadow-sm shadow-blue-500/30">
-                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 rounded-[1rem] flex items-center justify-center bg-[#5B4BDB] shadow-lg shadow-[#5B4BDB]/30 border-2 border-[#5B4BDB]/50">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M4 5h16l-6 7 6 7H4l6-7-6-7z" />
                 </svg>
               </div>
-              <span className="font-extrabold text-2xl text-gray-900 tracking-tight">
+              <span className="font-black text-3xl text-gray-900 tracking-tight">
                 Synthé
               </span>
             </div>
           </Link>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 leading-none mb-3">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 leading-tight mb-3">
             Welcome back
           </h1>
-          <p className="text-gray-500 font-medium text-sm">Sign in to your SYNTHÉ account</p>
+          <p className="text-gray-500 font-bold text-base">Sign in to your SYNTHÉ account</p>
         </div>
 
         {/* Card */}
-        <div className="rounded-3xl border border-gray-200 bg-white shadow-xl shadow-gray-200/50">
-          <form onSubmit={handleLogin} className="p-8 flex flex-col gap-6">
+        <div className="rounded-[2.5rem] border-4 border-indigo-50 bg-white/80 backdrop-blur-md shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)]">
+          <form onSubmit={handleLogin} className="p-8 md:p-10 flex flex-col gap-6">
 
             {/* Error */}
             {error && (
@@ -86,11 +90,11 @@ export default function Login() {
 
             {/* Email */}
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Email</label>
+              <label className="block text-[11px] font-black text-indigo-400 uppercase tracking-widest mb-2">Email</label>
               <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition duration-200">
+                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition duration-200">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                   </svg>
                 </div>
                 <input
@@ -99,7 +103,7 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className={inputClass + " pl-11"}
+                  className="w-full bg-white border-2 border-indigo-100 text-gray-900 placeholder-gray-400 font-bold text-base rounded-2xl pl-12 pr-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm"
                 />
               </div>
             </div>
@@ -107,15 +111,15 @@ export default function Login() {
             {/* Password */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Password</label>
+                <label className="block text-[11px] font-black text-indigo-400 uppercase tracking-widest">Password</label>
                 <Link href="/forgot-password">
-                  <span className="text-xs text-blue-600 font-bold hover:text-blue-700 transition duration-200 cursor-pointer">Forgot password?</span>
+                  <span className="text-[11px] text-blue-600 font-black tracking-wider uppercase hover:text-blue-700 transition duration-200 cursor-pointer">Forgot password?</span>
                 </Link>
               </div>
               <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition duration-200">
+                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition duration-200">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                 </div>
                 <input
@@ -124,12 +128,12 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className={inputClass + " pl-11 pr-12"}
+                  className="w-full bg-white border-2 border-indigo-100 text-gray-900 placeholder-gray-400 font-bold text-base rounded-2xl pl-12 pr-12 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass((v) => !v)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition duration-200"
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition duration-200"
                 >
                   {showPass ? (
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,33 +153,28 @@ export default function Login() {
             <motion.button
               type="submit"
               disabled={loading}
-              whileHover={{ scale: loading ? 1 : 1.02 }}
-              whileTap={{ scale: loading ? 1 : 0.98 }}
-              className="w-full py-4 text-sm font-bold text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-sm transition-all bg-blue-600 hover:bg-blue-700"
+              className="w-full py-5 rounded-3xl bg-blue-600 hover:bg-blue-500 text-white font-black text-lg border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-4"
             >
               <span className="flex items-center justify-center gap-2">
                 {loading ? (
                   <>
-                    <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg className="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     Signing in...
                   </>
                 ) : (
                   <>
-                    Sign In
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
+                    Sign In 🚀
                   </>
                 )}
               </span>
             </motion.button>
 
-            <p className="text-center text-gray-500 font-medium text-sm mt-2">
+            <p className="text-center text-gray-600 font-medium text-sm mt-4">
               Don't have an account?{" "}
               <Link href="/join">
-                <span className="font-bold cursor-pointer text-blue-600 hover:text-blue-700 transition-colors duration-200">
+                <span className="font-black cursor-pointer text-indigo-500 hover:text-pink-500 transition-colors duration-200">
                   Join SYNTHÉ
                 </span>
               </Link>

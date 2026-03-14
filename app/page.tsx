@@ -343,7 +343,7 @@ export default function HomePage() {
               {/* Live tutors */}
               <div className="bg-white rounded-3xl p-8 border border-gray-200 shadow-sm flex flex-col">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-gray-900 text-lg font-bold">Available Mentors</h3>
+                  <h3 className="text-gray-900 text-lg font-bold">Available Collaborators</h3>
                   <Link href="/connect"><span className="text-blue-600 text-sm font-bold hover:text-blue-700 transition duration-200">View all →</span></Link>
                 </div>
                 <div className="space-y-3 flex-grow">
@@ -358,7 +358,7 @@ export default function HomePage() {
                   className="mt-6 border-t border-gray-100 pt-6">
                   <Link href="/connect">
                     <div className="w-full py-3 rounded-xl border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition duration-200 cursor-pointer text-center text-gray-500 hover:text-blue-600 font-bold text-sm">
-                      + Apply to Mentor
+                      + Become a Collaborator
                     </div>
                   </Link>
                 </motion.div>

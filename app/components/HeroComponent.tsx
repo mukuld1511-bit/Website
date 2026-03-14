@@ -7,18 +7,35 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { TorusKnot, MeshDistortMaterial, Environment } from "@react-three/drei";
 
 function RotatingModel() {
-  const meshRef = useRef<any>(null);
+  const groupRef = useRef<any>(null);
+  
   useFrame((state, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.2;
-      meshRef.current.rotation.y += delta * 0.3;
+    if (groupRef.current) {
+      groupRef.current.rotation.y += delta * 0.2;
+      groupRef.current.position.y = Math.sin(state.clock.elapsedTime) * 0.15;
     }
   });
 
   return (
-    <TorusKnot ref={meshRef} args={[1.5, 0.4, 128, 32]} scale={0.8}>
-      <MeshDistortMaterial color="#5B4BDB" roughness={0.2} metalness={0.8} shadowSide={2} distort={0.2} speed={1.5} />
-    </TorusKnot>
+    <group ref={groupRef} scale={1.2}>
+      {/* Headset Main Body */}
+      <mesh position={[0, 0.2, 0.5]}>
+        <boxGeometry args={[1.4, 0.8, 0.6]} />
+        <meshStandardMaterial color="#1a1a2e" roughness={0.1} metalness={0.8} />
+      </mesh>
+
+      {/* Headset Glowing Visor */}
+      <mesh position={[0, 0.2, 0.81]}>
+        <boxGeometry args={[1.2, 0.5, 0.05]} />
+        <meshStandardMaterial color="#5B4BDB" emissive="#5B4BDB" emissiveIntensity={0.8} />
+      </mesh>
+
+      {/* Headset Strap */}
+      <mesh position={[0, 0.3, -0.2]}>
+        <torusGeometry args={[0.75, 0.1, 16, 32, Math.PI]} />
+        <meshStandardMaterial color="#333" roughness={0.8} />
+      </mesh>
+    </group>
   );
 }
 

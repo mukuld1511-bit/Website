@@ -120,9 +120,9 @@ export default function Navbar() {
         <div className="w-full max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between">
           
           {/* LEFT: Logo area */}
-          <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-            <span className="font-extrabold text-2xl tracking-tight text-gray-900">SYNTHÉ</span>
-            <span className="hidden sm:inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-black tracking-widest uppercase bg-[#5B4BDB] text-white overflow-hidden">
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
+            <span className="font-black text-2xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-500 group-hover:from-pink-500 group-hover:to-orange-400 transition-colors duration-500">SYNTHÉ</span>
+            <span className="hidden sm:inline-flex items-center justify-center px-2 py-0.5 rounded-lg text-[10px] font-black tracking-widest uppercase bg-gradient-to-r from-pink-500 to-orange-400 text-white shadow-sm transform -rotate-3 hover:rotate-0 transition-transform">
               <span className="relative z-10">BETA</span>
             </span>
           </Link>
@@ -134,57 +134,61 @@ export default function Navbar() {
             <DropdownPanel title="Academy" links={ACADEMY_LINKS} />
           </div>
 
-          {/* RIGHT: Auth & Mobile Menu Toggle */}
+            {/* RIGHT: Auth & Mobile Menu Toggle */}
           <div className="flex items-center gap-3">
             {user ? (
               <div ref={profileRef} className="relative hidden lg:block">
                 <button onClick={() => setProfileOpen(v => !v)}
-                  className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50 transition duration-200">
-                  <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 flex items-center justify-center">
+                  className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-full border-2 border-transparent hover:border-gray-200 hover:bg-gray-50 transition duration-200 active:scale-95">
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-pink-400 flex-shrink-0 flex items-center justify-center shadow-inner">
                     {user.photoURL
                       ? <img src={user.photoURL} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
-                      : <span className="text-gray-500 text-[10px] font-bold">{user.displayName?.[0] ?? "U"}</span>
+                      : <span className="text-white text-xs font-bold">{user.displayName?.[0] ?? "U"}</span>
                     }
                   </div>
-                  <span className="text-gray-700 text-sm font-semibold max-w-[100px] truncate">{user.displayName ?? "User"}</span>
-                  <svg className={`w-3.5 h-3.5 text-gray-400 transition-transform ${profileOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  <span className="text-gray-800 text-sm font-bold max-w-[100px] truncate">{user.displayName ?? "User"}</span>
+                  <svg className={`w-3.5 h-3.5 text-gray-400 transition-transform ${profileOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
                 </button>
 
                 <AnimatePresence>
                   {profileOpen && (
-                    <motion.div initial={{ opacity:0, y:5, scale:0.98 }} animate={{ opacity:1, y:0, scale:1 }} exit={{ opacity:0, y:5, scale:0.98 }} transition={{ duration:0.15 }}
-                      className="absolute top-full mt-3 right-0 w-56 rounded-xl border border-gray-100 bg-white shadow-xl overflow-hidden z-50 p-1.5">
+                    <motion.div initial={{ opacity:0, y:5, scale:0.95 }} animate={{ opacity:1, y:0, scale:1 }} exit={{ opacity:0, y:5, scale:0.95 }} transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                      className="absolute top-full mt-3 right-0 w-60 rounded-2xl border-2 border-gray-100 bg-white shadow-2xl overflow-hidden z-50 p-2">
                       {[
-                        { label:"Dashboard",    href:"/dashboard",     icon:"M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
-                        { label:"Profile",      href:"/profile",       icon:"M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
-                        { label:"Upload Model", href:"/upload",        icon:"M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
+                        { label:"Dashboard",    href:"/dashboard",     icon:"M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6", color: "text-blue-500", bg: "bg-blue-50" },
+                        { label:"Profile",      href:"/profile",       icon:"M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z", color: "text-purple-500", bg: "bg-purple-50" },
+                        { label:"Upload Model", href:"/upload",        icon:"M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12", color: "text-pink-500", bg: "bg-pink-50" },
                       ].map(item => (
                         <Link key={item.href} href={item.href} onClick={() => setProfileOpen(false)}>
-                          <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition cursor-pointer text-gray-600 hover:text-gray-900">
-                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} /></svg>
-                            <span className="text-sm font-semibold">{item.label}</span>
+                          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition cursor-pointer text-gray-700 hover:text-gray-900 group font-bold">
+                            <div className={`p-1.5 rounded-lg ${item.bg} group-hover:scale-110 transition-transform`}>
+                              <svg className={`w-4 h-4 ${item.color}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d={item.icon} /></svg>
+                            </div>
+                            <span className="text-sm">{item.label}</span>
                           </div>
                         </Link>
                       ))}
-                      <div className="h-[1px] bg-gray-100 my-1 px-2" />
-                      <button onClick={logout} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-50 transition cursor-pointer text-gray-600 hover:text-red-600">
-                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                        <span className="text-sm font-semibold">Sign Out</span>
+                      <div className="h-[2px] bg-gray-50 my-2 mx-2" />
+                      <button onClick={logout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 transition cursor-pointer text-gray-700 hover:text-red-600 group font-bold">
+                        <div className="p-1.5 rounded-lg bg-red-50 group-hover:scale-110 transition-transform">
+                          <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                        </div>
+                        <span className="text-sm">Sign Out</span>
                       </button>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
             ) : (
-              <div className="hidden lg:flex items-center gap-2">
+              <div className="hidden lg:flex items-center gap-3">
                 <Link href="/login">
-                  <button className="px-5 py-2.5 rounded-xl text-gray-600 text-sm font-bold hover:text-gray-900 transition hover:bg-gray-50">
+                  <button className="px-5 py-2.5 rounded-xl text-gray-600 text-sm font-bold hover:text-gray-900 transition hover:bg-gray-100 active:scale-95">
                     Sign In
                   </button>
                 </Link>
                 <Link href="/join">
-                  <button className="px-5 py-2.5 rounded-xl text-white bg-[#5B4BDB] hover:bg-[#4a3bc7] shadow-sm text-sm font-bold transition">
-                    Get Started
+                  <button className="px-6 py-2.5 rounded-xl font-black text-white bg-blue-600 hover:bg-blue-500 border-b-[3px] border-blue-800 hover:border-blue-600 active:border-b-0 active:translate-y-[3px] shadow-sm text-sm transition-all transform hover:scale-105">
+                    Get Started 🚀
                   </button>
                 </Link>
               </div>

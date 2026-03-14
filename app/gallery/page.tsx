@@ -267,199 +267,155 @@ function GalleryContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans flex flex-col">
+    <div className="min-h-screen bg-[#0A0A0A] font-sans flex flex-col">
       <Navbar />
-      <div className="flex-grow pt-[100px] pb-24 px-4 overflow-x-hidden">
+      <div className="flex-grow pt-[100px] pb-24 px-4 overflow-x-hidden relative z-10">
 
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto flex flex-col items-center">
           
-          {/* Header */}
-          <div className="mb-10 mt-6 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }}>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-800 shadow-sm mb-5">
-                <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-widest">Gallery</span>
-              </div>
-              <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 leading-none">
-                {mode==="all"     ? "3D Model Gallery"
-                : mode==="3d"     ? "3D Models"
-                : mode==="ar"     ? "Augmented Reality"
-                : mode==="vr"     ? "Virtual Reality"
-                : "AutoCAD Files"}
-              </h1>
-              <p className="text-gray-500 font-medium text-lg mt-4">
-                {loading ? "Loading…" : `${filtered.length} model${filtered.length!==1?"s":""} available`}
-              </p>
-            </motion.div>
+          {/* Centered Large Search & Filters */}
+          <div className="w-full max-w-3xl text-center mb-10 mt-6">
+            <motion.h1 initial={{ opacity:0, y:-10 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }} className="text-4xl md:text-5xl font-black tracking-tight text-white leading-none mb-6">
+              {mode==="all"     ? "3D Model Gallery"
+              : mode==="3d"     ? "3D Models"
+              : mode==="ar"     ? "Augmented Reality"
+              : mode==="vr"     ? "Virtual Reality"
+              : "AutoCAD Files"}
+            </motion.h1>
 
-            {user && (
-              <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.1 }} className="flex justify-center">
-                <Link href="/upload">
-                  <button className="flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-white text-sm bg-blue-600 hover:bg-blue-700 shadow-sm transition">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
-                    Upload Model
-                  </button>
-                </Link>
-              </motion.div>
-            )}
-          </div>
-
-          {/* Mode tabs */}
-          <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.15 }}
-            className="flex gap-3 overflow-x-auto pb-2 mb-8 scrollbar-hide">
-            {MODES.map(m => (
-              <button key={m.id} onClick={() => changeMode(m.id)}
-                className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl border text-xs font-bold uppercase tracking-widest transition shadow-sm whitespace-nowrap ${
-                  mode === m.id ? `bg-${m.color}-50 border-${m.color}-200 text-${m.color}-700 ring-1 ring-${m.color}-200` : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
-                }`}>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d={m.icon} />
-                </svg>
-                {m.label}
-                {mode===m.id && (
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black bg-${m.color}-100 text-${m.color}-800`}>
-                    {filterByMode(models, m.id).length}
-                  </span>
-                )}
-              </button>
-            ))}
-          </motion.div>
-
-          {/* Mode banner */}
-          {mode !== "all" && (
-            <motion.div initial={{ opacity:0, height:0 }} animate={{ opacity:1, height:'auto' }} transition={{ duration:0.3 }}
-              className={`flex items-center gap-4 p-5 rounded-2xl border mb-8 bg-${activeMode.color}-50 border-${activeMode.color}-100 shadow-sm`}>
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-white border border-${activeMode.color}-100`}>
-                <svg className={`w-5 h-5 text-${activeMode.color}-600`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={activeMode.icon} />
-                </svg>
+            <motion.div initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.1 }} className="relative w-full max-w-2xl mx-auto mb-6">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
               </div>
-              <div>
-                <p className={`font-extrabold text-sm text-${activeMode.color}-800`}>{activeMode.label}</p>
-                <p className={`text-${activeMode.color}-600 font-medium text-xs mt-0.5`}>{activeMode.desc} files</p>
-              </div>
-              {mode === "autocad" && (
-                <Link href="/autocad" className="ml-auto">
-                  <button className="text-xs font-bold px-4 py-2 rounded-xl border bg-white border-amber-200 text-amber-700 hover:bg-amber-100 transition shadow-sm whitespace-nowrap">
-                    AutoCAD Hub →
-                  </button>
-                </Link>
+              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search models, authors, tags…"
+                className="w-full bg-[#1A1A1A] border border-gray-800 text-white placeholder-gray-500 text-sm md:text-base rounded-2xl pl-12 pr-10 py-4 focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/50 focus:border-[#5B4BDB] transition shadow-inner" />
+              {search && (
+                <button onClick={()=>setSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
               )}
             </motion.div>
-          )}
 
-          {/* Search + filters */}
-          <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.2 }} className="mb-10 bg-white p-6 md:p-8 rounded-3xl border border-gray-200 shadow-sm">
-            <div className="flex flex-col sm:flex-row gap-4 mb-4">
-              <div className="relative flex-1">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                </div>
-                <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search models, authors, tags…"
-                  className="w-full bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm md:text-base rounded-2xl pl-12 pr-10 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-inner" />
-                {search && (
-                  <button onClick={()=>setSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition bg-white rounded-full p-1 shadow-sm border border-gray-200">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
-                  </button>
-                )}
-              </div>
+            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.5, delay:0.2 }} className="flex flex-wrap items-center justify-center gap-2">
+              <button onClick={()=>setCategory("All")} className={`px-4 py-2 rounded-full text-xs font-bold transition border ${category==="All" ? "bg-[#5B4BDB] text-white border-transparent" : "bg-[#141414] text-gray-400 border-gray-800 hover:bg-[#1A1A1A] hover:text-gray-300"}`}>All</button>
+              <button onClick={()=>setCategory("Architecture")} className={`px-4 py-2 rounded-full text-xs font-bold transition border ${category==="Architecture" ? "bg-[#5B4BDB] text-white border-transparent" : "bg-[#141414] text-gray-400 border-gray-800 hover:bg-[#1A1A1A] hover:text-gray-300"}`}>Architecture</button>
+              <button onClick={()=>setCategory("Vehicles")} className={`px-4 py-2 rounded-full text-xs font-bold transition border ${category==="Vehicles" ? "bg-[#5B4BDB] text-white border-transparent" : "bg-[#141414] text-gray-400 border-gray-800 hover:bg-[#1A1A1A] hover:text-gray-300"}`}>Vehicles</button>
+              <button onClick={()=>setCategory("Character")} className={`px-4 py-2 rounded-full text-xs font-bold transition border ${category==="Character" ? "bg-[#5B4BDB] text-white border-transparent" : "bg-[#141414] text-gray-400 border-gray-800 hover:bg-[#1A1A1A] hover:text-gray-300"}`}>Characters</button>
+              <button onClick={()=>setCategory("Environment")} className={`px-4 py-2 rounded-full text-xs font-bold transition border ${category==="Environment" ? "bg-[#5B4BDB] text-white border-transparent" : "bg-[#141414] text-gray-400 border-gray-800 hover:bg-[#1A1A1A] hover:text-gray-300"}`}>Environment</button>
+            </motion.div>
+
+            <div className="mt-8 flex items-center justify-between w-full max-w-7xl mx-auto border-t border-gray-800 pt-6">
+              <p className="text-gray-500 font-medium text-sm">
+                {loading ? "Loading…" : `${filtered.length} model${filtered.length!==1?"s":""}`}
+              </p>
               
-              <div className="relative">
+              <div className="flex items-center gap-3">
                 <select value={sortBy} onChange={e=>setSortBy(e.target.value)}
-                  className="bg-white border border-gray-300 text-gray-700 font-bold text-sm md:text-base rounded-2xl pl-5 pr-12 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 appearance-none cursor-pointer w-full sm:min-w-[200px] shadow-sm">
+                  className="bg-[#141414] border border-gray-800 text-gray-300 font-bold text-xs rounded-xl pl-4 pr-10 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#5B4BDB] appearance-none cursor-pointer">
                   {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
-                </div>
-              </div>
-              
-              <button onClick={()=>setShowFilters(v=>!v)}
-                className={`flex items-center justify-center gap-2 px-6 py-4 rounded-2xl text-sm font-bold border transition duration-200 whitespace-nowrap shadow-sm ${showFilters ? "border-blue-200 bg-blue-50 text-blue-700 ring-1 ring-blue-200" : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"}`}>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
-                Filters
-                {(category !== "All" || priceFilter !== "all") && <span className="w-2 h-2 rounded-full bg-blue-600 ml-1"></span>}
-              </button>
-            </div>
-            
-            <AnimatePresence>
-              {showFilters && (
-                <motion.div initial={{ opacity:0, height:0 }} animate={{ opacity:1, height:"auto" }} exit={{ opacity:0, height:0 }} transition={{ duration:0.3 }} className="overflow-hidden">
-                  <div className="p-6 mt-4 rounded-2xl border border-blue-100 bg-blue-50/50 space-y-6">
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-3">Category</p>
-                      <div className="flex flex-wrap gap-2.5">
-                        {CATEGORIES.map(c => (
-                          <button key={c} onClick={()=>setCategory(c)}
-                            className={`px-4 py-2 rounded-xl text-xs font-bold border transition duration-200 ${category===c ? "border-blue-600 bg-blue-600 text-white shadow-sm" : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50 shadow-sm"}`}>
-                            {c}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-3">Pricing</p>
-                      <div className="flex gap-2.5">
-                        {(["all","free","paid"] as const).map(p => (
-                          <button key={p} onClick={()=>setPriceFilter(p)}
-                            className={`px-4 py-2 rounded-xl text-xs font-bold border transition duration-200 ${priceFilter===p ? "border-green-600 bg-green-600 text-white shadow-sm" : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50 shadow-sm"}`}>
-                            {p==="all"?"All Pricing":p==="free"?"🔓 Free Only":"💰 Paid Only"}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="pt-2">
-                       <button onClick={()=>{setCategory("All");setPriceFilter("all");setSearch("");}}
-                         className="text-xs font-bold text-gray-500 hover:text-gray-800 transition underline">
-                         Reset all filters
-                       </button>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-
-          {/* Grid */}
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Array.from({length:8}).map((_,i)=><Skeleton key={i} />)}
-            </div>
-          ) : filtered.length === 0 ? (
-            <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-3xl border border-gray-200 shadow-sm">
-              <div className="w-24 h-24 rounded-full bg-gray-50 flex items-center justify-center mb-6">
-                <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              </div>
-              <h3 className="text-gray-900 font-extrabold text-2xl mb-2">No models found</h3>
-              <p className="text-gray-500 text-base mb-8 max-w-sm">
-                {mode !== "all" ? `No ${activeMode.label} models yet. Be the first to upload!` : "Try adjusting your search or filters."}
-              </p>
-              
-              <div className="flex gap-4">
-                {(search || category !== "All" || priceFilter !== "all") && (
-                  <button onClick={()=>{setCategory("All");setPriceFilter("all");setSearch("");}}
-                    className="px-6 py-3.5 rounded-xl bg-gray-100 text-gray-800 font-bold hover:bg-gray-200 transition shadow-sm">
-                    Clear Filters
-                  </button>
-                )}
-                
                 {user && (
                   <Link href="/upload">
-                    <button className="px-6 py-3.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition shadow-sm">
-                      Upload the First
+                    <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-[#5B4BDB] hover:bg-[#4a3bc7] transition">
+                      Upload
                     </button>
                   </Link>
                 )}
               </div>
-            </motion.div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
-              {filtered.map((m,i)=><ModelCard key={m.id} m={m} i={i} />)}
             </div>
-          )}
+          </div>
+
+          {/* Grid */}
+          <div className="w-full">
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {Array.from({length:8}).map((_,i) => (
+                  <div key={i} className="rounded-2xl border border-gray-800 bg-[#141414] overflow-hidden">
+                    <div className="aspect-[4/3] bg-gray-800/50 animate-pulse" />
+                    <div className="p-5 space-y-4">
+                      <div className="h-4 bg-gray-800 rounded-full animate-pulse w-3/4" />
+                      <div className="h-3 bg-gray-800/50 rounded-full animate-pulse w-1/2" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : filtered.length === 0 ? (
+              <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} className="flex flex-col items-center justify-center py-20 text-center w-full max-w-lg mx-auto bg-[#141414] rounded-3xl border border-gray-800">
+                <svg className="w-12 h-12 text-gray-700 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                <h3 className="text-white font-bold text-xl mb-2">No models found <span className="text-gray-500">matching your search.</span></h3>
+                <div className="flex gap-4 mt-6">
+                  {(search || category !== "All" || priceFilter !== "all") && (
+                    <button onClick={()=>{setCategory("All");setPriceFilter("all");setSearch("");}}
+                      className="px-6 py-2.5 rounded-xl bg-gray-800 text-gray-300 font-bold hover:bg-gray-700 transition text-sm">
+                      Clear Filters
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
+                {filtered.map((m,i)=>(
+                  <motion.div key={m.id} initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-50px" }}
+                    transition={{ duration:0.4, delay: i * 0.05 }}
+                    className="group relative rounded-2xl border border-gray-800 bg-[#141414] hover:shadow-[0_0_20px_rgba(91,75,219,0.3)] hover:border-[#5B4BDB]/50 transition duration-300 overflow-hidden flex flex-col h-full hover:-translate-y-1">
+
+                    <div className="relative aspect-[4/3] overflow-hidden bg-[#0A0A0A] border-b border-gray-800">
+                      {m.thumbnailUrl ? (
+                        <img src={m.thumbnailUrl} alt={m.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-80 group-hover:opacity-100" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <svg className="w-12 h-12 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                        </div>
+                      )}
+                      
+                      <div className="absolute top-3 left-3 flex gap-2">
+                        <div className="px-2.5 py-1 rounded bg-[#0A0A0A]/80 backdrop-blur-sm border border-gray-700 text-[9px] font-black uppercase text-gray-300">
+                          {m.fileType?.toUpperCase() || "3D"}
+                        </div>
+                      </div>
+                      
+                      <div className="absolute top-3 right-3">
+                        {m.isPaid ? (
+                          <div className="px-2.5 py-1 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-bold">₹{m.price}</div>
+                        ) : (
+                          <div className="px-2.5 py-1 rounded bg-white/10 border border-white/20 text-white text-[10px] font-bold">Free</div>
+                        )}
+                      </div>
+                      
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+                        <Link href={`/gallery/${m.id}`}>
+                          <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold shadow-lg hover:scale-105 transition">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                            Preview
+                          </button>
+                        </Link>
+                      </div>
+                    </div>
+                    
+                    <div className="p-5 flex flex-col flex-1 relative">
+                      <h3 className="text-white font-bold text-base leading-snug line-clamp-1 mb-1">{m.title}</h3>
+                      <div className="flex items-center gap-2 text-gray-400 text-xs font-medium mb-4">
+                        <span>by {m.authorName || "Anonymous"}</span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-800 text-gray-500 text-xs font-semibold">
+                        <span className="flex items-center gap-1.5 hover:text-gray-300 transition">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                          {m.views??0}
+                        </span>
+                        <span className="flex items-center gap-1.5 hover:text-gray-300 transition">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                          {m.downloads??0}
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <Footer />

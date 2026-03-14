@@ -161,16 +161,25 @@ function RequestModal({ dev, user, onClose, onSuccess }: {
 // ── Dev Card ──────────────────────────────────────────────────────────────────
 function DevCard({ dev, user, onConnect, onChat, onTute }: { dev:Developer; user:any; onConnect:(d:Developer)=>void; onChat:(d:Developer)=>void; onTute:(d:Developer)=>void; }) {
   const color = dev.color ?? "blue";
+  
+  // Highlight styling for certified users
+  const cardClasses = dev.certified
+    ? "group relative rounded-3xl border-2 border-[#5B4BDB] bg-white shadow-[0_0_20px_rgba(91,75,219,0.15)] hover:shadow-[0_0_30px_rgba(91,75,219,0.3)] transition duration-300 h-full flex flex-col overflow-hidden transform hover:-translate-y-1"
+    : "group relative rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition duration-300 h-full flex flex-col overflow-hidden";
 
   return (
-    <div className="group relative rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition duration-300 h-full flex flex-col overflow-hidden">
-      <div className={`absolute top-0 left-0 right-0 h-1 bg-${color}-500 opacity-0 group-hover:opacity-100 transition duration-300`} />
+    <div className={cardClasses}>
+      {dev.certified ? (
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#5B4BDB] to-purple-400" />
+      ) : (
+        <div className={`absolute top-0 left-0 right-0 h-1 bg-${color}-500 opacity-0 group-hover:opacity-100 transition duration-300`} />
+      )}
 
       <div className="p-6 md:p-8 flex flex-col flex-1">
 
         {/* Header */}
         <div className="flex items-start gap-4 mb-5">
-          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold flex-shrink-0 overflow-hidden bg-${color}-50 text-${color}-600 border border-${color}-100`}>
+          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold flex-shrink-0 overflow-hidden ${dev.certified ? "bg-[#5B4BDB]/10 text-[#5B4BDB] border border-[#5B4BDB]/20 shadow-inner" : `bg-${color}-50 text-${color}-600 border border-${color}-100`}`}>
             {dev.profileImage
               ? <img src={dev.profileImage} className="w-full h-full object-cover"
                   onError={e=>{(e.target as HTMLImageElement).style.display="none"}} />
@@ -180,15 +189,15 @@ function DevCard({ dev, user, onConnect, onChat, onTute }: { dev:Developer; user
           <div className="flex-1 min-w-0 pt-1">
             <div className="flex items-start gap-2 flex-wrap mb-1">
               <Link href={`/developer/${dev.userId || dev.id}`}>
-                <h3 className="text-gray-900 font-extrabold text-lg hover:text-blue-600 transition duration-150 cursor-pointer leading-tight truncate">{dev.name}</h3>
+                <h3 className="text-gray-900 font-extrabold text-lg hover:text-[#5B4BDB] transition duration-150 cursor-pointer leading-tight truncate">{dev.name}</h3>
               </Link>
             </div>
             {dev.certified && (
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-green-200 bg-green-50 mt-1">
-                <svg className="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#5B4BDB] text-white shadow-sm mt-1 transform -rotate-1 hover:rotate-0 transition">
+                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
-                <span className="text-green-700 text-[10px] font-bold uppercase tracking-wider">Certified</span>
+                <span className="text-[10px] font-black uppercase tracking-widest">Synthé Certified</span>
               </div>
             )}
           </div>
@@ -196,14 +205,14 @@ function DevCard({ dev, user, onConnect, onChat, onTute }: { dev:Developer; user
 
         {/* Bio */}
         {dev.bio && (
-          <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-5 font-medium">{dev.bio}</p>
+          <p className={`${dev.certified ? "text-gray-700" : "text-gray-600"} text-sm leading-relaxed line-clamp-2 mb-5 font-medium`}>{dev.bio}</p>
         )}
 
         {/* Skills */}
         {dev.skills?.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-6">
             {dev.skills.slice(0,5).map(s => (
-              <span key={s} className="px-3 py-1.5 rounded-lg text-xs font-bold border border-gray-200 bg-gray-50 text-gray-600">{s}</span>
+              <span key={s} className={`px-3 py-1.5 rounded-lg text-xs font-bold border ${dev.certified ? "border-[#5B4BDB]/20 bg-[#5B4BDB]/5 text-[#5B4BDB]" : "border-gray-200 bg-gray-50 text-gray-600"}`}>{s}</span>
             ))}
             {dev.skills.length > 5 && (
               <span className="px-3 py-1.5 rounded-lg text-xs font-bold text-gray-500 bg-white border border-gray-100">+{dev.skills.length-5}</span>
@@ -216,7 +225,7 @@ function DevCard({ dev, user, onConnect, onChat, onTute }: { dev:Developer; user
           {dev.portfolio && (
             <a href={dev.portfolio.startsWith("http") ? dev.portfolio : `https://${dev.portfolio}`}
               target="_blank" rel="noreferrer"
-              className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-blue-600 transition duration-150">
+              className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-[#5B4BDB] transition duration-150">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
@@ -226,7 +235,7 @@ function DevCard({ dev, user, onConnect, onChat, onTute }: { dev:Developer; user
           {dev.linkedin && (
             <a href={dev.linkedin.startsWith("http") ? dev.linkedin : `https://${dev.linkedin}`}
               target="_blank" rel="noreferrer"
-              className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-blue-600 transition duration-150">
+              className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-[#5B4BDB] transition duration-150">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
               </svg>
@@ -239,10 +248,10 @@ function DevCard({ dev, user, onConnect, onChat, onTute }: { dev:Developer; user
         <div className="mt-auto pt-5 border-t border-gray-100 flex flex-col gap-2">
           {user ? (
             <div className="flex flex-wrap gap-2 w-full">
-              <button onClick={() => onConnect(dev)} className={`flex-1 min-w-[30%] py-2.5 rounded-lg font-bold text-white text-[11px] bg-blue-600 hover:bg-blue-700 shadow-sm transition`}>
+              <button onClick={() => onConnect(dev)} className={`flex-1 min-w-[30%] py-2.5 rounded-lg font-bold text-white text-[11px] bg-[#5B4BDB] hover:bg-[#4a3bc7] shadow-sm transition`}>
                 Request
               </button>
-              <button onClick={() => onChat(dev)} className={`flex-1 min-w-[30%] py-2.5 rounded-lg font-bold text-blue-700 text-[11px] bg-blue-50 border border-blue-200 hover:bg-blue-100 shadow-sm transition`}>
+              <button onClick={() => onChat(dev)} className={`flex-1 min-w-[30%] py-2.5 rounded-lg font-bold text-[#5B4BDB] text-[11px] bg-[#5B4BDB]/5 border border-[#5B4BDB]/20 hover:bg-[#5B4BDB]/10 shadow-sm transition`}>
                 Chat
               </button>
               {dev.bookingLink ? (

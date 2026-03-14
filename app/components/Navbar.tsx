@@ -134,11 +134,16 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* CENTER: Desktop Dropdowns + PIET direct link */}
+          {/* CENTER: Desktop Dropdowns + direct links */}
           <div className="hidden lg:flex items-center gap-1">
             <DropdownPanel title="Explore" links={EXPLORE_LINKS} />
             <DropdownPanel title="Learn & Connect" links={LEARN_CONNECT_LINKS} />
             <DropdownPanel title="Academy" links={ACADEMY_LINKS} />
+            <Link href="/certification"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition text-gray-600 hover:text-gray-900 hover:bg-gray-50">
+              <span className="text-yellow-500 text-xs">⭐</span>
+              Certify
+            </Link>
             <Link href="/collaborators"
               className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition text-gray-600 hover:text-gray-900 hover:bg-gray-50">
               <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />

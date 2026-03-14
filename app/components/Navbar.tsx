@@ -36,16 +36,8 @@ const LEARN_CONNECT_LINKS = [
   { label: "Connect & Learn",  href: "/connect",        desc: "Network with peers",           icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
   { label: "Project Board",    href: "/requests/open",  desc: "Find collaborations",          icon: "M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
   { label: "Post a Project",   href: "/requests/post",  desc: "Start a new collaboration",    icon: "M12 4v16m8-8H4" },
-  { label: "Hire a Developer", href: "/hire",            desc: "Find the right expert fast",   icon: "M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" },
-  { label: "Live Workshops",   href: "/learn",           desc: "Join online learning events",  icon: "M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" }
-];
-
-const ACADEMY_LINKS = [
-  { label: "Learning Paths",     href: "/learn",                   desc: "Structured courses for 3D/AR", icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" },
-  { label: "Certification",      href: "/certification",           desc: "Get verified and hired",       icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" },
-  { label: "PIET Collaboration", href: "/collaborators",           desc: "Academic partnership",         icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5" },
-  { label: "Top Collaborators",  href: "/connect?type=mentor",     desc: "Learn from experts",          icon: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" },
-  { label: "Mentorship",         href: "/hire",                    desc: "Book 1-on-1 sessions",         icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
+  { label: "Mentorship",       href: "/hire",           desc: "Book 1-on-1 sessions",         icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
+  { label: "Live Workshops",   href: "/learn",          desc: "Join online learning events",  icon: "M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" }
 ];
 
 export default function Navbar() {
@@ -166,7 +158,7 @@ export default function Navbar() {
             {/* Divider */}
             <span className="w-px h-4 bg-gray-200 mx-1" />
             <DropdownPanel title="Learn & Connect" links={LEARN_CONNECT_LINKS} />
-            <DropdownPanel title="Academy" links={ACADEMY_LINKS} />
+            <Link href="/collaborators" className="px-3 py-2 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors">PIET</Link>
           </div>
 
             {/* RIGHT: Auth & Mobile Menu Toggle */}
@@ -340,20 +332,16 @@ export default function Navbar() {
 
               <div className="h-[1px] bg-gray-100" />
 
-              <div className="space-y-4">
-                <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase">Academy</p>
-                {ACADEMY_LINKS.map(item => (
-                  <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
-                    <div className="flex items-center gap-4 group mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>
-                      <div>
-                        <p className="text-base font-bold text-gray-900 group-hover:text-[#5B4BDB]">{item.label}</p>
-                        <p className="text-xs text-gray-500">{item.desc}</p>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+              <div className="h-[1px] bg-gray-100" />
+              <Link href="/collaborators" onClick={() => setMobileMenuOpen(false)}>
+                <div className="flex items-center gap-4 group py-2">
+                  <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5"/></svg></div>
+                  <div>
+                    <p className="text-base font-bold text-gray-900 group-hover:text-[#5B4BDB]">PIET</p>
+                    <p className="text-xs text-gray-500">Academic Collaboration</p>
+                  </div>
+                </div>
+              </Link>
 
             </div>
 

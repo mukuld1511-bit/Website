@@ -52,8 +52,9 @@ export default function Footer() {
               <li><Link href="/gallery" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">3D Gallery</Link></li>
               <li><Link href="/autocad" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">AutoCAD Hub</Link></li>
               <li><Link href="/gallery?mode=ar" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">AR / VR Models</Link></li>
+              <li><Link href="/asset-library" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Unity Asset Library</Link></li>
+              <li><Link href="/learn" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Live Workshops</Link></li>
               <li><Link href="/requests/open" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Open Projects</Link></li>
-              <li><Link href="/hire" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Hire a Developer</Link></li>
               <li><Link href="/upload" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Upload Creation</Link></li>
             </ul>
           </div>

@@ -17,7 +17,7 @@ const GALLERY_DROPDOWN = [
 
 const MOBILE_PLATFORM = [
   { label: "AutoCAD",      href: "/autocad",       icon: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" },
-  { label: "Developers",   href: "/connect",       icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+  { label: "Connect",      href: "/connect",       icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
   { label: "GYOP",         href: "/gyop",          icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
   { label: "Certification",href: "/certification", icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" },
   { label: "Upload Model", href: "/upload",        icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
@@ -130,16 +130,7 @@ export default function Navbar() {
             <Link href="/autocad"><button className={linkCls(isActive("/autocad"))}>AutoCAD</button></Link>
             <Link href="/requests/open"><button className={linkCls(isActive("/requests/open"))}>Public Requests</button></Link>
 
-            <Link href="/requests/post">
-              <button className="flex items-center gap-1.5 px-3 py-1.5 ml-1 rounded-lg text-xs font-bold text-white bg-gray-900 hover:bg-gray-800 transition shadow-sm">
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Post Request
-              </button>
-            </Link>
-
-            <Link href="/connect"><button className={linkCls(isActive("/connect"))}>Developers</button></Link>
+            <Link href="/connect"><button className={linkCls(isActive("/connect"))}>Connect</button></Link>
             <Link href="/gyop"><button className={linkCls(isActive("/gyop"))}>GYOP</button></Link>
             <Link href="/certification"><button className={linkCls(isActive("/certification"))}>Certification</button></Link>
             <Link href="/collaborators"><button className={linkCls(isActive("/collaborators"))}>PIET</button></Link>
@@ -280,7 +271,6 @@ export default function Navbar() {
                     { href:"/dashboard",    label:"Dashboard" },
                     { href:"/profile",      label:"Profile" },
                     { href:"/upload",       label:"Upload Model" },
-                    { href:"/requests/post",label:"Post Request" },
                   ].map(item => (
                     <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
                       <div className="px-3 py-2.5 rounded-lg hover:bg-gray-50 text-gray-700 text-sm font-medium transition">

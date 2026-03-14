@@ -258,6 +258,7 @@ export default function DeveloperProfilePage() {
                   )}
                 </div>
               </div>
+            </motion.div>
 
               {/* Skills */}
               {dev.skills && dev.skills.length > 0 && (

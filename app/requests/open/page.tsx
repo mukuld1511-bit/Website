@@ -382,16 +382,16 @@ export default function RequestsPage() {
                         )}
 
                         {/* Footer User Info & CTA */}
-                        <div className="pt-6 border-t-[3px] border-indigo-100 border-dashed flex items-center justify-between mt-auto">
-                          <div className="flex items-center gap-3 min-w-0 pr-2">
+                        <div className="pt-6 border-t-[3px] border-indigo-100 border-dashed flex items-center justify-between mt-auto gap-4 flex-wrap">
+                          <div className="flex items-center gap-3">
                             <img
                               src={req.userPhoto || "/avatar.png"}
                               onError={e => { (e.target as any).src = "/avatar.png"; }}
-                              className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md bg-white p-0.5"
+                              className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md bg-white p-0.5 flex-shrink-0"
                               alt={req.userName}
                             />
-                            <div className="min-w-0">
-                              <p className="text-gray-900 text-sm font-black truncate">{req.userName || "Anonymous"}</p>
+                            <div>
+                              <p className="text-gray-900 text-sm font-black break-words max-w-[150px] sm:max-w-[200px]">{req.userName || "Anonymous"}</p>
                               <p className="text-blue-500 text-[10px] font-black uppercase tracking-wider">Creator</p>
                             </div>
                           </div>

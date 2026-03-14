@@ -267,15 +267,15 @@ function GalleryContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] font-sans flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 font-sans flex flex-col">
       <Navbar />
       <div className="flex-grow pt-[100px] pb-24 px-4 overflow-x-hidden relative z-10">
 
         <div className="max-w-7xl mx-auto flex flex-col items-center">
           
           {/* Centered Large Search & Filters */}
-          <div className="w-full max-w-3xl text-center mb-10 mt-6">
-            <motion.h1 initial={{ opacity:0, y:-10 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }} className="text-4xl md:text-5xl font-black tracking-tight text-white leading-none mb-6">
+          <div className="w-full max-w-3xl text-center mb-10 mt-6 relative z-10">
+            <motion.h1 initial={{ opacity:0, y:-10 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }} className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 leading-none mb-6 drop-shadow-sm">
               {mode==="all"     ? "3D Model Gallery"
               : mode==="3d"     ? "3D Models"
               : mode==="ar"     ? "Augmented Reality"
@@ -284,39 +284,39 @@ function GalleryContent() {
             </motion.h1>
 
             <motion.div initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.1 }} className="relative w-full max-w-2xl mx-auto mb-6">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              <div className="absolute left-6 top-1/2 -translate-y-1/2 text-pink-500">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
               </div>
               <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search models, authors, tags…"
-                className="w-full bg-[#1A1A1A] border border-gray-800 text-white placeholder-gray-500 text-sm md:text-base rounded-2xl pl-12 pr-10 py-4 focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/50 focus:border-[#5B4BDB] transition shadow-inner" />
+                className="w-full bg-white/70 backdrop-blur-md border-4 border-indigo-50 text-gray-900 placeholder-indigo-300 font-bold text-base md:text-lg rounded-[2rem] pl-16 pr-14 py-5 focus:outline-none focus:border-pink-300 focus:ring-4 focus:ring-pink-100 transition shadow-xl" />
               {search && (
-                <button onClick={()=>setSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                <button onClick={()=>setSearch("")} className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-pink-500 transition bg-gray-100 hover:bg-pink-50 rounded-full p-1">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               )}
             </motion.div>
 
-            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.5, delay:0.2 }} className="flex flex-wrap items-center justify-center gap-2">
-              <button onClick={()=>setCategory("All")} className={`px-4 py-2 rounded-full text-xs font-bold transition border ${category==="All" ? "bg-[#5B4BDB] text-white border-transparent" : "bg-[#141414] text-gray-400 border-gray-800 hover:bg-[#1A1A1A] hover:text-gray-300"}`}>All</button>
-              <button onClick={()=>setCategory("Architecture")} className={`px-4 py-2 rounded-full text-xs font-bold transition border ${category==="Architecture" ? "bg-[#5B4BDB] text-white border-transparent" : "bg-[#141414] text-gray-400 border-gray-800 hover:bg-[#1A1A1A] hover:text-gray-300"}`}>Architecture</button>
-              <button onClick={()=>setCategory("Vehicles")} className={`px-4 py-2 rounded-full text-xs font-bold transition border ${category==="Vehicles" ? "bg-[#5B4BDB] text-white border-transparent" : "bg-[#141414] text-gray-400 border-gray-800 hover:bg-[#1A1A1A] hover:text-gray-300"}`}>Vehicles</button>
-              <button onClick={()=>setCategory("Character")} className={`px-4 py-2 rounded-full text-xs font-bold transition border ${category==="Character" ? "bg-[#5B4BDB] text-white border-transparent" : "bg-[#141414] text-gray-400 border-gray-800 hover:bg-[#1A1A1A] hover:text-gray-300"}`}>Characters</button>
-              <button onClick={()=>setCategory("Environment")} className={`px-4 py-2 rounded-full text-xs font-bold transition border ${category==="Environment" ? "bg-[#5B4BDB] text-white border-transparent" : "bg-[#141414] text-gray-400 border-gray-800 hover:bg-[#1A1A1A] hover:text-gray-300"}`}>Environment</button>
+            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.5, delay:0.2 }} className="flex flex-wrap items-center justify-center gap-3">
+              <button onClick={()=>setCategory("All")} className={`px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition border-2 shadow-sm ${category==="All" ? "bg-indigo-600 text-white border-indigo-600 shadow-indigo-200" : "bg-white text-indigo-500 border-indigo-100 hover:bg-indigo-50 hover:border-indigo-200"}`}>All</button>
+              <button onClick={()=>setCategory("Architecture")} className={`px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition border-2 shadow-sm ${category==="Architecture" ? "bg-pink-600 text-white border-pink-600 shadow-pink-200" : "bg-white text-pink-500 border-pink-100 hover:bg-pink-50 hover:border-pink-200"}`}>Architecture</button>
+              <button onClick={()=>setCategory("Vehicles")} className={`px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition border-2 shadow-sm ${category==="Vehicles" ? "bg-amber-500 text-white border-amber-500 shadow-amber-200" : "bg-white text-amber-500 border-amber-100 hover:bg-amber-50 hover:border-amber-200"}`}>Vehicles</button>
+              <button onClick={()=>setCategory("Character")} className={`px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition border-2 shadow-sm ${category==="Character" ? "bg-emerald-500 text-white border-emerald-500 shadow-emerald-200" : "bg-white text-emerald-500 border-emerald-100 hover:bg-emerald-50 hover:border-emerald-200"}`}>Characters</button>
+              <button onClick={()=>setCategory("Environment")} className={`px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition border-2 shadow-sm ${category==="Environment" ? "bg-cyan-500 text-white border-cyan-500 shadow-cyan-200" : "bg-white text-cyan-500 border-cyan-100 hover:bg-cyan-50 hover:border-cyan-200"}`}>Environment</button>
             </motion.div>
 
-            <div className="mt-8 flex items-center justify-between w-full max-w-7xl mx-auto border-t border-gray-800 pt-6">
-              <p className="text-gray-500 font-medium text-sm">
+            <div className="mt-10 flex items-center justify-between w-full max-w-7xl mx-auto bg-white/60 backdrop-blur-sm p-4 rounded-3xl border-4 border-indigo-50 shadow-sm">
+              <p className="text-gray-500 font-bold text-sm px-2">
                 {loading ? "Loading…" : `${filtered.length} model${filtered.length!==1?"s":""}`}
               </p>
               
               <div className="flex items-center gap-3">
                 <select value={sortBy} onChange={e=>setSortBy(e.target.value)}
-                  className="bg-[#141414] border border-gray-800 text-gray-300 font-bold text-xs rounded-xl pl-4 pr-10 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#5B4BDB] appearance-none cursor-pointer">
+                  className="bg-white border-2 border-indigo-100 text-indigo-700 font-black text-xs uppercase tracking-widest rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-blue-100 appearance-none cursor-pointer shadow-sm">
                   {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
                 {user && (
                   <Link href="/upload">
-                    <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-[#5B4BDB] hover:bg-[#4a3bc7] transition">
+                    <button className="flex items-center gap-2 px-6 py-3 rounded-xl font-black uppercase text-xs tracking-widest text-white bg-blue-600 hover:bg-blue-500 border-b-2 border-blue-800 active:border-b-0 active:translate-y-0.5 transition-all shadow-md">
                       Upload
                     </button>
                   </Link>
@@ -326,29 +326,30 @@ function GalleryContent() {
           </div>
 
           {/* Grid */}
-          <div className="w-full">
+          <div className="w-full relative z-10 mt-6">
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {Array.from({length:8}).map((_,i) => (
-                  <div key={i} className="rounded-2xl border border-gray-800 bg-[#141414] overflow-hidden">
-                    <div className="aspect-[4/3] bg-gray-800/50 animate-pulse" />
-                    <div className="p-5 space-y-4">
-                      <div className="h-4 bg-gray-800 rounded-full animate-pulse w-3/4" />
-                      <div className="h-3 bg-gray-800/50 rounded-full animate-pulse w-1/2" />
+                  <div key={i} className="rounded-[2rem] border-4 border-indigo-50 bg-white/50 backdrop-blur-sm overflow-hidden shadow-sm">
+                    <div className="aspect-[4/3] bg-indigo-50 animate-pulse" />
+                    <div className="p-6 space-y-4">
+                      <div className="h-4 bg-indigo-100 rounded-full animate-pulse w-3/4" />
+                      <div className="h-3 bg-indigo-50 rounded-full animate-pulse w-1/2" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : filtered.length === 0 ? (
-              <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} className="flex flex-col items-center justify-center py-20 text-center w-full max-w-lg mx-auto bg-[#141414] rounded-3xl border border-gray-800">
-                <svg className="w-12 h-12 text-gray-700 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-                <h3 className="text-white font-bold text-xl mb-2">No models found <span className="text-gray-500">matching your search.</span></h3>
-                <div className="flex gap-4 mt-6">
+              <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} className="flex flex-col items-center justify-center py-24 text-center w-full max-w-xl mx-auto bg-white/60 backdrop-blur-md rounded-[3rem] border-4 border-dashed border-indigo-100 shadow-sm">
+                <div className="w-24 h-24 rounded-full bg-indigo-50 border-4 border-indigo-100 flex items-center justify-center mb-6">
+                  <span className="text-5xl">🧐</span>
+                </div>
+                <h3 className="text-gray-900 font-black text-2xl mb-2">No models found</h3>
+                <p className="text-gray-500 font-bold text-lg mb-8">Try adjusting your search or filters.</p>
+                <div className="flex gap-4">
                   {(search || category !== "All" || priceFilter !== "all") && (
                     <button onClick={()=>{setCategory("All");setPriceFilter("all");setSearch("");}}
-                      className="px-6 py-2.5 rounded-xl bg-gray-800 text-gray-300 font-bold hover:bg-gray-700 transition text-sm">
+                      className="px-8 py-4 rounded-2xl bg-pink-100 text-pink-700 font-black uppercase tracking-widest text-xs hover:bg-pink-200 transition shadow-sm border-2 border-pink-200">
                       Clear Filters
                     </button>
                   )}
@@ -356,63 +357,66 @@ function GalleryContent() {
               </motion.div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
-                {filtered.map((m,i)=>(
+                {filtered.map((m,i)=>{
+                   const ext = m.fileType?.toLowerCase() ?? "";
+                   const fc = FILE_COLOR[ext] ?? FILE_COLOR.glb;
+                   return (
                   <motion.div key={m.id} initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-50px" }}
                     transition={{ duration:0.4, delay: i * 0.05 }}
-                    className="group relative rounded-2xl border border-gray-800 bg-[#141414] hover:shadow-[0_0_20px_rgba(91,75,219,0.3)] hover:border-[#5B4BDB]/50 transition duration-300 overflow-hidden flex flex-col h-full hover:-translate-y-1">
+                    className="group relative rounded-[2rem] border-4 border-indigo-50 bg-white hover:shadow-[0_20px_50px_-12px_rgba(59,130,246,0.3)] hover:border-blue-200 transition duration-300 overflow-hidden flex flex-col h-full hover:-translate-y-2">
 
-                    <div className="relative aspect-[4/3] overflow-hidden bg-[#0A0A0A] border-b border-gray-800">
+                    <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-indigo-50 to-pink-50 border-b-4 border-indigo-50">
                       {m.thumbnailUrl ? (
-                        <img src={m.thumbnailUrl} alt={m.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-80 group-hover:opacity-100" />
+                        <img src={m.thumbnailUrl} alt={m.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90 group-hover:opacity-100" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <svg className="w-12 h-12 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                          <svg className="w-12 h-12 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                         </div>
                       )}
                       
-                      <div className="absolute top-3 left-3 flex gap-2">
-                        <div className="px-2.5 py-1 rounded bg-[#0A0A0A]/80 backdrop-blur-sm border border-gray-700 text-[9px] font-black uppercase text-gray-300">
+                      <div className="absolute top-4 left-4 flex gap-2">
+                        <div className={`px-3 py-1 rounded-xl bg-white/90 backdrop-blur-md border border-white text-[10px] font-black uppercase text-indigo-700 shadow-md ${fc.text}`}>
                           {m.fileType?.toUpperCase() || "3D"}
                         </div>
                       </div>
                       
-                      <div className="absolute top-3 right-3">
+                      <div className="absolute top-4 right-4">
                         {m.isPaid ? (
-                          <div className="px-2.5 py-1 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-bold">₹{m.price}</div>
+                          <div className="px-3 py-1 rounded-xl bg-emerald-50 border-2 border-emerald-100 text-emerald-700 text-[11px] font-black shadow-md">₹{m.price}</div>
                         ) : (
-                          <div className="px-2.5 py-1 rounded bg-white/10 border border-white/20 text-white text-[10px] font-bold">Free</div>
+                          <div className="px-3 py-1 rounded-xl bg-white/90 backdrop-blur-md border border-white text-gray-800 text-[11px] font-black shadow-md">Free</div>
                         )}
                       </div>
                       
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-blue-900/30 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center z-10">
                         <Link href={`/gallery/${m.id}`}>
-                          <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold shadow-lg hover:scale-105 transition">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                          <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white text-blue-600 border-b-4 border-gray-200 active:border-b-0 active:translate-y-1 text-base font-black shadow-xl transition-all">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                             Preview
                           </button>
                         </Link>
                       </div>
                     </div>
                     
-                    <div className="p-5 flex flex-col flex-1 relative">
-                      <h3 className="text-white font-bold text-base leading-snug line-clamp-1 mb-1">{m.title}</h3>
-                      <div className="flex items-center gap-2 text-gray-400 text-xs font-medium mb-4">
+                    <div className="p-6 flex flex-col flex-1 relative bg-white z-0">
+                      <h3 className="text-gray-900 font-black text-xl leading-snug line-clamp-1 mb-2 group-hover:text-blue-600 transition-colors">{m.title}</h3>
+                      <div className="flex items-center gap-2 text-indigo-400 text-xs font-black uppercase tracking-wider mb-5">
                         <span>by {m.authorName || "Anonymous"}</span>
                       </div>
                       
-                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-800 text-gray-500 text-xs font-semibold">
-                        <span className="flex items-center gap-1.5 hover:text-gray-300 transition">
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                      <div className="flex items-center justify-between mt-auto pt-5 border-t-2 border-indigo-50 text-gray-500 text-xs font-black">
+                        <span className="flex items-center gap-1.5 bg-indigo-50 px-2.5 py-1.5 rounded-xl text-indigo-600 border border-indigo-100">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                           {m.views??0}
                         </span>
-                        <span className="flex items-center gap-1.5 hover:text-gray-300 transition">
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        <span className="flex items-center gap-1.5 bg-pink-50 px-2.5 py-1.5 rounded-xl text-pink-600 border border-pink-100">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                           {m.downloads??0}
                         </span>
                       </div>
                     </div>
                   </motion.div>
-                ))}
+                )})}
               </div>
             )}
           </div>

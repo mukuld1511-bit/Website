@@ -311,36 +311,21 @@ export default function ModelDetailPage() {
     // 1. Trigger the download immediately
     try {
       let downloadUrl = model.modelUrl;
-
-      const ext      = downloadUrl.split("?")[0].split(".").pop() ?? "glb";
+      const ext = downloadUrl.split("?")[0].split(".").pop() ?? "glb";
       const filename = (model.title || "model").replace(/\s+/g, "_") + "." + ext;
       
-      try {
-        // We fetch the blob directly so it downloads silently without a blank tab popup and respects the filename.
-        // If this URL is blocked by CORS (some buckets), it falls back to the old method.
-        const res = await fetch(downloadUrl);
-        if (!res.ok) throw new Error("Fetch failed");
-        const blob = await res.blob();
-        const localUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.style.display = "none";
-        a.href = localUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(localUrl);
-        document.body.removeChild(a);
-      } catch (err) {
-        // Fallback: direct navigation
-        console.warn("Direct blob download failed, falling back to direct navigation", err);
-        const a = document.createElement("a");
-        a.href = downloadUrl;
-        a.download = filename; // Might be ignored cross-origin, but we try
-        a.target = "_blank";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+      // If it's a Supabase URL, force native download attachment
+      if (downloadUrl.includes("supabase.co") && !downloadUrl.includes("download=")) {
+        downloadUrl += (downloadUrl.includes("?") ? "&" : "?") + "download=" + encodeURIComponent(filename);
       }
+
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = downloadUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
 
       showToast("Download started!");
     } catch (e) {

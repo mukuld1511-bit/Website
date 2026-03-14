@@ -9,7 +9,7 @@ import { auth } from "../../lib/firebase";
 
 // ── Category-specific dropdowns replacing the old single 'Explore' ────────────
 const XR_GAMES_LINKS = [
-  { label: "VR Games",   href: "/gallery?mode=vr",      desc: "Oculus, Quest & SteamVR builds",   icon: "M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" },
+  { label: "VR Games",   href: "/gallery?mode=vr&genre=game",      desc: "Oculus, Quest & SteamVR builds",   icon: "M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" },
   { label: "AR Games",   href: "/gallery?mode=ar&genre=game", desc: "Interactive ARCore & ARKit games", icon: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2" },
   { label: "Upload Game", href: "/upload",               desc: "Share your AR/VR game package",   icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
 ];

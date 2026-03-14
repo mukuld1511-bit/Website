@@ -259,10 +259,10 @@ export default function RequestsPage() {
           <div className="mb-12 flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-center">
             <div>
               <h1 className="text-5xl md:text-6xl font-black tracking-tight text-gray-900 mb-4 leading-tight">
-                Explore <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500">Open Requests</span>
+                Explore <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500">Learn & Build</span>
               </h1>
               <p className="text-gray-600 text-lg md:text-xl font-bold max-w-xl">
-                Find exciting client projects, pitch your amazing ideas, and start building AR/VR experiences today!
+                Find exciting collaborative projects, connect with peers, and start building AR/VR learning experiences today!
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -271,7 +271,7 @@ export default function RequestsPage() {
                   <svg className="w-6 h-6 transform group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
                   </svg>
-                  Post a Request 💡
+                  Post a Project 💡
                 </button>
               </Link>
             </div>
@@ -299,13 +299,13 @@ export default function RequestsPage() {
           ) : filtered.length === 0 ? (
             <div className="text-center py-32 border-4 border-dashed border-indigo-100 rounded-[3rem] bg-white/50 backdrop-blur-sm">
               <div className="text-6xl mb-6">🏜️</div>
-              <h3 className="text-3xl font-black text-gray-900 mb-4">No open requests right now</h3>
+              <h3 className="text-3xl font-black text-gray-900 mb-4">No projects right now</h3>
               <p className="text-gray-500 font-bold mb-8 max-w-md mx-auto text-lg">
-                {search ? `We couldn't find anything matching "${search}". Try a different keyword.` : "Check back later or be the first to post a new project idea."}
+                {search ? `We couldn't find anything matching "${search}". Try a different keyword.` : "Check back later or be the first to post a new learning project."}
               </p>
               <Link href="/requests/post">
                 <button className="px-8 py-4 rounded-2xl text-white font-black text-lg bg-pink-500 hover:bg-pink-400 border-b-4 border-pink-700 active:border-b-0 active:translate-y-1 transition-all shadow-xl">
-                  Create the first request ✨
+                  Create the first project ✨
                 </button>
               </Link>
             </div>
@@ -352,7 +352,7 @@ export default function RequestsPage() {
                         {/* Details Grid */}
                         <div className="grid grid-cols-2 gap-4 mb-6">
                           <div className="p-4 rounded-2xl bg-white shadow-sm border border-indigo-50 group-hover:border-blue-100 transition-colors">
-                            <p className="text-blue-500 text-[10px] font-black uppercase tracking-widest mb-1.5">Budget 💰</p>
+                            <p className="text-blue-500 text-[10px] font-black uppercase tracking-widest mb-1.5">Commitment ⏳</p>
                             <p className="font-extrabold text-gray-900 text-sm md:text-base truncate">
                               {req.budget || "Flexible"}
                             </p>
@@ -392,7 +392,7 @@ export default function RequestsPage() {
                             />
                             <div className="min-w-0">
                               <p className="text-gray-900 text-sm font-black truncate">{req.userName || "Anonymous"}</p>
-                              <p className="text-blue-500 text-[10px] font-black uppercase tracking-wider">Client</p>
+                              <p className="text-blue-500 text-[10px] font-black uppercase tracking-wider">Creator</p>
                             </div>
                           </div>
 
@@ -401,24 +401,24 @@ export default function RequestsPage() {
                               onClick={() => openApplicants(req)}
                               className="px-5 py-3 border-2 border-indigo-200 hover:border-indigo-400 bg-white text-indigo-600 text-[11px] font-black uppercase tracking-wide rounded-2xl transition shadow-sm whitespace-nowrap"
                             >
-                              Applicants
+                              Connections
                             </button>
                           ) : user ? (
                             <div className="flex items-center gap-2 flex-shrink-0">
-                              <button
-                                onClick={() => chatWithClient(req)}
-                                disabled={initiatingChatWithClient === req.id}
-                                className="w-10 h-10 flex items-center justify-center border-2 border-blue-200 bg-white hover:bg-blue-50 text-blue-600 rounded-xl transition shadow-sm disabled:opacity-50"
-                                title="Chat with Client"
-                              >
-                                {initiatingChatWithClient === req.id ? "..." : <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>}
-                              </button>
-                              <button
-                                onClick={() => setApplyingTo(req)}
-                                className="px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white text-[12px] font-black uppercase tracking-wide rounded-2xl border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 transition-all shadow-md whitespace-nowrap"
-                              >
-                                Apply 🚀
-                              </button>
+                                <button
+                                  onClick={() => chatWithClient(req)}
+                                  disabled={initiatingChatWithClient === req.id}
+                                  className="w-10 h-10 flex items-center justify-center border-2 border-blue-200 bg-white hover:bg-blue-50 text-blue-600 rounded-xl transition shadow-sm disabled:opacity-50"
+                                  title="Chat with Creator"
+                                >
+                                  {initiatingChatWithClient === req.id ? "..." : <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>}
+                                </button>
+                                <button
+                                  onClick={() => setApplyingTo(req)}
+                                  className="px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white text-[12px] font-black uppercase tracking-wide rounded-2xl border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 transition-all shadow-md whitespace-nowrap"
+                                >
+                                  Join Project 🚀
+                                </button>
                             </div>
                           ) : (
                             <Link href="/login">
@@ -450,19 +450,19 @@ export default function RequestsPage() {
               <div className="bg-indigo-50/50 rounded-[2rem] p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-3xl">🚀</span>
-                  <h2 className="text-3xl font-black text-gray-900 tracking-tight">Pitch Your Idea</h2>
+                  <h2 className="text-3xl font-black text-gray-900 tracking-tight">Connect on this Project</h2>
                 </div>
-                <p className="text-gray-600 font-bold mb-6 pb-6 border-b-2 border-indigo-100 border-dashed">Applying for: <span className="text-blue-600">"{applyingTo.title}"</span></p>
+                <p className="text-gray-600 font-bold mb-6 pb-6 border-b-2 border-indigo-100 border-dashed">Joining: <span className="text-blue-600">"{applyingTo.title}"</span></p>
                 
                 <div className="space-y-6 mb-8">
                   <div>
-                    <label className="block text-[11px] font-black uppercase tracking-widest text-gray-500 mb-2">Your Bid (₹)</label>
-                    <input type="number" placeholder="5000" value={applyBid} onChange={e=>setApplyBid(e.target.value)}
+                    <label className="block text-[11px] font-black uppercase tracking-widest text-gray-500 mb-2">Your Pitch / Points</label>
+                    <input type="number" placeholder="50" value={applyBid} onChange={e=>setApplyBid(e.target.value)}
                       className="w-full bg-white border-2 border-indigo-100 rounded-2xl px-5 py-4 text-gray-900 font-bold text-lg placeholder-gray-300 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-black uppercase tracking-widest text-gray-500 mb-2">Why are you a fit?</label>
-                    <textarea placeholder="Share your experience and how you plan to tackle this project..." rows={5} value={applyMessage} onChange={e=>setApplyMessage(e.target.value)}
+                    <label className="block text-[11px] font-black uppercase tracking-widest text-gray-500 mb-2">Why do you want to collaborate?</label>
+                    <textarea placeholder="Share your experience and what you hope to learn or contribute..." rows={5} value={applyMessage} onChange={e=>setApplyMessage(e.target.value)}
                       className="w-full bg-white border-2 border-indigo-100 rounded-2xl px-5 py-4 text-gray-900 font-bold placeholder-gray-300 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition resize-none shadow-sm" />
                   </div>
                 </div>
@@ -471,7 +471,7 @@ export default function RequestsPage() {
                   <button onClick={() => setApplyingTo(null)} disabled={isApplying} className="flex-1 py-4 bg-white border-2 border-gray-200 text-gray-600 font-bold rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition shadow-sm">Cancel</button>
                   <button onClick={submitApplication} disabled={isApplying || !applyBid || !applyMessage} 
                     className="flex-1 py-4 text-white font-black text-lg bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 rounded-2xl transition-all shadow-lg disabled:opacity-50">
-                    {isApplying ? "Sending..." : "Submit"}
+                    {isApplying ? "Sending..." : "Submit Pitch"}
                   </button>
                 </div>
               </div>
@@ -488,7 +488,7 @@ export default function RequestsPage() {
               <div className="bg-indigo-50/30 p-6 md:p-8 flex flex-col h-full border-2 border-indigo-50 rounded-[2rem] m-2">
                 <div className="flex justify-between items-start mb-6 pb-6 border-b-2 border-indigo-100 border-dashed">
                   <div>
-                    <h2 className="text-3xl font-black text-gray-900 mb-2">Applicants <span className="text-blue-600 bg-blue-100 px-3 py-1 rounded-xl text-2xl">{applicants.length}</span></h2>
+                    <h2 className="text-3xl font-black text-gray-900 mb-2">Connections <span className="text-blue-600 bg-blue-100 px-3 py-1 rounded-xl text-2xl">{applicants.length}</span></h2>
                     <p className="text-gray-600 font-bold">"{viewingApplicantsFor.title}"</p>
                   </div>
                   <button onClick={() => setViewingApplicantsFor(null)} className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-900 transition font-bold text-xl">✕</button>
@@ -503,8 +503,8 @@ export default function RequestsPage() {
                   ) : applicants.length === 0 ? (
                     <div className="text-center py-20 px-4 bg-white rounded-3xl border border-indigo-50">
                       <div className="text-5xl mb-4">👀</div>
-                      <p className="text-gray-900 font-black text-xl mb-2">No applications yet</p>
-                      <p className="text-gray-500 font-semibold">When developers pitch their ideas, they'll appear here.</p>
+                      <p className="text-gray-900 font-black text-xl mb-2">No connections yet</p>
+                      <p className="text-gray-500 font-semibold">When peers want to collaborate, they'll appear here.</p>
                     </div>
                   ) : (
                     applicants.map((app) => (
@@ -515,7 +515,7 @@ export default function RequestsPage() {
                             <div className="flex-1 mt-1">
                               <div className="flex items-center justify-between">
                                 <Link href={`/developer/${app.developerId}`} className="text-gray-900 font-black text-lg hover:text-blue-600 transition tracking-tight">{app.developerName}</Link>
-                                <span className="text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wide border border-indigo-100">Bid: ₹{app.bidAmount}</span>
+                                <span className="text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wide border border-indigo-100">Pitch: {app.bidAmount}</span>
                               </div>
                               <p className="text-gray-500 text-xs font-bold mt-1 bg-gray-50 inline-block px-2 py-1 rounded-md">{timeAgo(app.createdAt?.toDate())}</p>
                             </div>

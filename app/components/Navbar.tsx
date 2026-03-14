@@ -13,9 +13,9 @@ const EXPLORE_LINKS = [
   { label: "AR/VR Models", href: "/gallery?mode=ar", desc: "Ready for spatial computing", icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" }
 ];
 
-const MARKETPLACE_LINKS = [
-  { label: "Browse Developers", href: "/connect",       desc: "Hire top talent",     icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
-  { label: "Open Projects",     href: "/requests/open", desc: "Find work & bid",     icon: "M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
+const LEARN_CONNECT_LINKS = [
+  { label: "Connect & Learn", href: "/connect",       desc: "Network with peers",    icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+  { label: "Project Board",   href: "/requests/open", desc: "Find collaborations",   icon: "M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
 ];
 
 const ACADEMY_LINKS = [
@@ -130,7 +130,7 @@ export default function Navbar() {
           {/* CENTER: Desktop Dropdowns */}
           <div className="hidden lg:flex items-center gap-2">
             <DropdownPanel title="Explore" links={EXPLORE_LINKS} />
-            <DropdownPanel title="Marketplace" links={MARKETPLACE_LINKS} />
+            <DropdownPanel title="Learn & Connect" links={LEARN_CONNECT_LINKS} />
             <DropdownPanel title="Academy" links={ACADEMY_LINKS} />
           </div>
 
@@ -234,8 +234,8 @@ export default function Navbar() {
               <div className="h-[1px] bg-gray-100" />
 
               <div className="space-y-4">
-                <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase">Marketplace</p>
-                {MARKETPLACE_LINKS.map(item => (
+                <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase">Learn & Connect</p>
+                {LEARN_CONNECT_LINKS.map(item => (
                   <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
                     <div className="flex items-center gap-4 group mb-4">
                       <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>

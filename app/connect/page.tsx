@@ -139,7 +139,7 @@ function RequestModal({ dev, user, onClose, onSuccess }: {
           </div>
 
           <div className="p-4 rounded-xl border border-blue-100 bg-blue-50 text-xs text-blue-800 font-medium leading-relaxed">
-            📩 Your request goes directly to the developer. They'll respond via chat with next steps.
+            📩 Your request goes directly to the creator. They'll respond via chat with next steps.
           </div>
 
           <div className="flex gap-3 pt-2">
@@ -417,15 +417,15 @@ export default function ConnectPage() {
             <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }}
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-800 mb-6 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-              <span className="text-xs font-bold uppercase tracking-widest">Find a Developer</span>
+              <span className="text-xs font-bold uppercase tracking-widest">Find a Creator</span>
             </motion.div>
 
             <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.1 }}>
               <h1 className="text-4xl md:text-6xl font-black tracking-tight text-gray-900 mb-6">
-                Hire an Expert
+                Connect & Learn Together
               </h1>
               <p className="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-                Browse verified AR/VR/3D developers. Send a direct project request and collaborate one-on-one.
+                Browse verified AR/VR/3D creators and students. Send a direct request to collaborate and learn one-on-one.
               </p>
             </motion.div>
           </div>
@@ -434,7 +434,7 @@ export default function ConnectPage() {
           <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.2 }}
             className="grid grid-cols-3 gap-4 mb-12 max-w-2xl mx-auto">
             {[
-              { label:"Verified Devs",  val: devs.length,                                                      color:"blue" },
+              { label:"Verified Creators",  val: devs.length,                                                      color:"blue" },
               { label:"Certified",      val: devs.filter(d=>d.certified).length,                              color:"green" },
               { label:"Skills Covered", val: [...new Set(devs.flatMap(d=>d.skills??[]))].length,              color:"purple" },
             ].map((s,i) => (
@@ -483,7 +483,7 @@ export default function ConnectPage() {
             
             <div className="pt-2 border-t border-gray-100 flex justify-between items-center">
               <p className="text-gray-500 font-semibold text-sm">
-                {loading ? "Loading developers…" : `${filtered.length} developer${filtered.length!==1?"s":""} available`}
+                {loading ? "Loading creators…" : `${filtered.length} creator${filtered.length!==1?"s":""} available`}
               </p>
               {(search || skillFilter !== "All" || certOnly) && (
                  <button onClick={()=>{ setSearch(""); setSkillFilter("All"); setCertOnly(false); }} className="text-blue-600 text-sm font-bold hover:underline">Clear Filters</button>
@@ -506,8 +506,8 @@ export default function ConnectPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <h3 className="text-gray-900 font-extrabold text-2xl mb-2">No developers found</h3>
-              <p className="text-gray-500 text-base mb-8 max-w-sm">We couldn't find any developers matching your current search criteria.</p>
+              <h3 className="text-gray-900 font-extrabold text-2xl mb-2">No creators found</h3>
+              <p className="text-gray-500 text-base mb-8 max-w-sm">We couldn't find any creators matching your current search criteria.</p>
               <button onClick={()=>{ setSearch(""); setSkillFilter("All"); setCertOnly(false); }}
                 className="px-8 py-3.5 rounded-xl bg-gray-100 text-gray-800 font-bold hover:bg-gray-200 transition duration-200 shadow-sm">
                 Clear all filters
@@ -532,17 +532,17 @@ export default function ConnectPage() {
             className="mt-24 rounded-3xl overflow-hidden border border-gray-200 bg-white p-12 md:p-16 text-center shadow-lg relative">
             <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-blue-50 opacity-50 blur-3xl pointer-events-none" />
             
-            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">For Developers</p>
+            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">For Creators</p>
             <h2 className="text-4xl font-black tracking-tight text-gray-900 mb-4">
-              Want to Take Projects?
+              Want to Join the Community?
             </h2>
             <p className="text-gray-500 text-lg max-w-lg mx-auto mb-10 leading-relaxed font-medium">
-              Join as a verified developer. Get hired directly, receive project requests, and build your reputation.
+              Join as a verified creator or student. Connect with peers, collaborate on amazing projects, and learn together.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/join/developer">
                 <button className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition">
-                  Apply as Developer
+                  Join as Creator
                 </button>
               </Link>
               <Link href="/certification">

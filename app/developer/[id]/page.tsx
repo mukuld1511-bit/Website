@@ -186,9 +186,9 @@ export default function DeveloperProfilePage() {
                 {/* Avatar */}
                 <div className="relative w-28 h-28 mx-auto mb-6">
                   {dev.certified && (
-                     <div className="absolute -inset-1.5 rounded-full border-2 border-yellow-400 opacity-60 pointer-events-none" />
+                     <div className="absolute -inset-1.5 rounded-full border-2 border-[#5B4BDB] shadow-[0_0_20px_rgba(91,75,219,0.5)] opacity-80 pointer-events-none" />
                   )}
-                  <div className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-white bg-gray-100 flex items-center justify-center text-4xl font-extrabold text-blue-700 shadow-md">
+                  <div className={`relative w-28 h-28 rounded-full overflow-hidden border-4 border-white ${dev.certified ? 'bg-[#5B4BDB]/10 text-[#5B4BDB]' : 'bg-gray-100 text-blue-700'} flex items-center justify-center text-4xl font-extrabold shadow-md`}>
                     {dev.profileImage && dev.profileImage !== "/avatar.png"
                       ? <img src={dev.profileImage} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
                       : dev.name?.[0]
@@ -199,8 +199,8 @@ export default function DeveloperProfilePage() {
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <h1 className="text-2xl font-black text-gray-900 tracking-tight">{dev.name}</h1>
                   {dev.certified && (
-                    <div className="w-5 h-5 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0" title="Synthé Certified">
-                      <svg className="w-3 h-3 text-yellow-600" fill="currentColor" viewBox="0 0 24 24">
+                    <div className="w-5 h-5 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center flex-shrink-0" title="Synthé Certified">
+                      <svg className="w-3 h-3 text-[#5B4BDB]" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                       </svg>
                     </div>
@@ -210,8 +210,8 @@ export default function DeveloperProfilePage() {
                 <p className="text-gray-500 text-sm mb-2 font-bold capitalize">{dev.role}</p>
 
                 {dev.certified && (
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-yellow-200 bg-yellow-50 text-yellow-800 text-[10px] font-black uppercase tracking-widest mb-4">
-                    ⭐ Certified
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#5B4BDB] shadow-[0_0_15px_rgba(91,75,219,0.4)] text-white text-[10px] font-black uppercase tracking-widest mb-4">
+                    ⭐ Certified Spatial Developer
                   </div>
                 )}
 

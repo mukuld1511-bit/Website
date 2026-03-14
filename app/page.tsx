@@ -136,8 +136,8 @@ function FeatureCard({ f, i }: { f:typeof FEATURES[0]; i:number }) {
       transition={{ duration:0.4, delay:i*0.05 }}
       onHoverStart={() => setHover(true)} onHoverEnd={() => setHover(false)}>
       <Link href={f.href}>
-        <div className="group relative h-full p-6 rounded-2xl bg-white border border-gray-200 hover:shadow-md transition duration-300 cursor-pointer overflow-hidden">
-          <div className={`absolute top-0 left-0 right-0 h-1 bg-${f.color}-500 opacity-0 group-hover:opacity-100 transition`} />
+        <div className="group relative h-full p-6 rounded-[2rem] bg-white border-2 border-indigo-50 hover:border-indigo-100 hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden hover:-translate-y-1">
+          <div className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-${f.color}-400 to-${f.color}-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
           <div className="flex items-start justify-between mb-5">
             <motion.div animate={{ scale:hover?1.05:1 }}
               transition={{ type:"spring", stiffness:400, damping:20 }}
@@ -171,12 +171,12 @@ function TutorCard({ t, i }: { t:TutorProfile & { certified?: boolean }; i:numbe
     <motion.div initial={{ opacity:0, y:10 }} whileInView={{ opacity:1, y:0 }}
       viewport={{ once:true }} transition={{ delay:i*0.05 }}>
       <Link href="/connect">
-        <div className={`group flex items-center gap-3 p-3 rounded-xl border transition duration-200 cursor-pointer overflow-hidden relative ${
+        <div className={`group flex items-center gap-4 p-4 rounded-3xl border-2 transition-all duration-300 cursor-pointer overflow-hidden relative hover:-translate-y-1 ${
           isC 
-            ? "border-2 border-[#5B4BDB] bg-[#141414] shadow-[0_0_15px_rgba(91,75,219,0.2)] hover:shadow-[0_0_25px_rgba(91,75,219,0.3)] transform hover:-translate-y-1" 
-            : "bg-white border-gray-200 hover:border-blue-300 hover:shadow-sm"
+            ? "border-[#5B4BDB]/30 bg-[#141414] shadow-[0_4px_20px_rgba(91,75,219,0.15)] hover:shadow-[0_8px_30px_rgba(91,75,219,0.25)] hover:border-[#5B4BDB]" 
+            : "bg-white border-indigo-50 hover:border-indigo-200 hover:shadow-md"
         }`}>
-          {isC && <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#5B4BDB] to-purple-400" />}
+          {isC && <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#5B4BDB] to-purple-400 opacity-90" />}
           
           <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold overflow-hidden border ${
             isC ? "bg-[#5B4BDB]/10 text-[#5B4BDB] border-[#5B4BDB]/20" : "bg-gray-100 text-gray-500 border-gray-200"

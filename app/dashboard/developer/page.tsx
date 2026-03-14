@@ -190,11 +190,11 @@ export default function DeveloperDashboard() {
           ].map((s, i) => (
             <div
               key={i}
-              className={`rounded-2xl p-5 border shadow-sm transition duration-200 ${
-                s.highlight ? "border-amber-200 bg-amber-50" : "border-gray-200 bg-white"
+              className={`rounded-3xl p-6 border-2 shadow-sm transition duration-300 ${
+                s.highlight ? "border-amber-200 bg-amber-50" : "border-indigo-50 bg-white"
               }`}
             >
-              <p className={`text-3xl font-black mb-1 text-${s.color}-600`}>{s.val}</p>
+              <p className={`text-4xl font-black mb-1 text-${s.color}-600`}>{s.val}</p>
               <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">{s.label}</p>
             </div>
           ))}
@@ -255,14 +255,14 @@ export default function DeveloperDashboard() {
                 <div
                   key={m.id}
                   onClick={() => router.push(`/gallery/${m.id}`)}
-                  className="group cursor-pointer bg-white border border-gray-200 shadow-sm rounded-2xl p-5 hover:border-violet-300 hover:shadow-md transition duration-200"
+                  className="group cursor-pointer bg-white border-2 border-indigo-50 shadow-sm rounded-3xl p-6 hover:border-violet-300 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-4">
                     {m.thumbnailUrl ? (
-                      <img src={m.thumbnailUrl} alt={m.title} className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-gray-100" />
+                      <img src={m.thumbnailUrl} alt={m.title} className="w-16 h-16 rounded-2xl object-cover flex-shrink-0 border-2 border-indigo-50 shadow-sm" />
                     ) : (
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-gray-100 border border-gray-200">
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 bg-indigo-50 border-2 border-indigo-100 shadow-sm">
+                        <svg className="w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                         </svg>
                       </div>
@@ -297,12 +297,12 @@ export default function DeveloperDashboard() {
                 <div
                   key={s.id}
                   onClick={() => router.push(`/connect/${s.id}`)}
-                  className="group cursor-pointer rounded-2xl border border-gray-200 bg-white shadow-sm hover:border-cyan-300 hover:shadow-md p-5 flex items-center gap-4 transition duration-200"
+                  className="group cursor-pointer rounded-3xl border-2 border-indigo-50 bg-white shadow-sm hover:border-cyan-300 hover:shadow-md p-6 flex items-center gap-5 transition-all duration-300 hover:-translate-y-0.5"
                 >
                   {s.studentAvatar
-                    ? <img src={s.studentAvatar} alt={s.studentName} className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-gray-100" />
+                    ? <img src={s.studentAvatar} alt={s.studentName} className="w-14 h-14 rounded-2xl object-cover flex-shrink-0 border-2 border-indigo-50 shadow-sm" />
                     : (
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-black text-cyan-700 bg-cyan-50 border border-cyan-200">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 text-lg font-black text-cyan-700 bg-cyan-50 border-2 border-cyan-100 shadow-sm">
                         {s.studentName?.[0]?.toUpperCase() ?? "S"}
                       </div>
                     )
@@ -335,12 +335,12 @@ export default function DeveloperDashboard() {
                 <div
                   key={c.id}
                   onClick={() => router.push(`/project-chat/${c.id}`)}
-                  className="group cursor-pointer rounded-2xl border border-gray-200 bg-white shadow-sm hover:border-pink-300 hover:shadow-md p-4 flex items-center gap-4 transition duration-200"
+                  className="group cursor-pointer rounded-3xl border-2 border-indigo-50 bg-white shadow-sm hover:border-pink-300 hover:shadow-md p-5 flex items-center gap-5 transition-all duration-300 hover:-translate-y-0.5"
                 >
                   {c.clientPhoto
-                    ? <img src={c.clientPhoto} alt={c.clientName} className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-gray-100" />
+                    ? <img src={c.clientPhoto} alt={c.clientName} className="w-14 h-14 rounded-2xl object-cover flex-shrink-0 border-2 border-indigo-50 shadow-sm" />
                     : (
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-black text-pink-700 bg-pink-50 border border-pink-200">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 text-lg font-black text-pink-700 bg-pink-50 border-2 border-pink-100 shadow-sm">
                         {c.clientName?.[0]?.toUpperCase() ?? "C"}
                       </div>
                     )
@@ -421,9 +421,11 @@ function DashSection({ title, subtitle, delay, children, accent = "bg-blue-500" 
 
 function Empty({ icon, text }: { icon: string; text: string }) {
   return (
-    <div className="w-full py-10 text-center border border-gray-200 border-dashed rounded-2xl bg-white flex flex-col items-center gap-3 shadow-sm">
-      <span className="text-3xl grayscale opacity-60">{icon}</span>
-      <p className="text-gray-500 font-medium text-sm">{text}</p>
+    <div className="w-full py-16 text-center border-2 border-indigo-100 border-dashed rounded-[2.5rem] bg-white flex flex-col items-center gap-4 shadow-sm">
+      <div className="w-20 h-20 rounded-[1.5rem] bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center mb-2 shadow-sm">
+        <span className="text-4xl filter hue-rotate-15">{icon}</span>
+      </div>
+      <p className="text-gray-600 font-bold text-base tracking-wide max-w-xs">{text}</p>
     </div>
   );
 }

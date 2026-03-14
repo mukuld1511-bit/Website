@@ -111,20 +111,20 @@ export default function UserDashboard() {
         </UserSection>
 
         {/* MY TUTORIAL REQUESTS */}
-        <UserSection title="My Tutorial Requests" subtitle="Tutorials you've requested from developers" delay={0.3} accent="bg-blue-500">
+        <UserSection title="My Tutorial Requests" subtitle="Tutorials you've requested from developers" delay={0.3} accent="bg-pink-500">
           {requests.length === 0
             ? <Empty text="You haven't requested any tutorials yet." icon="📚" />
-            : <div className="grid gap-3">
+            : <div className="grid gap-4">
               {requests.map((r, index) => (
-                <div key={index} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:border-blue-300 transition duration-200">
+                <div key={index} className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-indigo-100 rounded-3xl p-6 shadow-sm hover:shadow-md hover:border-pink-300 transition-all duration-300">
                   <div>
-                    <p className="text-gray-900 font-bold text-sm mb-1">{r.topic}</p>
-                    <p className="text-gray-500 text-xs font-medium">Level: {r.level}</p>
+                    <p className="text-gray-900 font-black text-base mb-1 group-hover:text-pink-600 transition-colors">{r.topic}</p>
+                    <p className="text-gray-500 text-sm font-medium">Level: <span className="text-gray-700 font-bold">{r.level}</span></p>
                   </div>
-                  <span className={`self-start sm:self-auto text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border shadow-sm ${
-                    r.status === "pending"  ? "text-yellow-700 bg-yellow-50 border-yellow-200"
-                    : r.status === "accepted" ? "text-green-700 bg-green-50 border-green-200"
-                    : "text-red-700 bg-red-50 border-red-200"
+                  <span className={`self-start sm:self-auto text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border shadow-sm ${
+                    r.status === "pending"  ? "text-amber-700 bg-amber-50 border-amber-200"
+                    : r.status === "accepted" ? "text-emerald-700 bg-emerald-50 border-emerald-200"
+                    : "text-rose-700 bg-rose-50 border-rose-200"
                   }`}>{r.status}</span>
                 </div>
               ))}
@@ -135,42 +135,44 @@ export default function UserDashboard() {
         {/* PROJECT MESSAGES */}
         <UserSection title="Project Chats" subtitle="Conversations with developers on your requests" delay={0.4} accent="bg-violet-500">
           {projectChats.length === 0 ? (
-            <div className="w-full py-10 text-center flex flex-col items-center gap-3 border border-gray-200 border-dashed rounded-3xl bg-white shadow-sm">
-              <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-2">
-                <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            <div className="w-full py-12 text-center flex flex-col items-center gap-4 border-2 border-indigo-100 border-dashed rounded-[2.5rem] bg-white shadow-sm">
+              <div className="w-20 h-20 rounded-[1.5rem] bg-violet-50 border-2 border-violet-100 flex items-center justify-center mb-2 shadow-sm">
+                <svg className="w-10 h-10 text-violet-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
-              <p className="text-gray-500 font-bold text-sm">No project chats yet.</p>
+              <p className="text-gray-600 font-bold text-base">No project chats yet.</p>
               <Link href="/requests/open">
-                <button className="px-6 py-3 mt-2 text-sm font-bold rounded-xl bg-violet-600 hover:bg-violet-700 text-white shadow-sm transition">
+                <button className="px-8 py-4 mt-2 text-sm font-black rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
                   Browse Open Projects →
                 </button>
               </Link>
             </div>
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-4">
               {projectChats.slice(0, 5).map((c) => (
                 <div key={c.id} onClick={() => router.push(`/project-chat/${c.id}`)}
-                  className="group cursor-pointer flex items-center gap-4 bg-white border border-gray-200 hover:border-violet-300 rounded-2xl p-4 shadow-sm transition duration-200">
+                  className="group cursor-pointer flex items-center gap-5 bg-white border border-indigo-100 hover:border-violet-300 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
                   {c.developerPhoto
-                    ? <img src={c.developerPhoto} className="w-12 h-12 rounded-full object-cover flex-shrink-0 border border-gray-100" />
-                    : <div className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-black text-violet-700 bg-violet-50 border border-violet-200 flex-shrink-0">
+                    ? <img src={c.developerPhoto} className="w-14 h-14 rounded-2xl object-cover flex-shrink-0 border-2 border-indigo-50 shadow-sm" />
+                    : <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-lg font-black text-violet-700 bg-violet-50 border-2 border-violet-100 flex-shrink-0 shadow-sm">
                         {c.developerName?.[0] ?? "D"}
                       </div>
                   }
                   <div className="flex-1 min-w-0">
-                    <p className="text-gray-900 font-bold text-sm truncate mb-0.5 group-hover:text-violet-600 transition">{c.requestTitle || "Project Chat"}</p>
-                    <p className="text-gray-500 font-medium text-xs">with {c.developerName}</p>
+                    <p className="text-gray-900 font-black text-base truncate mb-1 group-hover:text-violet-600 transition-colors">{c.requestTitle || "Project Chat"}</p>
+                    <p className="text-gray-500 font-semibold text-sm">with <span className="text-gray-700">{c.developerName}</span></p>
                   </div>
                   {c.funded && (
-                    <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border text-green-700 bg-green-50 border-green-200 flex-shrink-0 shadow-sm">
+                    <span className="text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border-2 text-emerald-700 bg-emerald-50 border-emerald-200 flex-shrink-0 shadow-sm">
                       Funded ₹{c.fundedAmount?.toLocaleString("en-IN")}
                     </span>
                   )}
-                  <svg className="w-5 h-5 text-gray-300 group-hover:text-violet-500 flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                  <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover:bg-violet-50 group-hover:text-violet-600 transition-colors">
+                    <svg className="w-5 h-5 text-gray-400 group-hover:text-violet-600 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </div>
               ))}
             </div>
@@ -237,9 +239,11 @@ function UserSection({ title, subtitle, delay, children, accent = "bg-cyan-500" 
 
 function Empty({ text, icon = "📭" }: { text: string; icon?: string }) {
   return (
-    <div className="w-full py-12 text-center border border-gray-200 border-dashed rounded-3xl bg-white flex flex-col items-center gap-3 shadow-sm">
-      <span className="text-4xl grayscale opacity-60 mb-2">{icon}</span>
-      <p className="text-gray-500 font-bold text-sm tracking-wide">{text}</p>
+    <div className="w-full py-16 text-center border-2 border-indigo-100 border-dashed rounded-[2.5rem] bg-white flex flex-col items-center gap-4 shadow-sm">
+      <div className="w-20 h-20 rounded-[1.5rem] bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center mb-2 shadow-sm">
+        <span className="text-4xl filter hue-rotate-15">{icon}</span>
+      </div>
+      <p className="text-gray-600 font-bold text-base tracking-wide max-w-xs">{text}</p>
     </div>
   );
 }

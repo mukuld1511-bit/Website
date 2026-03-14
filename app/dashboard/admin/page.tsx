@@ -177,11 +177,11 @@ export default function AdminDashboard() {
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
           className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
           {STATS.map((s, i) => (
-            <div key={i} className="relative p-6 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-gray-300 transition duration-200">
-              <svg className={`w-6 h-6 mb-4 ${s.colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div key={i} className={`relative p-6 rounded-3xl border-2 shadow-sm transition duration-300 ${s.bgClass} ${s.borderClass}`}>
+              <svg className={`w-8 h-8 mb-4 ${s.colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={s.icon} />
               </svg>
-              <p className={`text-3xl font-black mb-1 ${s.colorClass}`}>{s.val}</p>
+              <p className={`text-4xl font-black mb-1 ${s.colorClass}`}>{s.val}</p>
               <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest">{s.label}</p>
             </div>
           ))}
@@ -196,13 +196,13 @@ export default function AdminDashboard() {
             { label: "Pending Apps", val: pendingApps.length, colorClass: "text-blue-600", bgClass: "bg-blue-50", borderClass: "border-blue-200" },
             { label: "Pending Certs", val: pendingCerts.length, colorClass: "text-indigo-600", bgClass: "bg-indigo-50", borderClass: "border-indigo-200" },
           ].map((s, i) => (
-            <div key={i} className="p-4 rounded-xl border border-gray-200 bg-white shadow-sm flex items-center gap-4">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm ${s.bgClass} ${s.borderClass}`}>
-                <span className={`text-lg font-black ${s.colorClass}`}>{s.val}</span>
+            <div key={i} className="p-4 rounded-2xl border-2 border-indigo-50 bg-white shadow-sm flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border-2 shadow-sm ${s.bgClass} ${s.borderClass}`}>
+                <span className={`text-xl font-black ${s.colorClass}`}>{s.val}</span>
               </div>
               <div>
                 <p className="text-gray-900 font-extrabold text-sm">{s.val}</p>
-                <p className="text-gray-500 text-[9px] font-black uppercase tracking-widest mt-0.5">{s.label}</p>
+                <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mt-0.5">{s.label}</p>
               </div>
             </div>
           ))}
@@ -233,13 +233,16 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {/* Recent models */}
-                <div className="relative rounded-3xl border border-gray-200 bg-white shadow-sm p-6 overflow-hidden">
+                <div className="relative rounded-3xl border-2 border-indigo-50 bg-white shadow-sm p-6 overflow-hidden hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="font-extrabold text-gray-900 text-sm">Recent Uploads</h3>
-                    <button onClick={() => setActiveTab("models")} className="text-blue-600 font-bold text-xs hover:text-blue-700 hover:underline transition duration-150">View all →</button>
+                    <h3 className="font-black text-gray-900 text-sm">Recent Uploads</h3>
+                    <button onClick={() => setActiveTab("models")} className="text-blue-600 font-black text-xs hover:text-blue-700 hover:underline transition-colors">View all →</button>
                   </div>
                   {models.length === 0 ? (
-                    <p className="text-gray-500 font-medium text-sm text-center py-8">No models yet</p>
+                    <div className="w-full py-10 text-center border-2 border-indigo-100 border-dashed rounded-[2rem] bg-indigo-50/30 flex flex-col items-center gap-3">
+                       <span className="text-3xl filter hue-rotate-15">📦</span>
+                       <p className="text-gray-500 font-bold text-sm tracking-wide">No models yet</p>
+                    </div>
                   ) : (
                     <div className="space-y-4">
                       {models.slice(0, 5).map(m => {
@@ -268,16 +271,16 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Pending actions */}
-                <div className="relative rounded-3xl border border-gray-200 bg-white shadow-sm p-6 overflow-hidden">
-                  <h3 className="font-extrabold text-gray-900 text-sm mb-6">Pending Actions</h3>
+                <div className="relative rounded-3xl border-2 border-indigo-50 bg-white shadow-sm p-6 overflow-hidden hover:shadow-md transition-shadow">
+                  <h3 className="font-black text-gray-900 text-sm mb-6">Pending Actions</h3>
                   <div className="space-y-4">
                     {pendingApps.length === 0 && pendingCerts.length === 0 ? (
-                      <div className="text-center py-12 rounded-2xl border border-green-200 bg-green-50 shadow-sm">
-                        <div className="w-12 h-12 rounded-full border border-green-200 bg-green-100 flex items-center justify-center mx-auto mb-3">
-                          <span className="text-green-600 text-xl">✓</span>
+                      <div className="text-center py-10 rounded-[2rem] border-2 border-emerald-100 bg-emerald-50/50 flex flex-col items-center">
+                        <div className="w-14 h-14 rounded-2xl border-2 border-emerald-200 bg-emerald-100 flex items-center justify-center mx-auto mb-3 shadow-sm">
+                          <span className="text-emerald-600 text-2xl font-black">✓</span>
                         </div>
-                        <p className="text-green-800 text-sm font-bold">All clear!</p>
-                        <p className="text-green-600 font-medium text-xs mt-1">No pending actions</p>
+                        <p className="text-emerald-800 text-base font-black">All clear!</p>
+                        <p className="text-emerald-600 font-bold text-xs mt-1">No pending actions</p>
                       </div>
                     ) : (
                       <>
@@ -338,11 +341,11 @@ export default function AdminDashboard() {
               </div>
 
               {models.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-24 text-center border border-gray-200 rounded-3xl bg-white shadow-sm">
-                  <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center text-3xl mb-4 shadow-sm">
-                    📦
+                <div className="w-full py-24 text-center border-2 border-indigo-100 border-dashed rounded-[3rem] bg-indigo-50/30 flex flex-col items-center gap-4 shadow-sm">
+                  <div className="w-20 h-20 rounded-[1.5rem] bg-indigo-100 border-2 border-indigo-200 flex items-center justify-center mb-2 shadow-sm">
+                    <span className="text-4xl filter hue-rotate-15">📦</span>
                   </div>
-                  <p className="text-gray-900 font-extrabold text-lg">No models uploaded yet</p>
+                  <p className="text-gray-900 font-black text-xl">No models uploaded yet</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -409,7 +412,9 @@ export default function AdminDashboard() {
             <motion.div key="users" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               <p className="text-gray-500 font-medium text-sm mb-6">{users.length} registered users</p>
               {users.length === 0 ? (
-                <div className="text-center py-24 text-gray-400 font-medium">No users yet</div>
+                <div className="w-full py-24 text-center border-2 border-indigo-100 border-dashed rounded-[3rem] bg-indigo-50/30 flex flex-col items-center gap-4 shadow-sm">
+                    <p className="text-gray-500 font-black text-lg">No users yet</p>
+                </div>
               ) : (
                 <div className="space-y-3">
                   {users.map((u, i) => (
@@ -456,11 +461,11 @@ export default function AdminDashboard() {
             <motion.div key="applications" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               <p className="text-gray-500 font-medium text-sm mb-6">{applications.length} total · {pendingApps.length} pending</p>
               {applications.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-24 text-center rounded-3xl border border-gray-200 bg-white shadow-sm">
-                  <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center text-3xl mb-4 shadow-sm">
-                    📝
+                <div className="w-full py-24 text-center border-2 border-indigo-100 border-dashed rounded-[3rem] bg-indigo-50/30 flex flex-col items-center gap-4 shadow-sm">
+                  <div className="w-20 h-20 rounded-[1.5rem] bg-indigo-100 border-2 border-indigo-200 flex items-center justify-center mb-2 shadow-sm">
+                    <span className="text-4xl filter hue-rotate-15">📝</span>
                   </div>
-                  <p className="text-gray-900 font-extrabold text-lg">No applications yet</p>
+                  <p className="text-gray-900 font-black text-xl">No applications yet</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -516,11 +521,11 @@ export default function AdminDashboard() {
             <motion.div key="certifications" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               <p className="text-gray-500 font-medium text-sm mb-6">{certRequests.length} total · {pendingCerts.length} pending</p>
               {certRequests.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-24 text-center rounded-3xl border border-gray-200 bg-white shadow-sm">
-                  <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center text-3xl mb-4 shadow-sm">
-                    🎓
+                <div className="w-full py-24 text-center border-2 border-indigo-100 border-dashed rounded-[3rem] bg-indigo-50/30 flex flex-col items-center gap-4 shadow-sm">
+                  <div className="w-20 h-20 rounded-[1.5rem] bg-indigo-100 border-2 border-indigo-200 flex items-center justify-center mb-2 shadow-sm">
+                    <span className="text-4xl filter hue-rotate-15">🎓</span>
                   </div>
-                  <p className="text-gray-900 font-extrabold text-lg">No certification requests yet</p>
+                  <p className="text-gray-900 font-black text-xl">No certification requests yet</p>
                 </div>
               ) : (
                 <div className="space-y-4">

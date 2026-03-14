@@ -83,6 +83,11 @@ export default function Viewer({ modelUrl, fileType = "glb", height = 520 }: Vie
     const isOBJ = fileType === "obj";
     const loader: any = isOBJ ? new OBJLoader() : new GLTFLoader();
 
+    // Crucial for loading from external domains (Supabase) without CORS poisoning
+    if (loader.setCrossOrigin) {
+      loader.setCrossOrigin("anonymous");
+    }
+
     loader.load(
       modelUrl,
       (result: any) => {

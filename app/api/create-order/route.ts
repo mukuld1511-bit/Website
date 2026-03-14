@@ -7,26 +7,28 @@ export async function POST(req: Request) {
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
 
     if (!keyId || !keySecret) {
-      return NextResponse.json(
-        { error: "Razorpay keys not configured" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Razorpay keys not configured" }, { status: 500 });
     }
 
-    const razorpay = new Razorpay({
-      key_id: keyId,
-      key_secret: keySecret,
-    });
+    const { amount, modelId } = await req.json();
 
-    const { amount } = await req.json();
+    // amount must be in paise (₹1 = 100 paise)
+    const amountPaise = Math.round(Number(amount) * 100);
+
+    const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
 
     const order = await razorpay.orders.create({
-      amount,
+      amount: amountPaise,
       currency: "INR",
-      receipt: `receipt_${Date.now()}`,
+      receipt: `model_${modelId}_${Date.now()}`,
     });
 
-    return NextResponse.json(order);
+    // Return shape that PurchaseModal expects
+    return NextResponse.json({
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+    });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

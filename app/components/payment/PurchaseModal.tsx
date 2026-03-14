@@ -24,7 +24,7 @@ export default function PurchaseModal({ model, user, onClose, onSuccess }: Purch
     setState("loading");
     try {
       const loaded = await loadRazorpayScript();
-      if (!loaded) { setState("coming_soon"); return; }
+      if (!loaded) { setState("error"); setErrMsg("Could not load payment gateway. Try again."); return; }
 
       const orderRes = await fetch("/api/create-order", {
         method: "POST",
@@ -32,12 +32,14 @@ export default function PurchaseModal({ model, user, onClose, onSuccess }: Purch
         body: JSON.stringify({ amount: model.price, modelId: model.id }),
       });
 
-      if (!orderRes.ok) { setState("coming_soon"); return; }
+      if (!orderRes.ok) {
+        const err = await orderRes.json();
+        setState("error"); setErrMsg(err.error || "Order creation failed."); return;
+      }
 
       const { orderId, amount, currency } = await orderRes.json();
       setState("processing");
 
-      // ✅ Only properties defined in InitiatePaymentOptions
       await initiateRazorpayPayment({
         orderId,
         amount,
@@ -46,11 +48,17 @@ export default function PurchaseModal({ model, user, onClose, onSuccess }: Purch
         email: user.email ?? "",
         contact: "",
         prefill: { name: user.displayName ?? "" },
-        onSuccess: async (paymentData: any) =>  {
+        onSuccess: async (paymentData: any) => {
           const verifyRes = await fetch("/api/verify-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...paymentData, modelId: model.id, userId: user.uid }),
+            body: JSON.stringify({
+              ...paymentData,
+              modelId: model.id,
+              userId: user.uid,
+              authorId: (model as any).authorId,
+              amount,
+            }),
           });
           if (verifyRes.ok) {
             await recordPurchase(user.uid, model.id, paymentData);

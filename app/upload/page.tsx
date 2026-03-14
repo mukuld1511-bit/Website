@@ -422,7 +422,7 @@ export default function UploadContent() {
               <div>
                 <label className="block text-gray-700 text-sm font-bold mb-2">Title *</label>
                 <input value={title} onChange={(e) => setTitle(e.target.value)}
-                  placeholder={uploadType === "model" ? "e.g. Low Poly Industrial Warehouse" : uploadType === "ar-build" ? "AR Interior Designer" : "VR Escape Room"}
+                  placeholder={uploadType === "model" ? "e.g. Low Poly Industrial Warehouse" : uploadType === "xr-build" ? "e.g. AR Interior Designer or VR Escape Room" : "e.g. Floor Plan"}
                   className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm" />
               </div>
 

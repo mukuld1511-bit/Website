@@ -11,29 +11,41 @@ function RotatingModel() {
   
   useFrame((state, delta) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.2;
-      groupRef.current.position.y = Math.sin(state.clock.elapsedTime) * 0.15;
+      groupRef.current.rotation.y += delta * 0.25;
+      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 2) * 0.1;
     }
   });
 
   return (
-    <group ref={groupRef} scale={1.2}>
-      {/* Headset Main Body */}
-      <mesh position={[0, 0.2, 0.5]}>
-        <boxGeometry args={[1.4, 0.8, 0.6]} />
-        <meshStandardMaterial color="#1a1a2e" roughness={0.1} metalness={0.8} />
+    <group ref={groupRef} scale={1.4}>
+      {/* Vision Pro Frame (Silver/Aluminum) */}
+      <mesh position={[0, 0, 0.4]}>
+        <boxGeometry args={[1.5, 0.8, 0.4]} />
+        <meshStandardMaterial color="#E5E7EB" roughness={0.3} metalness={0.8} />
       </mesh>
 
-      {/* Headset Glowing Visor */}
-      <mesh position={[0, 0.2, 0.81]}>
-        <boxGeometry args={[1.2, 0.5, 0.05]} />
-        <meshStandardMaterial color="#5B4BDB" emissive="#5B4BDB" emissiveIntensity={0.8} />
+      {/* Vision Pro Glass Front (Curved/Dark) */}
+      <mesh position={[0, 0, 0.61]}>
+        <boxGeometry args={[1.45, 0.75, 0.05]} />
+        <meshStandardMaterial color="#111827" roughness={0.1} metalness={0.9} envMapIntensity={2} />
       </mesh>
 
-      {/* Headset Strap */}
-      <mesh position={[0, 0.3, -0.2]}>
-        <torusGeometry args={[0.75, 0.1, 16, 32, Math.PI]} />
-        <meshStandardMaterial color="#333" roughness={0.8} />
+      {/* Subtle screen glow inside the glass (EyeSight approximation) */}
+      <mesh position={[0, 0, 0.62]}>
+        <boxGeometry args={[1.2, 0.5, 0.01]} />
+        <meshStandardMaterial color="#8B5CF6" emissive="#8B5CF6" emissiveIntensity={0.4} transparent opacity={0.6} />
+      </mesh>
+
+      {/* Solo Knit Band (Fabric Strap, Light Grey) */}
+      <mesh position={[0, 0, -0.2]}>
+        <torusGeometry args={[0.8, 0.2, 16, 64, Math.PI]} />
+        <meshStandardMaterial color="#F3F4F6" roughness={0.9} />
+      </mesh>
+
+      {/* Orange/Coral Accent / Dial (Digital Crown approximation) */}
+      <mesh position={[0.7, 0.35, 0.3]} rotation={[Math.PI / 2, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.08, 0.08, 0.1, 16]} />
+        <meshStandardMaterial color="#FF7F50" roughness={0.3} metalness={0.5} />
       </mesh>
     </group>
   );
@@ -46,96 +58,110 @@ interface HeroProps {
 }
 
 export default function HeroComponent({ user, stats, statsLoading }: HeroProps) {
-  // Fallbacks if stats aren't loaded yet
   const mCount = statsLoading ? "2,400+" : `${stats.models}+`;
   const dCount = statsLoading ? "180+" : `${stats.developers}+`;
   const dlCount = statsLoading ? "12,000+" : `${stats.downloads}+`;
 
   return (
-    <section className="relative w-full bg-[#0A0A0A] overflow-hidden min-h-screen flex items-center pt-24 pb-16">
-      {/* Subtle Pattern Overlay */}
+    <section className="relative w-full bg-gradient-to-br from-blue-50 via-white to-pink-50 overflow-hidden min-h-screen flex items-center pt-24 pb-16">
       <div 
-        className="absolute inset-0 pointer-events-none opacity-20"
-        style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '32px 32px' }}
+        className="absolute inset-0 pointer-events-none opacity-[0.03]"
+        style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #000 1px, transparent 0)', backgroundSize: '32px 32px' }}
       />
       
+      {/* Decorative colorful blobs */}
+      <motion.div 
+        animate={{ y: [0, -30, 0], x: [0, 20, 0], scale: [1, 1.1, 1] }} 
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-20 right-10 w-64 h-64 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-0" 
+      />
+      <motion.div 
+        animate={{ y: [0, 40, 0], x: [0, -20, 0], scale: [1, 1.2, 1] }} 
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="absolute top-40 left-10 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-0" 
+      />
+      <motion.div 
+        animate={{ y: [0, -20, 0], x: [0, 30, 0], scale: [1, 1.1, 1] }} 
+        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        className="absolute -bottom-8 left-1/2 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-0" 
+      />
+
       <div className="max-w-7xl mx-auto px-4 md:px-6 w-full relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-8">
+        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-10">
           
-          {/* LEFT COLUMN */}
-          <div className="w-full lg:w-[60%] flex flex-col items-start text-left">
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-              <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-[10px] font-black tracking-[0.15em] uppercase bg-[#5B4BDB] text-white overflow-hidden mb-6 shadow-[0_0_20px_rgba(91,75,219,0.4)]">
-                SYNTHÉ BETA
+          <div className="w-full lg:w-[55%] flex flex-col items-center lg:items-start text-center lg:text-left">
+            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+              <span className="inline-flex items-center justify-center px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase bg-gradient-to-r from-pink-500 to-orange-400 text-white mb-6 shadow-lg transform hover:scale-105 transition cursor-default">
+                🎉 SYNTHÉ INTERACTIVE
               </span>
             </motion.div>
 
             <motion.h1 
-              initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-5xl md:text-6xl lg:text-[72px] font-extrabold tracking-tight text-white leading-[1.05] mb-6"
+              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.1 }}
+              className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-gray-900 leading-[1.1] mb-6"
             >
-              The Operating System for <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">AR & VR Creators</span>
+              Learn & Build with <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500">AR & VR</span>
             </motion.h1>
 
             <motion.p 
-              initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-gray-400 text-lg md:text-xl max-w-xl mb-10 leading-relaxed font-light"
+              initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-gray-600 text-lg md:text-xl max-w-xl mb-10 leading-relaxed font-bold"
             >
-              Your ultimate AR, VR & 3D Model Marketplace. Upload, discover, and commission spatial computing assets or connect with certified developers globally.
+              Your playful, interactive hub for 3D Models, spatial computing, and connecting with genius developers. Dive in!
             </motion.p>
 
             <motion.div 
-              initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center gap-4 mb-10 w-full sm:w-auto"
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 400, damping: 25, delay: 0.3 }}
+              className="flex flex-col sm:flex-row items-center gap-4 mb-12 w-full sm:w-auto"
             >
               <Link href="/gallery" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-white bg-[#5B4BDB] hover:bg-[#4a3bc7] transition shadow-[0_4px_20px_-4px_rgba(91,75,219,0.5)]">
-                  Explore Gallery
+                <button className="w-full sm:w-auto px-10 py-4 rounded-2xl font-black text-white bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 hover:border-blue-600 active:border-b-0 active:translate-y-1 transition-all shadow-xl text-lg">
+                  Explore Gallery 🚀
                 </button>
               </Link>
               <Link href="/requests/open" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-white bg-transparent border border-gray-600 hover:border-white hover:bg-white/5 transition">
-                  Post a Project
+                <button className="w-full sm:w-auto px-10 py-4 rounded-2xl font-black text-blue-600 bg-white border-2 border-blue-200 border-b-4 hover:border-blue-300 hover:bg-blue-50 active:border-b-2 active:translate-y-1 transition-all shadow-md text-lg">
+                  Post a Project 💡
                 </button>
               </Link>
             </motion.div>
 
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.5 }}
-              className="flex items-center gap-3 text-xs md:text-sm font-semibold text-gray-400"
+              className="flex items-center gap-4 text-sm font-black text-gray-500 bg-white/50 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white/60"
             >
-              <span className="text-white">{mCount} 3D Models</span>
-              <span className="w-1 h-1 rounded-full bg-gray-700" />
-              <span className="text-white">{dCount} Developers</span>
-              <span className="w-1 h-1 rounded-full bg-gray-700" />
-              <span className="text-white">{dlCount} Downloads</span>
+              <span className="text-pink-600">{mCount} <span className="text-gray-500">3D Models</span></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+              <span className="text-blue-600">{dCount} <span className="text-gray-500">Developers</span></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+              <span className="text-purple-600">{dlCount} <span className="text-gray-500">Downloads</span></span>
             </motion.div>
           </div>
 
-          {/* RIGHT COLUMN */}
-          <div className="w-full lg:w-[40%]">
+          <div className="w-full lg:w-[45%]">
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95, rotate: -2 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
-              className="relative w-full aspect-[4/5] rounded-3xl bg-[#141414] border border-gray-800 shadow-2xl p-4 overflow-hidden group flex flex-col"
+              initial={{ opacity: 0, scale: 0.8, rotate: 5 }} animate={{ opacity: 1, scale: 1, rotate: -2 }} transition={{ duration: 0.8, delay: 0.2, type: "spring", bounce: 0.5 }}
+              className="relative w-full aspect-square rounded-[3rem] bg-white border-4 border-white shadow-[0_20px_60px_-15px_rgba(59,130,246,0.5)] p-2 overflow-hidden group flex flex-col hover:rotate-0 transition-transform duration-500"
             >
-              <div className="flex-1 relative rounded-2xl overflow-hidden bg-black/40">
+              <div className="flex-1 relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-indigo-100 to-pink-100">
                 <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-                  <ambientLight intensity={0.5} />
-                  <pointLight position={[10, 10, 10]} intensity={1.5} />
-                  <pointLight position={[-10, -10, -10]} intensity={0.5} color="#5B4BDB" />
+                  <ambientLight intensity={0.8} />
+                  <pointLight position={[10, 10, 10]} intensity={1.5} color="#ffffff" />
+                  <pointLight position={[-10, -10, -10]} intensity={1.5} color="#ec4899" />
+                  <pointLight position={[0, -10, 10]} intensity={1.5} color="#3b82f6" />
                   <RotatingModel />
                   <Environment preset="city" />
                 </Canvas>
               </div>
               
-              <div className="flex items-center justify-between pt-4 px-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-gray-400 text-xs font-mono">Live Preview · GLB</span>
+              <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 rounded-2xl shadow-lg border border-white/50">
+                <div className="flex items-center gap-3">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-pink-500"></span>
+                  </span>
+                  <span className="text-gray-800 text-sm font-bold tracking-wide">Interactive VR Prototype</span>
                 </div>
-                <Link href="/upload" className="text-[#5B4BDB] text-xs font-bold hover:text-[#7667eb] transition flex items-center gap-1">
-                  Upload yours <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                </Link>
               </div>
             </motion.div>
           </div>

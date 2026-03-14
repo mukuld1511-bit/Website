@@ -246,7 +246,7 @@ export default function RequestsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">
+    <div className="min-h-screen bg-[#0A0A0A] flex flex-col font-sans text-white">
       <Navbar />
 
       <div className="relative z-10 pt-28 pb-24 px-4 flex-grow">
@@ -255,16 +255,16 @@ export default function RequestsPage() {
           {/* Header */}
           <div className="mb-12 flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-center">
             <div>
-              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-3">
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
                 Open Requests
               </h1>
-              <p className="text-gray-500 text-lg max-w-xl">
+              <p className="text-gray-400 text-lg max-w-xl">
                 Browse client project requests and connect directly to start building. Chat, negotiate, and get paid.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <Link href="/requests/post">
-                <button className="flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm text-white bg-blue-600 hover:bg-blue-700 transition shadow-sm">
+                <button className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-white bg-[#5B4BDB] hover:bg-[#4a3bc7] transition shadow-[0_0_15px_rgba(91,75,219,0.3)] hover:shadow-[0_0_25px_rgba(91,75,219,0.5)]">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
@@ -276,31 +276,31 @@ export default function RequestsPage() {
 
           {/* Search */}
           <div className="mb-10 relative">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search by title, skill, or category..."
-              className="w-full bg-white border border-gray-200 text-gray-900 placeholder-gray-400 text-base rounded-xl pl-12 pr-4 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm"
+              className="w-full bg-[#141414] border border-gray-800 text-white placeholder-gray-500 text-base rounded-2xl pl-12 pr-4 py-4 focus:outline-none focus:ring-1 focus:ring-[#5B4BDB] focus:border-[#5B4BDB] transition shadow-inner"
             />
           </div>
 
           {/* Content */}
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
-              <div className="w-8 h-8 rounded-full border-2 border-gray-200 border-t-blue-600 animate-spin" />
+              <div className="w-8 h-8 rounded-full border-2 border-gray-800 border-t-[#5B4BDB] animate-spin" />
               <p className="text-gray-400 text-sm font-medium">Loading Requests...</p>
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-24 border border-dashed border-gray-300 rounded-2xl bg-white">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">No open requests</h3>
-              <p className="text-gray-500 mb-6 max-w-sm mx-auto text-sm">
+            <div className="text-center py-24 border border-dashed border-gray-800 rounded-3xl bg-[#141414]">
+              <h3 className="text-xl font-bold text-white mb-2">No open requests</h3>
+              <p className="text-gray-400 mb-6 max-w-sm mx-auto text-sm">
                 {search ? `No results for "${search}". Try a different keyword.` : "Check back later or be the first to post your project."}
               </p>
               <Link href="/requests/post">
-                <button className="px-6 py-2.5 rounded-lg text-white font-semibold text-sm bg-blue-600 hover:bg-blue-700 transition">
+                <button className="px-6 py-2.5 rounded-xl text-white font-bold text-sm bg-[#5B4BDB] hover:bg-[#4a3bc7] transition shadow-[0_0_15px_rgba(91,75,219,0.3)]">
                   Post a Project Request
                 </button>
               </Link>
@@ -319,43 +319,46 @@ export default function RequestsPage() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.3, delay: i * 0.05 }}
-                      className="bg-white rounded-2xl border border-gray-200 overflow-hidden flex flex-col hover:border-gray-300 hover:shadow-md transition-all duration-300"
+                      className="group bg-[#141414] rounded-3xl border border-gray-800 overflow-hidden flex flex-col hover:border-[#5B4BDB]/50 hover:shadow-[0_0_30px_rgba(91,75,219,0.1)] transition-all duration-300 transform hover:-translate-y-1"
                     >
-                      <div className="p-6 flex flex-col flex-grow">
+                      <div className="p-6 md:p-8 flex flex-col flex-grow relative">
+                        {/* Subtle top glow */}
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#5B4BDB]/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500" />
+                        
                         {/* Header: Category & Time */}
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex justify-between items-center mb-5">
                           <div className="flex items-center gap-2">
                             <span className="text-xl">{icon}</span>
-                            <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-gray-100 text-gray-700">
+                            <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg bg-[#5B4BDB]/10 text-[#5B4BDB] border border-[#5B4BDB]/20">
                               {req.category || "Project"}
                             </span>
                           </div>
                           {req.createdAt && (
-                            <span className="text-gray-400 text-xs">
+                            <span className="text-gray-500 text-xs font-bold">
                               {timeAgo(req.createdAt.toDate())}
                             </span>
                           )}
                         </div>
 
                         {/* Title & Desc */}
-                        <h3 className="text-gray-900 font-bold text-lg mb-2 line-clamp-2">
+                        <h3 className="text-white font-black text-xl mb-3 line-clamp-2 leading-tight group-hover:text-[#5B4BDB] transition-colors">
                           {req.title}
                         </h3>
-                        <p className="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-6 flex-grow">
+                        <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-6 flex-grow font-medium">
                           {req.description}
                         </p>
 
                         {/* Details Grid */}
                         <div className="grid grid-cols-2 gap-3 mb-6">
-                          <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
-                            <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-1">Budget</p>
-                            <p className="font-semibold text-gray-900 text-sm truncate">
+                          <div className="p-3.5 rounded-2xl bg-black/40 border border-gray-800">
+                            <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1.5">Budget</p>
+                            <p className="font-bold text-white text-sm truncate">
                               {req.budget || "Flexible"}
                             </p>
                           </div>
-                          <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
-                            <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-1">Timeline</p>
-                            <p className="font-semibold text-gray-900 text-sm truncate">
+                          <div className="p-3.5 rounded-2xl bg-black/40 border border-gray-800">
+                            <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1.5">Timeline</p>
+                            <p className="font-bold text-white text-sm truncate">
                               {req.timeline || "Flexible"}
                             </p>
                           </div>
@@ -365,12 +368,12 @@ export default function RequestsPage() {
                         {req.skills && req.skills.length > 0 && (
                           <div className="flex flex-wrap gap-2 mb-6">
                             {req.skills.slice(0, 4).map((skill, j) => (
-                              <span key={j} className="text-[11px] text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md font-medium">
+                              <span key={j} className="text-xs font-bold text-gray-300 bg-gray-800/50 border border-gray-700/50 px-3 py-1.5 rounded-xl">
                                 {skill}
                               </span>
                             ))}
                             {req.skills.length > 4 && (
-                              <span className="text-[11px] text-gray-400 bg-gray-50 px-2.5 py-1 rounded-md font-medium">
+                              <span className="text-xs font-bold text-gray-500 bg-gray-900 border border-gray-800 px-3 py-1.5 rounded-xl">
                                 +{req.skills.length - 4}
                               </span>
                             )}
@@ -378,24 +381,24 @@ export default function RequestsPage() {
                         )}
 
                         {/* Footer User Info & CTA */}
-                        <div className="pt-5 border-t border-gray-100 flex items-center justify-between">
+                        <div className="pt-5 border-t border-gray-800 flex items-center justify-between mt-auto">
                           <div className="flex items-center gap-3 min-w-0 pr-2">
                             <img
                               src={req.userPhoto || "/avatar.png"}
                               onError={e => { (e.target as any).src = "/avatar.png"; }}
-                              className="w-8 h-8 rounded-full object-cover border border-gray-200"
+                              className="w-9 h-9 rounded-full object-cover border border-gray-700"
                               alt={req.userName}
                             />
                             <div className="min-w-0">
-                              <p className="text-gray-900 text-sm font-semibold truncate">{req.userName || "Anonymous"}</p>
-                              <p className="text-gray-500 text-[11px]">Client</p>
+                              <p className="text-white text-sm font-bold truncate">{req.userName || "Anonymous"}</p>
+                              <p className="text-gray-500 text-[11px] font-bold uppercase tracking-wider">Client</p>
                             </div>
                           </div>
 
                           {isMine ? (
                             <button
                               onClick={() => openApplicants(req)}
-                              className="px-4 py-2 border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-lg transition whitespace-nowrap"
+                              className="px-4 py-2.5 border border-gray-700 hover:border-gray-500 hover:bg-gray-800 text-white text-[11px] font-bold uppercase tracking-wide rounded-xl transition whitespace-nowrap"
                             >
                               Review Applicants
                             </button>
@@ -404,20 +407,20 @@ export default function RequestsPage() {
                               <button
                                 onClick={() => chatWithClient(req)}
                                 disabled={initiatingChatWithClient === req.id}
-                                className="px-4 py-2 border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-lg transition whitespace-nowrap disabled:opacity-50"
+                                className="px-4 py-2.5 border border-gray-700 bg-gray-800 hover:bg-gray-700 text-white text-[11px] font-bold uppercase tracking-wide rounded-xl transition whitespace-nowrap disabled:opacity-50"
                               >
                                 {initiatingChatWithClient === req.id ? "Opening..." : "Chat"}
                               </button>
                               <button
                                 onClick={() => setApplyingTo(req)}
-                                className="flex items-center justify-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition whitespace-nowrap"
+                                className="px-4 py-2.5 bg-[#5B4BDB] hover:bg-[#4a3bc7] text-white text-[11px] font-bold uppercase tracking-wide rounded-xl transition whitespace-nowrap shadow-[0_0_10px_rgba(91,75,219,0.3)] hover:shadow-[0_0_15px_rgba(91,75,219,0.5)]"
                               >
                                 Apply
                               </button>
                             </div>
                           ) : (
                             <Link href="/login">
-                              <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg transition whitespace-nowrap">
+                              <button className="px-4 py-2.5 border border-gray-700 bg-gray-800 hover:bg-gray-700 text-white text-[11px] font-bold uppercase tracking-wide rounded-xl transition whitespace-nowrap">
                                 Login to Apply
                               </button>
                             </Link>
@@ -439,29 +442,29 @@ export default function RequestsPage() {
         {/** Apply Modal */}
         {applyingTo && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onClick={() => !isApplying && setApplyingTo(null)} />
+            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => !isApplying && setApplyingTo(null)} />
             <motion.div initial={{ opacity:0, scale:0.95, y:20 }} animate={{ opacity:1, scale:1, y:0 }} exit={{ opacity:0, scale:0.95, y:20 }}
-              className="relative w-full max-w-md bg-white rounded-2xl p-6 md:p-8 shadow-2xl">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Apply for Project</h2>
-              <p className="text-gray-500 text-sm mb-6 pb-4 border-b border-gray-100 line-clamp-2">"{applyingTo.title}"</p>
+              className="relative w-full max-w-md bg-[#141414] border border-gray-800 rounded-3xl p-6 md:p-8 shadow-2xl">
+              <h2 className="text-2xl font-black text-white mb-2 tracking-tight">Apply for Project</h2>
+              <p className="text-gray-400 text-sm mb-6 pb-6 border-b border-gray-800 line-clamp-2">"{applyingTo.title}"</p>
               
               <div className="space-y-5 mb-8">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-2">Your Bid (₹)</label>
+                  <label className="block text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">Your Bid (₹)</label>
                   <input type="number" placeholder="e.g. 5000" value={applyBid} onChange={e=>setApplyBid(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition" />
+                    className="w-full bg-[#0A0A0A] border border-gray-800 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-[#5B4BDB] focus:border-[#5B4BDB] transition" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-2">Cover Letter</label>
-                  <textarea placeholder="Why are you a good fit? Share your relevant experience..." rows={4} value={applyMessage} onChange={e=>setApplyMessage(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition resize-none" />
+                  <label className="block text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">Cover Letter</label>
+                  <textarea placeholder="Why are you a good fit? Share your relevant experience..." rows={5} value={applyMessage} onChange={e=>setApplyMessage(e.target.value)}
+                    className="w-full bg-[#0A0A0A] border border-gray-800 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-[#5B4BDB] focus:border-[#5B4BDB] transition resize-none" />
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <button onClick={() => setApplyingTo(null)} disabled={isApplying} className="flex-1 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                <button onClick={() => setApplyingTo(null)} disabled={isApplying} className="flex-1 py-3 bg-transparent border border-gray-700 text-gray-300 font-bold rounded-xl hover:bg-gray-800 transition">Cancel</button>
                 <button onClick={submitApplication} disabled={isApplying || !applyBid || !applyMessage} 
-                  className="flex-1 py-3 text-white font-semibold bg-blue-600 hover:bg-blue-700 rounded-lg transition disabled:opacity-50">
+                  className="flex-1 py-3 text-white font-bold bg-[#5B4BDB] hover:bg-[#4a3bc7] rounded-xl transition disabled:opacity-50 shadow-[0_0_15px_rgba(91,75,219,0.3)]">
                   {isApplying ? "Sending..." : "Submit Proposal"}
                 </button>
               </div>
@@ -472,47 +475,47 @@ export default function RequestsPage() {
         {/** View Applicants Modal */}
         {viewingApplicantsFor && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onClick={() => setViewingApplicantsFor(null)} />
+            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setViewingApplicantsFor(null)} />
             <motion.div initial={{ opacity:0, scale:0.95, y:20 }} animate={{ opacity:1, scale:1, y:0 }} exit={{ opacity:0, scale:0.95, y:20 }}
-              className="relative w-full max-w-2xl max-h-[85vh] flex flex-col bg-white rounded-2xl p-6 md:p-8 shadow-2xl">
-              <div className="flex justify-between items-start mb-6 pb-4 border-b border-gray-100">
+              className="relative w-full max-w-2xl max-h-[85vh] flex flex-col bg-[#141414] border border-gray-800 rounded-3xl p-6 md:p-8 shadow-2xl">
+              <div className="flex justify-between items-start mb-6 pb-6 border-b border-gray-800">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-1">Applicants ({applicants.length})</h2>
-                  <p className="text-gray-500 text-sm line-clamp-1">"{viewingApplicantsFor.title}"</p>
+                  <h2 className="text-2xl font-black text-white mb-1 tracking-tight">Applicants ({applicants.length})</h2>
+                  <p className="text-gray-400 text-sm line-clamp-1">"{viewingApplicantsFor.title}"</p>
                 </div>
-                <button onClick={() => setViewingApplicantsFor(null)} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-900 transition">✕</button>
+                <button onClick={() => setViewingApplicantsFor(null)} className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-gray-700 hover:text-white transition">✕</button>
               </div>
 
               <div className="flex-1 overflow-y-auto space-y-4 pr-2">
                 {loadingApplicants ? (
                   <div className="flex items-center justify-center py-12">
-                     <div className="w-8 h-8 rounded-full border-2 border-gray-200 border-t-blue-600 animate-spin" />
+                     <div className="w-8 h-8 rounded-full border-2 border-gray-800 border-t-[#5B4BDB] animate-spin" />
                   </div>
                 ) : applicants.length === 0 ? (
                   <div className="text-center py-16 px-4">
-                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-16 h-16 bg-[#0A0A0A] border border-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </div>
-                    <p className="text-gray-900 font-semibold mb-1">No applications yet</p>
+                    <p className="text-white font-bold mb-1">No applications yet</p>
                     <p className="text-gray-500 text-sm">When developers apply to this project, they will appear here.</p>
                   </div>
                 ) : (
                   applicants.map((app) => (
-                    <div key={app.id} className="p-5 rounded-xl border border-gray-200 bg-white hover:border-blue-200 transition-colors flex flex-col sm:flex-row gap-5">
+                    <div key={app.id} className="p-6 rounded-2xl border border-gray-800 bg-[#0A0A0A] hover:border-[#5B4BDB]/50 transition-colors flex flex-col sm:flex-row gap-5 group">
                       <div className="flex-1">
-                        <div className="flex items-start gap-4 mb-3">
-                          <img src={app.developerPhoto || "/avatar.png"} alt={app.developerName} className="w-12 h-12 rounded-full object-cover border border-gray-100 shadow-sm" />
+                        <div className="flex items-start gap-4 mb-4">
+                          <img src={app.developerPhoto || "/avatar.png"} alt={app.developerName} className="w-12 h-12 rounded-full object-cover border border-gray-700" />
                           <div className="flex-1">
                             <div className="flex items-center justify-between">
-                              <Link href={`/developer/${app.developerId}`} className="text-gray-900 font-bold text-base hover:text-blue-600 transition">{app.developerName}</Link>
-                              <span className="text-green-600 bg-green-50 px-3 py-1 rounded-full text-xs font-bold border border-green-100">Bid: ₹{app.bidAmount}</span>
+                              <Link href={`/developer/${app.developerId}`} className="text-white font-black text-base hover:text-[#5B4BDB] transition">{app.developerName}</Link>
+                              <span className="text-[#5B4BDB] bg-[#5B4BDB]/10 px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wide border border-[#5B4BDB]/20">Bid: ₹{app.bidAmount}</span>
                             </div>
-                            <p className="text-gray-500 text-xs mt-1">{timeAgo(app.createdAt?.toDate())}</p>
+                            <p className="text-gray-500 text-xs font-bold mt-1">{timeAgo(app.createdAt?.toDate())}</p>
                           </div>
                         </div>
-                        <div className="mt-3 p-4 rounded-lg bg-gray-50 border border-gray-100 text-gray-600 text-sm leading-relaxed">
+                        <div className="p-4 rounded-xl bg-[#141414] border border-gray-800 text-gray-300 text-sm leading-relaxed font-medium">
                           {app.message}
                         </div>
                       </div>
@@ -520,7 +523,7 @@ export default function RequestsPage() {
                         <button
                           onClick={() => approveApplicant(app, viewingApplicantsFor)}
                           disabled={initiatingChat === app.id}
-                          className="w-full sm:w-auto px-6 py-2.5 rounded-lg font-semibold text-sm text-white bg-blue-600 hover:bg-blue-700 transition shadow-sm disabled:opacity-70 whitespace-nowrap"
+                          className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-sm text-white bg-[#5B4BDB] hover:bg-[#4a3bc7] transition shadow-[0_0_15px_rgba(91,75,219,0.2)] disabled:opacity-70 whitespace-nowrap"
                         >
                           {initiatingChat === app.id ? "Opening..." : "Approve & Chat"}
                         </button>

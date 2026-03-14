@@ -144,11 +144,11 @@ function RequestModal({ dev, user, onClose, onSuccess }: {
 
           <div className="flex gap-3 pt-2">
             <button type="button" onClick={onClose}
-              className="flex-1 py-3.5 rounded-xl border border-gray-300 text-gray-700 text-sm font-bold hover:bg-gray-50 transition duration-200">
+              className="flex-1 py-3.5 rounded-2xl bg-white border-2 border-gray-200 text-gray-700 font-bold hover:bg-gray-50 hover:border-gray-300 transition shadow-sm">
               Cancel
             </button>
             <button type="submit" disabled={loading}
-              className={`flex-1 py-3.5 rounded-xl font-bold text-white text-sm disabled:opacity-50 transition shadow-sm ${loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}>
+              className={`flex-1 py-3.5 rounded-2xl font-black text-white text-lg disabled:opacity-50 transition-all shadow-lg ${loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1'}`}>
               {loading ? "Sending…" : "Send Request"}
             </button>
           </div>
@@ -164,8 +164,8 @@ function DevCard({ dev, user, onConnect, onChat, onTute }: { dev:Developer; user
   
   // Highlight styling for certified users
   const cardClasses = dev.certified
-    ? "group relative rounded-3xl border-2 border-[#5B4BDB] bg-white shadow-[0_0_20px_rgba(91,75,219,0.15)] hover:shadow-[0_0_30px_rgba(91,75,219,0.3)] transition duration-300 h-full flex flex-col overflow-hidden transform hover:-translate-y-1"
-    : "group relative rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition duration-300 h-full flex flex-col overflow-hidden";
+    ? "group relative rounded-[2rem] border-4 border-[#5B4BDB]/30 bg-white/80 backdrop-blur shadow-[0_10px_30px_rgba(91,75,219,0.15)] hover:shadow-[0_20px_40px_rgba(91,75,219,0.25)] hover:border-[#5B4BDB] transition-all duration-300 h-full flex flex-col overflow-hidden transform hover:-translate-y-2"
+    : "group relative rounded-[2rem] border-4 border-indigo-50 bg-white hover:border-indigo-200 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col overflow-hidden transform hover:-translate-y-2";
 
   return (
     <div className={cardClasses}>
@@ -248,14 +248,14 @@ function DevCard({ dev, user, onConnect, onChat, onTute }: { dev:Developer; user
         <div className="mt-auto pt-5 border-t border-gray-100 flex flex-col gap-2">
           {user ? (
             <div className="flex flex-wrap gap-2 w-full">
-              <button onClick={() => onConnect(dev)} className={`flex-1 min-w-[30%] py-2.5 rounded-lg font-bold text-white text-[11px] bg-[#5B4BDB] hover:bg-[#4a3bc7] shadow-sm transition`}>
+              <button onClick={() => onConnect(dev)} className={`flex-1 min-w-[30%] py-3 rounded-2xl font-black text-white text-[12px] bg-[#5B4BDB] hover:bg-indigo-500 border-b-4 border-indigo-800 active:border-b-0 active:translate-y-1 shadow-sm transition-all`}>
                 Request
               </button>
-              <button onClick={() => onChat(dev)} className={`flex-1 min-w-[30%] py-2.5 rounded-lg font-bold text-[#5B4BDB] text-[11px] bg-[#5B4BDB]/5 border border-[#5B4BDB]/20 hover:bg-[#5B4BDB]/10 shadow-sm transition`}>
+              <button onClick={() => onChat(dev)} className={`flex-1 min-w-[30%] py-3 rounded-2xl font-black text-[#5B4BDB] text-[12px] bg-[#5B4BDB]/5 border-2 border-[#5B4BDB]/20 hover:bg-[#5B4BDB]/10 hover:border-[#5B4BDB]/40 shadow-sm transition-all`}>
                 Chat
               </button>
               {dev.bookingLink ? (
-                <button onClick={() => onTute(dev)} className={`flex-1 min-w-[30%] py-2.5 rounded-lg font-bold text-gray-700 text-[11px] bg-gray-50 border border-gray-200 hover:bg-gray-100 shadow-sm transition`}>
+                <button onClick={() => onTute(dev)} className={`flex-1 min-w-[30%] py-3 rounded-2xl font-black text-gray-700 text-[12px] bg-white border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 shadow-sm transition-all`}>
                   Tute
                 </button>
               ) : null}
@@ -268,7 +268,7 @@ function DevCard({ dev, user, onConnect, onChat, onTute }: { dev:Developer; user
             </Link>
           )}
           <Link href={`/developer/${dev.userId || dev.id}`} className="w-full">
-            <button className="w-full py-2.5 rounded-lg border border-gray-300 text-gray-700 text-[11px] font-bold text-center hover:bg-gray-50 transition duration-200">
+            <button className="w-full py-3 rounded-2xl bg-white border-2 border-gray-200 text-gray-700 text-[12px] font-black text-center hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
               View Profile
             </button>
           </Link>
@@ -405,7 +405,7 @@ export default function ConnectPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 flex flex-col font-sans">
       <Navbar />
 
       <div className="flex-grow pb-24 pt-[100px] px-4">
@@ -415,16 +415,16 @@ export default function ConnectPage() {
           {/* Header */}
           <div className="mb-12 text-center mt-10">
             <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-800 mb-6 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-              <span className="text-xs font-bold uppercase tracking-widest">Find a Creator</span>
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full border-2 border-blue-200 bg-white text-blue-800 mb-6 shadow-sm hover:border-blue-300 transition-colors">
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
+              <span className="text-sm font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Find a Creator</span>
             </motion.div>
 
             <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.1 }}>
-              <h1 className="text-4xl md:text-6xl font-black tracking-tight text-gray-900 mb-6">
-                Connect & Learn Together
+              <h1 className="text-5xl md:text-7xl font-black tracking-tight text-gray-900 mb-6 leading-tight">
+                Connect & <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500">Learn</span>
               </h1>
-              <p className="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+              <p className="text-gray-600 text-lg md:text-2xl font-bold max-w-3xl mx-auto leading-relaxed">
                 Browse verified AR/VR/3D creators and students. Send a direct request to collaborate and learn one-on-one.
               </p>
             </motion.div>
@@ -432,38 +432,38 @@ export default function ConnectPage() {
 
           {/* Stats */}
           <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.2 }}
-            className="grid grid-cols-3 gap-4 mb-12 max-w-2xl mx-auto">
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-16 max-w-4xl mx-auto">
             {[
               { label:"Verified Creators",  val: devs.length,                                                      color:"blue" },
-              { label:"Certified",      val: devs.filter(d=>d.certified).length,                              color:"green" },
-              { label:"Skills Covered", val: [...new Set(devs.flatMap(d=>d.skills??[]))].length,              color:"purple" },
+              { label:"Certified",      val: devs.filter(d=>d.certified).length,                              color:"pink" },
+              { label:"Skills Covered", val: [...new Set(devs.flatMap(d=>d.skills??[]))].length,              color:"amber" },
             ].map((s,i) => (
-              <div key={i} className={`p-5 rounded-2xl border border-gray-200 bg-white shadow-sm text-center`}>
-                <p className={`text-3xl font-black mb-1 text-${s.color}-600`}>
+              <div key={i} className={`p-6 rounded-[2rem] border-4 border-${s.color}-100 bg-white shadow-sm text-center hover:border-${s.color}-300 hover:-translate-y-1 transition-all duration-300`}>
+                <p className={`text-5xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-br from-${s.color}-400 to-${s.color}-600`}>
                   {loading ? "—" : s.val}
                 </p>
-                <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">{s.label}</p>
+                <p className="text-gray-500 text-sm font-black uppercase tracking-widest">{s.label}</p>
               </div>
             ))}
           </motion.div>
 
           {/* Filters */}
           <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.25 }}
-            className="mb-10 space-y-5 bg-white p-6 md:p-8 rounded-3xl border border-gray-200 shadow-sm">
+            className="mb-12 space-y-6 bg-white/60 backdrop-blur-md p-6 md:p-8 rounded-[2.5rem] border-4 border-indigo-50 shadow-lg">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-indigo-400">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
                 <input value={search} onChange={e=>setSearch(e.target.value)}
                   placeholder="Search by name, skill, subject…"
-                  className="w-full bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm md:text-base rounded-2xl pl-12 pr-4 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition duration-200 shadow-inner" />
+                  className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-[2rem] pl-14 pr-6 py-4 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition shadow-sm" />
               </div>
               <button onClick={()=>setCertOnly(!certOnly)}
-                className={`flex items-center gap-2 px-6 py-4 rounded-2xl font-bold transition duration-200 border whitespace-nowrap ${
-                  certOnly ? "bg-green-50 border-green-200 text-green-700 shadow-sm" : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"
+                className={`flex items-center gap-2 px-8 py-4 rounded-[2rem] font-black text-lg transition duration-200 border-2 whitespace-nowrap shadow-sm ${
+                  certOnly ? "bg-emerald-50 border-emerald-300 text-emerald-700" : "bg-white border-indigo-100 text-gray-600 hover:bg-indigo-50 hover:border-indigo-200"
                 }`}>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
@@ -472,11 +472,11 @@ export default function ConnectPage() {
               </button>
             </div>
 
-            <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-hide">
+            <div className="flex gap-3 overflow-x-auto pb-4 pt-2 scrollbar-hide px-2">
               {SKILL_FILTERS.map(s=>(
                 <button key={s} onClick={()=>setSkillFilter(s)}
-                  className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold border transition duration-200 whitespace-nowrap ${
-                    skillFilter === s ? "bg-blue-600 border-blue-600 text-white shadow-sm" : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                  className={`flex-shrink-0 px-6 py-3 rounded-2xl text-sm font-black uppercase tracking-wider border-2 transition-all duration-200 whitespace-nowrap ${
+                    skillFilter === s ? "bg-blue-600 border-blue-600 text-white shadow-md scale-105" : "bg-white border-indigo-100 text-gray-600 hover:bg-indigo-50 hover:border-indigo-200"
                   }`}>{s}</button>
               ))}
             </div>
@@ -495,21 +495,18 @@ export default function ConnectPage() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_,i) => (
-                <div key={i} className="rounded-3xl border border-gray-200 bg-white p-8 h-80 animate-pulse shadow-sm" />
+                <div key={i} className="rounded-[2rem] border-4 border-indigo-50 bg-white/50 backdrop-blur p-8 h-80 animate-pulse shadow-sm" />
               ))}
             </div>
           ) : filtered.length === 0 ? (
             <motion.div initial={{ opacity:0, y: 20 }} animate={{ opacity:1, y: 0 }}
-              className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-3xl border border-gray-200 shadow-sm">
-              <div className="w-24 h-24 rounded-full bg-gray-50 flex items-center justify-center mb-6">
-                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
+              className="flex flex-col items-center justify-center py-24 text-center bg-white/60 backdrop-blur-md rounded-[3rem] border-4 border-dashed border-indigo-100 shadow-sm mx-2">
+              <div className="w-24 h-24 rounded-full bg-white border-4 border-indigo-50 flex items-center justify-center mb-6 shadow-sm">
+                <div className="text-5xl">👀</div>
               <h3 className="text-gray-900 font-extrabold text-2xl mb-2">No creators found</h3>
-              <p className="text-gray-500 text-base mb-8 max-w-sm">We couldn't find any creators matching your current search criteria.</p>
+              <p className="text-gray-500 text-lg font-bold mb-8 max-w-sm">We couldn't find any creators matching your current search criteria.</p>
               <button onClick={()=>{ setSearch(""); setSkillFilter("All"); setCertOnly(false); }}
-                className="px-8 py-3.5 rounded-xl bg-gray-100 text-gray-800 font-bold hover:bg-gray-200 transition duration-200 shadow-sm">
+                className="px-8 py-4 rounded-2xl bg-pink-500 hover:bg-pink-400 text-white font-black text-lg border-b-4 border-pink-700 active:border-b-0 active:translate-y-1 transition-all shadow-xl">
                 Clear all filters
               </button>
             </motion.div>
@@ -529,24 +526,25 @@ export default function ConnectPage() {
           {/* CTA */}
           <motion.div initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
             transition={{ duration:0.6 }}
-            className="mt-24 rounded-3xl overflow-hidden border border-gray-200 bg-white p-12 md:p-16 text-center shadow-lg relative">
-            <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-blue-50 opacity-50 blur-3xl pointer-events-none" />
+            className="mt-32 rounded-[3.5rem] overflow-hidden border-4 border-indigo-100 bg-white p-12 md:p-20 text-center shadow-2xl relative">
+            <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-gradient-to-br from-blue-400 to-pink-400 opacity-20 blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-400 opacity-20 blur-3xl pointer-events-none" />
             
-            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">For Creators</p>
-            <h2 className="text-4xl font-black tracking-tight text-gray-900 mb-4">
+            <p className="text-indigo-500 text-sm font-black uppercase tracking-widest mb-4">For Creators</p>
+            <h2 className="text-5xl md:text-6xl font-black tracking-tight text-gray-900 mb-6 leading-tight">
               Want to Join the Community?
             </h2>
-            <p className="text-gray-500 text-lg max-w-lg mx-auto mb-10 leading-relaxed font-medium">
+            <p className="text-gray-600 text-xl max-w-2xl mx-auto mb-12 leading-relaxed font-bold">
               Join as a verified creator or student. Connect with peers, collaborate on amazing projects, and learn together.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
               <Link href="/join/developer">
-                <button className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition">
+                <button className="w-full sm:w-auto px-10 py-5 rounded-2xl font-black text-white text-xl bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 shadow-xl transition-all">
                   Join as Creator
                 </button>
               </Link>
               <Link href="/certification">
-                <button className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm transition">
+                <button className="w-full sm:w-auto px-10 py-5 rounded-2xl font-black text-gray-800 text-xl bg-white border-4 border-indigo-100 hover:border-indigo-300 hover:bg-indigo-50 transition-all shadow-md">
                   Get Certified →
                 </button>
               </Link>

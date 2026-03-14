@@ -45,38 +45,41 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Platform Links */}
+          {/* Column 2: Platform */}
           <div>
             <h3 className="font-bold text-white mb-6 uppercase tracking-[0.15em] text-xs">Platform</h3>
             <ul className="space-y-3">
               <li><Link href="/gallery" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">3D Gallery</Link></li>
               <li><Link href="/autocad" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">AutoCAD Hub</Link></li>
-              <li><Link href="/connect" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Browse Developers</Link></li>
+              <li><Link href="/gallery?mode=ar" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">AR / VR Models</Link></li>
               <li><Link href="/requests/open" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Open Projects</Link></li>
-              <li><Link href="/gyop" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Start a Project</Link></li>
+              <li><Link href="/hire" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Hire a Developer</Link></li>
+              <li><Link href="/upload" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Upload Creation</Link></li>
             </ul>
           </div>
 
-          {/* Column 3: Developers Links */}
+          {/* Column 3: Learn */}
           <div>
-            <h3 className="font-bold text-white mb-6 uppercase tracking-[0.15em] text-xs">Developers</h3>
+            <h3 className="font-bold text-white mb-6 uppercase tracking-[0.15em] text-xs">Learn</h3>
             <ul className="space-y-3">
-              <li><Link href="/connect" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Apply as Developer</Link></li>
+              <li><Link href="/learn" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Learning Paths</Link></li>
+              <li><Link href="/connect" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Connect & Network</Link></li>
               <li><Link href="/certification" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Get Certified</Link></li>
-              <li><Link href="/connect" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Developer Docs</Link></li>
               <li><Link href="/collaborators" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">PIET Collaboration</Link></li>
+              <li><Link href="/gyop" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Start a Project</Link></li>
+              <li><Link href="/join?role=developer" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Apply as Creator</Link></li>
             </ul>
           </div>
 
-          {/* Column 4: Legal Links */}
+          {/* Column 4: Account */}
           <div>
-            <h3 className="font-bold text-white mb-6 uppercase tracking-[0.15em] text-xs">Legal</h3>
+            <h3 className="font-bold text-white mb-6 uppercase tracking-[0.15em] text-xs">Account</h3>
             <ul className="space-y-3">
-              <li><Link href="#" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Terms of Service</Link></li>
-              <li><Link href="#" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Privacy Policy</Link></li>
-              <li><Link href="#" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Refund Policy</Link></li>
-              <li><Link href="#" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Cookie Policy</Link></li>
-              <li><Link href="#" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Contact Us</Link></li>
+              <li><Link href="/dashboard" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Dashboard</Link></li>
+              <li><Link href="/profile" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">My Profile</Link></li>
+              <li><Link href="/notifications" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Notifications</Link></li>
+              <li><Link href="/login" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Sign In</Link></li>
+              <li><Link href="/join" className="text-gray-400 text-sm hover:text-[#5B4BDB] font-medium transition duration-200">Join Free</Link></li>
             </ul>
           </div>
 

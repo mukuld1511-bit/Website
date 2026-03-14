@@ -9,12 +9,13 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { uploadToSupabase } from "../../lib/supabase";
 
-const MODEL_EXTENSIONS = ["glb", "gltf", "obj", "fbx", "dwg", "dxf"];
+const MODEL_EXTENSIONS = ["glb", "gltf", "obj", "fbx"];
+const AUTOCAD_EXTENSIONS = ["dwg", "dxf"];
 const BUILD_EXTENSIONS = ["zip"];
 
 export default function UploadContent() {
   const [user, setUser] = useState<any>(null);
-  const [uploadType, setUploadType] = useState<"model" | "ar-build" | "vr-build">("model");
+  const [uploadType, setUploadType] = useState<"model" | "autocad" | "ar-build" | "vr-build">("model");
   const [step, setStep] = useState(0);
   const [file, setFile] = useState<File | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
@@ -72,9 +73,14 @@ export default function UploadContent() {
     if (!f) return;
     const ext = f.name.split(".").pop()?.toLowerCase();
 
-    if (uploadType !== "model") {
+    if (uploadType === "ar-build" || uploadType === "vr-build") {
       if (ext !== "zip") {
         setError("AR/VR builds must be uploaded as a .zip file");
+        return;
+      }
+    } else if (uploadType === "autocad") {
+      if (!AUTOCAD_EXTENSIONS.includes(ext ?? "")) {
+        setError(`AutoCAD files must be .dwg or .dxf`);
         return;
       }
     } else {
@@ -84,9 +90,10 @@ export default function UploadContent() {
       }
     }
 
-    const maxSize = uploadType === "model" ? 500 * 1024 * 1024 : 2 * 1024 * 1024 * 1024;
+    const isGiantBuild = uploadType === "ar-build" || uploadType === "vr-build";
+    const maxSize = isGiantBuild ? 2 * 1024 * 1024 * 1024 : 500 * 1024 * 1024;
     if (f.size > maxSize) {
-      setError(`File must be smaller than ${uploadType === "model" ? "500MB" : "2GB"}`);
+      setError(`File must be smaller than ${isGiantBuild ? "2GB" : "500MB"}`);
       return;
     }
     setFile(f);
@@ -111,7 +118,7 @@ export default function UploadContent() {
       setError("Please fill all required fields.");
       return;
     }
-    if (uploadType !== "model" && (!platforms.length || !genre)) {
+    if ((uploadType === "ar-build" || uploadType === "vr-build") && (!platforms.length || !genre)) {
       setError("Please select platforms and genre.");
       return;
     }
@@ -158,18 +165,18 @@ export default function UploadContent() {
         uploadedAt: serverTimestamp(),
       };
 
-      if (uploadType === "model") {
+      if (uploadType === "model" || uploadType === "autocad") {
         const ext = file.name.split(".").pop()?.toLowerCase() ?? "glb";
         const fileType = ["dwg", "dxf"].includes(ext) ? ext : ["obj", "fbx"].includes(ext) ? ext : "glb";
         await addDoc(collection(db, "models"), {
           ...baseData,
-          category,
+          category: uploadType === "autocad" ? "AutoCAD" : category,
           fileType,
           views: 0,
           likes: 0,
           downloads: 0,
         });
-      } else {
+      } else if (uploadType === "ar-build" || uploadType === "vr-build") {
         const arTags = AR_VR_TAGS.slice(0, 2);
         const allTags = [...new Set([...tags, ...arTags])];
         await addDoc(collection(db, "models"), {
@@ -191,7 +198,8 @@ export default function UploadContent() {
       setUploadProgress(100);
       setSuccess(true);
       setTimeout(() => {
-        window.location.href = `/gallery?mode=${uploadType === "ar-build" ? "ar" : uploadType === "vr-build" ? "vr" : "3d"}`;
+        const gotoMode = uploadType === "ar-build" ? "ar" : uploadType === "vr-build" ? "vr" : uploadType === "autocad" ? "cad" : "3d";
+        window.location.href = `/gallery?mode=${gotoMode}`;
       }, 2000);
     } catch (e) {
       console.error("Supabase Upload Error:", e);
@@ -232,7 +240,7 @@ export default function UploadContent() {
             Back to Gallery
           </Link>
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3 tracking-tight">Upload Content</h1>
-          <p className="text-gray-500 text-lg">Share 3D models, AR builds, or VR builds with the world.</p>
+          <p className="text-gray-500 text-lg">Share 3D models, AutoCAD drawings, AR or VR builds with the world.</p>
         </div>
 
         {/* Step 0 — Type selector */}
@@ -240,20 +248,33 @@ export default function UploadContent() {
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="lg:pl-4">
             <div className="rounded-2xl border border-gray-200 bg-white p-8 md:p-10 shadow-sm">
               <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-6">Choose Upload Type</p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-10">
                 {[
-                  { type: "model" as const,    title: "3D Model",    desc: "GLB, GLTF, OBJ, FBX, DWG, DXF", icon: "📦", color: "blue" },
-                  { type: "ar-build" as const, title: "AR Build",    desc: "ZIP package only",               icon: "📱", color: "green" },
-                  { type: "vr-build" as const, title: "VR Build",    desc: "ZIP package only",               icon: "🥽", color: "purple" },
-                ].map(({ type, title, desc, icon, color }) => {
+                  { type: "model" as const,    title: "3D Model",    desc: "GLB, GLTF, OBJ, FBX",           icon: "📦", accent: "blue" },
+                  { type: "autocad" as const,  title: "AutoCAD",    desc: "DWG & DXF drawings",             icon: "📐", accent: "orange" },
+                  { type: "ar-build" as const, title: "AR Build",   desc: "ZIP package only",               icon: "📱", accent: "emerald" },
+                  { type: "vr-build" as const, title: "VR Build",   desc: "ZIP package only",               icon: "🥽", accent: "purple" },
+                ].map(({ type, title, desc, icon, accent }) => {
                   const isSel = uploadType === type;
+                  const selClasses: Record<string, string> = {
+                    blue:    "border-blue-500 bg-blue-50",
+                    orange:  "border-orange-500 bg-orange-50",
+                    emerald: "border-emerald-500 bg-emerald-50",
+                    purple:  "border-purple-500 bg-purple-50",
+                  };
+                  const iconBg: Record<string, string> = {
+                    blue:    "bg-blue-100",
+                    orange:  "bg-orange-100",
+                    emerald: "bg-emerald-100",
+                    purple:  "bg-purple-100",
+                  };
                   return (
                     <button key={type} onClick={() => { setUploadType(type); setStep(1); }}
-                      className={`p-8 rounded-2xl border-2 transition-all duration-200 text-center flex flex-col items-center justify-center h-full
-                        ${isSel ? "border-blue-600 bg-blue-50 shadow-sm" : "border-gray-100 bg-gray-50 hover:border-gray-200 hover:bg-gray-100"}`}>
-                      <span className="text-4xl mb-4 bg-white w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm">{icon}</span>
-                      <p className={`font-bold text-lg mb-1 ${isSel ? "text-blue-900" : "text-gray-900"}`}>{title}</p>
-                      <p className={`text-xs ${isSel ? "text-blue-600/70" : "text-gray-500"}`}>{desc}</p>
+                      className={`p-6 rounded-3xl border-[3px] transition-all duration-200 text-center flex flex-col items-center justify-center h-full shadow-sm hover:shadow-md hover:-translate-y-1
+                        ${isSel ? selClasses[accent] + " shadow-md" : "border-gray-100 bg-white hover:border-gray-200"}`}>
+                      <span className={`text-3xl mb-4 w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm ${isSel ? iconBg[accent] : "bg-gray-50"}`}>{icon}</span>
+                      <p className="font-black text-base mb-1 text-gray-900">{title}</p>
+                      <p className="text-xs text-gray-500 font-medium">{desc}</p>
                     </button>
                   );
                 })}
@@ -276,8 +297,11 @@ export default function UploadContent() {
                   <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Step 1 of {uploadType === "model" ? "3" : "4"}</p>
                   <h2 className="text-3xl font-extrabold text-gray-900">Upload Media</h2>
                 </div>
-                {uploadType !== "model" && (
+                {(uploadType === "ar-build" || uploadType === "vr-build") && (
                   <span className="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-lg border border-amber-200">AR/VR builds require .zip</span>
+                )}
+                {uploadType === "autocad" && (
+                  <span className="bg-orange-100 text-orange-800 text-xs font-bold px-3 py-1.5 rounded-lg border border-orange-200">AutoCAD: .dwg or .dxf only</span>
                 )}
               </div>
               
@@ -290,7 +314,11 @@ export default function UploadContent() {
                     type="file"
                     onChange={handleFileSelect}
                     className="hidden"
-                    accept={uploadType === "model" ? MODEL_EXTENSIONS.map((e) => `.${e}`).join(",") : ".zip"}
+                    accept={
+                      uploadType === "autocad" ? AUTOCAD_EXTENSIONS.map(e => `.${e}`).join(",") :
+                      (uploadType === "ar-build" || uploadType === "vr-build") ? ".zip" :
+                      MODEL_EXTENSIONS.map(e => `.${e}`).join(",")
+                    }
                   />
                   <div className="w-16 h-16 rounded-full bg-gray-50 group-hover:bg-white flex items-center justify-center mx-auto mb-4 border border-gray-100 shadow-sm transition">
                     <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,10 +332,11 @@ export default function UploadContent() {
                     </div>
                   ) : (
                     <div>
-                      <p className="text-gray-900 font-bold text-sm mb-1">Upload Main File</p>
-                      <p className="text-gray-500 text-xs">
-                        {uploadType === "model" ? "GLB, GLTF, OBJ, FBX, DWG, DXF" : ".zip packages only"} <br/> (Maximum {uploadType === "model" ? "500MB" : "2GB"})
-                      </p>
+                       <p className="text-gray-900 font-bold text-sm mb-1">Upload Main File</p>
+                       <p className="text-gray-500 text-xs">
+                         {uploadType === "model" ? "GLB, GLTF, OBJ, FBX" : uploadType === "autocad" ? "DWG or DXF drawings" : ".zip packages only"}
+                         <br/>(Max {(uploadType === "ar-build" || uploadType === "vr-build") ? "2GB" : "500MB"})
+                       </p>
                     </div>
                   )}
                 </div>
@@ -354,7 +383,7 @@ export default function UploadContent() {
                 <button onClick={() => setStep(0)} className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-gray-50 transition">← Back</button>
                 <button
                   onClick={() => setStep(2)}
-                  disabled={!file || (uploadType !== "model" && !thumbnailUrl)}
+                  disabled={!file || ((uploadType === "ar-build" || uploadType === "vr-build") && !thumbnailUrl)}
                   className="px-10 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-sm disabled:opacity-50 disabled:bg-gray-400 text-white font-bold transition"
                 >
                   Continue
@@ -387,7 +416,8 @@ export default function UploadContent() {
                   className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm resize-none" />
               </div>
 
-              {uploadType === "model" ? (
+              {(uploadType === "model" || uploadType === "autocad") ? (
+                uploadType === "model" ? (
                 <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Category</label>
                   <select value={category} onChange={(e) => setCategory(e.target.value)}
@@ -396,6 +426,11 @@ export default function UploadContent() {
                     {MODEL_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
+                ) : (
+                <div className="p-4 rounded-xl bg-orange-50 border border-orange-200">
+                  <p className="text-orange-800 text-sm font-bold">📐 AutoCAD DWG/DXF file — will be listed under the AutoCAD Hub automatically.</p>
+                </div>
+                )
               ) : (
                 <>
                   <div className="grid grid-cols-2 gap-6">
@@ -478,7 +513,7 @@ export default function UploadContent() {
               <div className="flex gap-4 justify-between border-t border-gray-100 pt-8 mt-4">
                 <button onClick={() => setStep(1)} className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-gray-50 transition">← Back</button>
                 <button onClick={() => setStep(3)}
-                  disabled={!title || (uploadType !== "model" && !genre) || (uploadType !== "model" && !platforms.length) || (isPaid && (!price || price <= 0))}
+                  disabled={!title || ((uploadType === "ar-build" || uploadType === "vr-build") && (!genre || !platforms.length)) || (isPaid && (!price || price <= 0))}
                   className="px-10 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-sm disabled:opacity-50 disabled:bg-gray-400 text-white font-bold transition">
                   Continue
                 </button>
@@ -488,7 +523,7 @@ export default function UploadContent() {
         )}
 
         {/* Step 3 — Build specs (builds only) */}
-        {step === 3 && uploadType !== "model" && (
+        {step === 3 && (uploadType === "ar-build" || uploadType === "vr-build") && (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="lg:pl-4">
             <div className="rounded-2xl border border-gray-200 bg-white p-8 md:p-10 shadow-sm space-y-6">
               <div className="mb-8 border-b border-gray-100 pb-6">
@@ -530,7 +565,7 @@ export default function UploadContent() {
         )}
 
         {/* Final step — Pricing & Publish */}
-        {step === (uploadType === "model" ? 3 : 4) && (
+        {step === (uploadType === "model" || uploadType === "autocad" ? 3 : 4) && (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="lg:pl-4">
             <div className="rounded-2xl border border-gray-200 bg-white p-8 md:p-10 shadow-sm space-y-6">
               <div className="mb-8 border-b border-gray-100 pb-6">
@@ -542,7 +577,7 @@ export default function UploadContent() {
                 <p className="text-gray-900 font-black mb-4">Summary Configuration</p>
                 <div className="grid grid-cols-2 gap-y-3 font-medium text-sm">
                   <p className="text-gray-500">Asset Title</p> <p className="text-gray-900 text-right truncate font-bold">{title || "Untitled"}</p>
-                  <p className="text-gray-500">Class</p>       <p className="text-gray-900 text-right font-bold">{uploadType === "model" ? "3D Model" : uploadType === "ar-build" ? "AR Application" : "VR Application"}</p>
+                  <p className="text-gray-500">Class</p>                   <p className="text-gray-900 text-right font-bold">{uploadType === "model" ? "3D Model" : uploadType === "autocad" ? "AutoCAD Drawing" : uploadType === "ar-build" ? "AR Application" : "VR Application"}</p>
                   <p className="text-gray-500">Payload</p>     <p className="text-gray-900 text-right font-bold">{file ? (file.size / (1024 * 1024)).toFixed(2) : 0}MB</p>
                   <p className="text-gray-500">Listing</p>     <p className={`text-right font-bold ${isPaid ? "text-green-600" : "text-blue-600"}`}>{isPaid ? `Premium (₹${price})` : "Free Access"}</p>
                 </div>
@@ -566,7 +601,7 @@ export default function UploadContent() {
               )}
 
               <div className="flex gap-4 justify-between border-t border-gray-100 pt-8 mt-4">
-                <button onClick={() => setStep(uploadType === "model" ? 2 : 3)} disabled={uploading}
+                <button onClick={() => setStep(uploadType === "model" || uploadType === "autocad" ? 2 : 3)} disabled={uploading}
                   className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-gray-50 transition disabled:opacity-50">
                   ← Edit
                 </button>

@@ -167,15 +167,6 @@ export default function Navbar() {
             <span className="w-px h-4 bg-gray-200 mx-1" />
             <DropdownPanel title="Learn & Connect" links={LEARN_CONNECT_LINKS} />
             <DropdownPanel title="Academy" links={ACADEMY_LINKS} />
-            {/* ⭐ Direct links */}
-            <Link href="/certification"
-              className="flex items-center gap-1 px-2.5 py-2 rounded-lg text-sm font-semibold transition text-gray-600 hover:text-gray-900 hover:bg-gray-50">
-              <span className="text-yellow-500 text-xs">⭐</span> Certify
-            </Link>
-            <Link href="/collaborators"
-              className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-semibold transition text-gray-600 hover:text-gray-900 hover:bg-gray-50">
-              <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" /> PIET
-            </Link>
           </div>
 
             {/* RIGHT: Auth & Mobile Menu Toggle */}
@@ -199,10 +190,12 @@ export default function Navbar() {
                     <motion.div initial={{ opacity:0, y:5, scale:0.95 }} animate={{ opacity:1, y:0, scale:1 }} exit={{ opacity:0, y:5, scale:0.95 }} transition={{ type: "spring", stiffness: 400, damping: 25 }}
                       className="absolute top-full mt-3 right-0 w-60 rounded-2xl border-2 border-gray-100 bg-white shadow-2xl overflow-hidden z-50 p-2">
                       {[
-                        { label:"Dashboard",       href:"/dashboard",          icon:"M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6", color: "text-blue-500", bg: "bg-blue-50" },
-                        { label:"Profile",         href:"/profile",            icon:"M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z", color: "text-purple-500", bg: "bg-purple-50" },
-                        { label:"Notifications",   href:"/notifications",      icon:"M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9", color: "text-amber-500", bg: "bg-amber-50" },
-                        { label:"Upload Model",    href:"/upload",             icon:"M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12", color: "text-pink-500", bg: "bg-pink-50" },
+                        { label:"Dashboard",       href:"/dashboard",     icon:"M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6", color: "text-blue-500",   bg: "bg-blue-50" },
+                        { label:"Profile",         href:"/profile",       icon:"M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z",                                                                                    color: "text-purple-500", bg: "bg-purple-50" },
+                        { label:"Notifications",   href:"/notifications", icon:"M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9", color: "text-amber-500",  bg: "bg-amber-50" },
+                        { label:"Upload Model",    href:"/upload",        icon:"M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12",                                                                                          color: "text-pink-500",   bg: "bg-pink-50" },
+                        { label:"⭐ Certification", href:"/certification", icon:"M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z", color: "text-yellow-500", bg: "bg-yellow-50" },
+                        { label:"🏛️ PIET Collab",   href:"/collaborators", icon:"M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5",             color: "text-violet-500", bg: "bg-violet-50" },
                       ].map(item => (
                         <Link key={item.href} href={item.href} onClick={() => setProfileOpen(false)}>
                           <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition cursor-pointer text-gray-700 hover:text-gray-900 group font-bold">
@@ -261,19 +254,71 @@ export default function Navbar() {
           >
             <div className="flex-1 overflow-y-auto p-6 space-y-8">
               
-              <div className="space-y-4">
-                <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase">Explore</p>
-                {EXPLORE_LINKS.map(item => (
-                  <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
-                    <div className="flex items-center gap-4 group mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>
-                      <div>
-                        <p className="text-base font-bold text-gray-900 group-hover:text-[#5B4BDB]">{item.label}</p>
-                        <p className="text-xs text-gray-500">{item.desc}</p>
+              {/* Mobile Menu Sections */}
+              <div className="space-y-6">
+                {/* 📱 AR Apps */}
+                <div>
+                  <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase mb-4">AR Apps</p>
+                  {AR_APPS_LINKS.map(item => (
+                    <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
+                      <div className="flex items-center gap-4 group mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>
+                        <div>
+                          <p className="text-base font-bold text-gray-900 group-hover:text-[#5B4BDB]">{item.label}</p>
+                          <p className="text-xs text-gray-500">{item.desc}</p>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  ))}
+                </div>
+
+                {/* 🥽 VR Games */}
+                <div>
+                  <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase mb-4">VR Games</p>
+                  {VR_GAMES_LINKS.map(item => (
+                    <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
+                      <div className="flex items-center gap-4 group mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>
+                        <div>
+                          <p className="text-base font-bold text-gray-900 group-hover:text-[#5B4BDB]">{item.label}</p>
+                          <p className="text-xs text-gray-500">{item.desc}</p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+
+                {/* 📦 3D Gallery */}
+                <div>
+                  <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase mb-4">3D Gallery</p>
+                  {GALLERY_3D_LINKS.map(item => (
+                    <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
+                      <div className="flex items-center gap-4 group mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>
+                        <div>
+                          <p className="text-base font-bold text-gray-900 group-hover:text-[#5B4BDB]">{item.label}</p>
+                          <p className="text-xs text-gray-500">{item.desc}</p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+
+                {/* 📐 AutoCAD */}
+                <div>
+                  <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase mb-4">AutoCAD</p>
+                  {AUTOCAD_LINKS.map(item => (
+                    <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
+                      <div className="flex items-center gap-4 group mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>
+                        <div>
+                          <p className="text-base font-bold text-gray-900 group-hover:text-[#5B4BDB]">{item.label}</p>
+                          <p className="text-xs text-gray-500">{item.desc}</p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
 
               <div className="h-[1px] bg-gray-100" />

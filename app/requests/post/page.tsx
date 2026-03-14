@@ -137,10 +137,10 @@ export default function PostRequestPage() {
               </p>
             </Link>
             <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-4">
-              Post a Request
+              Post a Project
             </h1>
             <p className="text-gray-500 text-base font-medium max-w-xl mx-auto">
-              Describe what you need built and let developers come to you.
+              Describe what you want to build and connect with peers to collaborate.
             </p>
           </div>
 
@@ -234,7 +234,7 @@ export default function PostRequestPage() {
                    <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                    Posting...
                  </span>
-              ) : "Post Request →"}
+              ) : "Post Project →"}
             </button>
           </form>
         </motion.div>

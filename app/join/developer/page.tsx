@@ -174,13 +174,13 @@ export default function JoinDeveloperPage() {
             className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-200 bg-violet-50 mb-5 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-violet-600 animate-pulse" />
-              <span className="text-violet-800 text-xs font-bold uppercase tracking-widest">Join as Developer</span>
+              <span className="text-violet-800 text-xs font-bold uppercase tracking-widest">Join as Creator</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-3">
-              Build Your Career
+              Build Your Profile
             </h1>
             <p className="text-gray-500 text-base max-w-md mx-auto leading-relaxed font-medium">
-              Join the Synthé developer network. Get hired, earn revenue, and get certified.
+              Join the Synthé creator network. Collaborate with peers, earn revenue, and get certified.
             </p>
           </motion.div>
 
@@ -195,7 +195,7 @@ export default function JoinDeveloperPage() {
               </div>
               <h3 className="text-gray-900 font-extrabold text-2xl mb-2">Application Under Review</h3>
               <p className="text-gray-600 text-sm leading-relaxed mb-6 font-medium">
-                You've already submitted a developer application. We're reviewing it — you'll be notified once approved.
+                You've already submitted a creator application. We're reviewing it — you'll be notified once approved.
               </p>
               <Link href="/dashboard">
                 <motion.div whileHover={{ scale:1.03 }}
@@ -257,7 +257,7 @@ export default function JoinDeveloperPage() {
                     <Link href="/login" className="underline text-amber-800 font-bold hover:text-amber-900">Log in</Link>
                     {" "}or{" "}
                     <Link href="/signup" className="underline text-amber-800 font-bold hover:text-amber-900">sign up</Link>
-                    {" "}to apply as a developer.
+                    {" "}to apply as a creator.
                   </p>
                 </div>
               )}
@@ -284,7 +284,7 @@ export default function JoinDeveloperPage() {
                     <div>
                       <label className={lbl}>Short Bio</label>
                       <textarea value={form.bio} onChange={e=>set("bio",e.target.value)} rows={3}
-                        placeholder="e.g. AR/VR developer with 3 years experience in Unity and WebXR…"
+                        placeholder="e.g. AR/VR creator with 3 years experience in Unity and WebXR…"
                         className={inp("bio") + " resize-none"} />
                     </div>
 

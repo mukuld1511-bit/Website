@@ -78,9 +78,9 @@ export default function DeveloperProfilePage() {
           if (appData) {
             setDev({
               id: appId,
-              name: appData.fullName ?? appData.name ?? "Developer",
+              name: appData.fullName ?? appData.name ?? "Creator",
               email: appData.email ?? "",
-              role: "developer",
+              role: "creator",
               certified: appData.status === "approved",
               profileImage: appData.profileImage ?? "",
               bio: appData.bio ?? "",
@@ -134,15 +134,15 @@ export default function DeveloperProfilePage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
              </svg>
           </div>
-          <h2 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">Developer not found</h2>
-          <p className="text-gray-500 mb-6 font-medium">We couldn't locate this developer profile.</p>
+          <h2 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">Creator not found</h2>
+          <p className="text-gray-500 mb-6 font-medium">We couldn't locate this creator profile.</p>
           <Link href="/connect">
             <motion.div
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
               className="inline-flex px-8 py-3.5 rounded-xl text-white font-bold text-sm bg-blue-600 hover:bg-blue-700 shadow-sm transition"
             >
-              ← Browse Developers
+              ← Browse Creators
             </motion.div>
           </Link>
         </div>
@@ -167,7 +167,7 @@ export default function DeveloperProfilePage() {
 
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 mb-8 text-gray-500 text-xs font-bold uppercase tracking-widest">
-            <Link href="/connect" className="hover:text-gray-900 transition duration-150">Developers</Link>
+            <Link href="/connect" className="hover:text-gray-900 transition duration-150">Creators</Link>
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
@@ -211,7 +211,7 @@ export default function DeveloperProfilePage() {
 
                 {dev.certified && (
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#5B4BDB] shadow-[0_0_15px_rgba(91,75,219,0.4)] text-white text-[10px] font-black uppercase tracking-widest mb-4">
-                    ⭐ Certified Spatial Developer
+                    ⭐ Certified Spatial Creator
                   </div>
                 )}
 
@@ -313,7 +313,7 @@ export default function DeveloperProfilePage() {
                       </svg>
                     </div>
                     <p className="text-gray-900 font-black text-lg mb-1">No models published</p>
-                    <p className="text-gray-500 text-sm font-medium">This developer hasn't published any models yet.</p>
+                    <p className="text-gray-500 text-sm font-medium">This creator hasn't published any models yet.</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">

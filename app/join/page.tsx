@@ -48,13 +48,13 @@ export default function JoinPage() {
 
                   <h3 className="text-gray-900 font-extrabold text-2xl tracking-tight mb-3">I'm a Client</h3>
                   <p className="text-gray-500 text-sm leading-relaxed flex-grow mb-6 font-medium">
-                    Browse and download 3D models, AR/VR builds. Hire developers, post projects, and bring your ideas to life.
+                    Browse and download 3D models, AR/VR builds. Connect with creators, post projects, and bring your ideas to life.
                   </p>
 
                   <div className="space-y-3 mb-8">
                     {[
                       "Browse & download 3D/AR/VR content",
-                      "Hire developers directly",
+                      "Connect with creators directly",
                       "Access AutoCAD files and designs",
                     ].map((f, i) => (
                       <div key={i} className="flex items-center gap-3">
@@ -100,15 +100,15 @@ export default function JoinPage() {
                     </svg>
                   </div>
 
-                  <h3 className="text-gray-900 font-extrabold text-2xl tracking-tight mb-3">I'm a Developer</h3>
+                  <h3 className="text-gray-900 font-extrabold text-2xl tracking-tight mb-3">I'm a Creator</h3>
                   <p className="text-gray-500 text-sm leading-relaxed flex-grow mb-6 font-medium">
-                    Upload your 3D models, AR/VR builds and AutoCAD files. Get hired, earn revenue, and build your reputation on Synthé.
+                    Upload your 3D models, AR/VR builds and AutoCAD files. Connect with peers, earn revenue, and build your reputation on Synthé.
                   </p>
 
                   <div className="space-y-3 mb-8">
                     {[
                       "Upload & sell 3D models and AR/VR builds",
-                      "Receive direct project requests from clients",
+                      "Connect with peers on learning projects",
                       "Get certified — earn more & rank higher",
                     ].map((f, i) => (
                       <div key={i} className="flex items-center gap-3">
@@ -124,7 +124,7 @@ export default function JoinPage() {
 
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
                     <div className="flex items-center gap-2 text-sm font-bold text-violet-600 group-hover:gap-3 transition-all duration-200">
-                      Apply as Developer
+                      Join as Creator
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>

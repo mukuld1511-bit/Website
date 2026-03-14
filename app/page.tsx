@@ -393,36 +393,38 @@ export default function HomePage() {
         )}
 
         {/* ── ECOSYSTEM STATS ── */}
-        <section className="py-24 px-4 bg-white border-y border-gray-200">
+        <section className="w-full bg-[#5B4BDB] py-20 px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="rounded-3xl bg-blue-600 text-white overflow-hidden p-10 md:p-16 relative shadow-xl">
-              <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-blue-500 opacity-50 blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-indigo-500 opacity-50 blur-3xl pointer-events-none" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 md:gap-y-0 divide-x-0 md:divide-x border-gray-400/30">
               
-              <div className="relative z-10 text-center mb-14">
-                <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
-                  SYNTHÉ Ecosystem
-                </h2>
-                <p className="text-blue-100 text-lg max-w-xl mx-auto font-medium">Live data from our accelerating community.</p>
-              </div>
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }} className="flex flex-col items-center text-center px-4">
+                <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight">
+                  {statsLoading ? "—" : <Counter target={stats.models} suffix="+" />}
+                </div>
+                <div className="text-white/80 text-sm md:text-base font-medium">3D Models Uploaded</div>
+              </motion.div>
 
-              <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-                {STATS_CFG.map((s,i) => (
-                  <motion.div key={i} initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
-                    viewport={{ once:true }} transition={{ duration:0.5, delay:i*0.1 }}
-                    className="text-center p-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20">
-                    {statsLoading
-                      ? <div className="h-12 bg-white/20 rounded-xl animate-pulse mb-3 mx-auto w-24" />
-                      : (
-                        <p className="text-4xl md:text-5xl font-black tracking-tight mb-2 text-white">
-                          <Counter target={s.val} />
-                        </p>
-                      )
-                    }
-                    <p className="text-blue-100 text-xs font-bold uppercase tracking-widest">{s.label}</p>
-                  </motion.div>
-                ))}
-              </div>
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} className="flex flex-col items-center text-center px-4 md:border-l border-white/20">
+                <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight">
+                  {statsLoading ? "—" : <Counter target={stats.developers} suffix="+" />}
+                </div>
+                <div className="text-white/80 text-sm md:text-base font-medium">Verified Developers</div>
+              </motion.div>
+
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }} className="flex flex-col items-center text-center px-4 md:border-l border-white/20">
+                <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight">
+                  {statsLoading ? "—" : <Counter target={stats.downloads} suffix="+" />}
+                </div>
+                <div className="text-white/80 text-sm md:text-base font-medium">Model Downloads</div>
+              </motion.div>
+
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.4 }} className="flex flex-col items-center text-center px-4 md:border-l border-white/20">
+                <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight">
+                  {statsLoading ? "—" : <Counter target={stats.certifications} />}
+                </div>
+                <div className="text-white/80 text-sm md:text-base font-medium">Certifications Issued</div>
+              </motion.div>
+
             </div>
           </div>
         </section>

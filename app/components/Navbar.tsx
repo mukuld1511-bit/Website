@@ -7,12 +7,29 @@ import { usePathname, useRouter } from "next/navigation";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../lib/firebase";
 
-const EXPLORE_LINKS = [
-  { label: "3D Gallery",      href: "/gallery",              desc: "Discover 3D models",             icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
-  { label: "AutoCAD Hub",     href: "/autocad",              desc: "DWG & DXF blueprints",             icon: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" },
-  { label: "AR/VR Models",   href: "/gallery?mode=ar",      desc: "Ready for spatial computing",    icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" },
-  { label: "Unity Asset Library", href: "/asset-library",  desc: "Unity packages & .unitypackage",  icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
-  { label: "Upload Creation", href: "/upload",               desc: "Share your 3D or CAD files",    icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" }
+// ── Category-specific dropdowns replacing the old single 'Explore' ────────────
+const AR_APPS_LINKS = [
+  { label: "AR App Gallery",    href: "/gallery?mode=ar",      desc: "Browse ARCore & ARKit builds",     icon: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2" },
+  { label: "Upload AR Build",   href: "/upload",               desc: "Share your AR .zip package",        icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
+  { label: "Post AR Project",   href: "/requests/post",        desc: "Commission an AR experience",     icon: "M12 4v16m8-8H4" },
+];
+
+const VR_GAMES_LINKS = [
+  { label: "VR Game Gallery",   href: "/gallery?mode=vr",      desc: "Oculus, Quest & SteamVR builds",   icon: "M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" },
+  { label: "Unity Asset Library", href: "/asset-library",    desc: "Unity packages & .unitypackage",   icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
+  { label: "Upload VR Build",   href: "/upload",               desc: "Share your VR .zip package",       icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
+];
+
+const GALLERY_3D_LINKS = [
+  { label: "3D Model Gallery",  href: "/gallery",              desc: "GLB, GLTF, OBJ & FBX models",     icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
+  { label: "Upload 3D Model",   href: "/upload",               desc: "Share GLB, OBJ, FBX files",        icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
+  { label: "Open Requests",     href: "/requests/open",        desc: "Commission a custom 3D model",    icon: "M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" },
+];
+
+const AUTOCAD_LINKS = [
+  { label: "AutoCAD Hub",       href: "/autocad",              desc: "Browse DWG & DXF blueprints",     icon: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" },
+  { label: "Upload CAD File",   href: "/upload",               desc: "Upload your DWG / DXF file",      icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
+  { label: "PIET Collaboration", href: "/collaborators",       desc: "Academic CAD partnership",        icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5" },
 ];
 
 const LEARN_CONNECT_LINKS = [
@@ -76,7 +93,7 @@ export default function Navbar() {
     router.push("/");
   }
 
-  function DropdownPanel({ title, links }: { title: string, links: typeof EXPLORE_LINKS }) {
+  function DropdownPanel({ title, links }: { title: string, links: { label: string; href: string; desc: string; icon: string }[] }) {
     const isOpen = activeDropdown === title;
     return (
       <div className="relative">
@@ -134,20 +151,30 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* CENTER: Desktop Dropdowns + direct links */}
-          <div className="hidden lg:flex items-center gap-1">
-            <DropdownPanel title="Explore" links={EXPLORE_LINKS} />
+          {/* CENTER: Separate section dropdowns */}
+          <div className="hidden lg:flex items-center gap-0.5">
+            {/* 📱 AR Apps */}
+            <DropdownPanel title="AR Apps" links={AR_APPS_LINKS} />
+            {/* 🥽 VR Games */}
+            <DropdownPanel title="VR Games" links={VR_GAMES_LINKS} />
+            {/* Divider */}
+            <span className="w-px h-4 bg-gray-200 mx-1" />
+            {/* 📦 3D Gallery */}
+            <DropdownPanel title="3D Gallery" links={GALLERY_3D_LINKS} />
+            {/* 📐 AutoCAD */}
+            <DropdownPanel title="AutoCAD" links={AUTOCAD_LINKS} />
+            {/* Divider */}
+            <span className="w-px h-4 bg-gray-200 mx-1" />
             <DropdownPanel title="Learn & Connect" links={LEARN_CONNECT_LINKS} />
             <DropdownPanel title="Academy" links={ACADEMY_LINKS} />
+            {/* ⭐ Direct links */}
             <Link href="/certification"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition text-gray-600 hover:text-gray-900 hover:bg-gray-50">
-              <span className="text-yellow-500 text-xs">⭐</span>
-              Certify
+              className="flex items-center gap-1 px-2.5 py-2 rounded-lg text-sm font-semibold transition text-gray-600 hover:text-gray-900 hover:bg-gray-50">
+              <span className="text-yellow-500 text-xs">⭐</span> Certify
             </Link>
             <Link href="/collaborators"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition text-gray-600 hover:text-gray-900 hover:bg-gray-50">
-              <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-              PIET
+              className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-semibold transition text-gray-600 hover:text-gray-900 hover:bg-gray-50">
+              <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" /> PIET
             </Link>
           </div>
 

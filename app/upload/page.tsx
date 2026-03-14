@@ -402,7 +402,7 @@ export default function UploadContent() {
                 <button onClick={() => setStep(0)} className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-gray-50 transition">← Back</button>
                 <button
                   onClick={() => setStep(2)}
-                  disabled={!file || ((uploadType === "ar-build" || uploadType === "vr-build") && !thumbnailUrl)}
+                  disabled={!file}
                   className="px-10 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-sm disabled:opacity-50 disabled:bg-gray-400 text-white font-bold transition"
                 >
                   Continue

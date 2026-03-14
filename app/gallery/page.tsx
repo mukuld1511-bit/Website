@@ -17,6 +17,7 @@ interface Model {
   title: string;
   description: string;
   category: string;
+  genre?: string;
   tags: string[];
   fileType: string;
   thumbnailUrl: string;
@@ -82,11 +83,13 @@ function GalleryContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const modeParam = (searchParams.get("mode") ?? "all") as Mode;
+  const genreParam = searchParams.get("genre");
 
   const [models,      setModels]      = useState<Model[]>([]);
   const [loading,     setLoading]     = useState(true);
   const [user,        setUser]        = useState<any>(null);
   const [mode,        setMode]        = useState<Mode>(modeParam);
+  const [activeGenre, setActiveGenre] = useState<string | null>(genreParam);
   const [search,      setSearch]      = useState("");
   const [category,    setCategory]    = useState("All");
   const [priceFilter, setPriceFilter] = useState<"all"|"free"|"paid">("all");
@@ -97,6 +100,11 @@ function GalleryContent() {
     const unsub = onAuthStateChanged(auth, u => setUser(u ?? null));
     return () => unsub();
   }, []);
+
+  useEffect(() => {
+    setMode((searchParams.get("mode") ?? "all") as Mode);
+    setActiveGenre(searchParams.get("genre"));
+  }, [searchParams]);
 
   useEffect(() => {
     async function fetchModels() {
@@ -113,11 +121,15 @@ function GalleryContent() {
 
   function changeMode(m: Mode) {
     setMode(m);
+    setActiveGenre(null);
     router.replace(m === "all" ? "/gallery" : `/gallery?mode=${m}`, { scroll: false });
   }
 
   const filtered = (() => {
     let out = filterByMode(models, mode);
+    if (activeGenre) {
+      out = out.filter(m => m.genre?.toLowerCase() === activeGenre.toLowerCase());
+    }
     if (search.trim()) {
       const s = search.toLowerCase();
       out = out.filter(m =>
@@ -278,8 +290,8 @@ function GalleryContent() {
             <motion.h1 initial={{ opacity:0, y:-10 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }} className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 leading-none mb-6 drop-shadow-sm">
               {mode==="all"     ? "3D Model Gallery"
               : mode==="3d"     ? "3D Models"
-              : mode==="ar"     ? "Augmented Reality"
-              : mode==="vr"     ? "Virtual Reality"
+              : mode==="ar"     ? (activeGenre === "game" ? "AR Games" : activeGenre === "app" ? "AR Apps" : "Augmented Reality")
+              : mode==="vr"     ? (activeGenre === "game" ? "VR Games" : activeGenre === "app" ? "VR Apps" : "Virtual Reality")
               : "AutoCAD Files"}
             </motion.h1>
 

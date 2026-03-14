@@ -7,34 +7,36 @@ import { usePathname, useRouter } from "next/navigation";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../lib/firebase";
 
-const GALLERY_DROPDOWN = [
-  { label: "All Models", href: "/gallery",           desc: "Browse everything" },
-  { label: "3D Models",  href: "/gallery?mode=3d",   desc: "GLB · GLTF · OBJ · FBX" },
-  { label: "AR",         href: "/gallery?mode=ar",   desc: "Augmented Reality" },
-  { label: "VR",         href: "/gallery?mode=vr",   desc: "Virtual Reality" },
-  { label: "AutoCAD",    href: "/autocad",           desc: "DWG · DXF Files" },
+const EXPLORE_LINKS = [
+  { label: "3D Gallery",   href: "/gallery",       desc: "Discover 3D models",          icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
+  { label: "AutoCAD Hub",  href: "/autocad",       desc: "DWG & DXF blueprints",        icon: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" },
+  { label: "AR/VR Models", href: "/gallery?mode=ar", desc: "Ready for spatial computing", icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" }
 ];
 
-const MOBILE_PLATFORM = [
-  { label: "AutoCAD",      href: "/autocad",       icon: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" },
-  { label: "Connect",      href: "/connect",       icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
-  { label: "GYOP",         href: "/gyop",          icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
-  { label: "Certification",href: "/certification", icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" },
-  { label: "Upload Model", href: "/upload",        icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
-  { label: "PIET Collab",  href: "/collaborators", icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" },
+const MARKETPLACE_LINKS = [
+  { label: "Browse Developers", href: "/connect",       desc: "Hire top talent",     icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+  { label: "Open Projects",     href: "/requests/open", desc: "Find work & bid",     icon: "M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
+];
+
+const ACADEMY_LINKS = [
+  { label: "Certification",      href: "/certification",  desc: "Get verified and hired", icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" },
+  { label: "PIET Collaboration", href: "/collaborators",  desc: "Academic partnership",   icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" },
+  { label: "Mentors",            href: "/connect?type=mentor", desc: "Learn from experts", icon: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" },
 ];
 
 export default function Navbar() {
-  const [user,          setUser]          = useState<any>(null);
-  const [scrolled,      setScrolled]      = useState(false);
-  const [mobileOpen,    setMobileOpen]    = useState(false);
-  const [galleryOpen,   setGalleryOpen]   = useState(false);
-  const [profileOpen,   setProfileOpen]   = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [scrolled, setScrolled] = useState(false);
+  
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
-  const pathname     = usePathname();
-  const router       = useRouter();
-  const galleryRef   = useRef<HTMLDivElement>(null);
-  const profileRef   = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const router = useRouter();
+  
+  const navRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, u => setUser(u ?? null));
@@ -49,252 +51,239 @@ export default function Navbar() {
 
   useEffect(() => {
     function handler(e: MouseEvent) {
-      if (galleryRef.current   && !galleryRef.current.contains(e.target as Node))   setGalleryOpen(false);
-      if (profileRef.current   && !profileRef.current.contains(e.target as Node))   setProfileOpen(false);
+      if (navRef.current && !navRef.current.contains(e.target as Node)) setActiveDropdown(null);
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) setProfileOpen(false);
     }
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  useEffect(() => { setMobileOpen(false); }, [pathname]);
+  useEffect(() => { 
+    setMobileMenuOpen(false); 
+    setActiveDropdown(null);
+    setProfileOpen(false);
+  }, [pathname]);
 
   async function logout() {
     await signOut(auth);
     router.push("/");
   }
 
-  function isActive(href: string) {
-    return pathname === href || (href !== "/" && pathname.startsWith(href.split("?")[0]));
-  }
-
-  const linkCls = (active: boolean) =>
-    `px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition duration-200 ${
-      active
-        ? "text-blue-700 bg-blue-50"
-        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-    }`;
-
-  function DropItem({ item, onClose }: { item: typeof GALLERY_DROPDOWN[0]; onClose: () => void }) {
+  function DropdownPanel({ title, links }: { title: string, links: typeof EXPLORE_LINKS }) {
+    const isOpen = activeDropdown === title;
     return (
-      <Link href={item.href} onClick={onClose}>
-        <div className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-50 transition duration-150 cursor-pointer">
-          <div className="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center flex-shrink-0">
-            <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-          </div>
-          <div>
-            <p className="text-gray-900 text-sm font-semibold">{item.label}</p>
-            <p className="text-gray-500 text-[11px]">{item.desc}</p>
-          </div>
-        </div>
-      </Link>
+      <div className="relative">
+        <button 
+          onClick={() => setActiveDropdown(isOpen ? null : title)}
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition ${isOpen ? "text-[#5B4BDB]" : "text-gray-600 hover:text-gray-900"}`}
+        >
+          {title}
+          <svg className={`w-3.5 h-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+        </button>
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div 
+              initial={{ opacity: 0, y: 5, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 5, scale: 0.98 }}
+              transition={{ duration: 0.15 }}
+              className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-80 rounded-xl bg-white border border-gray-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] overflow-hidden z-50 p-2"
+            >
+              <div className="flex flex-col gap-1">
+                {links.map((item) => (
+                  <Link key={item.href} href={item.href} onClick={() => setActiveDropdown(null)}>
+                    <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition cursor-pointer group">
+                      <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB] text-gray-500 transition">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg>
+                      </div>
+                      <div>
+                        <p className="text-gray-900 text-sm font-bold group-hover:text-[#5B4BDB] transition">{item.label}</p>
+                        <p className="text-gray-500 text-xs mt-0.5">{item.desc}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     );
   }
 
-  const dropPanel = "absolute top-full mt-2 left-0 w-64 rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden z-50 py-2";
-  const dropAnim  = { initial: { opacity:0, y:-4, scale:0.98 }, animate: { opacity:1, y:0, scale:1 }, exit: { opacity:0, y:-4, scale:0.98 }, transition: { duration:0.15 } };
-
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200" : "bg-white border-b border-transparent"}`}>
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            <span className="font-extrabold text-2xl tracking-tight text-gray-900">
-              SYNTHÉ
+      <nav 
+        ref={navRef}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200" : "bg-white border-b border-gray-100"} h-14 md:h-16 flex items-center`}
+      >
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between">
+          
+          {/* LEFT: Logo area */}
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0">
+            <span className="font-extrabold text-2xl tracking-tight text-gray-900">SYNTHÉ</span>
+            <span className="hidden sm:inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-black tracking-widest uppercase bg-[#5B4BDB] text-white overflow-hidden">
+              <span className="relative z-10">BETA</span>
             </span>
           </Link>
 
-          {/* Desktop links */}
-          <div className="hidden lg:flex items-center gap-1">
-
-            {/* Gallery dropdown */}
-            <div ref={galleryRef} className="relative">
-              <button onClick={() => { setGalleryOpen(v => !v); }}
-                className={`flex items-center gap-1.5 ${linkCls(isActive("/gallery"))}`}>
-                Gallery
-                <svg className={`w-3 h-3 transition-transform duration-200 ${galleryOpen ? "rotate-180" : ""}`}
-                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <AnimatePresence>
-                {galleryOpen && (
-                  <motion.div {...dropAnim} className={dropPanel}>
-                    {GALLERY_DROPDOWN.map(item => <DropItem key={item.href} item={item} onClose={() => setGalleryOpen(false)} />)}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            <Link href="/autocad"><button className={linkCls(isActive("/autocad"))}>AutoCAD</button></Link>
-            <Link href="/requests/open"><button className={linkCls(isActive("/requests/open"))}>Public Requests</button></Link>
-
-            <Link href="/connect"><button className={linkCls(isActive("/connect"))}>Connect</button></Link>
-            <Link href="/gyop"><button className={linkCls(isActive("/gyop"))}>GYOP</button></Link>
-            <Link href="/certification"><button className={linkCls(isActive("/certification"))}>Certification</button></Link>
-            <Link href="/collaborators"><button className={linkCls(isActive("/collaborators"))}>PIET</button></Link>
+          {/* CENTER: Desktop Dropdowns */}
+          <div className="hidden lg:flex items-center gap-2">
+            <DropdownPanel title="Explore" links={EXPLORE_LINKS} />
+            <DropdownPanel title="Marketplace" links={MARKETPLACE_LINKS} />
+            <DropdownPanel title="Academy" links={ACADEMY_LINKS} />
           </div>
 
-          {/* Auth */}
-          <div className="hidden lg:flex items-center gap-3">
+          {/* RIGHT: Auth & Mobile Menu Toggle */}
+          <div className="flex items-center gap-3">
             {user ? (
-              <div ref={profileRef} className="relative">
+              <div ref={profileRef} className="relative hidden lg:block">
                 <button onClick={() => setProfileOpen(v => !v)}
-                  className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-gray-200 hover:bg-gray-50 transition duration-200">
-                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 flex items-center justify-center">
+                  className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50 transition duration-200">
+                  <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 flex items-center justify-center">
                     {user.photoURL
                       ? <img src={user.photoURL} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
-                      : <span className="text-gray-500 text-xs font-bold">{user.displayName?.[0] ?? "U"}</span>
+                      : <span className="text-gray-500 text-[10px] font-bold">{user.displayName?.[0] ?? "U"}</span>
                     }
                   </div>
                   <span className="text-gray-700 text-sm font-semibold max-w-[100px] truncate">{user.displayName ?? "User"}</span>
-                  <svg className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${profileOpen ? "rotate-180" : ""}`}
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  <svg className={`w-3.5 h-3.5 text-gray-400 transition-transform ${profileOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
 
                 <AnimatePresence>
                   {profileOpen && (
-                    <motion.div {...dropAnim}
-                      className="absolute top-full mt-2 right-0 w-56 rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden z-50 py-1">
+                    <motion.div initial={{ opacity:0, y:5, scale:0.98 }} animate={{ opacity:1, y:0, scale:1 }} exit={{ opacity:0, y:5, scale:0.98 }} transition={{ duration:0.15 }}
+                      className="absolute top-full mt-3 right-0 w-56 rounded-xl border border-gray-100 bg-white shadow-xl overflow-hidden z-50 p-1.5">
                       {[
                         { label:"Dashboard",    href:"/dashboard",     icon:"M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
                         { label:"Profile",      href:"/profile",       icon:"M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
                         { label:"Upload Model", href:"/upload",        icon:"M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
-                        { label:"Public Requests", href:"/requests/open", icon:"M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" },
-                        { label:"GYOP",         href:"/gyop",          icon:"M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
                       ].map(item => (
                         <Link key={item.href} href={item.href} onClick={() => setProfileOpen(false)}>
-                          <div className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition cursor-pointer text-gray-700 hover:text-blue-600 group">
-                            <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
-                            </svg>
-                            <span className="text-sm font-medium">{item.label}</span>
+                          <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition cursor-pointer text-gray-600 hover:text-gray-900">
+                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} /></svg>
+                            <span className="text-sm font-semibold">{item.label}</span>
                           </div>
                         </Link>
                       ))}
-                      <div className="h-[1px] bg-gray-100 my-1" />
-                      <button onClick={logout}
-                        className="w-full flex items-center gap-3 px-4 py-2 hover:bg-red-50 transition cursor-pointer text-gray-700 hover:text-red-600 group">
-                        <svg className="w-4 h-4 text-gray-400 group-hover:text-red-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                        <span className="text-sm font-medium">Sign Out</span>
+                      <div className="h-[1px] bg-gray-100 my-1 px-2" />
+                      <button onClick={logout} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-50 transition cursor-pointer text-gray-600 hover:text-red-600">
+                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                        <span className="text-sm font-semibold">Sign Out</span>
                       </button>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
             ) : (
-              <>
+              <div className="hidden lg:flex items-center gap-2">
                 <Link href="/login">
-                  <button className="px-4 py-2 rounded-lg text-gray-600 text-sm font-semibold hover:text-gray-900 transition hover:bg-gray-50">
+                  <button className="px-5 py-2.5 rounded-xl text-gray-600 text-sm font-bold hover:text-gray-900 transition hover:bg-gray-50">
                     Sign In
                   </button>
                 </Link>
                 <Link href="/join">
-                  <button className="px-5 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow-sm text-sm font-bold transition">
-                    Get Started Free
+                  <button className="px-5 py-2.5 rounded-xl text-white bg-[#5B4BDB] hover:bg-[#4a3bc7] shadow-sm text-sm font-bold transition">
+                    Get Started
                   </button>
                 </Link>
-              </>
+              </div>
             )}
-          </div>
 
-          {/* Hamburger */}
-          <button onClick={() => setMobileOpen(v => !v)}
-            className="lg:hidden w-10 h-10 flex items-center justify-center text-gray-700">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {mobileOpen ? (
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
+            {/* Mobile Hamburger Trigger */}
+            <button onClick={() => setMobileMenuOpen(v => !v)} className="lg:hidden w-10 h-10 flex items-center justify-center text-gray-900">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileMenuOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
+              </svg>
+            </button>
+          </div>
         </div>
       </nav>
 
-      {/* Mobile menu */}
+      {/* Mobile Slide-in Drawer */}
       <AnimatePresence>
-        {mobileOpen && (
+        {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity:0, y:-10 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-10 }}
-            transition={{ duration:0.2 }}
-            className="fixed top-16 left-0 right-0 z-40 bg-white border-b border-gray-200 shadow-lg">
-            <div className="p-4 flex flex-col gap-2 max-h-[80vh] overflow-y-auto">
-
-              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-3 pt-2 pb-1">Menu</p>
-
-              {GALLERY_DROPDOWN.map((item) => (
-                <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
-                  <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition cursor-pointer text-gray-700">
-                    <span className="text-sm font-semibold">{item.label}</span>
-                  </div>
-                </Link>
-              ))}
-
-              <Link href="/requests/open" onClick={() => setMobileOpen(false)}>
-                <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition cursor-pointer text-gray-700">
-                  <span className="text-sm font-semibold">Public Requests</span>
-                </div>
-              </Link>
-
-              {MOBILE_PLATFORM.map((item) => (
-                <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
-                  <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition cursor-pointer text-gray-700">
-                    <span className="text-sm font-semibold">{item.label}</span>
-                  </div>
-                </Link>
-              ))}
-
-              <div className="h-[1px] bg-gray-100 my-2" />
-
-              {/* Auth */}
-              {user ? (
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-3 px-3 py-3">
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-                      {user.photoURL
-                        ? <img src={user.photoURL} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
-                        : <div className="w-full h-full flex items-center justify-center text-gray-500 font-bold">{user.displayName?.[0]}</div>
-                      }
-                    </div>
-                    <div>
-                      <p className="text-gray-900 text-sm font-bold">{user.displayName}</p>
-                      <p className="text-gray-500 text-xs">{user.email}</p>
-                    </div>
-                  </div>
-                  {[
-                    { href:"/dashboard",    label:"Dashboard" },
-                    { href:"/profile",      label:"Profile" },
-                    { href:"/upload",       label:"Upload Model" },
-                  ].map(item => (
-                    <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
-                      <div className="px-3 py-2.5 rounded-lg hover:bg-gray-50 text-gray-700 text-sm font-medium transition">
-                        {item.label}
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-40 bg-white flex flex-col pt-16 h-[100dvh]"
+          >
+            <div className="flex-1 overflow-y-auto p-6 space-y-8">
+              
+              <div className="space-y-4">
+                <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase">Explore</p>
+                {EXPLORE_LINKS.map(item => (
+                  <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
+                    <div className="flex items-center gap-4 group mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>
+                      <div>
+                        <p className="text-base font-bold text-gray-900 group-hover:text-[#5B4BDB]">{item.label}</p>
+                        <p className="text-xs text-gray-500">{item.desc}</p>
                       </div>
-                    </Link>
-                  ))}
-                  <button onClick={logout}
-                    className="w-full text-left px-3 py-2.5 rounded-lg hover:bg-red-50 text-red-600 text-sm font-medium transition">
-                    Sign Out
-                  </button>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="h-[1px] bg-gray-100" />
+
+              <div className="space-y-4">
+                <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase">Marketplace</p>
+                {MARKETPLACE_LINKS.map(item => (
+                  <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
+                    <div className="flex items-center gap-4 group mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>
+                      <div>
+                        <p className="text-base font-bold text-gray-900 group-hover:text-[#5B4BDB]">{item.label}</p>
+                        <p className="text-xs text-gray-500">{item.desc}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="h-[1px] bg-gray-100" />
+
+              <div className="space-y-4">
+                <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase">Academy</p>
+                {ACADEMY_LINKS.map(item => (
+                  <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
+                    <div className="flex items-center gap-4 group mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>
+                      <div>
+                        <p className="text-base font-bold text-gray-900 group-hover:text-[#5B4BDB]">{item.label}</p>
+                        <p className="text-xs text-gray-500">{item.desc}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+            </div>
+
+            <div className="p-6 bg-gray-50 border-t border-gray-100 pb-10">
+              {user ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
+                        {user.photoURL ? <img src={user.photoURL} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gray-300"></div>}
+                      </div>
+                      <div>
+                        <p className="font-bold text-gray-900 leading-tight">{user.displayName}</p>
+                        <p className="text-xs text-gray-500">{user.email}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}><button className="w-full py-3.5 rounded-xl font-bold bg-white border border-gray-200 text-gray-900 shadow-sm mb-3">Dashboard</button></Link>
+                  <button onClick={logout} className="w-full py-3.5 rounded-xl font-bold bg-white border border-red-200 text-red-600 shadow-sm">Sign Out</button>
                 </div>
               ) : (
-                <div className="flex flex-col gap-3 py-3 px-3">
-                  <Link href="/login" onClick={() => setMobileOpen(false)}>
-                    <div className="w-full py-3 rounded-lg border border-gray-300 text-gray-700 text-sm font-semibold text-center hover:bg-gray-50 transition">
-                      Sign In
-                    </div>
-                  </Link>
-                  <Link href="/join" onClick={() => setMobileOpen(false)}>
-                    <div className="w-full py-3 rounded-lg bg-blue-600 text-white text-sm font-bold text-center hover:bg-blue-700 transition shadow-sm">
-                      Get Started Free
-                    </div>
-                  </Link>
+                <div className="flex flex-col gap-3">
+                  <Link href="/join" onClick={() => setMobileMenuOpen(false)}><button className="w-full py-4 rounded-xl font-bold bg-[#5B4BDB] text-white shadow-sm">Get Started</button></Link>
+                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}><button className="w-full py-4 rounded-xl font-bold bg-white border border-gray-200 text-gray-900 shadow-sm">Sign In</button></Link>
                 </div>
               )}
             </div>

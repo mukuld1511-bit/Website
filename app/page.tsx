@@ -245,10 +245,10 @@ export default function HomePage() {
 
 
   const STATS_CFG = [
-    { label:"3D Models",     val:stats.models,        color:"blue-600" },
-    { label:"Developers",    val:stats.developers,    color:"indigo-600" },
-    { label:"Downloads",     val:stats.downloads,     color:"green-600" },
-    { label:"Certifications",val:stats.certifications,color:"amber-500" },
+    { label:"3D Models Uploaded",    val:stats.models,        suffix:"+" },
+    { label:"Verified Developers",   val:stats.developers,    suffix:"+" },
+    { label:"Model Downloads",       val:stats.downloads,     suffix:"+" },
+    { label:"Certifications Issued", val:stats.certifications,suffix:"" },
   ];
 
   return (
@@ -392,37 +392,37 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* ── ECOSYSTEM STATS ── */}
-        <section className="py-24 px-4 bg-white border-y border-gray-200">
-          <div className="max-w-7xl mx-auto">
-            <div className="rounded-3xl bg-blue-600 text-white overflow-hidden p-10 md:p-16 relative shadow-xl">
-              <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-blue-500 opacity-50 blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-indigo-500 opacity-50 blur-3xl pointer-events-none" />
-              
-              <div className="relative z-10 text-center mb-14">
-                <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
-                  SYNTHÉ Ecosystem
-                </h2>
-                <p className="text-blue-100 text-lg max-w-xl mx-auto font-medium">Live data from our accelerating community.</p>
-              </div>
-
-              <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-                {STATS_CFG.map((s,i) => (
-                  <motion.div key={i} initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
-                    viewport={{ once:true }} transition={{ duration:0.5, delay:i*0.1 }}
-                    className="text-center p-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20">
-                    {statsLoading
-                      ? <div className="h-12 bg-white/20 rounded-xl animate-pulse mb-3 mx-auto w-24" />
-                      : (
-                        <p className="text-4xl md:text-5xl font-black tracking-tight mb-2 text-white">
-                          <Counter target={s.val} />
-                        </p>
-                      )
-                    }
-                    <p className="text-blue-100 text-xs font-bold uppercase tracking-widest">{s.label}</p>
-                  </motion.div>
-                ))}
-              </div>
+        {/* ── ECOSYSTEM STATS (PROMPT 3) ── */}
+        <section className="w-full py-20 bg-[#5B4BDB] text-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12">
+              {STATS_CFG.map((s, i) => (
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0, y: 20 }} 
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }} 
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className={`text-center flex flex-col items-center relative ${
+                    i !== 0 && i !== 2 ? 'md:border-l border-white/20' : ''
+                  } ${
+                    i > 1 ? 'md:border-l border-white/20 border-t-0 pt-0' : ''
+                  } ${
+                    (i === 1 || i === 3) ? 'border-l border-white/20' : ''
+                  }`}
+                >
+                  {statsLoading ? (
+                    <div className="h-12 w-24 bg-white/20 rounded animate-pulse mb-3" />
+                  ) : (
+                    <h3 className="text-5xl md:text-6xl font-black tracking-tight mb-2">
+                      <Counter target={s.val} suffix={s.suffix} />
+                    </h3>
+                  )}
+                  <p className="text-white/80 text-sm font-medium tracking-wide">
+                    {s.label}
+                  </p>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>

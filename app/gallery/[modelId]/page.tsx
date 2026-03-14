@@ -37,6 +37,7 @@ interface Model {
   tags: string[];
   fileType: string;
   modelUrl: string;
+  fileUrl?: string;  // legacy field — some old records used this
   thumbnailUrl: string;
   isPaid: boolean;
   price: number;
@@ -218,7 +219,9 @@ export default function ModelDetailPage() {
       try {
         const snap = await getDoc(doc(db, "models", modelId));
         if (!snap.exists()) { setLoading(false); return; }
-        const data = { id: snap.id, ...snap.data() } as Model;
+        const raw = snap.data() as any;
+        // Normalize URL field: old records used `fileUrl`, new ones use `modelUrl`
+        const data: Model = { id: snap.id, ...raw, modelUrl: raw.modelUrl || raw.fileUrl || "" };
         setModel(data);
         setLikeCount(data.likes ?? 0);
         await updateDoc(doc(db, "models", modelId), { views: increment(1) });

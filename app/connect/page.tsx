@@ -503,6 +503,7 @@ export default function ConnectPage() {
               className="flex flex-col items-center justify-center py-24 text-center bg-white/60 backdrop-blur-md rounded-[3rem] border-4 border-dashed border-indigo-100 shadow-sm mx-2">
               <div className="w-24 h-24 rounded-full bg-white border-4 border-indigo-50 flex items-center justify-center mb-6 shadow-sm">
                 <div className="text-5xl">👀</div>
+              </div>
               <h3 className="text-gray-900 font-extrabold text-2xl mb-2">No creators found</h3>
               <p className="text-gray-500 text-lg font-bold mb-8 max-w-sm">We couldn't find any creators matching your current search criteria.</p>
               <button onClick={()=>{ setSearch(""); setSkillFilter("All"); setCertOnly(false); }}

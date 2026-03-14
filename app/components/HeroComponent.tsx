@@ -11,41 +11,92 @@ function RotatingModel() {
   
   useFrame((state, delta) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.25;
-      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 2) * 0.1;
+      groupRef.current.rotation.y += delta * 0.2;
+      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 1.5) * 0.15;
     }
   });
 
   return (
-    <group ref={groupRef} scale={1.4}>
-      {/* Vision Pro Frame (Silver/Aluminum) */}
+    <group ref={groupRef} scale={1.6}>
+      {/* Main Vision Pro Frame (Silver/Aluminum edge) */}
       <mesh position={[0, 0, 0.4]}>
-        <boxGeometry args={[1.5, 0.8, 0.4]} />
+        <boxGeometry args={[1.5, 0.82, 0.4]} />
         <meshStandardMaterial color="#E5E7EB" roughness={0.3} metalness={0.8} />
       </mesh>
 
-      {/* Vision Pro Glass Front (Curved/Dark) */}
-      <mesh position={[0, 0, 0.61]}>
-        <boxGeometry args={[1.45, 0.75, 0.05]} />
-        <meshStandardMaterial color="#111827" roughness={0.1} metalness={0.9} envMapIntensity={2} />
-      </mesh>
-
-      {/* Subtle screen glow inside the glass (EyeSight approximation) */}
+      {/* Curved Laminated Glass Front */}
       <mesh position={[0, 0, 0.62]}>
-        <boxGeometry args={[1.2, 0.5, 0.01]} />
-        <meshStandardMaterial color="#8B5CF6" emissive="#8B5CF6" emissiveIntensity={0.4} transparent opacity={0.6} />
+        {/* We use a thin cylinder scaled/rotated to fake the curved glass */}
+        <cylinderGeometry args={[1.6, 1.6, 0.85, 32, 1, false, Math.PI * 0.35, Math.PI * 0.3]} />
+        <meshPhysicalMaterial 
+          color="#0f172a" 
+          roughness={0.05} 
+          metalness={0.9} 
+          transmission={0.4}
+          ior={1.5}
+          envMapIntensity={2.5} 
+          clearcoat={1}
+          clearcoatRoughness={0.1}
+        />
       </mesh>
 
-      {/* Solo Knit Band (Fabric Strap, Light Grey) */}
-      <mesh position={[0, 0, -0.2]}>
-        <torusGeometry args={[0.8, 0.2, 16, 64, Math.PI]} />
-        <meshStandardMaterial color="#F3F4F6" roughness={0.9} />
+      {/* Internal "EyeSight" display screen behind glass */}
+      <mesh position={[0, 0, 0.60]}>
+        <boxGeometry args={[1.4, 0.7, 0.05]} />
+        <meshStandardMaterial color="#2d1b4e" emissive="#6d28d9" emissiveIntensity={0.6} />
       </mesh>
 
-      {/* Orange/Coral Accent / Dial (Digital Crown approximation) */}
-      <mesh position={[0.7, 0.35, 0.3]} rotation={[Math.PI / 2, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.08, 0.08, 0.1, 16]} />
-        <meshStandardMaterial color="#FF7F50" roughness={0.3} metalness={0.5} />
+      {/* Camera/Sensor Domes on the front glass */}
+      <mesh position={[-0.4, -0.2, 0.64]}>
+        <capsuleGeometry args={[0.06, 0.05, 16, 16]} />
+        <meshStandardMaterial color="#000000" roughness={0.1} metalness={0.8} />
+      </mesh>
+      <mesh position={[0.4, -0.2, 0.64]}>
+        <capsuleGeometry args={[0.06, 0.05, 16, 16]} />
+        <meshStandardMaterial color="#000000" roughness={0.1} metalness={0.8} />
+      </mesh>
+      <mesh position={[0, -0.3, 0.64]}>
+        <circleGeometry args={[0.04, 32]} />
+        <meshStandardMaterial color="#1a1a1a" roughness={0.1} metalness={0.9} />
+      </mesh>
+
+      {/* Light Seal (Black padding behind frame) */}
+      <mesh position={[0, 0, 0.15]}>
+        <boxGeometry args={[1.48, 0.8, 0.3]} />
+        <meshStandardMaterial color="#1f2937" roughness={0.8} />
+      </mesh>
+
+      {/* Audio Straps (Side arms) */}
+      <mesh position={[-0.78, 0, 0]}>
+        <boxGeometry args={[0.1, 0.15, 0.8]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.5} />
+      </mesh>
+      <mesh position={[0.78, 0, 0]}>
+        <boxGeometry args={[0.1, 0.15, 0.8]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.5} />
+      </mesh>
+
+      {/* Solo Knit Band (Thick 3D Fabric Strap at back) */}
+      <mesh position={[0, 0, -0.45]}>
+        <torusGeometry args={[0.82, 0.22, 32, 64, Math.PI]} />
+        <meshStandardMaterial color="#f9fafb" roughness={1} />
+        {/* Subtle orange accent on band */}
+        <mesh position={[0.82, 0, 0]}>
+          <boxGeometry args={[0.45, 0.05, 0.05]} />
+          <meshStandardMaterial color="#f97316" roughness={0.5} />
+        </mesh>
+      </mesh>
+
+      {/* Digital Crown (Top Right) */}
+      <mesh position={[0.65, 0.42, 0.35]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.1, 0.1, 0.15, 32]} />
+        <meshStandardMaterial color="#e5e7eb" roughness={0.4} metalness={0.9} />
+      </mesh>
+      
+      {/* Top Button (Top Left) */}
+      <mesh position={[-0.65, 0.42, 0.35]}>
+        <boxGeometry args={[0.2, 0.05, 0.1]} />
+        <meshStandardMaterial color="#e5e7eb" roughness={0.4} metalness={0.9} />
       </mesh>
     </group>
   );

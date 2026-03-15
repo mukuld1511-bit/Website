@@ -347,13 +347,14 @@ export default function ModelDetailPage() {
             {/* Stats row */}
             <div className="grid grid-cols-3 gap-3">
               {[
-                { label: "Views",     value: model.views     ?? 0 },
-                { label: "Likes",     value: likeCount              },
-                { label: "Downloads", value: model.downloads ?? 0 },
-              ].map(({ label, value }) => (
-                <div key={label} className="bg-white border border-gray-100 rounded-xl p-3 text-center shadow-sm">
-                  <p className="text-xl font-black text-gray-900">{value.toLocaleString()}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+                { label: "Views",     value: model.views     ?? 0, icon: "👁" },
+                { label: "Likes",     value: likeCount,             icon: "❤️" },
+                { label: "Downloads", value: model.downloads ?? 0, icon: "⬇️" },
+              ].map(({ label, value, icon }) => (
+                <div key={label} className="bg-white border border-gray-100 rounded-xl p-3 text-center shadow-sm hover:border-[#5B4BDB]/30 transition-colors">
+                  <p className="text-base mb-0.5">{icon}</p>
+                  <p className="text-lg font-black text-gray-900">{value.toLocaleString()}</p>
+                  <p className="text-xs text-gray-400">{label}</p>
                 </div>
               ))}
             </div>
@@ -430,7 +431,7 @@ export default function ModelDetailPage() {
             </div>
 
             {/* Metadata */}
-            <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2">
+            <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2.5 text-xs">
               {[
                 { label: "Category", value: model.category ?? "—" },
                 { label: "Format",   value: (model.fileType ?? "").toUpperCase() },

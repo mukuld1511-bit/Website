@@ -86,7 +86,18 @@ export default function ViewerToolbar({
 
       {/* Tool buttons */}
       <div className="flex items-center gap-0.5 pl-1">
-        {btn(cinematic, onCinematicToggle, "🎬", "Cinematic mode")}
+        <button
+          onClick={onCinematicToggle}
+          title="Cinematic mode"
+          className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm transition-all relative ${
+            cinematic ? "bg-[#5B4BDB] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"
+          }`}
+        >
+          🎬
+          {cinematic && (
+            <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+          )}
+        </button>
         {btn(wireframe, onWireframeToggle, (
           <svg viewBox="0 0 16 16" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5">
             <polygon points="8,2 14,12 2,12" />

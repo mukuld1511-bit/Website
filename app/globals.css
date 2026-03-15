@@ -100,8 +100,8 @@ background-size:40px 40px;
 
 /* ── Synthé Aura system ─────────────────────────────────────────── */
 @keyframes aura-pulse {
-  0%, 100% { opacity: 0.5; }
-  50%       { opacity: 1;   }
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 1;    }
 }
 
 @keyframes float-up {
@@ -111,6 +111,40 @@ background-size:40px 40px;
 }
 
 @keyframes shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position:  200% 0; }
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0;  }
+}
+
+/* Card lift on hover — applied globally so every card feels alive */
+.card-hover {
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.22s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.14);
+}
+
+/* Smooth scroll site-wide */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep scroll */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Shimmer animation for skeleton */
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+/* Dark mode shimmer */
+.dark .skeleton-shimmer,
+.skeleton-shimmer-dark {
+  background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
 }

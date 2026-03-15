@@ -73,12 +73,12 @@ export default function ModelCardLive({ model, auraMode = false }: Props) {
     : "text-blue-500";
 
   return (
-    <Link href={`/gallery/${model.id}`} className="block">
+    <Link href={`/gallery/${model.id}`} className="block block group">
       <div
         className={`relative rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300
           ${auraMode
-            ? "border-gray-700 bg-gray-900 hover:border-gray-500 hover:shadow-lg hover:shadow-purple-900/20"
-            : "border-gray-100 bg-white hover:shadow-xl hover:-translate-y-1"}`}
+            ? "border-gray-700 bg-gray-900 group-hover:border-gray-500 group-hover:shadow-lg group-hover:shadow-purple-900/20"
+            : "border-gray-100 bg-white group-hover:shadow-xl group-hover:-translate-y-1"}`}
         onMouseEnter={handleEnter}
         onMouseLeave={() => setHovered(false)}
         onTouchStart={handleEnter}
@@ -141,7 +141,7 @@ export default function ModelCardLive({ model, auraMode = false }: Props) {
         </div>
 
         {/* Info panel */}
-        <div className={`p-4 ${auraMode ? "bg-gray-900" : "bg-white"}`}>
+        <div className={`p-4 transition-colors duration-200 ${auraMode ? "bg-gray-900 group-hover:bg-gray-800" : "bg-white group-hover:bg-gray-50"}`}>
           <h3 className={`font-bold text-sm truncate mb-0.5
             ${auraMode ? "text-white" : "text-gray-900"}`}>
             {model.title}

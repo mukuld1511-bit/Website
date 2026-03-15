@@ -1,0 +1,368 @@
+================================================================================
+  SYNTHÉ — UI POLISH GUIDE
+  For Anti Gravity — apply these ON TOP OF the main build guide
+  Only additions. Zero breaking changes. Zero new packages.
+================================================================================
+
+WHAT THIS FILE IS
+------------------
+The main build guide (SYNTHE_ANTI_GRAVITY_FINAL.txt) gives you working code.
+This file makes it look premium. Apply each section at the end of the relevant day.
+Every change here is additive — paste into existing files, nothing deleted.
+
+================================================================================
+APPLY ON DAY 2 — After gallery page and cards are working
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+1. app/globals.css — ADD these lines at the very bottom
+────────────────────────────────────────────────────────────────────────────────
+
+/* Aura card glow pulse */
+@keyframes aura-pulse {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 1;    }
+}
+
+/* Shimmer for skeleton cards */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0;  }
+}
+
+/* Card lift on hover — applied globally so every card feels alive */
+.card-hover {
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.22s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.14);
+}
+
+/* Smooth scroll site-wide */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep scroll */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Shimmer animation for skeleton */
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+/* Dark mode shimmer */
+.dark .skeleton-shimmer,
+.skeleton-shimmer-dark {
+  background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+
+────────────────────────────────────────────────────────────────────────────────
+2. app/components/gallery/ModelCardLive.tsx
+   FIND this className on the outer div (around line 45):
+────────────────────────────────────────────────────────────────────────────────
+
+FIND:
+  className={`relative rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300
+
+REPLACE WITH:
+  className={`relative rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300 group
+
+  (just adds "group" to the class string — enables child group-hover effects)
+
+────────────────────────────────────────────────────────────────────────────────
+   Then FIND the info div at the bottom of the card (the p-4 section):
+────────────────────────────────────────────────────────────────────────────────
+
+FIND:
+  <div className={`p-4 ${auraMode ? "bg-gray-900" : "bg-white"}`}>
+
+REPLACE WITH:
+  <div className={`p-4 transition-colors duration-200 ${auraMode ? "bg-gray-900 group-hover:bg-gray-800" : "bg-white group-hover:bg-gray-50"}`}>
+
+
+────────────────────────────────────────────────────────────────────────────────
+3. app/components/gallery/SkeletonCard.tsx
+   REPLACE the entire file with this shimmer-animated version:
+────────────────────────────────────────────────────────────────────────────────
+
+"use client";
+
+interface Props { dark?: boolean }
+
+export default function SkeletonCard({ dark = false }: Props) {
+  const shimmerClass = dark ? "skeleton-shimmer-dark" : "skeleton-shimmer";
+  const base         = dark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-100";
+
+  return (
+    <div className={`rounded-2xl border ${base} overflow-hidden`}>
+      <div className={`aspect-square w-full ${shimmerClass}`} />
+      <div className={`p-4 space-y-2.5 ${dark ? "bg-gray-900" : "bg-white"}`}>
+        <div className={`h-4 rounded-lg w-4/5 ${shimmerClass}`} />
+        <div className={`h-3 rounded-lg w-1/2 ${shimmerClass}`} />
+        <div className="flex items-center gap-2 pt-1">
+          <div className={`w-2 h-2 rounded-full ${shimmerClass}`} />
+          <div className={`h-3 rounded-lg w-16 ${shimmerClass}`} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+────────────────────────────────────────────────────────────────────────────────
+4. app/gallery/page.tsx — polish the empty state
+   FIND the empty state div and REPLACE it:
+────────────────────────────────────────────────────────────────────────────────
+
+FIND:
+  <div className="text-center py-24">
+    <p className={`text-lg font-semibold mb-4 ${dark ? "text-gray-400" : "text-gray-500"}`}>
+      {filters.search ? `No results for "${filters.search}"` : "No models yet"}
+    </p>
+    <Link href="/upload">
+      <button className="px-6 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm">
+        Be the first to upload
+      </button>
+    </Link>
+  </div>
+
+REPLACE WITH:
+  <div className="text-center py-24 flex flex-col items-center">
+    <div className={`w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mb-6
+      ${dark ? "bg-gray-800" : "bg-gray-100"}`}>
+      {filters.search ? "🔍" : "📦"}
+    </div>
+    <p className={`text-lg font-bold mb-2 ${dark ? "text-white" : "text-gray-900"}`}>
+      {filters.search ? `No results for "${filters.search}"` : "Nothing here yet"}
+    </p>
+    <p className={`text-sm mb-6 ${dark ? "text-gray-500" : "text-gray-400"}`}>
+      {filters.search ? "Try a different search or clear the filter" : "Be the first to upload something great"}
+    </p>
+    {!filters.search && (
+      <Link href="/upload">
+        <button className="px-6 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
+          Upload a model
+        </button>
+      </Link>
+    )}
+    {filters.search && (
+      <button
+        onClick={() => setFilters({ search: "" })}
+        className={`px-6 py-3 rounded-xl text-sm font-bold border transition-all ${
+          dark ? "bg-gray-800 text-white border-gray-700" : "bg-white text-gray-700 border-gray-200"
+        }`}>
+        Clear search
+      </button>
+    )}
+  </div>
+
+
+================================================================================
+APPLY ON DAY 3 — After Viewer is working
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+5. app/components/Viewer.tsx — ADD a "No model" placeholder that looks designed
+   FIND the early return for missing src:
+────────────────────────────────────────────────────────────────────────────────
+
+FIND:
+  if (!src) {
+    return (
+      <div className="w-full h-96 flex items-center justify-center rounded-xl bg-gray-800">
+        <p className="text-gray-400 text-sm">No model URL</p>
+      </div>
+    );
+  }
+
+REPLACE WITH:
+  if (!src) {
+    return (
+      <div className="w-full rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 flex flex-col items-center justify-center gap-3" style={{ height: 420 }}>
+        <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center text-3xl">📦</div>
+        <p className="text-gray-400 text-sm font-medium">No model to preview</p>
+      </div>
+    );
+  }
+
+
+────────────────────────────────────────────────────────────────────────────────
+6. app/components/ViewerToolbar.tsx — make cinematic button pulse when active
+   FIND the cinematic button inside the btn() calls:
+────────────────────────────────────────────────────────────────────────────────
+
+FIND:
+  {btn(cinematic, onCinematicToggle, "🎬", "Cinematic mode")}
+
+REPLACE WITH:
+  <button
+    onClick={onCinematicToggle}
+    title="Cinematic mode"
+    className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm transition-all relative ${
+      cinematic ? "bg-[#5B4BDB] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"
+    }`}
+  >
+    🎬
+    {cinematic && (
+      <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+    )}
+  </button>
+
+
+================================================================================
+APPLY ON DAY 5 — After model detail page is working
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+7. app/gallery/[modelId]/page.tsx — polish the stats row
+   FIND the 3-column stats grid and REPLACE:
+────────────────────────────────────────────────────────────────────────────────
+
+FIND:
+  <div className="grid grid-cols-3 gap-3">
+    {[
+      { label: "Views",     value: model.views     ?? 0 },
+      { label: "Likes",     value: likeCount              },
+      { label: "Downloads", value: model.downloads ?? 0 },
+    ].map(({ label, value }) => (
+      <div key={label} className="bg-white border border-gray-100 rounded-xl p-3 text-center shadow-sm">
+        <p className="text-xl font-black text-gray-900">{value.toLocaleString()}</p>
+        <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+      </div>
+    ))}
+  </div>
+
+REPLACE WITH:
+  <div className="grid grid-cols-3 gap-3">
+    {[
+      { label: "Views",     value: model.views     ?? 0, icon: "👁" },
+      { label: "Likes",     value: likeCount,             icon: "❤️" },
+      { label: "Downloads", value: model.downloads ?? 0, icon: "⬇️" },
+    ].map(({ label, value, icon }) => (
+      <div key={label} className="bg-white border border-gray-100 rounded-xl p-3 text-center shadow-sm hover:border-[#5B4BDB]/30 transition-colors">
+        <p className="text-base mb-0.5">{icon}</p>
+        <p className="text-lg font-black text-gray-900">{value.toLocaleString()}</p>
+        <p className="text-xs text-gray-400">{label}</p>
+      </div>
+    ))}
+  </div>
+
+
+────────────────────────────────────────────────────────────────────────────────
+8. app/gallery/[modelId]/page.tsx — polish the file info row
+   FIND the file info grid at the bottom of the right panel:
+────────────────────────────────────────────────────────────────────────────────
+
+FIND:
+  <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2">
+
+REPLACE WITH:
+  <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2.5 text-xs">
+
+  (just adds text-xs and slightly more spacing — cleaner at small size)
+
+
+────────────────────────────────────────────────────────────────────────────────
+9. app/components/ARViewer.tsx — make the AR button more premium
+   FIND the AR button and REPLACE:
+────────────────────────────────────────────────────────────────────────────────
+
+FIND:
+  <button onClick={() => setActive(true)}
+    className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#5B4BDB] to-blue-600 text-white font-bold text-sm border-b-[3px] border-[#4438b8] transition-all hover:brightness-110 active:translate-y-[1px]">
+    <span className="text-base">📱</span>
+    View in your room
+  </button>
+
+REPLACE WITH:
+  <button onClick={() => setActive(true)}
+    className="w-full flex items-center justify-center gap-3 py-4 px-4 rounded-xl bg-gradient-to-r from-[#5B4BDB] to-blue-600 text-white font-bold text-sm border-b-[3px] border-[#4438b8] transition-all hover:brightness-110 active:translate-y-[1px] group">
+    <span className="text-lg group-hover:scale-110 transition-transform duration-200">📱</span>
+    <span>View in your room</span>
+    <span className="ml-auto text-white/60 text-xs font-normal">WebXR</span>
+  </button>
+
+
+================================================================================
+APPLY ON DAY 6 — Hackathon day polish pass
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+10. app/page.tsx — ADD the three feature highlight cards to the hero section
+    Find where your existing features/hero section ends and ADD this block:
+────────────────────────────────────────────────────────────────────────────────
+
+Paste this somewhere visible on the homepage (above or below existing features):
+
+  {/* New feature highlights — add to home page */}
+  <section className="py-16 px-4 bg-white">
+    <div className="max-w-5xl mx-auto">
+      <p className="text-center text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
+        What makes SYNTHÉ different
+      </p>
+      <h2 className="text-center text-3xl font-black text-gray-900 mb-12 tracking-tight">
+        Built for the XR generation
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          {
+            icon: "✨",
+            title: "Live 3D Gallery",
+            desc: "Hover any card and the model comes alive — rotating in real-time, right in the gallery.",
+            color: "bg-[#5B4BDB]/10 text-[#5B4BDB]",
+          },
+          {
+            icon: "🎬",
+            title: "Cinematic Viewer",
+            desc: "HDRI lighting, bloom effects, and auto-orbit make every model look like a product reveal.",
+            color: "bg-amber-50 text-amber-600",
+          },
+          {
+            icon: "📱",
+            title: "AR in Your Room",
+            desc: "Tap 'View in your room' on any model. No app. Just open your phone camera and see it there.",
+            color: "bg-blue-50 text-blue-600",
+          },
+        ].map(({ icon, title, desc, color }) => (
+          <div key={title}
+            className="p-6 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
+            <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center text-2xl mb-4`}>
+              {icon}
+            </div>
+            <h3 className="font-black text-gray-900 mb-2">{title}</h3>
+            <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+
+================================================================================
+SUMMARY — ALL UI CHANGES
+================================================================================
+
+globals.css          → ADD: aura-pulse, shimmer, card-hover, scrollbar-hide
+ModelCardLive.tsx    → ADD: group class, group-hover on info panel
+SkeletonCard.tsx     → REPLACE: shimmer animation (CSS class based)
+gallery/page.tsx     → REPLACE: empty state (more designed, with icon + clear btn)
+Viewer.tsx           → REPLACE: "no model" placeholder (designed, not plain text)
+ViewerToolbar.tsx    → REPLACE: cinematic button (adds green pulse dot when active)
+[modelId]/page.tsx   → REPLACE: stats row (icons added), file info (text-xs added)
+ARViewer.tsx         → REPLACE: AR button (more premium, WebXR label)
+page.tsx (home)      → ADD: 3-card feature highlights section
+
+NOTHING DELETED. NO NEW PACKAGES. NO BREAKING CHANGES.
+
+================================================================================
+END
+================================================================================

@@ -241,8 +241,9 @@ export default function Viewer({ url, modelUrl, fileType = "glb", fileSize = 0, 
 
   if (!src) {
     return (
-      <div className="w-full h-96 flex items-center justify-center rounded-xl bg-gray-800">
-        <p className="text-gray-400 text-sm">No model URL</p>
+      <div className="w-full rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 flex flex-col items-center justify-center gap-3" style={{ height: 420 }}>
+        <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center text-3xl">📦</div>
+        <p className="text-gray-400 text-sm font-medium">No model to preview</p>
       </div>
     );
   }

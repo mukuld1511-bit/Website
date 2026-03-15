@@ -212,16 +212,33 @@ function GalleryContent() {
             {[...Array(PAGE_SIZE)].map((_, i) => <SkeletonCard key={i} dark={dark} />)}
           </div>
         ) : displayed.length === 0 ? (
-          <div className="text-center py-24">
-            <div className={`text-6xl mb-4`}>🧐</div>
-            <p className={`text-lg font-semibold mb-4 ${dark ? "text-gray-400" : "text-gray-500"}`}>
-              {filters.search ? `No results for "${filters.search}"` : "No models yet"}
+          <div className="text-center py-24 flex flex-col items-center">
+            <div className={`w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mb-6
+              ${dark ? "bg-gray-800" : "bg-gray-100"}`}>
+              {filters.search ? "🔍" : "📦"}
+            </div>
+            <p className={`text-lg font-bold mb-2 ${dark ? "text-white" : "text-gray-900"}`}>
+              {filters.search ? `No results for "${filters.search}"` : "Nothing here yet"}
             </p>
-            <Link href="/upload">
-              <button className="px-6 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm">
-                Be the first to upload
+            <p className={`text-sm mb-6 ${dark ? "text-gray-500" : "text-gray-400"}`}>
+              {filters.search ? "Try a different search or clear the filter" : "Be the first to upload something great"}
+            </p>
+            {!filters.search && (
+              <Link href="/upload">
+                <button className="px-6 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
+                  Upload a model
+                </button>
+              </Link>
+            )}
+            {filters.search && (
+              <button
+                onClick={() => setFilters({ search: "" })}
+                className={`px-6 py-3 rounded-xl text-sm font-bold border transition-all ${
+                  dark ? "bg-gray-800 text-white border-gray-700" : "bg-white text-gray-700 border-gray-200"
+                }`}>
+                Clear search
               </button>
-            </Link>
+            )}
           </div>
         ) : (
           <>

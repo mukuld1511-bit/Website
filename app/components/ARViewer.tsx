@@ -2,8 +2,10 @@
 import { Suspense, useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
-import { ARButton, XR, useHitTest } from "@react-three/xr";
+import { createXRStore, XR } from "@react-three/xr";
 import * as THREE from "three";
+
+const store = createXRStore();
 
 function HitTestModel({ url }: { url: string }) {
   const ref       = useRef<THREE.Group>(null!);
@@ -17,16 +19,8 @@ function HitTestModel({ url }: { url: string }) {
     if (maxDim > 0) scene.scale.setScalar(0.3 / maxDim);
   }, [scene]);
 
-  useHitTest((hitMatrix: THREE.Matrix4) => {
-    if (ref.current) {
-      hitMatrix.decompose(ref.current.position, ref.current.quaternion, new THREE.Vector3());
-      ref.current.scale.setScalar(0.3);
-      ref.current.visible = true;
-    }
-  });
-
   return (
-    <group ref={ref} visible={false}>
+    <group ref={ref}>
       <primitive object={scene.clone()} dispose={null} />
     </group>
   );
@@ -39,7 +33,6 @@ interface ARViewerProps {
 
 export default function ARViewer({ modelUrl, fileType = "glb" }: ARViewerProps) {
   const [arSupported, setArSupported] = useState<boolean | null>(null);
-  const [active,      setActive]      = useState(false);
 
   useEffect(() => {
     if (typeof navigator === "undefined") return;
@@ -75,39 +68,24 @@ export default function ARViewer({ modelUrl, fileType = "glb" }: ARViewerProps) 
 
   return (
     <div>
-      {!active ? (
-        <button
-          onClick={() => setActive(true)}
-          className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#5B4BDB] to-blue-600 text-white font-bold text-sm border-b-[3px] border-[#4438b8] transition-all hover:brightness-110 active:translate-y-[1px]"
-        >
-          <span className="text-base">📱</span>
-          View in your room
-        </button>
-      ) : (
-        <div className="fixed inset-0 z-[200]" style={{ height: "100dvh", touchAction: "none" }}>
-          <ARButton
-            style={{
-              position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)",
-              padding: "12px 28px", background: "#5B4BDB", color: "#fff", border: "none",
-              borderRadius: 12, fontWeight: 700, fontSize: 14, cursor: "pointer", zIndex: 10,
-            }}
-          />
-          <button
-            onClick={() => setActive(false)}
-            className="absolute top-5 right-5 z-10 w-10 h-10 rounded-full bg-black/70 text-white font-bold text-lg flex items-center justify-center"
-          >
-            ×
-          </button>
-          <Canvas>
-            <XR>
-              <ambientLight intensity={1} />
-              <Suspense fallback={null}>
-                <HitTestModel url={modelUrl} />
-              </Suspense>
-            </XR>
-          </Canvas>
-        </div>
-      )}
+      <button
+        onClick={() => store.enterAR()}
+        className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#5B4BDB] to-blue-600 text-white font-bold text-sm border-b-[3px] border-[#4438b8] transition-all hover:brightness-110 active:translate-y-[1px]"
+      >
+        <span className="text-base">📱</span>
+        View in your room
+      </button>
+
+      <div className="fixed inset-0 z-[200] pointer-events-none" style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}>
+        <Canvas>
+          <XR store={store}>
+            <ambientLight intensity={1} />
+            <Suspense fallback={null}>
+              <HitTestModel url={modelUrl} />
+            </Suspense>
+          </XR>
+        </Canvas>
+      </div>
     </div>
   );
 }

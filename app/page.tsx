@@ -284,6 +284,49 @@ export default function HomePage() {
         {/* HERO */}
         <HeroComponent user={user} stats={stats} statsLoading={statsLoading} />
 
+        {/* New feature highlights — add to home page */}
+        <section className="py-16 px-4 bg-white">
+          <div className="max-w-5xl mx-auto">
+            <p className="text-center text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
+              What makes SYNTHÉ different
+            </p>
+            <h2 className="text-center text-3xl font-black text-gray-900 mb-12 tracking-tight">
+              Built for the XR generation
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                {
+                  icon: "✨",
+                  title: "Live 3D Gallery",
+                  desc: "Hover any card and the model comes alive — rotating in real-time, right in the gallery.",
+                  color: "bg-[#5B4BDB]/10 text-[#5B4BDB]",
+                },
+                {
+                  icon: "🎬",
+                  title: "Cinematic Viewer",
+                  desc: "HDRI lighting, bloom effects, and auto-orbit make every model look like a product reveal.",
+                  color: "bg-amber-50 text-amber-600",
+                },
+                {
+                  icon: "📱",
+                  title: "AR in Your Room",
+                  desc: "Tap 'View in your room' on any model. No app. Just open your phone camera and see it there.",
+                  color: "bg-blue-50 text-blue-600",
+                },
+              ].map(({ icon, title, desc, color }) => (
+                <div key={title}
+                  className="p-6 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
+                  <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center text-2xl mb-4`}>
+                    {icon}
+                  </div>
+                  <h3 className="font-black text-gray-900 mb-2">{title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* SCROLLING GALLERY */}
         <div className="bg-white border-y border-gray-200 py-16">
           <ScrollingGallery />

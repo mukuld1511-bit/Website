@@ -1,0 +1,490 @@
+================================================================================
+  SYNTHÉ — FULL PROJECT CONTEXT FILE
+  For use when starting a new AI chat (Claude, ChatGPT, Gemini, etc.)
+  Generated: 2026-03-15
+================================================================================
+
+================================================================================
+SECTION 1 — WHAT IS THIS PROJECT?
+================================================================================
+
+Project Name: SYNTHÉ (also written "Scynthé" in some places)
+Live URL: https://synthe-nu.vercel.app
+GitHub Branch: main → auto-deploys to Vercel
+
+SYNTHÉ is a full-stack web platform for 3D designers, AR/VR developers, and
+AutoCAD engineers. It acts as:
+  - A marketplace where creators upload, sell, and showcase 3D/AR/VR work
+  - A social/professional network for XR (Extended Reality) developers
+  - A project collaboration hub (post & take requests)
+  - An admin-controlled certification/verification system
+
+Target Users:
+  - 3D artists & modellers (upload GLB, GLTF, OBJ, FBX models)
+  - AR/VR developers (upload Unity/Unreal ZIP builds)
+  - AutoCAD engineers (upload DWG, DXF blueprints)
+  - Clients who want to hire or commission XR work
+  - PIET (academic institution) students & collaborators
+
+
+================================================================================
+SECTION 2 — TECH STACK
+================================================================================
+
+Layer               | Technology
+--------------------|----------------------------------------------------------
+Framework           | Next.js (App Router), currently v16.1.6 (package.json)
+Language            | TypeScript
+Styling             | Tailwind CSS v3 + tailwind-merge + clsx
+Animations          | Framer Motion v12 + GSAP v3
+Authentication      | Firebase Auth (Email/Password + Google Sign-In)
+Database            | Firebase Firestore (all metadata, user records, chats)
+File Storage        | Supabase Storage (models + thumbnails buckets — public)
+Profile Images      | Cloudinary (profile avatars only)
+Payments            | Razorpay
+3D Rendering        | Three.js + three-stdlib (GLTFLoader, OBJLoader, OrbitControls)
+AR/VR Viewer        | @react-three/fiber + @react-three/drei
+Math                | mathjs (used in some calculations)
+Charts              | Recharts (admin analytics)
+HTTP Client         | Axios
+Hosting             | Vercel (Hobby plan, auto-deploy from GitHub main)
+Font                | Geist Sans + Geist Mono (Next.js font)
+
+
+================================================================================
+SECTION 3 — ENVIRONMENT VARIABLES
+================================================================================
+
+File: .env.local (NOT committed to GitHub — must be set in Vercel separately)
+
+NEXT_PUBLIC_SUPABASE_URL=https://xmzkuyhltvoiummebxxm.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<JWT eyJ... anon key from Supabase Dashboard → Settings → API>
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=dq5mkuj9y
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=zenith-cloud
+NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_live_SQmHdHYmCoWkBT
+RAZORPAY_KEY_SECRET=<server-side only — never expose in client code>
+
+Firebase config is hardcoded in lib/firebase.ts (not via env vars).
+
+IMPORTANT NOTE: The Supabase anon key must be the classic JWT format (starts with
+"eyJ..."), NOT the new "sb_publishable_..." format. Using the wrong format causes
+uploads to fail silently.
+
+
+================================================================================
+SECTION 4 — COMPLETE PROJECT STRUCTURE
+================================================================================
+
+c:\Users\Mukul\Downloads\Website\
+│
+├── app/                          ← Next.js App Router root
+│   ├── layout.tsx                ← Root layout: wraps all pages with <Navbar> + <FloatingInbox>
+│   ├── page.tsx                  ← Home page (hero, stats, scrolling carousel, features)
+│   ├── globals.css               ← Global CSS resets + base Tailwind
+│   ├── favicon.ico
+│   │
+│   ├── components/               ← Shared UI components
+│   │   ├── Navbar.tsx            ← Top navigation bar (dropdown menus, auth state, mobile drawer)
+│   │   ├── Footer.tsx            ← Site footer with links
+│   │   ├── HeroComponent.tsx     ← Home page hero section with animated background
+│   │   ├── AnimatedBackground.tsx← Canvas/WebGL animated background
+│   │   ├── XRBackground.tsx      ← XR-themed animated background variant
+│   │   ├── FeatureCard.tsx       ← Individual feature highlight card
+│   │   ├── FeatureSection.tsx    ← Section wrapper for features
+│   │   ├── ScrollingGallery.tsx  ← Auto-scrolling horizontal model gallery strip
+│   │   ├── DeveloperCard.tsx     ← Card displaying a developer's profile info
+│   │   ├── DeveloperAnalytics.tsx← Analytics charts for developer dashboard
+│   │   ├── AdminAnalytics.tsx    ← Analytics charts for admin dashboard
+│   │   ├── FloatingInbox.tsx     ← Floating chat/messages widget (shown site-wide)
+│   │   ├── MobileNav.tsx         ← Mobile navigation drawer component
+│   │   ├── MagneticButton.tsx    ← Interactive button with magnetic hover effect
+│   │   ├── Viewer.tsx            ← 3D model viewer (Three.js — GLB, GLTF, OBJ support)
+│   │   ├── gallery/
+│   │   │   └── UploadModel.tsx   ← Quick upload modal used inside gallery page
+│   │   └── payment/              ← Payment-related UI components
+│   │
+│   ├── api/                      ← Next.js API Routes (server-side)
+│   │   ├── create-order/         ← POST: creates a Razorpay order
+│   │   ├── verify-payment/       ← POST: verifies Razorpay payment signature
+│   │   └── tutor/                ← Tutoring session booking API
+│   │
+│   ├── gallery/                  ← 3D Model + AR/VR gallery
+│   │   ├── page.tsx              ← Gallery listing page (3D | AR | VR tabs, filter, search)
+│   │   └── [modelId]/            ← Dynamic model detail page
+│   │       └── page.tsx          ← Model viewer, comments, likes, download, purchase
+│   │
+│   ├── upload/                   ← Upload page
+│   │   └── page.tsx              ← File upload form: 3D models or AR/VR builds → Supabase
+│   │
+│   ├── autocad/                  ← AutoCAD hub
+│   │   └── page.tsx              ← DWG/DXF blueprint gallery
+│   │
+│   ├── connect/                  ← Developer marketplace
+│   │   ├── page.tsx              ← Browse verified developers, filter by skill
+│   │   └── chat/                 ← Direct messaging between users
+│   │
+│   ├── hire/                     ← Mentorship/tutoring booking
+│   │   └── page.tsx              ← Book 1-on-1 sessions with developers
+│   │
+│   ├── learn/                    ← Live workshops page
+│   │   └── page.tsx              ← List of upcoming online learning events
+│   │
+│   ├── requests/                 ← Project collaboration requests
+│   │   ├── open/page.tsx         ← Browse open project requests from clients
+│   │   └── post/page.tsx         ← Post a new project request
+│   │
+│   ├── project-chat/             ← Real-time chat for project negotiation
+│   │   └── [chatId]/page.tsx     ← Chat room page (Firestore real-time)
+│   │
+│   ├── dashboard/                ← Role-based dashboards
+│   │   ├── page.tsx              ← Dashboard router (redirects based on role)
+│   │   ├── admin/page.tsx        ← Admin panel: manage models, users, apps, certs
+│   │   ├── developer/page.tsx    ← Developer dashboard: earnings, models, requests
+│   │   ├── user/page.tsx         ← Client dashboard: purchases, active projects
+│   │   ├── access-requests/      ← Manage access request approvals
+│   │   └── mentorship-bookings/  ← View mentorship session bookings
+│   │
+│   ├── profile/                  ← User profile editor
+│   │   └── page.tsx              ← Edit name, bio, avatar (Cloudinary), skills
+│   │
+│   ├── create-profile/           ← First-time profile creation flow
+│   │
+│   ├── certification/            ← Developer certification
+│   │   └── page.tsx              ← Apply for a verified certification badge
+│   │
+│   ├── collaborators/            ← PIET academic collaboration page
+│   │   └── page.tsx              ← Showcase PIET student/faculty collaborators
+│   │
+│   ├── gyop/                     ← GYOP (Grow Your Own Platform) feature
+│   │   └── page.tsx              ← GYOP landing/info page
+│   │
+│   ├── join/                     ← Join as developer onboarding
+│   │   └── page.tsx              ← Apply to become a verified developer
+│   │
+│   ├── login/                    ← Login page (Firebase Auth)
+│   ├── signup/                   ← Signup page (Firebase Auth)
+│   ├── notifications/            ← Notifications page
+│   ├── project/                  ← Individual project pages
+│   └── asset-library/            ← Asset library feature
+│
+├── lib/                          ← Shared library/utility files
+│   ├── firebase.ts               ← Firebase app init (Auth, Firestore, Storage)
+│   ├── supabase.ts               ← Supabase client (createClient for file storage)
+│   ├── razorpay.ts               ← Razorpay SDK init + order helpers
+│   ├── checkAccess.ts            ← Checks if user has purchased a paid model
+│   └── middleware.ts             ← Next.js middleware (route protection)
+│
+├── hooks/
+│   └── useAuth.ts                ← Custom React hook: returns current Firebase user
+│
+├── types/
+│   └── gallery.ts                ← TypeScript types for gallery/model objects
+│
+├── scripts/
+│   └── check-url.js              ← Utility: checks if Supabase URLs are accessible
+│
+├── public/                       ← Static assets
+│
+├── .env.local                    ← Local environment variables (NOT in Git)
+├── next.config.ts                ← Next.js config
+├── tailwind.config.js            ← Tailwind CSS config
+├── tsconfig.json                 ← TypeScript config
+├── eslint.config.mjs             ← ESLint config
+├── postcss.config.mjs            ← PostCSS config
+└── package.json                  ← Project name: "zenith", all dependencies
+
+
+================================================================================
+SECTION 5 — FIRESTORE DATABASE SCHEMA
+================================================================================
+
+Collection: models
+  Fields: id, title, description, fileUrl (Supabase), thumbnailUrl (Supabase),
+          type (3d|ar|vr|autocad), genre (game|app|visualization|...), 
+          price (0 = free), uploaderId, uploaderName, uploaderEmail,
+          createdAt, views, likes, downloads, comments[]
+
+Collection: users
+  Fields: uid, displayName, email, photoURL, role (user|developer|admin),
+          bio, skills[], portfolio[], createdAt, isCertified
+
+Collection: developerApplications
+  Fields: uid, name, email, skills, portfolioUrl, status (pending|approved|rejected),
+          appliedAt
+
+Collection: certificationRequests
+  Fields: uid, name, email, reason, portfolioUrl, status, submittedAt
+
+Collection: projectRequests
+  Fields: id, title, description, budget, skills[], postedBy, status (open|in-progress|closed),
+          createdAt
+
+Collection: projectChats
+  Fields: id, participants[], messages[], modelRequestId, createdAt
+
+Collection: purchases
+  Fields: userId, modelId, amount, razorpayOrderId, razorpayPaymentId, paidAt
+
+Collection: notifications
+  Fields: userId, message, type, read, createdAt
+
+
+================================================================================
+SECTION 6 — NAVIGATION STRUCTURE (Navbar)
+================================================================================
+
+The Navbar (app/components/Navbar.tsx) has dropdown menus:
+
+1. XR Games
+   - VR Games → /gallery?mode=vr&genre=game
+   - AR Games → /gallery?mode=ar&genre=game
+   - Upload Game → /upload
+
+2. XR Apps
+   - AR Apps → /gallery?mode=ar&genre=app
+   - VR Apps → /gallery?mode=vr&genre=app
+   - Post App Project → /requests/post
+
+3. [Divider]
+
+4. 3D Gallery
+   - 3D Model Gallery → /gallery
+   - Upload 3D Model → /upload
+   - Open Requests → /requests/open
+
+5. AutoCAD
+   - AutoCAD Hub → /autocad
+   - Upload CAD File → /upload
+   - PIET Collaboration → /collaborators
+
+6. [Divider]
+
+7. Learn & Connect
+   - Connect & Learn → /connect
+   - Project Board → /requests/open
+   - Post a Project → /requests/post
+   - Mentorship → /hire
+   - Live Workshops → /learn
+
+8. PIET (standalone link) → /collaborators
+
+Profile dropdown (authenticated users) links to:
+  Dashboard, Profile, Notifications, Upload Model, Certification, PIET Collab, Sign Out
+
+Auth buttons (unauthenticated): Sign In → /login | Get Started → /join
+
+
+================================================================================
+SECTION 7 — KEY FEATURES IN DETAIL
+================================================================================
+
+--- 7.1 UPLOAD SYSTEM ---
+Route: /upload
+Supported formats:
+  - 3D Models: GLB, GLTF, OBJ, FBX, DWG, DXF (up to 500MB)
+  - AR/VR Builds: ZIP package (up to 2GB)
+Storage flow:
+  1. File → Supabase Storage, bucket "models" (public)
+  2. Thumbnail image → Supabase Storage, bucket "thumbnails" (public)
+  3. Metadata → Firestore "models" collection
+Monetization: Free OR paid listing. If paid, Razorpay handles purchase.
+
+--- 7.2 GALLERY & 3D VIEWER ---
+Route: /gallery
+  - Tab filter: 3D Models | AR Builds | VR Builds
+  - Search by name, filter by type/genre/price
+Route: /gallery/[modelId]
+  - In-browser 3D viewer using Three.js (app/components/Viewer.tsx)
+  - Supports GLB, GLTF, OBJ formats
+  - Comments system (Firestore)
+  - Like (toggle), views counter, download counter
+  - Paid model: gated via Razorpay → /api/create-order → /api/verify-payment
+
+--- 7.3 DEVELOPER CONNECT ---
+Route: /connect
+  - Browse developers (filter by skills/certification)
+  - DeveloperCard.tsx shows name, bio, skills, rating, hire/chat buttons
+Route: /connect/chat
+  - Direct messaging (Firestore real-time)
+Route: /hire
+  - Book 1-on-1 mentorship/tutoring sessions
+Route: /requests/open
+  - Public board of project requests from clients
+Route: /requests/post
+  - Authenticated users can post project requests
+
+--- 7.4 PAYMENTS ---
+Flow:
+  1. User clicks "Buy" on paid model
+  2. Frontend calls POST /api/create-order (creates Razorpay order)
+  3. Razorpay checkout opens in browser
+  4. On success, frontend calls POST /api/verify-payment (verifies HMAC signature)
+  5. If verified → write to Firestore "purchases" → grant download access
+Fee structure: 15% platform fee + ~2% Razorpay processing fee
+
+--- 7.5 AUTHENTICATION ---
+Firebase Auth with:
+  - Email + Password
+  - Google OAuth Sign-In
+After sign-up: user doc created in Firestore "users" with role = "user"
+Roles: user | developer | admin
+Role stored in Firestore, checked via lib/checkAccess.ts and middleware
+
+--- 7.6 ADMIN PANEL ---
+Route: /dashboard/admin (role = admin only)
+Features:
+  - View/delete any model
+  - Change user roles (promote to developer/admin)
+  - Approve/reject developer applications
+  - Approve/reject certification requests
+  - View platform stats (AdminAnalytics.tsx + Recharts)
+
+--- 7.7 AUTOCAD HUB ---
+Route: /autocad
+  - Separate gallery for DWG/DXF blueprints
+  - Similar structure to main gallery
+
+--- 7.8 COLLABORATORS / PIET ---
+Route: /collaborators
+  - Showcases PIET (academic institution) student/faculty collaborators
+  - Academic partnership section
+
+--- 7.9 CERTIFICATION ---
+Route: /certification
+  - Developers can apply for a "Verified" badge
+  - Requests go to Firestore "certificationRequests"
+  - Admin approves → updates user doc field: isCertified = true
+
+--- 7.10 REAL-TIME PROJECT CHAT ---
+Route: /project-chat/[chatId]
+  - Firestore onSnapshot listener for real-time messages
+  - Used for project negotiation between client and developer
+
+
+================================================================================
+SECTION 8 — DESIGN SYSTEM
+================================================================================
+
+Color Palette:
+  - Primary brand: #5B4BDB (indigo/purple)
+  - Secondary gradient: blue-600 → pink-500
+  - Logo gradient: from-blue-600 to-pink-500 (hover: pink-500 to orange-400)
+  - Background: white / gray-50
+  - Borders: gray-100, gray-200
+  - Text: gray-900 (primary), gray-600 (secondary), gray-500 (muted)
+
+Typography:
+  - Font: Geist Sans + Geist Mono (Google Fonts via next/font)
+  - Logo: font-black, text-3xl, tracking-tighter
+
+Component Patterns:
+  - Cards: rounded-2xl or rounded-xl, shadow-sm, border border-gray-200
+  - Buttons: rounded-xl, border-b-[3px] for 3D press effect, active:translate-y
+  - Dropdowns: rounded-xl, shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]
+  - Inputs: standard Tailwind form styling
+
+Animations:
+  - Framer Motion: page transitions, navbar dropdowns (opacity + y + scale)
+  - GSAP: used for advanced scroll-based animations on home page
+  - Hover effects: scale-105, group-hover:bg-[#5B4BDB]/10, transition-all
+
+
+================================================================================
+SECTION 9 — KNOWN ISSUES & NOTES (as of March 2026)
+================================================================================
+
+1. SUPABASE ANON KEY FORMAT
+   The Supabase anon key must be a JWT (starts with "eyJ...").
+   The new "sb_publishable_..." format does NOT work for file uploads.
+   Fix: Go to Supabase Dashboard → Settings → API → copy "anon public" JWT key
+   → update .env.local AND Vercel environment variables → redeploy.
+
+2. VERCEL DEPLOYMENT
+   Hobby plan: only one deployment at a time.
+   If a deployment gets stuck on "Initializing", cancel it in:
+   Vercel Dashboard → Deployments → Cancel → then trigger a new commit/deploy.
+
+3. DOWNLOAD URLS
+   Models uploaded to Supabase have public URLs.
+   Older models may have Cloudinary URLs (legacy).
+   The download button in gallery/[modelId]/page.tsx handles both URL formats.
+
+4. PROJECT NAME INCONSISTENCY
+   - package.json: "zenith" (old name)
+   - Displayed name: "SCYNTHÉ" or "SYNTHÉ"
+   - layout.tsx title: "Scynthé"
+   These are all the same project — naming evolved during development.
+
+5. FIREBASE STORAGE vs SUPABASE
+   Firebase Storage is initialized in lib/firebase.ts but NOT used for models.
+   All model/thumbnail storage is on Supabase.
+   Firebase Storage may be unused legacy code.
+
+
+================================================================================
+SECTION 10 — LOCAL DEVELOPMENT
+================================================================================
+
+Prerequisites: Node.js 18+, npm
+
+Install dependencies:
+  npm install
+
+Run dev server:
+  npm run dev
+  → Opens at http://localhost:3000
+
+Build for production:
+  npm run build
+
+Lint:
+  npm run lint
+
+Environment:
+  Copy .env.local values above into a local .env.local file.
+  Never commit .env.local to Git.
+
+
+================================================================================
+SECTION 11 — DEPLOYMENT
+================================================================================
+
+Platform: Vercel (Hobby)
+Trigger: Push to GitHub main branch → auto-deploy
+Environment Variables: Must be set in Vercel Project Settings → Environment Variables
+  (The .env.local file is in .gitignore and is NOT deployed automatically)
+
+After changing environment variables in Vercel:
+  → Go to Vercel Dashboard → Project → Settings → Environment Variables
+  → Add/update variables
+  → Trigger a new deployment (push a commit or click "Redeploy")
+
+
+================================================================================
+SECTION 12 — HOW TO HELP ME (CONTINUATION PROMPT)
+================================================================================
+
+When I give you this file at the start of a new chat, please:
+
+1. Read the entire file to understand the project context.
+2. Remember: this is a Next.js 16 App Router, TypeScript, Tailwind CSS project.
+3. Always use Supabase (not Firebase Storage) for file/model uploads.
+4. Always use Firestore for database operations.
+5. Preserve the existing design system (#5B4BDB accent, rounded corners, white/gray backgrounds).
+6. Keep components in app/components/, utilities in lib/, hooks in hooks/.
+7. Follow existing code style: "use client" where needed, typed props in TypeScript.
+8. Don't modify package.json dependencies unless asked.
+9. The project is hosted on Vercel — avoid Node.js APIs that don't work in the
+   Vercel serverless edge runtime.
+10. When writing API routes, place them in app/api/[name]/route.ts format.
+
+Current areas that commonly need work:
+  - Upload flow (Supabase key issues)
+  - Gallery page (pagination, filtering)
+  - Connect/Developer marketplace
+  - Admin dashboard features
+  - New pages/features as requested
+
+================================================================================
+END OF CONTEXT FILE
+================================================================================

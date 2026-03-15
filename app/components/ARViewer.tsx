@@ -70,10 +70,11 @@ export default function ARViewer({ modelUrl, fileType = "glb" }: ARViewerProps) 
     <div>
       <button
         onClick={() => store.enterAR()}
-        className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#5B4BDB] to-blue-600 text-white font-bold text-sm border-b-[3px] border-[#4438b8] transition-all hover:brightness-110 active:translate-y-[1px]"
+        className="w-full flex items-center justify-center gap-3 py-4 px-4 rounded-xl bg-gradient-to-r from-[#5B4BDB] to-blue-600 text-white font-bold text-sm border-b-[3px] border-[#4438b8] transition-all hover:brightness-110 active:translate-y-[1px] group"
       >
-        <span className="text-base">📱</span>
-        View in your room
+        <span className="text-lg group-hover:scale-110 transition-transform duration-200">📱</span>
+        <span>View in your room</span>
+        <span className="ml-auto text-white/60 text-xs font-normal">WebXR</span>
       </button>
 
       <div className="fixed inset-0 z-[200] pointer-events-none" style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}>

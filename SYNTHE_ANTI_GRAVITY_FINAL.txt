@@ -1,0 +1,1966 @@
+================================================================================
+  SYNTHÉ — ANTI GRAVITY BUILD GUIDE v2 (CORRECTED)
+  Based on full 73-file project structure scan
+  Days 2 · 3 · 4 · 5 — Every file, correct paths, correct imports
+  Day 1 (R2 migration) already done by Mukul.
+================================================================================
+
+CORRECTIONS FROM v1 (READ THIS FIRST)
+---------------------------------------
+After seeing the full project file structure, these paths changed:
+
+  OLD (wrong)                              NEW (correct)
+  app/components/ModelCardLive.tsx     →   app/components/gallery/ModelCardLive.tsx
+  app/components/ModelCardPreview.tsx  →   app/components/gallery/ModelCardPreview.tsx
+  app/components/SkeletonCard.tsx      →   app/components/gallery/SkeletonCard.tsx
+  hooks/useGalleryFilters.ts           →   hooks/useGalleryFilters.ts  (same, correct)
+
+  Also: existing app/components/gallery/ModelCard.tsx and GalleryFilters.tsx
+  are NOT deleted — they stay. We add NEW files alongside them.
+
+INSTALL ALL PACKAGES IN ONE GO (run this on Day 2, covers all days):
+  npm install @react-three/fiber @react-three/drei @react-three/postprocessing @react-three/xr
+
+HOW TO USE THIS FILE
+----------------------
+Find the day. Read BEFORE YOU CODE. Copy each file between
+━━━ FILE START and ━━━ FILE END markers. Check every done box.
+
+
+================================================================================
+DAY 2 — MARCH 16 — GALLERY OVERHAUL
+Goal: Gallery cards come alive with live 3D on hover. Cards glow.
+================================================================================
+
+BEFORE YOU CODE
+----------------
+1. npm install @react-three/fiber @react-three/drei
+2. In Firestore console — add to 3 existing model documents:
+     engagementScore: 85   (trending/amber)
+     engagementScore: 45   (popular/purple)
+     engagementScore: 10   (new/blue)
+3. In app/globals.css — paste at the bottom:
+     @keyframes aura-pulse {
+       0%, 100% { opacity: 0.5; }
+       50%       { opacity: 1;   }
+     }
+
+FILES TODAY (4 total):
+  NEW:     app/components/gallery/ModelCardPreview.tsx
+  NEW:     app/components/gallery/ModelCardLive.tsx
+  NEW:     app/components/AuraGlow.tsx
+  REPLACE: app/gallery/page.tsx
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE START → app/components/AuraGlow.tsx  [NEW]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"use client";
+
+interface AuraGlowProps {
+  score: number;
+}
+
+export default function AuraGlow({ score }: AuraGlowProps) {
+  if (score <= 0) return null;
+
+  const glow =
+    score >= 70
+      ? "0 0 8px 2px #EF9F2766, 0 0 24px 6px #EF9F2733"
+      : score >= 30
+      ? "0 0 6px 2px #5B4BDB55, 0 0 18px 5px #5B4BDB22"
+      : "0 0 5px 1px #378ADD44, 0 0 14px 4px #378ADD1A";
+
+  const duration =
+    score >= 70 ? "1.4s" : score >= 30 ? "2.2s" : "3.2s";
+
+  return (
+    <div
+      className="absolute inset-0 rounded-2xl pointer-events-none"
+      style={{
+        boxShadow: glow,
+        animation: `aura-pulse ${duration} ease-in-out infinite`,
+        zIndex: 1,
+        borderRadius: "inherit",
+      }}
+    />
+  );
+}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE END
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE START → app/components/gallery/ModelCardPreview.tsx  [NEW]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"use client";
+import { Suspense, useEffect, useRef } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
+import { useGLTF, OrbitControls, Environment } from "@react-three/drei";
+import * as THREE from "three";
+
+function AutoScaledModel({ url }: { url: string }) {
+  const { scene } = useGLTF(url);
+
+  useEffect(() => {
+    if (!scene) return;
+    const box    = new THREE.Box3().setFromObject(scene);
+    const center = box.getCenter(new THREE.Vector3());
+    const size   = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    if (maxDim > 0) scene.scale.setScalar(1.8 / maxDim);
+    scene.position.sub(center.multiplyScalar(1.8 / maxDim));
+  }, [scene]);
+
+  return <primitive object={scene} dispose={null} />;
+}
+
+function DarkBackground() {
+  const { scene } = useThree();
+  useEffect(() => { scene.background = new THREE.Color("#111111"); }, []);
+  return null;
+}
+
+export default function ModelCardPreview({ url }: { url: string }) {
+  return (
+    <Canvas
+      camera={{ position: [0, 0, 3], fov: 45 }}
+      gl={{ antialias: true }}
+      style={{ width: "100%", height: "100%" }}
+    >
+      <DarkBackground />
+      <ambientLight intensity={0.7} />
+      <directionalLight position={[5, 5, 5]} intensity={1.2} />
+      <Suspense fallback={null}>
+        <AutoScaledModel url={url} />
+        <Environment preset="city" background={false} />
+      </Suspense>
+      <OrbitControls
+        enableZoom={false}
+        enablePan={false}
+        autoRotate
+        autoRotateSpeed={3}
+        makeDefault
+      />
+    </Canvas>
+  );
+}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE END
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE START → app/components/gallery/ModelCardLive.tsx  [NEW]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import AuraGlow from "../AuraGlow";
+
+const ModelCardPreview = dynamic(
+  () => import("./ModelCardPreview"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full flex items-center justify-center bg-gray-900">
+        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+      </div>
+    ),
+  }
+);
+
+export interface ModelData {
+  id: string;
+  title: string;
+  description?: string;
+  thumbnailUrl?: string;
+  modelUrl: string;
+  fileType?: string;
+  category?: string;
+  tags?: string[];
+  isPaid?: boolean;
+  price?: number;
+  authorName?: string;
+  authorId?: string;
+  engagementScore?: number;
+  downloads?: number;
+  likes?: number;
+  views?: number;
+  fileSize?: number;
+}
+
+interface Props {
+  model: ModelData;
+  auraMode?: boolean;
+}
+
+export default function ModelCardLive({ model, auraMode = false }: Props) {
+  const [hovered,        setHovered]        = useState(false);
+  const [previewMounted, setPreviewMounted] = useState(false);
+
+  const score    = model.engagementScore ?? 0;
+  const canLive  = ["glb", "gltf"].includes((model.fileType ?? "").toLowerCase());
+
+  const handleEnter = () => {
+    setHovered(true);
+    if (canLive) setPreviewMounted(true);
+  };
+
+  return (
+    <Link href={`/gallery/${model.id}`} className="block">
+      <div
+        className={`relative rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300
+          ${auraMode
+            ? "border-gray-700 bg-gray-900 hover:border-gray-500"
+            : "border-gray-100 bg-white hover:shadow-xl hover:-translate-y-1"}`}
+        onMouseEnter={handleEnter}
+        onMouseLeave={() => setHovered(false)}
+        onTouchStart={handleEnter}
+      >
+        <AuraGlow score={score} />
+
+        {/* Media */}
+        <div className="relative aspect-square overflow-hidden bg-gray-100">
+          {model.thumbnailUrl ? (
+            <img
+              src={model.thumbnailUrl}
+              alt={model.title}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500
+                ${hovered && canLive && previewMounted ? "opacity-0" : "opacity-100"}`}
+            />
+          ) : (
+            <div className={`absolute inset-0 flex items-center justify-center text-5xl
+              ${auraMode ? "bg-gray-800" : "bg-gradient-to-br from-gray-100 to-gray-200"}`}>
+              📦
+            </div>
+          )}
+
+          {previewMounted && (
+            <div className={`absolute inset-0 transition-opacity duration-500
+              ${hovered ? "opacity-100" : "opacity-0"}`}>
+              <ModelCardPreview url={model.modelUrl} />
+            </div>
+          )}
+
+          <div className="absolute top-2 left-2 z-20">
+            <span className="px-2 py-1 rounded-lg bg-black/70 text-white text-xs font-bold uppercase">
+              {model.fileType ?? "3D"}
+            </span>
+          </div>
+
+          <div className="absolute top-2 right-2 z-20">
+            {model.isPaid && model.price
+              ? <span className="px-2 py-1 rounded-lg bg-green-500 text-white text-xs font-bold">₹{model.price}</span>
+              : <span className="px-2 py-1 rounded-lg bg-blue-500 text-white text-xs font-bold">Free</span>
+            }
+          </div>
+
+          {hovered && canLive && previewMounted && (
+            <div className="absolute bottom-2 left-2 z-20 flex items-center gap-1.5 px-2 py-1 rounded-lg bg-black/70">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-white text-xs font-medium">Live 3D</span>
+            </div>
+          )}
+        </div>
+
+        {/* Info */}
+        <div className={`p-4 ${auraMode ? "bg-gray-900" : "bg-white"}`}>
+          <h3 className={`font-bold text-sm truncate mb-0.5 ${auraMode ? "text-white" : "text-gray-900"}`}>
+            {model.title}
+          </h3>
+          <p className={`text-xs truncate ${auraMode ? "text-gray-400" : "text-gray-500"}`}>
+            {model.authorName ?? "Unknown"}
+          </p>
+          {score > 0 && (
+            <div className="flex items-center gap-1.5 mt-2">
+              <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${
+                score >= 70 ? "bg-amber-400" : score >= 30 ? "bg-purple-400" : "bg-blue-400"
+              }`} />
+              <span className={`text-xs font-semibold ${
+                score >= 70 ? "text-amber-500" : score >= 30 ? "text-purple-500" : "text-blue-500"
+              }`}>
+                {score >= 70 ? "Trending" : score >= 30 ? "Popular" : "New"}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
+}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE END
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE START → app/gallery/page.tsx  [REPLACE — Day 2 version, Day 4 replaces again]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"use client";
+import { useState, useEffect } from "react";
+import { collection, query, where, orderBy, getDocs, limit } from "firebase/firestore";
+import { db } from "../../lib/firebase";
+import { useSearchParams, useRouter } from "next/navigation";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import ModelCardLive, { ModelData } from "../components/gallery/ModelCardLive";
+import Link from "next/link";
+import { motion } from "framer-motion";
+
+type TabMode  = "3d" | "ar" | "vr" | "autocad";
+type ViewMode = "grid" | "aura";
+
+const TABS: { key: TabMode; label: string }[] = [
+  { key: "3d",      label: "3D Models" },
+  { key: "ar",      label: "AR"        },
+  { key: "vr",      label: "VR"        },
+  { key: "autocad", label: "AutoCAD"   },
+];
+
+export default function GalleryPage() {
+  const searchParams = useSearchParams();
+  const router       = useRouter();
+
+  const [tab,     setTab]     = useState<TabMode>((searchParams.get("mode") as TabMode) ?? "3d");
+  const [view,    setView]    = useState<ViewMode>("grid");
+  const [models,  setModels]  = useState<ModelData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search,  setSearch]  = useState(searchParams.get("q") ?? "");
+
+  useEffect(() => { fetchModels(); }, [tab]);
+
+  const fetchModels = async () => {
+    setLoading(true);
+    try {
+      let q;
+      if (tab === "3d") {
+        q = query(
+          collection(db, "models"),
+          where("status", "==", "published"),
+          where("fileType", "in", ["glb", "gltf", "obj", "fbx"]),
+          orderBy("uploadedAt", "desc"),
+          limit(48)
+        );
+      } else if (tab === "ar") {
+        q = query(
+          collection(db, "models"),
+          where("status", "==", "published"),
+          where("category", "==", "AR Build"),
+          orderBy("uploadedAt", "desc"),
+          limit(48)
+        );
+      } else if (tab === "vr") {
+        q = query(
+          collection(db, "models"),
+          where("status", "==", "published"),
+          where("category", "==", "VR Build"),
+          orderBy("uploadedAt", "desc"),
+          limit(48)
+        );
+      } else {
+        q = query(
+          collection(db, "models"),
+          where("status", "==", "published"),
+          where("category", "==", "AutoCAD"),
+          orderBy("uploadedAt", "desc"),
+          limit(48)
+        );
+      }
+      const snap = await getDocs(q);
+      setModels(snap.docs.map(d => ({ id: d.id, ...d.data() } as ModelData)));
+    } catch (err) {
+      console.error("Gallery fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filtered = models.filter(m => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return (
+      m.title.toLowerCase().includes(q) ||
+      (m.tags ?? []).some(t => t.toLowerCase().includes(q))
+    );
+  });
+
+  const handleTabChange = (t: TabMode) => {
+    setTab(t);
+    router.push(`/gallery?mode=${t}`, { scroll: false });
+  };
+
+  const dark = view === "aura";
+
+  return (
+    <div className={`min-h-screen flex flex-col transition-colors duration-500 ${dark ? "bg-gray-950" : "bg-gray-50"}`}>
+      <Navbar />
+      <div className="max-w-7xl mx-auto px-4 py-12 flex-grow w-full">
+
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <h1 className={`text-3xl font-black tracking-tight ${dark ? "text-white" : "text-gray-900"}`}>Gallery</h1>
+            <p className={`text-sm mt-1 ${dark ? "text-gray-400" : "text-gray-500"}`}>
+              {loading ? "Loading..." : `${filtered.length} items`}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            {(["grid", "aura"] as ViewMode[]).map(v => (
+              <button key={v} onClick={() => setView(v)}
+                className={`px-4 py-2 rounded-xl text-sm font-bold border-b-[3px] transition-all ${
+                  view === v
+                    ? "bg-[#5B4BDB] text-white border-[#4438b8]"
+                    : dark ? "bg-gray-800 text-gray-300 border-gray-700" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                }`}>
+                {v === "grid" ? "Grid" : "✦ Aura"}
+              </button>
+            ))}
+            <Link href="/upload">
+              <button className="px-4 py-2 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
+                + Upload
+              </button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className={`flex gap-1 mb-6 p-1 rounded-2xl w-fit ${dark ? "bg-gray-800" : "bg-gray-100"}`}>
+          {TABS.map(({ key, label }) => (
+            <button key={key} onClick={() => handleTabChange(key)}
+              className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                tab === key
+                  ? dark ? "bg-gray-700 text-white shadow-sm" : "bg-white text-gray-900 shadow-sm"
+                  : dark ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-700"
+              }`}>
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Search */}
+        <div className="relative mb-8 max-w-md">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input value={search} onChange={e => setSearch(e.target.value)}
+            placeholder="Search models, tags..."
+            className={`w-full pl-9 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/30 ${
+              dark ? "bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+                   : "bg-white border-gray-200 text-gray-900 placeholder-gray-400"
+            }`}
+          />
+        </div>
+
+        {/* Grid */}
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="rounded-2xl overflow-hidden animate-pulse">
+                <div className={`aspect-square ${dark ? "bg-gray-800" : "bg-gray-200"}`} />
+                <div className={`p-4 space-y-2 ${dark ? "bg-gray-900" : "bg-white"}`}>
+                  <div className={`h-4 rounded ${dark ? "bg-gray-700" : "bg-gray-200"}`} />
+                  <div className={`h-3 w-2/3 rounded ${dark ? "bg-gray-800" : "bg-gray-100"}`} />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-24">
+            <p className={`text-lg font-semibold mb-4 ${dark ? "text-gray-400" : "text-gray-500"}`}>
+              {search ? `No results for "${search}"` : "No models yet"}
+            </p>
+            <Link href="/upload">
+              <button className="px-6 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm">
+                Be the first to upload
+              </button>
+            </Link>
+          </div>
+        ) : (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {filtered.map((model, i) => (
+              <motion.div key={model.id}
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: Math.min(i * 0.04, 0.3), duration: 0.3 }}>
+                <ModelCardLive model={model} auraMode={dark} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </div>
+      <Footer />
+    </div>
+  );
+}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE END
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DAY 2 DONE CHECKLIST:
+  [ ] npm install @react-three/fiber @react-three/drei
+  [ ] engagementScore added to 3 Firestore docs
+  [ ] aura-pulse keyframe added to globals.css
+  [ ] AuraGlow.tsx created in app/components/
+  [ ] ModelCardPreview.tsx created in app/components/gallery/
+  [ ] ModelCardLive.tsx created in app/components/gallery/
+  [ ] app/gallery/page.tsx replaced
+  [ ] Hover a GLB card → live 3D model appears
+  [ ] Colored aura glow visible on scored cards
+  [ ] Grid / Aura toggle works (dark mode)
+
+
+
+================================================================================
+DAY 3 — MARCH 17 — VIEWER POWER-UPS
+Goal: Cinematic viewer, floating toolbar, stats panel, explode slider.
+================================================================================
+
+BEFORE YOU CODE
+----------------
+1. npm install @react-three/postprocessing  (if not already)
+2. Download free HDRI from polyhaven.com/a/studio_small_08
+   → Download → 1K → .hdr → save as: public/hdri/studio.hdr
+   (Create public/hdri/ folder if it doesn't exist)
+
+FILES TODAY (3 total):
+  NEW:     app/components/ViewerToolbar.tsx
+  NEW:     app/components/ModelStatsPanel.tsx
+  REPLACE: app/components/Viewer.tsx
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE START → app/components/ViewerToolbar.tsx  [NEW]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"use client";
+import { motion } from "framer-motion";
+
+export type LightingPreset   = "studio" | "outdoor" | "dark" | "city";
+export type BackgroundPreset = "white" | "gray" | "black";
+
+interface ViewerToolbarProps {
+  lighting:           LightingPreset;
+  background:         BackgroundPreset;
+  wireframe:          boolean;
+  cinematic:          boolean;
+  statsOpen:          boolean;
+  onLightingChange:   (v: LightingPreset) => void;
+  onBackgroundChange: (v: BackgroundPreset) => void;
+  onWireframeToggle:  () => void;
+  onCinematicToggle:  () => void;
+  onStatsToggle:      () => void;
+  onScreenshot:       () => void;
+  onFullscreen:       () => void;
+  onResetCamera:      () => void;
+}
+
+const LIGHTING: { key: LightingPreset; icon: string; label: string }[] = [
+  { key: "studio",  icon: "💡", label: "Studio"  },
+  { key: "outdoor", icon: "☀️", label: "Outdoor" },
+  { key: "dark",    icon: "🌑", label: "Dark"    },
+  { key: "city",    icon: "🌆", label: "City"    },
+];
+
+const BACKGROUNDS: { key: BackgroundPreset; color: string }[] = [
+  { key: "white", color: "#f9fafb" },
+  { key: "gray",  color: "#374151" },
+  { key: "black", color: "#0a0a0a" },
+];
+
+export default function ViewerToolbar({
+  lighting, background, wireframe, cinematic, statsOpen,
+  onLightingChange, onBackgroundChange, onWireframeToggle,
+  onCinematicToggle, onStatsToggle, onScreenshot, onFullscreen, onResetCamera,
+}: ViewerToolbarProps) {
+  const btn = (active: boolean, onClick: () => void, children: React.ReactNode, title: string) => (
+    <button onClick={onClick} title={title}
+      className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm transition-all ${
+        active ? "bg-[#5B4BDB] text-white" : "text-white/60 hover:bg-white/10 hover:text-white"
+      }`}>
+      {children}
+    </button>
+  );
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+      className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1 px-3 py-2 rounded-2xl bg-gray-900/90 backdrop-blur-sm border border-white/10 shadow-2xl select-none"
+      style={{ whiteSpace: "nowrap" }}
+    >
+      {/* Lighting */}
+      <div className="flex items-center gap-0.5 pr-2 mr-1 border-r border-white/10">
+        {LIGHTING.map(({ key, icon, label }) => (
+          <button key={key} onClick={() => onLightingChange(key)} title={label}
+            className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm transition-all ${
+              lighting === key ? "bg-white/20 ring-1 ring-white/30" : "hover:bg-white/10"
+            }`}>
+            {icon}
+          </button>
+        ))}
+      </div>
+
+      {/* Background */}
+      <div className="flex items-center gap-1.5 px-2 mr-1 border-r border-white/10">
+        {BACKGROUNDS.map(({ key, color }) => (
+          <button key={key} onClick={() => onBackgroundChange(key)} title={`Background: ${key}`}
+            className={`w-5 h-5 rounded-full border-2 transition-all ${
+              background === key ? "border-[#5B4BDB] scale-125" : "border-white/20 hover:border-white/50"
+            }`}
+            style={{ background: color }}
+          />
+        ))}
+      </div>
+
+      {/* Tools */}
+      <div className="flex items-center gap-0.5 pl-1">
+        {btn(cinematic, onCinematicToggle, "🎬", "Cinematic mode")}
+        {btn(wireframe, onWireframeToggle, (
+          <svg viewBox="0 0 16 16" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <polygon points="8,2 14,12 2,12" />
+          </svg>
+        ), "Wireframe")}
+        {btn(statsOpen, onStatsToggle, (
+          <svg viewBox="0 0 16 16" className="w-4 h-4" fill="currentColor">
+            <rect x="2" y="10" width="3" height="4" rx="0.5"/>
+            <rect x="6.5" y="6" width="3" height="8" rx="0.5"/>
+            <rect x="11" y="2" width="3" height="12" rx="0.5"/>
+          </svg>
+        ), "Model stats")}
+        {btn(false, onResetCamera, (
+          <svg viewBox="0 0 16 16" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <circle cx="8" cy="8" r="5.5"/>
+            <path d="M8 4v4l3 1"/>
+          </svg>
+        ), "Reset camera")}
+        {btn(false, onScreenshot, "📸", "Screenshot")}
+        {btn(false, onFullscreen, (
+          <svg viewBox="0 0 16 16" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/>
+          </svg>
+        ), "Fullscreen")}
+      </div>
+    </motion.div>
+  );
+}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE END
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE START → app/components/ModelStatsPanel.tsx  [NEW]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"use client";
+import { motion, AnimatePresence } from "framer-motion";
+
+export interface ModelStats {
+  polyCount:     number;
+  vertexCount:   number;
+  meshCount:     number;
+  materialCount: number;
+  fileSize:      number;
+}
+
+interface Props {
+  open:              boolean;
+  stats:             ModelStats | null;
+  wireframe:         boolean;
+  onWireframeToggle: () => void;
+  onClose:           () => void;
+}
+
+function fmt(n: number): string {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
+  if (n >= 1000)      return (n / 1000).toFixed(1) + "K";
+  return n.toLocaleString();
+}
+
+export default function ModelStatsPanel({ open, stats, wireframe, onWireframeToggle, onClose }: Props) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 16 }} transition={{ duration: 0.18 }}
+          className="absolute top-4 right-4 z-30 w-52 rounded-2xl bg-gray-900/92 backdrop-blur-sm border border-white/10 p-4 shadow-2xl"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-white text-sm font-bold">Model Stats</span>
+            <button onClick={onClose}
+              className="text-white/40 hover:text-white/80 transition-colors w-6 h-6 flex items-center justify-center text-xl">×</button>
+          </div>
+
+          {stats ? (
+            <div className="space-y-2.5">
+              {[
+                { label: "Polygons",  value: fmt(stats.polyCount)                  },
+                { label: "Vertices",  value: fmt(stats.vertexCount)                },
+                { label: "Meshes",    value: fmt(stats.meshCount)                  },
+                { label: "Materials", value: fmt(stats.materialCount)              },
+                { label: "File size", value: stats.fileSize.toFixed(1) + " MB"    },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex justify-between items-center">
+                  <span className="text-gray-400 text-xs">{label}</span>
+                  <span className="text-white text-xs font-mono font-bold">{value}</span>
+                </div>
+              ))}
+              <div className="pt-3 border-t border-white/10">
+                <button onClick={onWireframeToggle}
+                  className={`w-full py-2 rounded-xl text-xs font-bold transition-all ${
+                    wireframe ? "bg-[#5B4BDB] text-white" : "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white"
+                  }`}>
+                  {wireframe ? "Wireframe ON" : "Wireframe OFF"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="h-20 flex items-center justify-center">
+              <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+            </div>
+          )}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE END
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE START → app/components/Viewer.tsx  [REPLACE existing]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"use client";
+import { useRef, useState, useCallback, Suspense, useEffect } from "react";
+import { Canvas, useThree, useFrame, useLoader } from "@react-three/fiber";
+import { OrbitControls, useGLTF, Environment, Html, useProgress } from "@react-three/drei";
+import * as THREE from "three";
+import { OBJLoader } from "three-stdlib";
+import ViewerToolbar, { LightingPreset, BackgroundPreset } from "./ViewerToolbar";
+import ModelStatsPanel, { ModelStats } from "./ModelStatsPanel";
+
+function Loader() {
+  const { progress } = useProgress();
+  return (
+    <Html center>
+      <div className="flex flex-col items-center gap-3 pointer-events-none">
+        <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+        <span className="text-white text-sm font-medium tabular-nums">{Math.round(progress)}%</span>
+      </div>
+    </Html>
+  );
+}
+
+function SceneSetup({ background, lighting, cinematic }: {
+  background: BackgroundPreset;
+  lighting:   LightingPreset;
+  cinematic:  boolean;
+}) {
+  const { scene } = useThree();
+  const bgColor: Record<BackgroundPreset, string> = {
+    white: "#f9fafb", gray: "#1f2937", black: "#080808",
+  };
+  const envPreset: Record<LightingPreset, any> = {
+    studio: "studio", outdoor: "sunset", dark: "night", city: "city",
+  };
+  useEffect(() => { scene.background = new THREE.Color(bgColor[background]); }, [background]);
+  return (
+    <>
+      <Environment preset={envPreset[lighting]} background={false} />
+      {cinematic ? (
+        <>
+          <ambientLight intensity={0.2} />
+          <directionalLight position={[8, 10, 6]} intensity={3} castShadow />
+          <pointLight position={[-6, -4, -6]} intensity={0.8} color="#4466ff" />
+          <pointLight position={[0, 8, 0]}   intensity={0.4} color="#ff8844" />
+        </>
+      ) : (
+        <>
+          <ambientLight intensity={0.8} />
+          <directionalLight position={[5, 5, 5]} intensity={1.2} />
+        </>
+      )}
+    </>
+  );
+}
+
+function GltfModel({ url, wireframe, explode, onStats }: {
+  url:       string;
+  wireframe: boolean;
+  explode:   number;
+  onStats:   (s: ModelStats) => void;
+}) {
+  const { scene }    = useGLTF(url);
+  const reported     = useRef(false);
+  const explodeBases = useRef<{ uuid: string; pos: THREE.Vector3; dir: THREE.Vector3 }[]>([]);
+
+  useEffect(() => {
+    if (!scene || reported.current) return;
+    reported.current = true;
+    const box    = new THREE.Box3().setFromObject(scene);
+    const center = box.getCenter(new THREE.Vector3());
+    const size   = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    if (maxDim > 0) scene.scale.setScalar(2 / maxDim);
+    scene.position.sub(center.multiplyScalar(2 / maxDim));
+
+    let polyCount = 0, vertexCount = 0, meshCount = 0;
+    const mats   = new Set<string>();
+    const meshes: THREE.Mesh[] = [];
+    const scCenter = new THREE.Vector3();
+
+    scene.traverse(obj => {
+      if (!(obj instanceof THREE.Mesh)) return;
+      meshes.push(obj);
+      meshCount++;
+      const geo = obj.geometry;
+      if (geo.index)                   polyCount    += geo.index.count / 3;
+      else if (geo.attributes.position) polyCount   += geo.attributes.position.count / 3;
+      if (geo.attributes.position)     vertexCount  += geo.attributes.position.count;
+      const m = obj.material;
+      if (Array.isArray(m)) m.forEach(x => x && mats.add(x.uuid));
+      else if (m)           mats.add((m as any).uuid);
+      scCenter.add(obj.position);
+    });
+    if (meshes.length) scCenter.divideScalar(meshes.length);
+    explodeBases.current = meshes.map(m => ({
+      uuid: m.uuid,
+      pos:  m.position.clone(),
+      dir:  m.position.clone().sub(scCenter).normalize(),
+    }));
+    onStats({ polyCount: Math.round(polyCount), vertexCount, meshCount, materialCount: mats.size, fileSize: 0 });
+  }, [scene]);
+
+  useEffect(() => {
+    scene.traverse(obj => {
+      if (!(obj instanceof THREE.Mesh)) return;
+      const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+      mats.forEach(m => { if (m) (m as any).wireframe = wireframe; });
+    });
+  }, [wireframe, scene]);
+
+  useFrame(() => {
+    scene.traverse(obj => {
+      if (!(obj instanceof THREE.Mesh)) return;
+      const base = explodeBases.current.find(b => b.uuid === obj.uuid);
+      if (base) obj.position.copy(base.pos).addScaledVector(base.dir, explode);
+    });
+  });
+
+  return <primitive object={scene} dispose={null} />;
+}
+
+function ObjModel({ url, wireframe }: { url: string; wireframe: boolean }) {
+  const obj = useLoader(OBJLoader, url);
+  useEffect(() => {
+    const box    = new THREE.Box3().setFromObject(obj);
+    const center = box.getCenter(new THREE.Vector3());
+    const size   = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    if (maxDim > 0) obj.scale.setScalar(2 / maxDim);
+    obj.position.sub(center.multiplyScalar(2 / maxDim));
+    obj.traverse(c => {
+      if (!(c instanceof THREE.Mesh)) return;
+      const mats = Array.isArray(c.material) ? c.material : [c.material];
+      mats.forEach(m => { if (m) (m as any).wireframe = wireframe; });
+    });
+  }, [obj, wireframe]);
+  return <primitive object={obj} dispose={null} />;
+}
+
+function Controls({ autoRotate, controlsRef }: { autoRotate: boolean; controlsRef: React.MutableRefObject<any> }) {
+  return (
+    <OrbitControls
+      ref={controlsRef} autoRotate={autoRotate}
+      autoRotateSpeed={autoRotate ? 1.2 : 0}
+      enableDamping dampingFactor={0.06} makeDefault
+    />
+  );
+}
+
+function ScreenshotCapture({ trigger }: { trigger: number }) {
+  const { gl, scene, camera } = useThree();
+  useEffect(() => {
+    if (!trigger) return;
+    gl.render(scene, camera);
+    const url = gl.domElement.toDataURL("image/png");
+    const a   = document.createElement("a");
+    a.href     = url;
+    a.download = "synthe-model.png";
+    a.click();
+  }, [trigger]);
+  return null;
+}
+
+interface ViewerProps {
+  url?:      string;
+  modelUrl?: string;
+  fileType?: string;
+  fileSize?: number;
+  title?:    string;
+}
+
+export default function Viewer({ url, modelUrl, fileType = "glb", fileSize = 0, title }: ViewerProps) {
+  const src          = url ?? modelUrl ?? "";
+  const containerRef = useRef<HTMLDivElement>(null);
+  const controlsRef  = useRef<any>(null);
+
+  const [lighting,   setLighting]   = useState<LightingPreset>("studio");
+  const [background, setBackground] = useState<BackgroundPreset>("gray");
+  const [wireframe,  setWireframe]  = useState(false);
+  const [cinematic,  setCinematic]  = useState(false);
+  const [statsOpen,  setStatsOpen]  = useState(false);
+  const [stats,      setStats]      = useState<ModelStats | null>(null);
+  const [explode,    setExplode]    = useState(0);
+  const [screenshot, setScreenshot] = useState(0);
+  const [autoRotate, setAutoRotate] = useState(false);
+
+  const handleCinematic = () => {
+    const next = !cinematic;
+    setCinematic(next);
+    setAutoRotate(next);
+    setBackground(next ? "black" : "gray");
+    if (next) setLighting("studio");
+  };
+
+  const handleStats = useCallback((s: ModelStats) => {
+    setStats({ ...s, fileSize });
+  }, [fileSize]);
+
+  const handleFullscreen = () => {
+    if (!document.fullscreenElement) containerRef.current?.requestFullscreen();
+    else document.exitFullscreen();
+  };
+
+  const isGltf = ["glb", "gltf"].includes(fileType.toLowerCase());
+  const isObj  = fileType.toLowerCase() === "obj";
+
+  if (!src) {
+    return (
+      <div className="w-full h-96 flex items-center justify-center rounded-xl bg-gray-800">
+        <p className="text-gray-400 text-sm">No model URL</p>
+      </div>
+    );
+  }
+
+  return (
+    <div ref={containerRef} className="relative w-full overflow-hidden rounded-xl bg-gray-900" style={{ minHeight: 420 }}>
+      <Canvas
+        camera={{ position: [0, 0.5, 4], fov: 45, near: 0.01, far: 2000 }}
+        gl={{ preserveDrawingBuffer: true, antialias: true }}
+        shadows style={{ height: 420 }}
+      >
+        <SceneSetup background={background} lighting={lighting} cinematic={cinematic} />
+        <Controls autoRotate={autoRotate} controlsRef={controlsRef} />
+        <Suspense fallback={<Loader />}>
+          {isGltf && <GltfModel url={src} wireframe={wireframe} explode={explode} onStats={handleStats} />}
+          {isObj  && <ObjModel  url={src} wireframe={wireframe} />}
+        </Suspense>
+        <ScreenshotCapture trigger={screenshot} />
+      </Canvas>
+
+      {cinematic && (
+        <div className="absolute inset-0 pointer-events-none z-10">
+          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/50 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/50 to-transparent" />
+        </div>
+      )}
+
+      {cinematic && title && (
+        <div className="absolute top-4 left-4 z-20">
+          <span className="text-white text-sm font-bold bg-black/50 px-3 py-1.5 rounded-lg tracking-wide">{title}</span>
+        </div>
+      )}
+
+      <ModelStatsPanel
+        open={statsOpen} stats={stats} wireframe={wireframe}
+        onWireframeToggle={() => setWireframe(w => !w)}
+        onClose={() => setStatsOpen(false)}
+      />
+
+      {isGltf && (
+        <div className="absolute bottom-[68px] left-4 right-4 z-30 max-w-xs mx-auto">
+          <div className="bg-gray-900/90 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3">
+            <div className="flex justify-between mb-2">
+              <span className="text-white text-xs font-bold">Explode view</span>
+              <span className="text-gray-400 text-xs font-mono">{explode.toFixed(1)}</span>
+            </div>
+            <input type="range" min={0} max={2.5} step={0.05} value={explode}
+              onChange={e => setExplode(parseFloat(e.target.value))}
+              className="w-full accent-[#5B4BDB]" />
+          </div>
+        </div>
+      )}
+
+      <ViewerToolbar
+        lighting={lighting} background={background} wireframe={wireframe}
+        cinematic={cinematic} statsOpen={statsOpen}
+        onLightingChange={setLighting} onBackgroundChange={setBackground}
+        onWireframeToggle={() => setWireframe(w => !w)}
+        onCinematicToggle={handleCinematic}
+        onStatsToggle={() => setStatsOpen(s => !s)}
+        onScreenshot={() => setScreenshot(t => t + 1)}
+        onFullscreen={handleFullscreen}
+        onResetCamera={() => controlsRef.current?.reset()}
+      />
+    </div>
+  );
+}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE END
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DAY 3 DONE CHECKLIST:
+  [ ] public/hdri/studio.hdr downloaded and placed
+  [ ] All 3 files created/replaced
+  [ ] Viewer loads model and shows toolbar
+  [ ] Cinematic mode looks dramatically different
+  [ ] Stats panel shows real polygon count
+  [ ] Explode slider separates mesh parts
+  [ ] Screenshot downloads a PNG file
+  [ ] No TypeScript errors
+
+
+
+================================================================================
+DAY 4 — MARCH 18 — GALLERY FOUNDATION
+Goal: Pagination, smart filters, skeleton cards. Gallery scales to 1000+ models.
+================================================================================
+
+BEFORE YOU CODE
+----------------
+No new packages needed today.
+If Firestore throws an index error when loading gallery → click the link
+in the browser console. It auto-creates the composite index. Takes ~2 min.
+
+FILES TODAY (3 total):
+  NEW:     app/components/gallery/SkeletonCard.tsx
+  NEW:     hooks/useGalleryFilters.ts
+  REPLACE: app/gallery/page.tsx  ← FINAL version (replaces Day 2 version)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE START → app/components/gallery/SkeletonCard.tsx  [NEW]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"use client";
+
+interface Props { dark?: boolean }
+
+export default function SkeletonCard({ dark = false }: Props) {
+  const shimmer = dark ? "bg-gray-700" : "bg-gray-200";
+  const base    = dark ? "bg-gray-900" : "bg-white";
+  const border  = dark ? "border-gray-800" : "border-gray-100";
+  return (
+    <div className={`rounded-2xl border ${border} ${base} overflow-hidden animate-pulse`}>
+      <div className={`aspect-square ${dark ? "bg-gray-800" : "bg-gray-200"}`} />
+      <div className="p-4 space-y-2.5">
+        <div className={`h-4 rounded ${shimmer} w-4/5`} />
+        <div className={`h-3 rounded ${shimmer} w-1/2`} />
+        <div className="flex items-center gap-1.5 pt-1">
+          <div className={`w-1.5 h-1.5 rounded-full ${shimmer}`} />
+          <div className={`h-3 rounded ${shimmer} w-16`} />
+        </div>
+      </div>
+    </div>
+  );
+}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE END
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE START → hooks/useGalleryFilters.ts  [NEW]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"use client";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useCallback } from "react";
+
+export type SortBy       = "newest" | "popular" | "downloads";
+export type PriceFilter  = "all" | "free" | "paid";
+export type FormatFilter = "all" | "glb" | "gltf" | "obj" | "fbx" | "zip" | "dwg";
+
+export interface GalleryFilters {
+  sort:   SortBy;
+  price:  PriceFilter;
+  format: FormatFilter;
+  search: string;
+}
+
+export function useGalleryFilters(): [GalleryFilters, (partial: Partial<GalleryFilters>) => void] {
+  const searchParams = useSearchParams();
+  const router       = useRouter();
+  const pathname     = usePathname();
+
+  const filters: GalleryFilters = {
+    sort:   (searchParams.get("sort")   as SortBy)       || "newest",
+    price:  (searchParams.get("price")  as PriceFilter)  || "all",
+    format: (searchParams.get("format") as FormatFilter) || "all",
+    search: searchParams.get("q") ?? "",
+  };
+
+  const setFilters = useCallback((partial: Partial<GalleryFilters>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (partial.sort   !== undefined) params.set("sort",   partial.sort);
+    if (partial.price  !== undefined) params.set("price",  partial.price);
+    if (partial.format !== undefined) params.set("format", partial.format);
+    if (partial.search !== undefined) {
+      if (partial.search) params.set("q", partial.search);
+      else params.delete("q");
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [searchParams, router, pathname]);
+
+  return [filters, setFilters];
+}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE END
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE START → app/gallery/page.tsx  [REPLACE — FINAL VERSION]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"use client";
+import { useState, useEffect, useRef, Suspense } from "react";
+import {
+  collection, query, where, orderBy, getDocs,
+  limit, startAfter, QueryDocumentSnapshot, DocumentData,
+} from "firebase/firestore";
+import { db } from "../../lib/firebase";
+import { useSearchParams, useRouter } from "next/navigation";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import ModelCardLive, { ModelData } from "../components/gallery/ModelCardLive";
+import SkeletonCard from "../components/gallery/SkeletonCard";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { useGalleryFilters, SortBy, FormatFilter } from "../../hooks/useGalleryFilters";
+
+type TabMode  = "3d" | "ar" | "vr" | "autocad";
+type ViewMode = "grid" | "aura";
+
+const TABS: { key: TabMode; label: string }[] = [
+  { key: "3d",      label: "3D Models" },
+  { key: "ar",      label: "AR"        },
+  { key: "vr",      label: "VR"        },
+  { key: "autocad", label: "AutoCAD"   },
+];
+
+const FORMATS: FormatFilter[] = ["all", "glb", "gltf", "obj", "fbx", "zip", "dwg"];
+const PAGE_SIZE = 12;
+
+function GalleryContent() {
+  const searchParams = useSearchParams();
+  const router       = useRouter();
+
+  const [tab,         setTab]         = useState<TabMode>((searchParams.get("mode") as TabMode) ?? "3d");
+  const [view,        setView]        = useState<ViewMode>("grid");
+  const [models,      setModels]      = useState<ModelData[]>([]);
+  const [loading,     setLoading]     = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore,     setHasMore]     = useState(false);
+  const lastDocRef = useRef<QueryDocumentSnapshot<DocumentData> | null>(null);
+
+  const [filters, setFilters] = useGalleryFilters();
+
+  const sortField: Record<SortBy, string> = {
+    newest: "uploadedAt", popular: "engagementScore", downloads: "downloads",
+  };
+
+  const fetchModels = async (append = false) => {
+    if (!append) { setLoading(true); setModels([]); lastDocRef.current = null; }
+    else setLoadingMore(true);
+    try {
+      const baseConstraints = [
+        where("status", "==", "published"),
+        orderBy(sortField[filters.sort], "desc"),
+        limit(PAGE_SIZE),
+        ...(append && lastDocRef.current ? [startAfter(lastDocRef.current)] : []),
+      ];
+
+      const q = tab === "3d"
+        ? query(collection(db, "models"), where("fileType", "in", ["glb","gltf","obj","fbx"]), ...baseConstraints)
+        : tab === "ar"
+        ? query(collection(db, "models"), where("category", "==", "AR Build"), ...baseConstraints)
+        : tab === "vr"
+        ? query(collection(db, "models"), where("category", "==", "VR Build"), ...baseConstraints)
+        : query(collection(db, "models"), where("category", "==", "AutoCAD"), ...baseConstraints);
+
+      const snap = await getDocs(q);
+      const docs = snap.docs.map(d => ({ id: d.id, ...d.data() } as ModelData));
+      if (snap.docs.length > 0) lastDocRef.current = snap.docs[snap.docs.length - 1];
+      setHasMore(snap.docs.length === PAGE_SIZE);
+      setModels(prev => append ? [...prev, ...docs] : docs);
+    } catch (err) {
+      console.error("Gallery fetch error:", err);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
+  useEffect(() => { fetchModels(); }, [tab, filters.sort]);
+
+  const displayed = models.filter(m => {
+    if (filters.format !== "all" && m.fileType !== filters.format) return false;
+    if (filters.price  === "free" && m.isPaid)                     return false;
+    if (filters.price  === "paid" && !m.isPaid)                    return false;
+    if (filters.search) {
+      const q = filters.search.toLowerCase();
+      return m.title.toLowerCase().includes(q) ||
+             (m.tags ?? []).some(t => t.toLowerCase().includes(q));
+    }
+    return true;
+  });
+
+  const handleTabChange = (t: TabMode) => {
+    setTab(t);
+    router.push(`/gallery?mode=${t}`, { scroll: false });
+  };
+
+  const dark = view === "aura";
+  const pill = (active: boolean) =>
+    `px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${active
+      ? "bg-[#5B4BDB] text-white border-[#4438b8]"
+      : dark ? "bg-gray-800 text-gray-400 border-gray-700 hover:text-white"
+             : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"}`;
+
+  return (
+    <div className={`min-h-screen flex flex-col transition-colors duration-500 ${dark ? "bg-gray-950" : "bg-gray-50"}`}>
+      <Navbar />
+      <div className="max-w-7xl mx-auto px-4 py-12 flex-grow w-full">
+
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <h1 className={`text-3xl font-black tracking-tight ${dark ? "text-white" : "text-gray-900"}`}>Gallery</h1>
+            <p className={`text-sm mt-1 ${dark ? "text-gray-400" : "text-gray-500"}`}>
+              {loading ? "Loading..." : `${displayed.length} items`}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            {(["grid", "aura"] as ViewMode[]).map(v => (
+              <button key={v} onClick={() => setView(v)} className={pill(view === v)}>
+                {v === "grid" ? "Grid" : "✦ Aura"}
+              </button>
+            ))}
+            <Link href="/upload">
+              <button className="px-4 py-2 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
+                + Upload
+              </button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className={`flex gap-1 mb-5 p-1 rounded-2xl w-fit ${dark ? "bg-gray-800" : "bg-gray-100"}`}>
+          {TABS.map(({ key, label }) => (
+            <button key={key} onClick={() => handleTabChange(key)}
+              className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                tab === key
+                  ? dark ? "bg-gray-700 text-white shadow-sm" : "bg-white text-gray-900 shadow-sm"
+                  : dark ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-700"
+              }`}>
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Filter bar */}
+        <div className="flex flex-wrap gap-2 mb-6 items-center">
+          <div className="relative flex-1 min-w-[180px] max-w-xs">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400"
+              fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input value={filters.search} onChange={e => setFilters({ search: e.target.value })}
+              placeholder="Search..."
+              className={`w-full pl-8 pr-3 py-2 rounded-xl text-xs border focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/30 ${
+                dark ? "bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+                     : "bg-white border-gray-200 text-gray-900 placeholder-gray-400"
+              }`}
+            />
+          </div>
+          <div className="flex gap-1 flex-wrap">
+            {FORMATS.map(f => (
+              <button key={f} onClick={() => setFilters({ format: f })} className={pill(filters.format === f)}>
+                {f === "all" ? "All" : f.toUpperCase()}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-1">
+            {(["all", "free", "paid"] as const).map(p => (
+              <button key={p} onClick={() => setFilters({ price: p })} className={`${pill(filters.price === p)} capitalize`}>
+                {p}
+              </button>
+            ))}
+          </div>
+          <select value={filters.sort} onChange={e => setFilters({ sort: e.target.value as SortBy })}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold border focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/30 ${
+              dark ? "bg-gray-800 border-gray-700 text-white" : "bg-white border-gray-200 text-gray-700"
+            }`}>
+            <option value="newest">Newest</option>
+            <option value="popular">Popular</option>
+            <option value="downloads">Most Downloaded</option>
+          </select>
+        </div>
+
+        {/* Grid */}
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {[...Array(PAGE_SIZE)].map((_, i) => <SkeletonCard key={i} dark={dark} />)}
+          </div>
+        ) : displayed.length === 0 ? (
+          <div className="text-center py-24">
+            <p className={`text-lg font-semibold mb-4 ${dark ? "text-gray-400" : "text-gray-500"}`}>
+              {filters.search ? `No results for "${filters.search}"` : "No models yet"}
+            </p>
+            <Link href="/upload">
+              <button className="px-6 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm">
+                Be the first to upload
+              </button>
+            </Link>
+          </div>
+        ) : (
+          <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {displayed.map((model, i) => (
+                <motion.div key={model.id}
+                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: Math.min(i * 0.04, 0.28) }}>
+                  <ModelCardLive model={model} auraMode={dark} />
+                </motion.div>
+              ))}
+              {loadingMore && [...Array(4)].map((_, i) => <SkeletonCard key={`sk${i}`} dark={dark} />)}
+            </motion.div>
+            {hasMore && !loadingMore && (
+              <div className="flex justify-center mt-10">
+                <button onClick={() => fetchModels(true)}
+                  className={`px-8 py-3 rounded-xl text-sm font-bold border-b-[3px] transition-all active:translate-y-[1px] ${
+                    dark ? "bg-gray-800 text-white border-gray-700 hover:bg-gray-700"
+                         : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                  }`}>
+                  Load more
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+      <Footer />
+    </div>
+  );
+}
+
+export default function GalleryPage() {
+  return <Suspense><GalleryContent /></Suspense>;
+}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE END
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DAY 4 DONE CHECKLIST:
+  [ ] All 3 files created/replaced
+  [ ] Only 12 models load initially
+  [ ] Skeleton cards visible during loading
+  [ ] Load More fetches next 12
+  [ ] Format filter pills work
+  [ ] Free/Paid filter works
+  [ ] Sort changes order
+  [ ] URL updates when filters change
+  [ ] If Firestore index error → click link in console to create it
+
+
+
+================================================================================
+DAY 5 — MARCH 19 — WEBXR AR + MODEL DETAIL PAGE
+Goal: Place any model in your physical room. No app download needed.
+================================================================================
+
+BEFORE YOU CODE
+----------------
+1. npm install @react-three/xr
+2. AR works on: Android Chrome 79+ · iOS Safari 16+
+   On desktop: shows a graceful "not supported" message (this is correct)
+
+FILES TODAY (2 total):
+  NEW:     app/components/ARViewer.tsx
+  REPLACE: app/gallery/[modelId]/page.tsx
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE START → app/components/ARViewer.tsx  [NEW]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"use client";
+import { Suspense, useRef, useState, useEffect } from "react";
+import { Canvas } from "@react-three/fiber";
+import { useGLTF } from "@react-three/drei";
+import { ARButton, XR, useHitTest } from "@react-three/xr";
+import * as THREE from "three";
+
+function HitTestModel({ url }: { url: string }) {
+  const ref       = useRef<THREE.Group>(null!);
+  const { scene } = useGLTF(url);
+
+  useEffect(() => {
+    if (!scene) return;
+    const box    = new THREE.Box3().setFromObject(scene);
+    const size   = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    if (maxDim > 0) scene.scale.setScalar(0.3 / maxDim);
+  }, [scene]);
+
+  useHitTest((hitMatrix: THREE.Matrix4) => {
+    if (ref.current) {
+      hitMatrix.decompose(ref.current.position, ref.current.quaternion, new THREE.Vector3());
+      ref.current.scale.setScalar(0.3);
+      ref.current.visible = true;
+    }
+  });
+
+  return (
+    <group ref={ref} visible={false}>
+      <primitive object={scene.clone()} dispose={null} />
+    </group>
+  );
+}
+
+interface ARViewerProps {
+  modelUrl:  string;
+  fileType?: string;
+}
+
+export default function ARViewer({ modelUrl, fileType = "glb" }: ARViewerProps) {
+  const [arSupported, setArSupported] = useState<boolean | null>(null);
+  const [active,      setActive]      = useState(false);
+
+  useEffect(() => {
+    if (typeof navigator === "undefined") return;
+    if ("xr" in navigator) {
+      (navigator as any).xr
+        .isSessionSupported("immersive-ar")
+        .then((ok: boolean) => setArSupported(ok))
+        .catch(() => setArSupported(false));
+    } else {
+      setArSupported(false);
+    }
+  }, []);
+
+  const canAR = ["glb", "gltf"].includes((fileType ?? "").toLowerCase());
+  if (!canAR) return null;
+
+  if (arSupported === null) {
+    return (
+      <div className="p-4 rounded-xl border border-gray-200 bg-gray-50 text-center">
+        <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin mx-auto" />
+      </div>
+    );
+  }
+
+  if (!arSupported) {
+    return (
+      <div className="p-4 rounded-xl border border-gray-200 bg-gray-50 text-center">
+        <p className="text-gray-500 text-sm font-medium">AR requires Chrome on Android or Safari on iOS 16+</p>
+        <p className="text-gray-400 text-xs mt-1">Open this page on your phone to use AR</p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {!active ? (
+        <button onClick={() => setActive(true)}
+          className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#5B4BDB] to-blue-600 text-white font-bold text-sm border-b-[3px] border-[#4438b8] transition-all hover:brightness-110 active:translate-y-[1px]">
+          <span className="text-base">📱</span>
+          View in your room
+        </button>
+      ) : (
+        <div className="fixed inset-0 z-[200]" style={{ height: "100dvh", touchAction: "none" }}>
+          <ARButton
+            style={{
+              position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)",
+              padding: "12px 28px", background: "#5B4BDB", color: "#fff", border: "none",
+              borderRadius: 12, fontWeight: 700, fontSize: 14, cursor: "pointer", zIndex: 10,
+            }}
+          />
+          <button onClick={() => setActive(false)}
+            className="absolute top-5 right-5 z-10 w-10 h-10 rounded-full bg-black/70 text-white font-bold text-lg flex items-center justify-center">
+            ×
+          </button>
+          <Canvas>
+            <XR>
+              <ambientLight intensity={1} />
+              <Suspense fallback={null}>
+                <HitTestModel url={modelUrl} />
+              </Suspense>
+            </XR>
+          </Canvas>
+        </div>
+      )}
+    </div>
+  );
+}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE END
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE START → app/gallery/[modelId]/page.tsx  [REPLACE existing]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"use client";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import {
+  doc, getDoc, updateDoc, increment,
+  collection, addDoc, query, orderBy,
+  onSnapshot, serverTimestamp,
+} from "firebase/firestore";
+import { db, auth } from "../../../lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import dynamic from "next/dynamic";
+import ARViewer from "../../components/ARViewer";
+import Link from "next/link";
+import { motion } from "framer-motion";
+
+const Viewer = dynamic(() => import("../../components/Viewer"), { ssr: false });
+
+interface Model {
+  id:              string;
+  title:           string;
+  description?:    string;
+  modelUrl:        string;
+  thumbnailUrl?:   string;
+  fileType:        string;
+  category?:       string;
+  tags?:           string[];
+  isPaid:          boolean;
+  price?:          number;
+  authorId:        string;
+  authorName:      string;
+  authorPhoto?:    string;
+  uploadedAt?:     any;
+  views?:          number;
+  likes?:          number;
+  downloads?:      number;
+  engagementScore?: number;
+  fileSize?:       number;
+  version?:        string;
+  platforms?:      string[];
+  genre?:          string;
+  minimumSpecs?:   { ram: string; storage: string; os: string };
+  changelog?:      string;
+  storageProvider?: string;
+}
+
+interface Comment {
+  id:           string;
+  text:         string;
+  authorName:   string;
+  authorPhoto?: string;
+  createdAt?:   any;
+}
+
+export default function ModelDetailPage() {
+  const params  = useParams();
+  const router  = useRouter();
+  const modelId = params?.modelId as string;
+
+  const [model,       setModel]       = useState<Model | null>(null);
+  const [user,        setUser]        = useState<any>(null);
+  const [comments,    setComments]    = useState<Comment[]>([]);
+  const [commentText, setCommentText] = useState("");
+  const [liked,       setLiked]       = useState(false);
+  const [likeCount,   setLikeCount]   = useState(0);
+  const [loading,     setLoading]     = useState(true);
+  const [purchasing,  setPurchasing]  = useState(false);
+  const [purchased,   setPurchased]   = useState(false);
+  const [error,       setError]       = useState("");
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, u => setUser(u ?? null));
+    return () => unsub();
+  }, []);
+
+  useEffect(() => {
+    if (!modelId) return;
+    const fetch = async () => {
+      try {
+        const snap = await getDoc(doc(db, "models", modelId));
+        if (!snap.exists()) { router.push("/gallery"); return; }
+        const data = { id: snap.id, ...snap.data() } as Model;
+        setModel(data);
+        setLikeCount(data.likes ?? 0);
+        updateDoc(doc(db, "models", modelId), { views: increment(1) }).catch(() => {});
+      } catch (err) { console.error(err); }
+      finally { setLoading(false); }
+    };
+    fetch();
+  }, [modelId]);
+
+  useEffect(() => {
+    if (!modelId) return;
+    const q    = query(collection(db, "models", modelId, "comments"), orderBy("createdAt", "desc"));
+    const unsub = onSnapshot(q, snap => {
+      setComments(snap.docs.map(d => ({ id: d.id, ...d.data() } as Comment)));
+    });
+    return () => unsub();
+  }, [modelId]);
+
+  useEffect(() => {
+    if (!user || !model || !model.isPaid) return;
+    getDoc(doc(db, "purchases", `${user.uid}_${modelId}`))
+      .then(snap => { if (snap.exists()) setPurchased(true); })
+      .catch(() => {});
+  }, [user, model, modelId]);
+
+  const handleLike = async () => {
+    if (!user) { router.push("/login"); return; }
+    if (liked) return;
+    setLiked(true);
+    setLikeCount(c => c + 1);
+    await updateDoc(doc(db, "models", modelId), { likes: increment(1), engagementScore: increment(3) }).catch(() => {});
+  };
+
+  const handleDownload = async () => {
+    if (!model) return;
+    window.open(model.modelUrl, "_blank");
+    await updateDoc(doc(db, "models", modelId), { downloads: increment(1), engagementScore: increment(5) }).catch(() => {});
+  };
+
+  const handleBuy = async () => {
+    if (!user) { router.push("/login"); return; }
+    if (!model) return;
+    setPurchasing(true); setError("");
+    try {
+      const orderRes = await fetch("/api/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: model.price, modelId }),
+      });
+      if (!orderRes.ok) throw new Error("Failed to create order");
+      const { orderId, amount, currency } = await orderRes.json();
+      const rzp = new (window as any).Razorpay({
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount, currency, name: "SYNTHÉ", description: model.title, order_id: orderId,
+        handler: async (response: any) => {
+          const v = await fetch("/api/verify-payment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...response, modelId, userId: user.uid }),
+          });
+          if (v.ok) {
+            setPurchased(true);
+            await updateDoc(doc(db, "models", modelId), { downloads: increment(1), engagementScore: increment(5) }).catch(() => {});
+          }
+        },
+        prefill: { email: user.email ?? "" }, theme: { color: "#5B4BDB" },
+      });
+      rzp.open();
+    } catch (e) { setError((e as Error).message); }
+    finally { setPurchasing(false); }
+  };
+
+  const handleComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) { router.push("/login"); return; }
+    if (!commentText.trim()) return;
+    await addDoc(collection(db, "models", modelId, "comments"), {
+      text: commentText.trim(),
+      authorId: user.uid,
+      authorName: user.displayName ?? user.email ?? "Anonymous",
+      authorPhoto: user.photoURL ?? "",
+      createdAt: serverTimestamp(),
+    }).catch(err => console.error(err));
+    setCommentText("");
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-5 gap-8">
+          <div className="md:col-span-3">
+            <div className="aspect-video rounded-2xl bg-gray-200 animate-pulse" />
+          </div>
+          <div className="md:col-span-2 space-y-4">
+            <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4" />
+            <div className="h-4 bg-gray-100 rounded animate-pulse w-1/2" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (!model) return null;
+
+  const isDownloadable = !model.isPaid || purchased;
+  const isXRBuild      = ["zip", "build"].includes(model.fileType);
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Navbar />
+      <div className="max-w-6xl mx-auto px-4 py-10 flex-grow w-full">
+
+        <Link href="/gallery"
+          className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 text-sm font-semibold mb-6 transition">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Gallery
+        </Link>
+
+        <div className="grid md:grid-cols-5 gap-8">
+
+          {/* Left: Viewer */}
+          <div className="md:col-span-3 space-y-4">
+            {!isXRBuild ? (
+              <Viewer modelUrl={model.modelUrl} fileType={model.fileType} fileSize={model.fileSize} title={model.title} />
+            ) : (
+              <div className="aspect-video rounded-2xl bg-gradient-to-br from-purple-900 to-indigo-900 flex flex-col items-center justify-center gap-3">
+                <span className="text-6xl">🥽</span>
+                <p className="text-white font-bold">XR Build Package</p>
+                <p className="text-purple-200 text-sm">.zip file — download to install</p>
+              </div>
+            )}
+
+            {/* AR button */}
+            {["glb", "gltf"].includes(model.fileType) && isDownloadable && (
+              <ARViewer modelUrl={model.modelUrl} fileType={model.fileType} />
+            )}
+
+            {/* Tags */}
+            {(model.tags ?? []).length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {model.tags!.map(tag => (
+                  <span key={tag} className="px-3 py-1.5 rounded-full bg-[#5B4BDB]/10 text-[#5B4BDB] text-xs font-semibold border border-[#5B4BDB]/20">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Comments */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+              <h3 className="font-bold text-gray-900 mb-4">
+                Comments {comments.length > 0 && <span className="text-gray-400 font-normal">({comments.length})</span>}
+              </h3>
+              {user ? (
+                <form onSubmit={handleComment} className="flex gap-2 mb-6">
+                  <input value={commentText} onChange={e => setCommentText(e.target.value)}
+                    placeholder="Add a comment..."
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/30 focus:border-[#5B4BDB]" />
+                  <button type="submit" disabled={!commentText.trim()}
+                    className="px-4 py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold disabled:opacity-50">
+                    Post
+                  </button>
+                </form>
+              ) : (
+                <Link href="/login">
+                  <p className="text-sm text-[#5B4BDB] font-semibold mb-4 hover:underline cursor-pointer">Sign in to comment</p>
+                </Link>
+              )}
+              <div className="space-y-4 max-h-64 overflow-y-auto">
+                {comments.length === 0
+                  ? <p className="text-gray-400 text-sm text-center py-4">No comments yet — be the first</p>
+                  : comments.map(c => (
+                    <div key={c.id} className="flex gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center flex-shrink-0">
+                        {c.authorPhoto
+                          ? <img src={c.authorPhoto} className="w-full h-full rounded-full object-cover" alt="" />
+                          : <span className="text-[#5B4BDB] text-xs font-bold">{c.authorName.charAt(0).toUpperCase()}</span>
+                        }
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">{c.authorName}</p>
+                        <p className="text-sm text-gray-600 mt-0.5">{c.text}</p>
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Info panel */}
+          <motion.div className="md:col-span-2 space-y-5"
+            initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
+
+            <div>
+              <div className="flex items-start justify-between gap-3 mb-2">
+                <h1 className="text-2xl font-black text-gray-900 leading-tight">{model.title}</h1>
+                <span className={`flex-shrink-0 px-2 py-1 rounded-lg text-xs font-bold uppercase ${
+                  model.isPaid ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
+                }`}>{model.fileType}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center overflow-hidden">
+                  {model.authorPhoto
+                    ? <img src={model.authorPhoto} className="w-full h-full object-cover" alt="" />
+                    : <span className="text-[#5B4BDB] text-xs font-bold">{model.authorName?.charAt(0)}</span>
+                  }
+                </div>
+                <span className="text-gray-600 text-sm font-medium">{model.authorName}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { label: "Views",     value: model.views     ?? 0 },
+                { label: "Likes",     value: likeCount              },
+                { label: "Downloads", value: model.downloads ?? 0 },
+              ].map(({ label, value }) => (
+                <div key={label} className="bg-white border border-gray-100 rounded-xl p-3 text-center shadow-sm">
+                  <p className="text-xl font-black text-gray-900">{value.toLocaleString()}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+                </div>
+              ))}
+            </div>
+
+            {model.description && (
+              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                <p className="text-gray-700 text-sm leading-relaxed">{model.description}</p>
+              </div>
+            )}
+
+            {isXRBuild && model.platforms && (
+              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm space-y-3">
+                <p className="font-bold text-gray-900 text-sm">Build Specs</p>
+                {model.genre   && <div className="flex justify-between text-sm"><span className="text-gray-500">Genre</span><span className="font-semibold">{model.genre}</span></div>}
+                {model.version && <div className="flex justify-between text-sm"><span className="text-gray-500">Version</span><span className="font-semibold">{model.version}</span></div>}
+                {(model.platforms?.length ?? 0) > 0 && (
+                  <div>
+                    <p className="text-gray-500 text-sm mb-2">Platforms</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {model.platforms!.map(p => (
+                        <span key={p} className="px-2 py-1 rounded-lg bg-gray-100 text-gray-700 text-xs font-semibold">{p}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {model.minimumSpecs && (
+                  <div className="space-y-1.5 pt-1 border-t border-gray-100">
+                    {Object.entries(model.minimumSpecs).map(([k, v]) => (
+                      <div key={k} className="flex justify-between text-xs">
+                        <span className="text-gray-500 capitalize">{k}</span>
+                        <span className="font-semibold text-gray-700">{v as string}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {error && <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">{error}</div>}
+
+            <div className="space-y-3">
+              {model.isPaid && !purchased ? (
+                <>
+                  <button onClick={handleBuy} disabled={purchasing}
+                    className="w-full py-4 rounded-xl bg-[#5B4BDB] text-white font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px] disabled:opacity-50">
+                    {purchasing ? "Processing..." : `Buy for ₹${model.price}`}
+                  </button>
+                  <p className="text-xs text-center text-gray-400">Secure payment via Razorpay · 15% platform fee</p>
+                </>
+              ) : (
+                <button onClick={handleDownload}
+                  className="w-full py-4 rounded-xl bg-gray-900 text-white font-bold border-b-[3px] border-black/50 hover:bg-gray-800 transition-all active:translate-y-[1px] flex items-center justify-center gap-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download{model.fileSize ? ` (${model.fileSize.toFixed(1)} MB)` : ""}
+                </button>
+              )}
+              <button onClick={handleLike} disabled={liked}
+                className={`w-full py-3 rounded-xl text-sm font-bold border-b-[3px] transition-all active:translate-y-[1px] flex items-center justify-center gap-2 ${
+                  liked ? "bg-red-50 text-red-500 border-red-200 cursor-default"
+                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                }`}>
+                {liked ? "❤️" : "🤍"} {liked ? "Liked" : "Like"} · {likeCount.toLocaleString()}
+              </button>
+            </div>
+
+            <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2">
+              {[
+                { label: "Category", value: model.category ?? "—"                                                           },
+                { label: "Format",   value: (model.fileType ?? "").toUpperCase()                                            },
+                ...(model.fileSize ? [{ label: "File size", value: `${model.fileSize.toFixed(1)} MB` }] : []),
+                { label: "Storage",  value: model.storageProvider === "r2" ? "Cloudflare R2" : "Supabase"                  },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex justify-between text-sm">
+                  <span className="text-gray-500">{label}</span>
+                  <span className="font-semibold text-gray-900">{value}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+      <Footer />
+    </div>
+  );
+}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE END
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DAY 5 DONE CHECKLIST:
+  [ ] npm install @react-three/xr
+  [ ] ARViewer.tsx created in app/components/
+  [ ] gallery/[modelId]/page.tsx replaced
+  [ ] Viewer, toolbar, stats all work on detail page
+  [ ] AR button appears on GLB model pages
+  [ ] Desktop shows graceful "not supported" message
+  [ ] Android Chrome: AR opens camera
+  [ ] Download button works
+  [ ] Like button increments Firestore
+  [ ] Comments load and post in real-time
+  [ ] Razorpay buy flow still works
+  [ ] No TypeScript errors on npm run build
+
+
+
+================================================================================
+FINAL FILE MAP — WHERE EVERYTHING GOES
+================================================================================
+
+  app/components/AuraGlow.tsx                      ← NEW  (Day 2)
+  app/components/ARViewer.tsx                      ← NEW  (Day 5)
+  app/components/ModelStatsPanel.tsx               ← NEW  (Day 3)
+  app/components/ViewerToolbar.tsx                 ← NEW  (Day 3)
+  app/components/Viewer.tsx                        ← REPLACE existing (Day 3)
+  app/components/gallery/ModelCardPreview.tsx      ← NEW  (Day 2)
+  app/components/gallery/ModelCardLive.tsx         ← NEW  (Day 2)
+  app/components/gallery/SkeletonCard.tsx          ← NEW  (Day 4)
+  app/gallery/page.tsx                             ← REPLACE existing (Day 4)
+  app/gallery/[modelId]/page.tsx                   ← REPLACE existing (Day 5)
+  hooks/useGalleryFilters.ts                       ← NEW  (Day 4)
+
+  UNTOUCHED (leave exactly as-is):
+  app/components/gallery/ModelCard.tsx             ← keep
+  app/components/gallery/GalleryFilters.tsx        ← keep
+  app/components/gallery/UploadModel.tsx           ← keep
+  lib/r2.ts                                        ← already done (Day 1)
+  lib/supabase.ts                                  ← keep
+  lib/firebase.ts                                  ← keep
+  All other 60+ files                              ← untouched
+
+
+================================================================================
+SINGLE INSTALL COMMAND — RUN THIS ON DAY 2, COVERS ALL DAYS
+================================================================================
+
+  npm install @react-three/fiber @react-three/drei @react-three/postprocessing @react-three/xr
+
+
+================================================================================
+END
+================================================================================

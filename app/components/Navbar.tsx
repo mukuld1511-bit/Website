@@ -9,7 +9,7 @@ import { auth } from "../../lib/firebase";
 
 // ── Category-specific dropdowns replacing the old single 'Explore' ────────────
 const JEWELLERY_LINKS = [
-  { label: "High-end Jewellery", href: "/gallery?mode=3d&genre=jewellery", desc: "View VR Try-On rings & necklaces", icon: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" },
+  { label: "High-end Jewellery", href: "/gallery?mode=jewellery", desc: "View VR Try-On rings & necklaces", icon: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" },
   { label: "Upload Design", href: "/upload", desc: "Sell your luxury CAD designs", icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
 ];
 

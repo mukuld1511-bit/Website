@@ -10,7 +10,7 @@ import Footer from "../../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
-const CATEGORIES = ["3D Modeling", "AR App", "VR Experience", "WebXR", "Game Asset", "Other"];
+const CATEGORIES = ["3D Modeling", "AR App", "VR Experience", "WebXR", "Industrial Design", "Other"];
 const BUDGET_RANGES = ["Flexible", "Under $100", "$100 - $500", "$500 - $1000", "$1000+"];
 const TIMELINES = ["Flexible", "ASAP (1-3 days)", "1-2 weeks", "1 month", "Ongoing"];
 
@@ -157,7 +157,7 @@ export default function PostRequestPage() {
                 <div>
                   <label className="block text-[11px] font-black uppercase tracking-widest text-indigo-400 mb-2">Project Title *</label>
                   <input value={title} onChange={e => setTitle(e.target.value)} required
-                    placeholder="e.g. Need a 3D character for Unity game" className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
+                    placeholder="e.g. Need a 3D architecture model for training" className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
                 </div>
 
                 <div>

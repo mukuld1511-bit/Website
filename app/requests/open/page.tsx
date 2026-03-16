@@ -44,7 +44,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   "AR App":         "📱",
   "VR Experience":  "🥽",
   "WebXR":          "🌐",
-  "Game Asset":     "🎮",
+  "Industrial Design": "📐",
   "Other":          "✨",
 };
 

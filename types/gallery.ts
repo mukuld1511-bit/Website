@@ -63,7 +63,11 @@ export interface Model {
   genre?:           string;
   minimumSpecs?:    { ram: string; storage: string; os: string };
   changelog?:       string;
+  polygons?:        string;
+  accessType?:      "buy" | "request";
 }
+
+export type GalleryModel = Model;
 
 // ─── Workshop / live session ──────────────────────────────────
 export type WorkshopStatus = "upcoming" | "live" | "ended";

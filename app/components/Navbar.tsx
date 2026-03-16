@@ -1,346 +1,318 @@
 "use client";
- 
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth, db } from "../../lib/firebase";
-import { collection, query, where, onSnapshot, orderBy, limit, doc, updateDoc } from "firebase/firestore";
- 
-// Navigation categories
-const NAV_ITEMS = [
-  {
-    label: "Browse",
-    links: [
-      { label: "3D Gallery", href: "/gallery", icon: "📦" },
-      { label: "Marketplace", href: "/gallery", icon: "🛍️" },
-    ]
-  },
-  {
-    label: "Learn",
-    links: [
-      { label: "Workshops", href: "/learn", icon: "🎓" },
-      { label: "Book Mentor", href: "/hire", icon: "👨‍🏫" },
-    ]
-  },
-  {
-    label: "Create",
-    links: [
-      { label: "Upload Model", href: "/upload", icon: "⚡" },
-      { label: "Scene Composer", href: "/scene-composer", icon: "🎨" },
-    ]
-  },
+import { auth } from "../../lib/firebase";
+
+const GALLERY_LINKS = [
+  { label: "3D Models",      href: "/gallery",        desc: "Browse GLB, OBJ, FBX, GLTF models", icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
+  { label: "AutoCAD",        href: "/autocad",        desc: "Browse DWG and DXF blueprints",      icon: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" },
+  { label: "Upload",         href: "/upload",         desc: "Sell your 3D models or CAD files",   icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
+  { label: "Post a request", href: "/requests/post",  desc: "Commission a custom 3D model",       icon: "M12 4v16m8-8H4" },
 ];
- 
+
+const LEARN_LINKS = [
+  { label: "Live sessions",    href: "/learn",             desc: "Free AR/VR workshops",          icon: "M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" },
+  { label: "1-on-1 mentors",   href: "/hire",              desc: "Book a private session",        icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
+  { label: "XR Roadmap",       href: "/learn/roadmap",     desc: "6-step learning path",          icon: "M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" },
+  { label: "Tools directory",  href: "/learn/tools",       desc: "12 AR/VR tools with links",     icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" },
+  { label: "XR Challenges",    href: "/learn/challenges",  desc: "Build and win badges",          icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" },
+  { label: "Student showcase", href: "/learn/showcase",    desc: "Community work gallery",        icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" },
+];
+
+const COMMUNITY_LINKS = [
+  { label: "Connect",        href: "/connect",       desc: "Network with XR developers",         icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+  { label: "Post a project", href: "/requests/post", desc: "Start a collaboration",               icon: "M12 4v16m8-8H4" },
+  { label: "PIET",           href: "/collaborators", desc: "Academic collaboration",              icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5" },
+];
+
 export default function Navbar() {
-  const [user, setUser] = useState<any>(null);
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
- 
-  const pathname = usePathname();
-  const router = useRouter();
-  const navRef = useRef<HTMLDivElement>(null);
+  const [user,           setUser]           = useState<any>(null);
+  const [scrolled,       setScrolled]       = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [mobileOpen,     setMobileOpen]     = useState(false);
+  const [profileOpen,    setProfileOpen]    = useState(false);
+
+  const pathname   = usePathname();
+  const router     = useRouter();
+  const navRef     = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
-  const notifRef = useRef<HTMLDivElement>(null);
- 
-  // Auth state
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, u => setUser(u ?? null));
     return () => unsub();
   }, []);
- 
-  // Notifications
-  useEffect(() => {
-    if (!user) return;
-    
-    const q = query(
-      collection(db, "notifications"),
-      where("userId", "==", user.uid),
-      orderBy("createdAt", "desc"),
-      limit(5)
-    );
- 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const notifs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setNotifications(notifs);
-      setUnreadCount(notifs.filter((n: any) => !n.read).length);
-    });
- 
-    return () => unsubscribe();
-  }, [user]);
- 
-  // Scroll effect
+
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
- 
-  // Close menus on click outside
+
   useEffect(() => {
     function handler(e: MouseEvent) {
-      if (navRef.current && !navRef.current.contains(e.target as Node)) {
-        setMobileMenuOpen(false);
-      }
-      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
-        setProfileOpen(false);
-      }
-      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
-        setNotificationsOpen(false);
-      }
+      if (navRef.current && !navRef.current.contains(e.target as Node)) setActiveDropdown(null);
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) setProfileOpen(false);
     }
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
- 
-  const logout = async () => {
+
+  useEffect(() => {
+    setMobileOpen(false);
+    setActiveDropdown(null);
+    setProfileOpen(false);
+  }, [pathname]);
+
+  async function logout() {
     await signOut(auth);
     router.push("/");
-  };
- 
+  }
+
+  function Dropdown({ title, links }: {
+    title: string;
+    links: { label: string; href: string; desc: string; icon: string }[];
+  }) {
+    const isOpen = activeDropdown === title;
+    return (
+      <div className="relative">
+        <button
+          onClick={() => setActiveDropdown(isOpen ? null : title)}
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+            isOpen ? "text-[#5B4BDB]" : "text-gray-600 hover:text-gray-900"
+          }`}
+        >
+          {title}
+          <svg className={`w-3.5 h-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 5, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 5, scale: 0.98 }}
+              transition={{ duration: 0.14 }}
+              className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-72 rounded-xl bg-white border border-gray-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.12)] z-50 p-2"
+            >
+              {links.map(item => (
+                <Link key={item.href} href={item.href} onClick={() => setActiveDropdown(null)}>
+                  <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group">
+                    <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0 text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB] transition-colors">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-gray-900 text-sm font-bold group-hover:text-[#5B4BDB] transition-colors">{item.label}</p>
+                      <p className="text-gray-400 text-xs mt-0.5">{item.desc}</p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
+
   return (
     <>
-      <nav
-        ref={navRef}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      <nav ref={navRef}
+        className={`fixed top-0 left-0 right-0 z-50 h-14 md:h-16 flex items-center transition-all duration-300 ${
           scrolled ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200" : "bg-white border-b border-gray-100"
-        } h-16 flex items-center`}
+        }`}
       >
         <div className="w-full max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between">
- 
-          {/* LOGO */}
+
+          {/* Logo */}
           <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
-              <span className="text-white font-black text-lg">S</span>
-            </div>
-            <span className="font-black text-2xl text-gray-900 hidden sm:inline">Synthé</span>
+            <span className="font-black text-2xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-500">
+              SYNTHÉ
+            </span>
+            <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-widest bg-gradient-to-r from-pink-500 to-orange-400 text-white -rotate-3">
+              BETA
+            </span>
           </Link>
- 
-          {/* CENTER NAV */}
-          <div className="hidden lg:flex items-center gap-8">
-            {NAV_ITEMS.map((item) => (
-              <div key={item.label} className="relative group">
-                <button className="text-gray-700 font-bold text-sm hover:text-gray-900 transition flex items-center gap-1">
-                  {item.label}
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
- 
-                {/* Dropdown */}
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-2xl border border-gray-200 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2">
-                  {item.links.map((link) => (
-                    <Link key={link.href} href={link.href}>
-                      <div className="px-4 py-3 hover:bg-gray-50 flex items-center gap-3 transition">
-                        <span className="text-lg">{link.icon}</span>
-                        <span className="text-gray-900 font-bold text-sm">{link.label}</span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
+
+          {/* Desktop nav — 3 dropdowns only */}
+          <div className="hidden lg:flex items-center gap-1">
+            <Dropdown title="Gallery"   links={GALLERY_LINKS}   />
+            <Dropdown title="Learn"     links={LEARN_LINKS}     />
+            <Dropdown title="Community" links={COMMUNITY_LINKS} />
           </div>
- 
-          {/* RIGHT SECTION */}
-          <div className="flex items-center gap-4">
- 
-            {/* NOTIFICATIONS */}
-            {user && (
-              <div ref={notifRef} className="relative hidden md:block">
-                <button
-                  onClick={() => setNotificationsOpen(!notificationsOpen)}
-                  className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-xs font-black flex items-center justify-center">
-                      {unreadCount > 9 ? "9+" : unreadCount}
-                    </span>
-                  )}
-                </button>
- 
-                <AnimatePresence>
-                  {notificationsOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute top-full mt-3 right-0 w-80 rounded-2xl bg-white border border-gray-200 shadow-xl z-50"
-                    >
-                      <div className="p-4 border-b sticky top-0 bg-white rounded-t-2xl">
-                        <h3 className="font-bold text-gray-900">Notifications</h3>
-                        <p className="text-xs text-gray-500">{unreadCount} unread</p>
-                      </div>
- 
-                      <div className="max-h-96 overflow-y-auto p-2">
-                        {notifications.length === 0 ? (
-                          <p className="text-center text-gray-500 text-sm py-6">No notifications</p>
-                        ) : (
-                          notifications.map((notif) => (
-                            <div
-                              key={notif.id}
-                              className={`p-3 rounded-lg mb-2 cursor-pointer transition ${
-                                notif.read ? "bg-gray-50" : "bg-blue-50"
-                              }`}
-                              onClick={async () => {
-                                if (!notif.read) {
-                                  await updateDoc(doc(db, "notifications", notif.id), { read: true });
-                                }
-                              }}
-                            >
-                              <p className="font-bold text-gray-900 text-sm truncate">{notif.title}</p>
-                              <p className="text-gray-600 text-xs mt-1">{notif.message}</p>
-                            </div>
-                          ))
-                        )}
-                      </div>
- 
-                      {notifications.length > 0 && (
-                        <div className="p-3 border-t bg-gray-50 rounded-b-2xl">
-                          <Link href="/notifications" className="text-center block text-sm font-bold text-blue-600 hover:text-blue-700">
-                            View All →
-                          </Link>
-                        </div>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            )}
- 
-            {/* PROFILE */}
+
+          {/* Auth */}
+          <div className="flex items-center gap-3">
             {user ? (
-              <div ref={profileRef} className="relative hidden md:block">
+              <div ref={profileRef} className="relative hidden lg:block">
                 <button
-                  onClick={() => setProfileOpen(!profileOpen)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition"
+                  onClick={() => setProfileOpen(v => !v)}
+                  className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-full border border-transparent hover:border-gray-200 hover:bg-gray-50 transition-all"
                 >
-                  <img 
-                    src={user.photoURL || "/avatar.png"} 
-                    className="w-8 h-8 rounded-full object-cover" 
-                    alt="Profile" 
-                  />
-                  <span className="text-gray-800 text-sm font-bold max-w-[80px] truncate hidden sm:inline">
-                    {user.displayName ?? "User"}
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-pink-400 flex-shrink-0 flex items-center justify-center">
+                    {user.photoURL
+                      ? <img src={user.photoURL} className="w-full h-full object-cover" alt="" />
+                      : <span className="text-white text-xs font-bold">{user.displayName?.[0] ?? "U"}</span>
+                    }
+                  </div>
+                  <span className="text-gray-800 text-sm font-bold max-w-[90px] truncate">
+                    {user.displayName?.split(" ")[0] ?? "User"}
                   </span>
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className={`w-3 h-3 text-gray-400 transition-transform ${profileOpen ? "rotate-180" : ""}`}
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
- 
+
                 <AnimatePresence>
                   {profileOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 5 }}
-                      className="absolute top-full mt-3 right-0 w-56 rounded-2xl bg-white border border-gray-200 shadow-lg z-50 p-2"
+                      initial={{ opacity: 0, y: 5, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 5, scale: 0.96 }}
+                      transition={{ duration: 0.14 }}
+                      className="absolute top-full mt-3 right-0 w-52 rounded-2xl border border-gray-100 bg-white shadow-xl z-50 p-2"
                     >
                       {[
-                        { label: "Dashboard", href: "/dashboard", icon: "📊" },
-                        { label: "Profile", href: "/profile", icon: "👤" },
-                        { label: "Upload", href: "/upload", icon: "📤" },
-                        { label: "Apply Role", href: "/join", icon: "✨" },
-                      ].map((item) => (
+                        { label: "Dashboard",   href: "/dashboard",        icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
+                        { label: "Profile",     href: "/profile",          icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
+                        { label: "Upload",      href: "/upload",           icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
+                        { label: "My sessions", href: "/dashboard/learner",icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
+                      ].map(item => (
                         <Link key={item.href} href={item.href} onClick={() => setProfileOpen(false)}>
-                          <div className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg transition text-gray-700 hover:text-gray-900 font-bold">
-                            <span className="text-lg">{item.icon}</span>
-                            <span className="text-sm">{item.label}</span>
+                          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group">
+                            <svg className="w-4 h-4 text-gray-400 group-hover:text-[#5B4BDB] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                            </svg>
+                            <span className="text-sm font-semibold text-gray-700">{item.label}</span>
                           </div>
                         </Link>
                       ))}
- 
-                      <div className="h-px bg-gray-100 my-2" />
- 
-                      <button
-                        onClick={logout}
-                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 rounded-lg transition text-red-600 hover:text-red-700 font-bold"
-                      >
-                        <span className="text-lg">🚪</span>
-                        <span className="text-sm">Sign Out</span>
+                      <div className="h-px bg-gray-100 my-1.5 mx-2" />
+                      <button onClick={logout}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 transition-colors group">
+                        <svg className="w-4 h-4 text-gray-400 group-hover:text-red-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span className="text-sm font-semibold text-gray-700 group-hover:text-red-600">Sign out</span>
                       </button>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
             ) : (
-              <div className="hidden md:flex items-center gap-3">
+              <div className="hidden lg:flex items-center gap-2">
                 <Link href="/login">
-                  <button className="px-4 py-2 text-gray-600 font-bold text-sm hover:text-gray-900 transition">
-                    Sign In
+                  <button className="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all">
+                    Sign in
                   </button>
                 </Link>
                 <Link href="/join">
-                  <button className="px-5 py-2 bg-blue-600 text-white font-bold text-sm rounded-lg hover:bg-blue-700 transition">
-                    Join Free 🚀
+                  <button className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] transition-all active:translate-y-[1px]">
+                    Get started
                   </button>
                 </Link>
               </div>
             )}
- 
-            {/* MOBILE MENU */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {mobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
+
+            {/* Mobile hamburger */}
+            <button onClick={() => setMobileOpen(v => !v)}
+              className="lg:hidden w-10 h-10 flex items-center justify-center text-gray-700">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileOpen
+                  ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                }
               </svg>
             </button>
           </div>
         </div>
       </nav>
- 
-      {/* MOBILE DRAWER */}
+
+      {/* Mobile drawer */}
       <AnimatePresence>
-        {mobileMenuOpen && (
+        {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
-            className="fixed inset-0 z-40 bg-white pt-20 pb-10 overflow-y-auto md:hidden"
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-40 bg-white flex flex-col pt-16 h-[100dvh] overflow-y-auto"
           >
-            <div className="px-6 space-y-8">
-              {/* Navigation items */}
-              {NAV_ITEMS.map((category) => (
-                <div key={category.label}>
-                  <p className="text-xs font-black text-gray-400 uppercase mb-4">{category.label}</p>
-                  {category.links.map((link) => (
-                    <Link key={link.href} href={link.href} onClick={() => setMobileMenuOpen(false)}>
-                      <div className="flex items-center gap-3 py-3 text-gray-900 hover:text-blue-600 transition">
-                        <span className="text-lg">{link.icon}</span>
-                        <span className="font-bold">{link.label}</span>
-                      </div>
-                    </Link>
-                  ))}
+            <div className="p-6 space-y-8 flex-1">
+              {[
+                { section: "Gallery",   links: GALLERY_LINKS   },
+                { section: "Learn",     links: LEARN_LINKS     },
+                { section: "Community", links: COMMUNITY_LINKS },
+              ].map(({ section, links }) => (
+                <div key={section}>
+                  <p className="text-[10px] font-black tracking-[0.18em] text-[#5B4BDB] uppercase mb-3">{section}</p>
+                  <div className="space-y-0.5">
+                    {links.map(item => (
+                      <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
+                        <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
+                          <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 text-gray-400 group-hover:text-[#5B4BDB] group-hover:bg-[#5B4BDB]/10 transition-colors">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-gray-900">{item.label}</p>
+                            <p className="text-xs text-gray-400">{item.desc}</p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               ))}
- 
-              <div className="h-px bg-gray-100" />
- 
-              {/* Auth buttons */}
-              {!user && (
+            </div>
+
+            {/* Mobile auth footer */}
+            <div className="p-6 border-t border-gray-100 bg-gray-50 pb-10">
+              {user ? (
                 <div className="space-y-3">
-                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                    <button className="w-full py-3 border border-gray-200 text-gray-900 font-bold rounded-lg hover:bg-gray-50 transition">
-                      Sign In
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-pink-400 flex-shrink-0">
+                      {user.photoURL
+                        ? <img src={user.photoURL} className="w-full h-full object-cover" alt="" />
+                        : <div className="w-full h-full flex items-center justify-center text-white text-sm font-bold">
+                            {user.displayName?.[0] ?? "U"}
+                          </div>
+                      }
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-900 text-sm">{user.displayName}</p>
+                      <p className="text-xs text-gray-400">{user.email}</p>
+                    </div>
+                  </div>
+                  <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
+                    <button className="w-full py-3 rounded-xl font-bold text-sm bg-[#5B4BDB] text-white border-b-[3px] border-[#4438b8] mb-2">
+                      Dashboard
                     </button>
                   </Link>
-                  <Link href="/join" onClick={() => setMobileMenuOpen(false)}>
-                    <button className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition">
-                      Join Free 🚀
+                  <button onClick={logout}
+                    className="w-full py-3 rounded-xl font-bold text-sm bg-white border border-red-200 text-red-600">
+                    Sign out
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <Link href="/join" onClick={() => setMobileOpen(false)}>
+                    <button className="w-full py-3.5 rounded-xl font-bold text-sm bg-[#5B4BDB] text-white border-b-[3px] border-[#4438b8]">
+                      Get started
+                    </button>
+                  </Link>
+                  <Link href="/login" onClick={() => setMobileOpen(false)}>
+                    <button className="w-full py-3.5 rounded-xl font-bold text-sm bg-white border border-gray-200 text-gray-700">
+                      Sign in
                     </button>
                   </Link>
                 </div>
@@ -349,9 +321,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
- 
-      {/* SPACER */}
-      <div className="h-16" />
     </>
   );
 }

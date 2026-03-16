@@ -31,11 +31,11 @@ interface UserStats {
 }
  
 const ACHIEVEMENTS = [
-  { icon: "🌟", label: "5-Star Mentor", check: (stats: UserStats) => parseFloat(stats.rating) >= 4.8 },
-  { icon: "🏆", label: "Top Creator", check: (stats: UserStats) => stats.downloads > 100 },
-  { icon: "🚀", label: "Rising Star", check: (stats: UserStats) => stats.views > 1000 },
-  { icon: "💎", label: "Premium Member", check: (profile: UserProfile) => profile.role === "mentor" },
-  { icon: "💰", label: "Earned ₹10k+", check: (stats: UserStats) => stats.earnings > 10000 },
+  { icon: "🌟", label: "5-Star Mentor", check: (stats: UserStats, _profile: UserProfile) => parseFloat(stats.rating) >= 4.8 },
+  { icon: "🏆", label: "Top Creator", check: (stats: UserStats, _profile: UserProfile) => stats.downloads > 100 },
+  { icon: "🚀", label: "Rising Star", check: (stats: UserStats, _profile: UserProfile) => stats.views > 1000 },
+  { icon: "💎", label: "Premium Member", check: (_stats: UserStats, profile: UserProfile) => profile.role === "mentor" },
+  { icon: "💰", label: "Earned ₹10k+", check: (stats: UserStats, _profile: UserProfile) => stats.earnings > 10000 },
 ];
  
 export default function ProfilePage() {
@@ -185,7 +185,7 @@ export default function ProfilePage() {
                 <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Achievements</h3>
                 <div className="grid grid-cols-2 gap-4">
                   {ACHIEVEMENTS.map((ach, i) => {
-                    const unlocked = ach.check(stats);
+                    const unlocked = ach.check(stats, profile);
                     return (
                       <div 
                         key={i} 

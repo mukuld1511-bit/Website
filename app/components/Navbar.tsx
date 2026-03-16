@@ -144,8 +144,8 @@ export default function Navbar() {
 
           {/* CENTER: Separate section dropdowns */}
           <div className="hidden lg:flex items-center gap-0.5">
-            {/* 💍 Jewellery Models */}
-            <DropdownPanel title="Jewellery Models" links={JEWELLERY_LINKS} />
+            {/* 📦 3D Assets */}
+            <DropdownPanel title="3D Assets" links={ASSET_LINKS} />
             {/* 📱 XR Dev */}
             <DropdownPanel title="XR Development" links={XR_DEV_LINKS} />
             {/* Divider */}
@@ -247,10 +247,10 @@ export default function Navbar() {
               
               {/* Mobile Menu Sections */}
               <div className="space-y-6">
-                {/* 💍 Jewellery */}
+                {/* 📦 3D Assets */}
                 <div>
-                  <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase mb-4">Jewellery Models</p>
-                  {JEWELLERY_LINKS.map(item => (
+                  <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase mb-4">3D Assets</p>
+                  {ASSET_LINKS.map(item => (
                     <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
                       <div className="flex items-center gap-4 group mb-4">
                         <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>

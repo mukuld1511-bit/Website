@@ -99,8 +99,8 @@ export default function UploadContent() {
   }, []);
 
   const PLATFORMS = ["Windows", "Android", "iOS", "macOS", "Linux", "WebGL"];
-  const BUILD_GENRES = ["Game", "Utility", "Education", "Tool", "VR", "AR", "Simulation", "Social"];
-  const MODEL_CATEGORIES = ["Character", "Environment", "Prop", "Vehicle", "Animation", "Architecture", "Abstract", "Other"];
+  const BUILD_GENRES = ["Professional", "Utility", "Education", "Industrial", "VR Showcase", "AR Tool", "Simulation", "Enterprise"];
+  const MODEL_CATEGORIES = ["Jewellery", "Character", "Environment", "Prop", "Vehicle", "Animation", "Architecture", "Abstract", "Other"];
   const AR_VR_TAGS = targetMedium === "AR"
     ? ["arcore", "arkit", "webxr", "vuforia", "spark-ar", "8thwall", "nianticlabs"]
     : ["oculus", "webxr", "metaverse", "quest", "steamvr", "htc-vive", "psvr"];
@@ -280,7 +280,7 @@ export default function UploadContent() {
                 {[
                   { type: "model" as const,    title: "3D Model",    desc: "GLB, GLTF, OBJ, FBX",  icon: "📦", accent: "blue"   },
                   { type: "autocad" as const,  title: "AutoCAD",     desc: "DWG & DXF drawings",    icon: "📐", accent: "orange" },
-                  { type: "xr-build" as const, title: "XR App/Game", desc: "AR & VR .zip builds",   icon: "🥽", accent: "purple" },
+                  { type: "xr-build" as const, title: "XR Application", desc: "AR & VR .zip builds",   icon: "🥽", accent: "purple" },
                 ].map(({ type, title, desc, icon, accent }) => {
                   const isSel = uploadType === type;
                   const sel: Record<string,string> = { blue:"border-blue-500 bg-blue-50", orange:"border-orange-500 bg-orange-50", purple:"border-purple-500 bg-purple-50" };

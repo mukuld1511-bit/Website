@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { motion, useSpring, useMotionValue, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Navbar from "./components/Navbar";
@@ -59,6 +59,52 @@ const FEATURES = [
   { title:"PIET Collaboration",  href:"/collaborators",     color:"purple", tag:"Research",
     desc:"Academic partnership with PIET — students and faculty co-building the future of 3D/AR/VR.",
     icon:"M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" },
+];
+
+// ─── NEW: What's different feature data ───────────────────────────────────────
+const DIFF_FEATURES = [
+  {
+    emoji: "✦",
+    emojiColor: "#5B4BDB",
+    bg: "bg-[#5B4BDB]/8",
+    border: "border-[#5B4BDB]/20",
+    hoverBorder: "hover:border-[#5B4BDB]/50",
+    hoverShadow: "hover:shadow-[0_8px_30px_rgba(91,75,219,0.12)]",
+    label: "Day 2 feature",
+    labelColor: "bg-[#5B4BDB]/10 text-[#5B4BDB]",
+    title: "Live 3D Gallery",
+    desc: "Hover any card — the thumbnail dissolves into a live rotating WebGL model. No click needed. Nothing like it exists in any XR marketplace.",
+    link: "/gallery",
+    linkText: "Open gallery",
+  },
+  {
+    emoji: "◈",
+    emojiColor: "#B45309",
+    bg: "bg-amber-50",
+    border: "border-amber-200/60",
+    hoverBorder: "hover:border-amber-300",
+    hoverShadow: "hover:shadow-[0_8px_30px_rgba(180,83,9,0.10)]",
+    label: "Day 3 feature",
+    labelColor: "bg-amber-100 text-amber-700",
+    title: "Cinematic Viewer",
+    desc: "One click transforms any model into a product reveal. HDRI studio lighting, bloom post-processing, dramatic auto-orbit. Rivals Sketchfab.",
+    link: "/gallery",
+    linkText: "Try it",
+  },
+  {
+    emoji: "⬡",
+    emojiColor: "#1d4ed8",
+    bg: "bg-blue-50",
+    border: "border-blue-200/60",
+    hoverBorder: "hover:border-blue-300",
+    hoverShadow: "hover:shadow-[0_8px_30px_rgba(29,78,216,0.10)]",
+    label: "Day 5 feature",
+    labelColor: "bg-blue-100 text-blue-700",
+    title: "AR in Your Room",
+    desc: "Tap 'View in your room' on any GLB model. Point your phone at the floor. The model is physically there. No app download. Pure WebXR.",
+    link: "/gallery",
+    linkText: "See how",
+  },
 ];
 
 // ─── Counter ──────────────────────────────────────────────────────────────────
@@ -169,12 +215,11 @@ function TutorCard({ t, i }: { t:TutorProfile & { certified?: boolean }; i:numbe
       viewport={{ once:true }} transition={{ delay:i*0.05 }}>
       <Link href="/connect">
         <div className={`group flex items-center gap-4 p-4 rounded-3xl border-2 transition-all duration-300 cursor-pointer overflow-hidden relative hover:-translate-y-1 ${
-          isC 
-            ? "border-[#5B4BDB]/30 bg-[#141414] shadow-[0_4px_20px_rgba(91,75,219,0.15)] hover:shadow-[0_8px_30px_rgba(91,75,219,0.25)] hover:border-[#5B4BDB]" 
+          isC
+            ? "border-[#5B4BDB]/30 bg-[#141414] shadow-[0_4px_20px_rgba(91,75,219,0.15)] hover:shadow-[0_8px_30px_rgba(91,75,219,0.25)] hover:border-[#5B4BDB]"
             : "bg-white border-indigo-50 hover:border-indigo-200 hover:shadow-md"
         }`}>
           {isC && <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#5B4BDB] to-purple-400 opacity-90" />}
-          
           <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold overflow-hidden border ${
             isC ? "bg-[#5B4BDB]/10 text-[#5B4BDB] border-[#5B4BDB]/20" : "bg-gray-100 text-gray-500 border-gray-200"
           }`}>
@@ -209,6 +254,109 @@ function TutorCard({ t, i }: { t:TutorProfile & { certified?: boolean }; i:numbe
   );
 }
 
+// ─── NEW: DiffFeatureCard ─────────────────────────────────────────────────────
+function DiffFeatureCard({ f, i }: { f: typeof DIFF_FEATURES[0]; i: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.45, delay: i * 0.08 }}
+    >
+      <Link href={f.link}>
+        <div className={`group relative h-full p-7 rounded-2xl border ${f.bg} ${f.border} ${f.hoverBorder} ${f.hoverShadow} transition-all duration-300 cursor-pointer hover:-translate-y-1.5`}>
+          {/* Top row */}
+          <div className="flex items-center justify-between mb-5">
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center text-xl font-black"
+              style={{ background: `${f.emojiColor}12`, color: f.emojiColor, border: `1px solid ${f.emojiColor}22` }}
+            >
+              {f.emoji}
+            </div>
+            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg ${f.labelColor}`}>
+              {f.label}
+            </span>
+          </div>
+
+          <h3 className="text-gray-900 font-black text-lg mb-2 tracking-tight">{f.title}</h3>
+          <p className="text-gray-500 text-sm leading-relaxed mb-5">{f.desc}</p>
+
+          {/* Link row */}
+          <div className="flex items-center gap-1.5" style={{ color: f.emojiColor }}>
+            <span className="text-sm font-bold">{f.linkText}</span>
+            <svg className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
+// ─── NEW: DemoStrip ───────────────────────────────────────────────────────────
+const DEMO_STEPS = [
+  { step: "01", text: "Browse the gallery", sub: "Models glow based on popularity" },
+  { step: "02", text: "Hover any card", sub: "Model spins live — no click needed" },
+  { step: "03", text: "Open cinematic mode", sub: "Studio lighting, bloom, auto-orbit" },
+  { step: "04", text: "Tap AR on phone", sub: "Model appears in your physical room" },
+];
+
+function DemoStrip() {
+  return (
+    <div className="w-full bg-gray-950 py-14 px-4 border-y border-gray-800 overflow-hidden relative">
+      {/* subtle grid bg */}
+      <div className="absolute inset-0 opacity-[0.04]" style={{
+        backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
+        backgroundSize: "40px 40px"
+      }} />
+
+      <div className="max-w-6xl mx-auto relative">
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-10"
+        >
+          The 30-second demo
+        </motion.p>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-gray-800 rounded-2xl overflow-hidden">
+          {DEMO_STEPS.map((s, i) => (
+            <motion.div
+              key={s.step}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.07 }}
+              className="bg-gray-950 px-6 py-7 flex flex-col gap-3 group hover:bg-gray-900 transition-colors duration-200"
+            >
+              <span className="text-[11px] font-black tracking-widest text-[#5B4BDB]">{s.step}</span>
+              <p className="text-white text-sm font-bold leading-snug">{s.text}</p>
+              <p className="text-gray-500 text-xs leading-relaxed">{s.sub}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+          className="flex justify-center mt-8"
+        >
+          <Link href="/gallery">
+            <button className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
+              <span className="w-2 h-2 rounded-full bg-white/60 animate-pulse" />
+              Try it live
+            </button>
+          </Link>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export default function HomePage() {
   const [user,          setUser]          = useState<any>(null);
@@ -223,7 +371,6 @@ export default function HomePage() {
     return () => unsub();
   }, []);
 
-  // Firestore stats
   useEffect(() => {
     async function load() {
       setStatsLoading(true);
@@ -264,14 +411,6 @@ export default function HomePage() {
       .catch(console.error);
   }, []);
 
-
-  const STATS_CFG = [
-    { label:"3D Models",     val:stats.models,        color:"blue-600" },
-    { label:"Developers",    val:stats.developers,    color:"indigo-600" },
-    { label:"Downloads",     val:stats.downloads,     color:"green-600" },
-    { label:"Certifications",val:stats.certifications,color:"amber-500" },
-  ];
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
       <Navbar />
@@ -281,51 +420,40 @@ export default function HomePage() {
         {/* HERO */}
         <HeroComponent user={user} stats={stats} statsLoading={statsLoading} />
 
-        {/* New feature highlights — add to home page */}
-        <section className="py-16 px-4 bg-white">
-          <div className="max-w-5xl mx-auto">
-            <p className="text-center text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
-              What makes SYNTHÉ different
-            </p>
-            <h2 className="text-center text-3xl font-black text-gray-900 mb-12 tracking-tight">
-              Built for the XR generation
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                {
-                  icon: "✨",
-                  title: "Live 3D Gallery",
-                  desc: "Hover any card and the model comes alive — rotating in real-time, right in the gallery.",
-                  color: "bg-[#5B4BDB]/10 text-[#5B4BDB]",
-                },
-                {
-                  icon: "🎬",
-                  title: "Cinematic Viewer",
-                  desc: "HDRI lighting, bloom effects, and auto-orbit make every model look like a product reveal.",
-                  color: "bg-amber-50 text-amber-600",
-                },
-                {
-                  icon: "📱",
-                  title: "AR in Your Room",
-                  desc: "Tap 'View in your room' on any model. No app. Just open your phone camera and see it there.",
-                  color: "bg-blue-50 text-blue-600",
-                },
-              ].map(({ icon, title, desc, color }) => (
-                <div key={title}
-                  className="p-6 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
-                  <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center text-2xl mb-4`}>
-                    {icon}
-                  </div>
-                  <h3 className="font-black text-gray-900 mb-2">{title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
-                </div>
+        {/* ── WHAT MAKES SYNTHÉ DIFFERENT ── ADDITION ── */}
+        <section className="py-20 px-4 bg-white border-b border-gray-100">
+          <div className="max-w-6xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-14"
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#5B4BDB]/20 bg-[#5B4BDB]/5 mb-4">
+                <span className="w-2 h-2 rounded-full bg-[#5B4BDB] animate-pulse" />
+                <span className="text-[#5B4BDB] text-xs font-bold uppercase tracking-widest">Just shipped</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-3">
+                Built different. Built for XR.
+              </h2>
+              <p className="text-gray-500 text-base max-w-xl mx-auto leading-relaxed">
+                Three features you won't find in any other 3D marketplace — anywhere.
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {DIFF_FEATURES.map((f, i) => (
+                <DiffFeatureCard key={f.title} f={f} i={i} />
               ))}
             </div>
           </div>
         </section>
 
+        {/* ── DEMO STRIP ── ADDITION ── */}
+        <DemoStrip />
+
         {/* SCROLLING GALLERY */}
-        <div className="bg-white border-y border-gray-200 py-16">
+        <div className="bg-white border-b border-gray-200 py-16">
           <ScrollingGallery />
         </div>
 
@@ -459,35 +587,25 @@ export default function HomePage() {
         {/* ── ECOSYSTEM STATS ── */}
         <section className="w-full bg-[#5B4BDB] py-20 px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 md:gap-y-0 divide-x-0 md:divide-x border-gray-400/30">
-              
-              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }} className="flex flex-col items-center text-center px-4">
-                <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight">
-                  {statsLoading ? "—" : <Counter target={stats.models} suffix="+" />}
-                </div>
-                <div className="text-white/80 text-sm md:text-base font-medium">3D Models Uploaded</div>
-              </motion.div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 md:gap-y-0">
 
-              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} className="flex flex-col items-center text-center px-4 md:border-l border-white/20">
-                <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight">
-                  {statsLoading ? "—" : <Counter target={stats.developers} suffix="+" />}
-                </div>
-                <div className="text-white/80 text-sm md:text-base font-medium">Verified Developers</div>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }} className="flex flex-col items-center text-center px-4 md:border-l border-white/20">
-                <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight">
-                  {statsLoading ? "—" : <Counter target={stats.downloads} suffix="+" />}
-                </div>
-                <div className="text-white/80 text-sm md:text-base font-medium">Model Downloads</div>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.4 }} className="flex flex-col items-center text-center px-4 md:border-l border-white/20">
-                <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight">
-                  {statsLoading ? "—" : <Counter target={stats.certifications} />}
-                </div>
-                <div className="text-white/80 text-sm md:text-base font-medium">Certifications Issued</div>
-              </motion.div>
+              {[
+                { label: "3D Models Uploaded",  val: stats.models,        delay: 0.1 },
+                { label: "Verified Developers", val: stats.developers,    delay: 0.2 },
+                { label: "Model Downloads",     val: stats.downloads,     delay: 0.3 },
+                { label: "Certifications",      val: stats.certifications, delay: 0.4 },
+              ].map((s, i) => (
+                <motion.div key={s.label}
+                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }} transition={{ duration: 0.5, delay: s.delay }}
+                  className={`flex flex-col items-center text-center px-4 ${i > 0 ? "md:border-l border-white/20" : ""}`}
+                >
+                  <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight">
+                    {statsLoading ? "—" : <Counter target={s.val} suffix={i < 3 ? "+" : ""} />}
+                  </div>
+                  <div className="text-white/70 text-sm md:text-base font-medium">{s.label}</div>
+                </motion.div>
+              ))}
 
             </div>
           </div>
@@ -542,7 +660,7 @@ export default function HomePage() {
                 {user ? (
                   <>
                     <Link href="/upload">
-                      <button className="px-10 py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition flex items-center gap-2">
+                      <button className="px-10 py-4 rounded-xl font-bold text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] shadow-sm transition-all active:translate-y-[1px] flex items-center gap-2">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                         </svg>
@@ -558,7 +676,7 @@ export default function HomePage() {
                 ) : (
                   <>
                     <Link href="/signup">
-                      <button className="px-10 py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition">
+                      <button className="px-10 py-4 rounded-xl font-bold text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] shadow-sm transition-all active:translate-y-[1px]">
                         Get Started Free
                       </button>
                     </Link>

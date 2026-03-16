@@ -5,8 +5,22 @@ import type { GalleryFiltersState, PriceRange, SortOption } from "@/types/galler
 
 const CATEGORIES = ["All", "Architecture", "Mechanical", "Character", "Environment", "Product", "AutoCAD"];
 const FILE_TYPES = ["All Types", "GLB/GLTF", "OBJ/FBX", "DWG/DXF"];
-const SORT_OPTIONS: SortOption[] = ["Latest", "Most Viewed", "Most Liked", "Price: Low", "Price: High"];
-const PRICE_OPTIONS: PriceRange[] = ["All", "Free", "Paid"];
+const SORT_OPTIONS: SortOption[] = ["newest", "popular", "downloads", "price-low", "price-high"];
+const PRICE_OPTIONS: PriceRange[] = ["all", "free", "paid"];
+
+const SORT_LABELS: Record<SortOption, string> = {
+  newest: "Latest",
+  popular: "Most Viewed",
+  downloads: "Most Liked",
+  "price-low": "Price: Low",
+  "price-high": "Price: High"
+};
+
+const PRICE_LABELS: Record<PriceRange, string> = {
+  all: "All",
+  free: "Free",
+  paid: "Paid"
+};
 
 interface GalleryFiltersProps {
   filters: GalleryFiltersState;
@@ -14,7 +28,7 @@ interface GalleryFiltersProps {
 }
 
 export default function GalleryFilters({ filters, onChange }: GalleryFiltersProps) {
-  const { category, fileType, sort, priceRange, search } = filters;
+  const { category, fileType, sortBy, priceRange, search } = filters;
 
   function set<K extends keyof GalleryFiltersState>(key: K, val: GalleryFiltersState[K]) {
     onChange({ ...filters, [key]: val });
@@ -105,22 +119,22 @@ export default function GalleryFilters({ filters, onChange }: GalleryFiltersProp
       <div>
         {sectionLabel("Price")}
         <div className="grid grid-cols-3 gap-2">
-          {PRICE_OPTIONS.map((p) => (
+            {PRICE_OPTIONS.map((p) => (
             <motion.button
               key={p}
               whileTap={{ scale: 0.94 }}
               onClick={() => set("priceRange", p)}
               className={`py-2.5 rounded-xl text-xs font-bold transition-all duration-200 border ${
                 priceRange === p
-                  ? p === "Free"
+                  ? p === "free"
                     ? "bg-emerald-500/12 border-emerald-500/30 text-emerald-300"
-                    : p === "Paid"
+                    : p === "paid"
                     ? "bg-amber-500/12 border-amber-500/30 text-amber-300"
                     : "bg-violet-500/18 border-violet-500/40 text-violet-300"
                   : pillInactive
               }`}
             >
-              {p}
+              {PRICE_LABELS[p]}
             </motion.button>
           ))}
         </div>
@@ -131,12 +145,12 @@ export default function GalleryFilters({ filters, onChange }: GalleryFiltersProp
         {sectionLabel("Sort By")}
         <div className="relative">
           <select
-            value={sort}
-            onChange={(e) => set("sort", e.target.value as SortOption)}
+            value={sortBy}
+            onChange={(e) => set("sortBy", e.target.value as SortOption)}
             className="w-full appearance-none bg-white/[0.03] border border-white/8 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-500/40 transition duration-200 cursor-pointer pr-10"
           >
             {SORT_OPTIONS.map((s) => (
-              <option key={s} value={s} className="bg-[#0a0010]">{s}</option>
+              <option key={s} value={s} className="bg-[#0a0010]">{SORT_LABELS[s]}</option>
             ))}
           </select>
           <div className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none">
@@ -148,11 +162,11 @@ export default function GalleryFilters({ filters, onChange }: GalleryFiltersProp
       </div>
 
       {/* Reset */}
-      {(search || category !== "All" || fileType !== "All Types" || priceRange !== "All" || sort !== "Latest") && (
+      {(search || category !== "All" || fileType !== "All Types" || priceRange !== "all" || sortBy !== "newest") && (
         <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          onClick={() => onChange({ search: "", category: "All", fileType: "All Types", priceRange: "All", sort: "Latest" })}
+          onClick={() => onChange({ search: "", category: "All", fileType: "All Types", priceRange: "all", sortBy: "newest", tags: [] })}
           className="w-full py-2.5 text-xs font-bold text-white/35 border border-white/6 rounded-xl hover:border-white/15 hover:text-white/55 transition duration-200"
         >
           Clear all filters

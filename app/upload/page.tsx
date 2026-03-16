@@ -100,7 +100,7 @@ export default function UploadContent() {
 
   const PLATFORMS = ["Windows", "Android", "iOS", "macOS", "Linux", "WebGL"];
   const BUILD_GENRES = ["Professional", "Utility", "Education", "Industrial", "VR Showcase", "AR Tool", "Simulation", "Enterprise"];
-  const MODEL_CATEGORIES = ["Jewellery", "Character", "Environment", "Prop", "Vehicle", "Animation", "Architecture", "Abstract", "Other"];
+  const MODEL_CATEGORIES = ["Science", "Character", "Environment", "Prop", "Vehicle", "Animation", "Architecture", "Abstract", "Other"];
   const AR_VR_TAGS = targetMedium === "AR"
     ? ["arcore", "arkit", "webxr", "vuforia", "spark-ar", "8thwall", "nianticlabs"]
     : ["oculus", "webxr", "metaverse", "quest", "steamvr", "htc-vive", "psvr"];

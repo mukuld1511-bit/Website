@@ -16,12 +16,11 @@ import { useGalleryFilters, SortBy, FormatFilter } from "../../hooks/useGalleryF
 
 export const dynamic = "force-dynamic";
 
-type TabMode  = "3d" | "jewellery" | "ar" | "vr" | "autocad";
+type TabMode  = "3d" | "ar" | "vr" | "autocad";
 type ViewMode = "grid" | "aura";
 
 const TABS: { key: TabMode; label: string; emoji: string }[] = [
   { key: "3d",      label: "3D Models", emoji: "🧊" },
-  { key: "jewellery", label: "Jewellery", emoji: "💎" },
   { key: "ar",      label: "AR",        emoji: "📱" },
   { key: "vr",      label: "VR",        emoji: "🥽" },
   { key: "autocad", label: "AutoCAD",   emoji: "📐" },
@@ -65,9 +64,7 @@ function GalleryContent() {
       const genre = searchParams.get("genre");
 
       let q;
-      if (tab === "jewellery") {
-        q = query(collection(db, "models"), where("category", "==", "Jewellery"), ...baseConstraints);
-      } else if (tab === "3d") {
+      if (tab === "3d") {
         const constraints = [...baseConstraints];
         if (genre) constraints.push(where("category", "==", genre.charAt(0).toUpperCase() + genre.slice(1)));
         q = query(collection(db, "models"), where("fileType", "in", ["glb","gltf","obj","fbx"]), ...constraints);

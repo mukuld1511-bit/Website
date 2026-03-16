@@ -1,86 +1,106 @@
-// types/gallery.ts
+// ============================================================
+//  SYNTHÉ — types/gallery.ts
+//  Updated: 5 user roles + workshop types added
+// ============================================================
 
-export type FileType = "glb" | "gltf" | "obj" | "fbx" | "dwg" | "dxf";
-export type AccessType = "free" | "purchase" | "request";
-export type ModelStatus = "published" | "draft" | "review";
-export type PriceRange = "All" | "Free" | "Paid";
-export type SortOption = "Latest" | "Most Viewed" | "Most Liked" | "Price: Low" | "Price: High";
-export type Category = "All" | "Architecture" | "Mechanical" | "Character" | "Environment" | "Product" | "AutoCAD" | "Other";
+// ─── User roles ──────────────────────────────────────────────
+export type UserRole = "user" | "learner" | "developer" | "mentor" | "admin";
 
-export interface GalleryModel {
-  id: string;
-  title: string;
+export interface UserProfile {
+  uid:          string;
+  displayName:  string;
+  email:        string;
+  photoURL:     string;
+  role:         UserRole;
+  roles?:       UserRole[];        // future: multi-role support
+  isCertified?: boolean;
+  bio?:         string;
+  skills?:      string[];
+  createdAt?:   any;
+}
+
+// ─── Model / asset ───────────────────────────────────────────
+export type FileType = "glb" | "gltf" | "obj" | "fbx" | "zip" | "dwg" | "dxf" | "build";
+
+export interface Model {
+  id:               string;
+  title:            string;
+  description?:     string;
+  modelUrl:         string;
+  thumbnailUrl?:    string;
+  fileType:         FileType;
+  category?:        string;
+  tags?:            string[];
+  isPaid:           boolean;
+  price?:           number;
+  authorId:         string;
+  authorName:       string;
+  authorPhoto?:     string;
+  uploadedAt?:      any;
+  status:           "published" | "draft";
+  storageProvider?: "r2" | "supabase";
+  engagementScore?: number;
+  views?:           number;
+  likes?:           number;
+  downloads?:       number;
+  fileSize?:        number;
+  // XR build specific
+  version?:         string;
+  platforms?:       string[];
+  genre?:           string;
+  minimumSpecs?:    { ram: string; storage: string; os: string };
+  changelog?:       string;
+}
+
+// ─── Workshop / live session ──────────────────────────────────
+export type WorkshopStatus = "upcoming" | "live" | "ended";
+
+export interface Workshop {
+  id:               string;
+  title:            string;
+  description:      string;
+  hostId:           string;
+  hostName:         string;
+  hostPhoto?:       string;
+  date:             any;           // Firestore Timestamp
+  duration:         number;        // minutes
+  topic:            string;
+  tags:             string[];      // e.g. ["AR", "Unity", "WebXR"]
+  meetLink:         string;        // shown only post-registration
+  maxSeats:         number;
+  registeredUsers:  string[];      // array of user UIDs
+  price:            number;        // 0 = free
+  status:           WorkshopStatus;
+  createdAt:        any;
+}
+
+// ─── Mentor / hire session ────────────────────────────────────
+export type SessionStatus = "pending" | "confirmed" | "completed" | "cancelled";
+
+export interface MentorSession {
+  id:          string;
+  mentorId:    string;
+  mentorName:  string;
+  learnerId:   string;
+  learnerName: string;
+  topic:       string;
+  message:     string;
+  date?:       any;
+  meetLink?:   string;
+  price:       number;
+  status:      SessionStatus;
+  createdAt:   any;
+}
+
+// ─── Project request ─────────────────────────────────────────
+export interface ProjectRequest {
+  id:          string;
+  title:       string;
   description: string;
-  category: Category | string;
-  tags: string[];
-  polygons: string | null;
-  fileType: FileType;
-  modelUrl: string;
-  thumbnailUrl: string;
-  isPaid: boolean;
-  price: number;
-  accessType: AccessType;
-  license: string;
-  authorId: string;
-  authorName: string;
-  authorPhoto: string;
-  views: number;
-  likes: number;
-  downloads: number;
-  status: ModelStatus;
-  uploadedAt: any; // Firestore Timestamp
-}
-
-export interface Purchase {
-  modelId: string;
-  status: "active" | "refunded";
-  paymentId: string;
-  orderId: string;
-  purchasedAt: any;
-}
-
-export interface AccessRequest {
-  modelId: string;
-  modelTitle: string;
-  userId: string;
-  userName: string;
-  userEmail: string;
-  useCase: string;
-  message: string;
-  status: "pending" | "approved" | "rejected";
-  requestedAt: any;
-}
-
-export interface GalleryFiltersState {
-  search: string;
-  category: string;
-  fileType: string;
-  priceRange: PriceRange;
-  sort: SortOption;
-}
-
-export interface Comment {
-  id: string;
-  text: string;
-  userId: string;
-  userName: string;
-  userPhoto: string;
-  createdAt: any;
-}
-
-export interface RazorpayPaymentResponse {
-  razorpay_payment_id: string;
-  razorpay_order_id: string;
-  razorpay_signature: string;
-}
-
-export interface InitiatePaymentOptions {
-  orderId: string;
-  amount: number;
-  currency?: string;
-  modelName: string;
-  userName?: string;
-  userEmail?: string;
-  onSuccess?: (response: RazorpayPaymentResponse) => void;
-  onFailure?: (message: string) => void;
+  budget:      number;
+  authorId:    string;
+  authorName:  string;
+  tags:        string[];
+  status:      "open" | "in-progress" | "closed";
+  createdAt:   any;
 }

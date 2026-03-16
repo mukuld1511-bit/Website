@@ -1,396 +1,420 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  collection, getDocs, addDoc, serverTimestamp,
-  query, where, orderBy, doc, getDoc,
+  collection, query, where, orderBy,
+  getDocs, addDoc, updateDoc, doc,
+  serverTimestamp, arrayUnion,
 } from "firebase/firestore";
 import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import DeveloperCard from "../components/DeveloperCard";
-import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import type { Workshop, UserRole } from "../../types/gallery";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-interface Workshop {
-  id: string;
-  title: string;
-  instructor: string;
-  instructorRole: string;
-  date: string;          // ISO date string e.g. "2026-03-22"
-  time: string;          // display string e.g. "4:00 PM IST"
-  duration: string;
-  level: "Beginner" | "Intermediate" | "Advanced";
-  seats: number;
-  registered: number;    // count of registrations stored in Firestore
-  tags: string[];
-  color: string;         // e.g. "blue"
-  emoji: string;
-  desc: string;
-  meetLink?: string;     // optional Google Meet / Zoom link
+const TAGS = ["All", "AR", "VR", "Unity", "Unreal", "WebXR", "Blender", "ARCore", "ARKit"];
+
+function formatDate(ts: any): string {
+  if (!ts) return "—";
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString("en-IN", {
+    weekday: "short", day: "numeric", month: "short",
+    hour: "2-digit", minute: "2-digit",
+  });
 }
 
-const COLOR_MAP: Record<string, { bg: string; text: string; border: string; pill: string }> = {
-  blue:    { bg: "bg-blue-50",    text: "text-blue-700",    border: "border-blue-200",    pill: "bg-blue-100 text-blue-700" },
-  orange:  { bg: "bg-orange-50",  text: "text-orange-700",  border: "border-orange-200",  pill: "bg-orange-100 text-orange-700" },
-  emerald: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", pill: "bg-emerald-100 text-emerald-700" },
-  amber:   { bg: "bg-amber-50",   text: "text-amber-700",   border: "border-amber-200",   pill: "bg-amber-100 text-amber-700" },
-  purple:  { bg: "bg-purple-50",  text: "text-purple-700",  border: "border-purple-200",  pill: "bg-purple-100 text-purple-700" },
-  pink:    { bg: "bg-pink-50",    text: "text-pink-700",    border: "border-pink-200",    pill: "bg-pink-100 text-pink-700" },
-  green:   { bg: "bg-green-50",   text: "text-green-700",   border: "border-green-200",   pill: "bg-green-100 text-green-700" },
-  violet:  { bg: "bg-violet-50",  text: "text-violet-700",  border: "border-violet-200",  pill: "bg-violet-100 text-violet-700" },
-};
+function SeatsBar({ registered, max }: { registered: number; max: number }) {
+  const pct   = Math.min((registered / max) * 100, 100);
+  const left  = Math.max(max - registered, 0);
+  const color = left === 0 ? "#E24B4A" : left <= 3 ? "#EF9F27" : "#1D9E75";
+  return (
+    <div className="mt-3">
+      <div className="flex justify-between text-xs mb-1">
+        <span style={{ color }} className="font-semibold">
+          {left === 0 ? "Full" : `${left} seats left`}
+        </span>
+        <span className="text-gray-400">{registered}/{max}</span>
+      </div>
+      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: color }} />
+      </div>
+    </div>
+  );
+}
 
-const LEVEL_COLORS: Record<string, string> = {
-  Beginner:     "bg-green-100 text-green-700",
-  Intermediate: "bg-blue-100 text-blue-700",
-  Advanced:     "bg-red-100 text-red-700",
-};
+function WorkshopCard({
+  w, user, userRole, onRegister,
+}: {
+  w: Workshop;
+  user: any;
+  userRole: UserRole;
+  onRegister: (id: string) => void;
+}) {
+  const isRegistered = user && w.registeredUsers?.includes(user.uid);
+  const isFull       = (w.registeredUsers?.length ?? 0) >= w.maxSeats;
+  const isPast       = w.status === "ended";
+  const canRegister  = ["learner", "developer", "mentor", "admin"].includes(userRole);
 
-export default function Learn() {
-  const [user, setUser] = useState<any>(null);
-  const [developers, setDevelopers] = useState<any[]>([]);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+    >
+      {/* Tags */}
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        {w.status === "live" && (
+          <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+            Live now
+          </span>
+        )}
+        {w.tags?.slice(0, 3).map(t => (
+          <span key={t} className="px-2 py-0.5 rounded-full bg-[#5B4BDB]/10 text-[#5B4BDB] text-xs font-semibold">
+            {t}
+          </span>
+        ))}
+      </div>
+
+      <h3 className="font-black text-gray-900 text-base mb-1 leading-snug">{w.title}</h3>
+      <p className="text-gray-500 text-xs leading-relaxed mb-3 line-clamp-2">{w.description}</p>
+
+      {/* Host */}
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-7 h-7 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center overflow-hidden flex-shrink-0">
+          {w.hostPhoto
+            ? <img src={w.hostPhoto} className="w-full h-full object-cover" alt="" />
+            : <span className="text-[#5B4BDB] text-xs font-bold">{w.hostName?.charAt(0)}</span>
+          }
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-gray-900">{w.hostName}</p>
+          <p className="text-xs text-gray-400">{w.duration} min · {w.price === 0 ? "Free" : `₹${w.price}`}</p>
+        </div>
+      </div>
+
+      {/* Date */}
+      <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-3">
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        {formatDate(w.date)}
+      </div>
+
+      <SeatsBar registered={w.registeredUsers?.length ?? 0} max={w.maxSeats} />
+
+      {/* Action */}
+      <div className="mt-4">
+        {isPast ? (
+          <div className="text-center text-xs text-gray-400 py-2">Session ended</div>
+        ) : isRegistered ? (
+          <div className="w-full py-2.5 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-bold text-center">
+            Registered ✓
+          </div>
+        ) : !user ? (
+          <Link href="/login">
+            <button className="w-full py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
+              Sign in to register
+            </button>
+          </Link>
+        ) : !canRegister ? (
+          <Link href="/join">
+            <button className="w-full py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-bold border-b-[3px] border-gray-200 hover:bg-gray-200 transition-all active:translate-y-[1px]">
+              Apply as Learner to register
+            </button>
+          </Link>
+        ) : isFull ? (
+          <button disabled className="w-full py-2.5 rounded-xl bg-gray-100 text-gray-400 text-sm font-bold cursor-not-allowed">
+            Session full
+          </button>
+        ) : (
+          <button
+            onClick={() => onRegister(w.id)}
+            className="w-full py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]"
+          >
+            {w.price === 0 ? "Register free" : `Register · ₹${w.price}`}
+          </button>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+export default function LearnPage() {
+  const [user,      setUser]      = useState<any>(null);
+  const [userRole,  setUserRole]  = useState<UserRole>("user");
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | "certified">("all");
-  const [loading, setLoading] = useState(true);
-  const [workshopsLoading, setWorkshopsLoading] = useState(true);
-  const [tab, setTab] = useState<"workshops" | "mentors">("workshops");
-  const [registering, setRegistering] = useState<string | null>(null);
-  const [registered, setRegistered] = useState<string[]>([]);
-  const [workshopFilter, setWorkshopFilter] = useState("All");
+  const [loading,   setLoading]   = useState(true);
+  const [activeTag, setActiveTag] = useState("All");
+  const [tab,       setTab]       = useState<"upcoming" | "registered">("upcoming");
+  const [toast,     setToast]     = useState("");
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => setUser(u ?? null));
+    const unsub = onAuthStateChanged(auth, async (u) => {
+      setUser(u ?? null);
+      if (u) {
+        const { doc: d, getDoc } = await import("firebase/firestore");
+        const snap = await getDoc(d(db, "users", u.uid));
+        if (snap.exists()) setUserRole(snap.data().role as UserRole ?? "user");
+      }
+    });
     return () => unsub();
   }, []);
 
-  // Fetch workshops from Firestore
   useEffect(() => {
-    const load = async () => {
-      try {
-        const snap = await getDocs(query(collection(db, "workshops"), orderBy("date", "asc")));
-        setWorkshops(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Workshop)));
-      } catch {
-        // If index not ready, fetch without ordering
-        const snap = await getDocs(collection(db, "workshops"));
-        setWorkshops(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Workshop)));
-      } finally {
-        setWorkshopsLoading(false);
-      }
-    };
-    load();
+    fetchWorkshops();
   }, []);
 
-  // Fetch developers
-  useEffect(() => {
-    const load = async () => {
-      const snap = await getDocs(collection(db, "developers"));
-      setDevelopers(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-      setLoading(false);
-    };
-    load();
-  }, []);
-
-  // Load existing registrations for this user
-  useEffect(() => {
-    if (!user) return;
-    getDocs(query(collection(db, "workshopRegistrations"), where("userId", "==", user.uid)))
-      .then((snap) => setRegistered(snap.docs.map((d) => d.data().workshopId)));
-  }, [user]);
-
-  const handleRegister = async (ws: Workshop) => {
-    if (!user) return;
-    if (registered.includes(ws.id)) return;
-    const remaining = ws.seats - (ws.registered ?? 0);
-    if (remaining <= 0) return;
-    setRegistering(ws.id);
+  const fetchWorkshops = async () => {
+    setLoading(true);
     try {
-      await addDoc(collection(db, "workshopRegistrations"), {
-        workshopId: ws.id,
-        userId: user.uid,
-        userName: user.displayName || user.email,
-        userEmail: user.email,
-        registeredAt: serverTimestamp(),
-      });
-      setRegistered((prev) => [...prev, ws.id]);
-      // Optimistically update local count
-      setWorkshops((prev) =>
-        prev.map((w) => w.id === ws.id ? { ...w, registered: (w.registered ?? 0) + 1 } : w)
+      const q = query(
+        collection(db, "workshops"),
+        where("status", "in", ["upcoming", "live"]),
+        orderBy("date", "asc")
       );
+      const snap = await getDocs(q);
+      setWorkshops(snap.docs.map(d => ({ id: d.id, ...d.data() } as Workshop)));
+    } catch (err) {
+      console.error("Workshops fetch error:", err);
     } finally {
-      setRegistering(null);
+      setLoading(false);
     }
   };
 
-  const filtered = developers.filter((dev) => {
-    const matchSearch =
-      dev.skills?.toLowerCase().includes(search.toLowerCase()) ||
-      dev.name?.toLowerCase().includes(search.toLowerCase());
-    const matchFilter = filter === "all" || (filter === "certified" && dev.certified);
-    return matchSearch && matchFilter;
-  });
-  const sorted = [...filtered].sort((a, b) => (b.certified ? 1 : 0) - (a.certified ? 1 : 0));
-  const certifiedCount = developers.filter((d) => d.certified).length;
+  const handleRegister = async (workshopId: string) => {
+    if (!user) return;
+    try {
+      await updateDoc(doc(db, "workshops", workshopId), {
+        registeredUsers: arrayUnion(user.uid),
+      });
+      setWorkshops(prev =>
+        prev.map(w => w.id === workshopId
+          ? { ...w, registeredUsers: [...(w.registeredUsers ?? []), user.uid] }
+          : w
+        )
+      );
+      showToast("Registered! Meet link will be shared before the session.");
+    } catch (err) {
+      console.error("Register error:", err);
+      showToast("Something went wrong. Please try again.");
+    }
+  };
 
-  // Compute filter tags from live workshop data
-  const allTags = ["All", ...Array.from(new Set(workshops.flatMap((w) => w.tags ?? [])))];
-  const visibleWorkshops = workshopFilter === "All"
-    ? workshops
-    : workshops.filter((w) => w.tags?.includes(workshopFilter));
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(""), 3500);
+  };
+
+  const filtered = workshops.filter(w => {
+    const tagMatch = activeTag === "All" || w.tags?.includes(activeTag);
+    const tabMatch = tab === "upcoming"
+      ? true
+      : user && w.registeredUsers?.includes(user.uid);
+    return tagMatch && tabMatch;
+  });
+
+  const myRegistered = workshops.filter(w => user && w.registeredUsers?.includes(user.uid));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">
       <Navbar />
 
-      <div className="fixed top-0 right-0 w-96 h-96 bg-blue-200/30 rounded-full filter blur-3xl opacity-40 pointer-events-none z-0" />
-      <div className="fixed bottom-0 left-0 w-96 h-96 bg-pink-200/30 rounded-full filter blur-3xl opacity-40 pointer-events-none z-0" />
-
-      <main className="flex-1 relative z-10 pt-28 pb-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto">
-
-          {/* ── HEADER ── */}
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-12 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-200 bg-indigo-50 mb-6 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-              <span className="text-indigo-700 text-xs font-black uppercase tracking-widest">Workshops · Mentorship · Growth</span>
-            </div>
-            <h1 className="text-5xl md:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 leading-tight mb-4">
-              Learn & Connect
-            </h1>
-            <p className="text-gray-500 text-lg max-w-2xl mx-auto font-medium">
-              Live workshops from the community, plus mentors to guide you in AR, VR, 3D and CAD.
-            </p>
+      {/* Toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-xl"
+          >
+            {toast}
           </motion.div>
+        )}
+      </AnimatePresence>
 
-          {/* ── TAB SWITCHER ── */}
-          <div className="flex items-center gap-2 mb-10 p-1.5 bg-white rounded-2xl border-2 border-indigo-50 shadow-sm w-fit mx-auto">
-            {[
-              { key: "workshops", label: "🗓️ Live Workshops" },
-              { key: "mentors",   label: "👥 Find Mentors" },
-            ].map((t) => (
-              <button key={t.key} onClick={() => setTab(t.key as any)}
-                className={`px-6 py-3 rounded-xl font-black text-sm transition-all ${tab === t.key ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md" : "text-gray-500 hover:text-gray-900"}`}>
-                {t.label}
+      <div className="max-w-6xl mx-auto px-4 py-14 flex-grow w-full">
+
+        {/* Hero */}
+        <div className="mb-10">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">
+            SYNTHÉ Learning Hub
+          </p>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-4 leading-tight">
+            Learn AR & VR<br />from real developers
+          </h1>
+          <p className="text-gray-500 text-lg max-w-xl">
+            Join live sessions hosted by verified mentors, or book a private 1-on-1 session
+            for hands-on guidance.
+          </p>
+
+          {/* Role upgrade banner */}
+          {user && userRole === "user" && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6 flex items-center justify-between gap-4 p-4 rounded-2xl border border-[#5B4BDB]/30 bg-[#5B4BDB]/5"
+            >
+              <div>
+                <p className="text-sm font-bold text-gray-900">Unlock learning features</p>
+                <p className="text-xs text-gray-500 mt-0.5">Apply as a Learner to register for sessions and book mentors</p>
+              </div>
+              <Link href="/join">
+                <button className="flex-shrink-0 px-5 py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
+                  Apply as Learner
+                </button>
+              </Link>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Stats row */}
+        <div className="grid grid-cols-3 gap-4 mb-10">
+          {[
+            { label: "Live sessions", value: workshops.filter(w => w.status === "live").length || "—" },
+            { label: "Upcoming",      value: workshops.filter(w => w.status === "upcoming").length },
+            { label: "My sessions",   value: myRegistered.length },
+          ].map(({ label, value }) => (
+            <div key={label} className="bg-white border border-gray-100 rounded-2xl p-4 text-center shadow-sm">
+              <p className="text-2xl font-black text-gray-900">{value}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Tabs */}
+        <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+          <div className="flex gap-1 p-1 rounded-2xl bg-gray-100 w-fit">
+            {(["upcoming", "registered"] as const).map(t => (
+              <button key={t} onClick={() => setTab(t)}
+                className={`px-5 py-2 rounded-xl text-sm font-bold transition-all capitalize ${
+                  tab === t ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                }`}>
+                {t === "registered" ? "My sessions" : "Upcoming"}
               </button>
             ))}
           </div>
 
-          <AnimatePresence mode="wait">
-
-          {/* ─────────── TAB: WORKSHOPS ─────────── */}
-          {tab === "workshops" && (
-            <motion.div key="workshops" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}>
-
-              {workshopsLoading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="rounded-[2rem] border-2 border-gray-100 p-6 animate-pulse bg-white h-72">
-                      <div className="w-14 h-14 rounded-2xl bg-gray-100 mb-4" />
-                      <div className="h-5 bg-gray-100 rounded-full w-2/3 mb-3" />
-                      <div className="h-3 bg-gray-50 rounded-full w-full mb-2" />
-                      <div className="h-3 bg-gray-50 rounded-full w-4/5" />
-                    </div>
-                  ))}
-                </div>
-              ) : workshops.length === 0 ? (
-                <div className="text-center py-24 flex flex-col items-center gap-4">
-                  <div className="text-5xl">🗓️</div>
-                  <p className="text-gray-900 font-black text-xl">No workshops yet</p>
-                  <p className="text-gray-500 text-sm">Check back soon — the community is setting things up!</p>
-                  <Link href="/asset-library">
-                    <button className="mt-4 px-6 py-3 rounded-xl bg-indigo-600 text-white font-black shadow-md">Browse Unity Assets →</button>
-                  </Link>
-                </div>
-              ) : (
-                <>
-                  {/* Tag filter */}
-                  <div className="flex flex-wrap gap-2 mb-8 justify-center">
-                    {allTags.map((tag) => (
-                      <button key={tag} onClick={() => setWorkshopFilter(tag)}
-                        className={`px-4 py-2 rounded-full text-xs font-black border transition-all ${workshopFilter === tag ? "bg-indigo-600 text-white border-indigo-600 shadow-md" : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300"}`}>
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {visibleWorkshops.map((ws, i) => {
-                      const c = COLOR_MAP[ws.color] ?? COLOR_MAP.blue;
-                      const regCount = ws.registered ?? 0;
-                      const remaining = ws.seats - regCount;
-                      const isFull = remaining <= 0;
-                      const isReg = registered.includes(ws.id);
-                      const pct = Math.min(100, Math.round((regCount / ws.seats) * 100));
-
-                      return (
-                        <motion.div key={ws.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}
-                          className={`rounded-[2rem] border-2 ${c.border} bg-white shadow-[0_8px_30px_-12px_rgba(0,0,0,0.1)] p-6 flex flex-col gap-4 hover:shadow-xl hover:-translate-y-1 transition-all`}>
-
-                          <div className="flex items-start justify-between">
-                            <div className={`w-14 h-14 rounded-2xl ${c.bg} flex items-center justify-center text-2xl shadow-sm`}>{ws.emoji || "🎓"}</div>
-                            <div className="flex flex-col items-end gap-1">
-                              <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg ${LEVEL_COLORS[ws.level] ?? "bg-gray-100 text-gray-700"}`}>{ws.level}</span>
-                              {isFull && <span className="text-[10px] font-black uppercase tracking-widest text-red-600 bg-red-50 px-2.5 py-1 rounded-lg border border-red-200">Full</span>}
-                            </div>
-                          </div>
-
-                          <div>
-                            <h3 className="text-gray-900 font-black text-lg leading-tight mb-1">{ws.title}</h3>
-                            <p className="text-gray-500 text-xs font-medium leading-relaxed">{ws.desc}</p>
-                          </div>
-
-                          <div className="flex flex-wrap gap-1.5">
-                            {(ws.tags ?? []).map((t) => (
-                              <span key={t} className={`text-[10px] font-black px-2 py-0.5 rounded-full ${c.pill}`}>{t}</span>
-                            ))}
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-2 text-xs font-bold text-gray-500">
-                            <div className="flex items-center gap-1.5">
-                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                              {ws.date ? new Date(ws.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "TBA"} · {ws.time}
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                              {ws.duration}
-                            </div>
-                            <div className="flex items-center gap-1.5 col-span-2">
-                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                              {ws.instructor}{ws.instructorRole ? ` — ${ws.instructorRole}` : ""}
-                            </div>
-                          </div>
-
-                          {/* Seat progress */}
-                          <div>
-                            <div className="flex justify-between text-[10px] font-black text-gray-400 mb-1">
-                              <span>{regCount} registered</span>
-                              <span>{Math.max(0, remaining)} seats left</span>
-                            </div>
-                            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                              <div className={`h-full rounded-full transition-all ${pct > 80 ? "bg-red-400" : pct > 50 ? "bg-amber-400" : "bg-emerald-400"}`} style={{ width: `${pct}%` }} />
-                            </div>
-                          </div>
-
-                          {/* CTA */}
-                          {!user ? (
-                            <Link href="/login">
-                              <button className="w-full py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                                Sign in to Register
-                              </button>
-                            </Link>
-                          ) : isReg ? (
-                            <div className="w-full py-3 rounded-2xl bg-emerald-50 border-2 border-emerald-200 text-emerald-700 font-black text-sm text-center flex items-center justify-center gap-2">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
-                              Registered!{ws.meetLink && <a href={ws.meetLink} target="_blank" rel="noreferrer" className="ml-2 text-indigo-600 underline">Join Link</a>}
-                            </div>
-                          ) : (
-                            <button onClick={() => handleRegister(ws)} disabled={isFull || registering === ws.id}
-                              className={`w-full py-3 rounded-2xl font-black text-sm transition-all ${isFull ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 border-b-4 border-indigo-800 active:border-b-0 active:translate-y-0.5"}`}>
-                              {registering === ws.id ? "Registering..." : isFull ? "Workshop Full" : "Register Free →"}
-                            </button>
-                          )}
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-            </motion.div>
-          )}
-
-          {/* ─────────── TAB: MENTORS ─────────── */}
-          {tab === "mentors" && (
-            <motion.div key="mentors" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}>
-              {!loading && (
-                <div className="flex items-center justify-center gap-4 mb-8 flex-wrap">
-                  {[
-                    { val: developers.length, label: "Developers", colorClass: "text-blue-600" },
-                    { val: certifiedCount, label: "Synthé Certified", colorClass: "text-yellow-600" },
-                    { val: developers.length - certifiedCount, label: "Community", colorClass: "text-indigo-600" },
-                  ].map((s, i) => (
-                    <div key={i} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-sm">
-                      <span className={`text-xl font-black ${s.colorClass}`}>{s.val}</span>
-                      <span className="text-gray-600 text-xs font-bold">{s.label}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <div className="mb-8 flex flex-col gap-4 bg-white p-5 rounded-3xl border border-gray-200 shadow-sm">
-                <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                  </div>
-                  <input type="text" placeholder="Search by name or skill — Unity, AR, Blender..."
-                    value={search} onChange={(e) => setSearch(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-base font-medium rounded-2xl pl-12 pr-4 py-4 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-inner transition"/>
-                </div>
-                <div className="flex items-center gap-3 flex-wrap">
-                  {[{ val: "all", label: "All Developers" }, { val: "certified", label: "⭐ Certified Only" }].map((f) => (
-                    <button key={f.val} onClick={() => setFilter(f.val as any)}
-                      className={`px-5 py-2.5 text-sm font-bold rounded-xl border shadow-sm whitespace-nowrap transition ${filter === f.val ? (f.val === "certified" ? "border-yellow-300 bg-yellow-50 text-yellow-800" : "border-blue-300 bg-blue-50 text-blue-700") : "border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100"}`}>
-                      {f.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {loading && (
-                <div className="flex flex-col gap-4">
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="rounded-3xl p-6 flex items-center gap-6 animate-pulse border border-gray-200 bg-white shadow-sm">
-                      <div className="w-16 h-16 rounded-full bg-gray-100 flex-shrink-0"/>
-                      <div className="flex-1 flex flex-col gap-3"><div className="h-4 bg-gray-100 rounded-full w-1/3"/><div className="h-3 bg-gray-50 rounded-full w-1/2"/></div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {!loading && sorted.length > 0 && (
-                <div className="flex flex-col gap-5">
-                  {sorted.some((d) => d.certified) && filter === "all" && (
-                    <div className="flex items-center gap-4 mb-2">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-yellow-700 bg-yellow-100 px-3 py-1 rounded-full border border-yellow-200">⭐ Synthé Certified</span>
-                      <div className="flex-1 h-[1px] bg-gray-200"/>
-                    </div>
-                  )}
-                  {sorted.map((dev, i) => {
-                    const showUnlabel = filter === "all" && i > 0 && !dev.certified && sorted[i - 1]?.certified;
-                    return (
-                      <div key={dev.id}>
-                        {showUnlabel && (
-                          <div className="flex items-center gap-4 my-6">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 bg-gray-100 px-3 py-1 rounded-full border border-gray-200">Community Developers</span>
-                            <div className="flex-1 h-[1px] bg-gray-200"/>
-                          </div>
-                        )}
-                        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                          <DeveloperCard dev={dev}/>
-                        </motion.div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {!loading && sorted.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-20 gap-4 rounded-3xl border border-gray-200 bg-white shadow-sm">
-                  <div className="text-4xl">🔍</div>
-                  <p className="text-gray-900 font-black text-lg">No developers found</p>
-                  <p className="text-gray-500 text-sm">{filter === "certified" ? "No certified developers match your search" : "Try a different name or skill"}</p>
-                  {search && <button onClick={() => setSearch("")} className="px-6 py-3 text-sm font-bold rounded-xl border border-gray-200 bg-white text-gray-700">Clear search</button>}
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          </AnimatePresence>
+          {/* Tag filters */}
+          <div className="flex gap-1.5 flex-wrap">
+            {TAGS.map(tag => (
+              <button key={tag} onClick={() => setActiveTag(tag)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                  activeTag === tag
+                    ? "bg-[#5B4BDB] text-white border-[#4438b8]"
+                    : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
+                }`}>
+                {tag}
+              </button>
+            ))}
+          </div>
         </div>
-      </main>
-      <Footer/>
+
+        {/* Workshop grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="rounded-2xl border border-gray-100 bg-white p-5 animate-pulse">
+                <div className="h-4 bg-gray-200 rounded w-2/3 mb-3" />
+                <div className="h-3 bg-gray-100 rounded mb-1.5" />
+                <div className="h-3 bg-gray-100 rounded w-4/5 mb-4" />
+                <div className="h-8 bg-gray-200 rounded-xl" />
+              </div>
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center text-3xl mx-auto mb-4">
+              {tab === "registered" ? "📋" : "📅"}
+            </div>
+            <p className="font-bold text-gray-900 mb-2">
+              {tab === "registered" ? "No sessions registered yet" : "No sessions available"}
+            </p>
+            <p className="text-gray-500 text-sm">
+              {tab === "registered"
+                ? "Register for upcoming sessions to see them here"
+                : "Check back soon — mentors post new sessions regularly"
+              }
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filtered.map(w => (
+              <WorkshopCard
+                key={w.id}
+                w={w}
+                user={user}
+                userRole={userRole}
+                onRegister={handleRegister}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* 1-on-1 mentor section */}
+        <div className="mt-16 rounded-3xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+          <div className="grid md:grid-cols-2 gap-0">
+            <div className="p-8 md:p-10">
+              <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">1-on-1 Sessions</p>
+              <h2 className="text-2xl font-black text-gray-900 mb-3 leading-tight">
+                Need personal guidance?
+              </h2>
+              <p className="text-gray-500 text-sm leading-relaxed mb-6">
+                Browse verified mentors and book a private session.
+                You choose the topic, they bring the expertise.
+                Paid or free — depends on the mentor.
+              </p>
+              <div className="space-y-2 mb-6">
+                {[
+                  "Pick your topic — Unity, WebXR, Blender, anything",
+                  "Choose a mentor whose work you admire",
+                  "Send your request with your goal",
+                  "Mentor confirms → Meet link shared",
+                ].map((step, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-[#5B4BDB] text-xs font-bold">{i + 1}</span>
+                    </div>
+                    <p className="text-sm text-gray-600">{step}</p>
+                  </div>
+                ))}
+              </div>
+              <Link href="/hire">
+                <button className="px-7 py-3.5 rounded-xl bg-gray-900 text-white font-bold text-sm border-b-[3px] border-black/40 hover:bg-gray-800 transition-all active:translate-y-[1px]">
+                  Browse mentors
+                </button>
+              </Link>
+            </div>
+            <div className="hidden md:flex items-center justify-center p-10 bg-gradient-to-br from-[#5B4BDB]/5 to-blue-50">
+              <div className="text-center">
+                <div className="text-7xl mb-4">🧑‍🏫</div>
+                <p className="font-black text-gray-900 text-lg">Verified mentors</p>
+                <p className="text-gray-500 text-sm mt-1">Real XR developers, teaching live</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Become a mentor CTA */}
+        {user && !["mentor", "admin"].includes(userRole) && (
+          <div className="mt-8 p-6 rounded-2xl border border-gray-100 bg-white shadow-sm flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <p className="font-black text-gray-900 mb-1">Want to teach?</p>
+              <p className="text-gray-500 text-sm">Apply as a Mentor and host your own sessions on SYNTHÉ.</p>
+            </div>
+            <Link href="/join">
+              <button className="flex-shrink-0 px-6 py-3 rounded-xl border-2 border-[#5B4BDB] text-[#5B4BDB] font-bold text-sm hover:bg-[#5B4BDB]/5 transition-all">
+                Apply as Mentor
+              </button>
+            </Link>
+          </div>
+        )}
+
+      </div>
+      <Footer />
     </div>
   );
 }

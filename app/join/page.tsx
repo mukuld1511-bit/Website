@@ -1,154 +1,384 @@
 "use client";
-
-import { motion } from "framer-motion";
-import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { doc, getDoc, updateDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db, auth } from "../../lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import type { UserRole } from "../../types/gallery";
+
+type ApplyType = "learner" | "developer" | "mentor";
+
+const ROLE_INFO: Record<ApplyType, {
+  icon:    string;
+  title:   string;
+  color:   string;
+  bg:      string;
+  border:  string;
+  desc:    string;
+  perks:   string[];
+  fields:  string;
+}> = {
+  learner: {
+    icon:   "🎓",
+    title:  "Become a Learner",
+    color:  "#185FA5",
+    bg:     "#E6F1FB",
+    border: "#378ADD44",
+    desc:   "Join live AR/VR sessions, book 1-on-1 mentors, and learn from the XR community.",
+    perks:  [
+      "Register for live workshops and sessions",
+      "Book 1-on-1 sessions with verified mentors",
+      "Access learning resources and guides",
+      "Get a Learner badge on your profile",
+    ],
+    fields: "why",
+  },
+  developer: {
+    icon:   "⚡",
+    title:  "Become a Developer",
+    color:  "#5B4BDB",
+    bg:     "#EEEDFE",
+    border: "#5B4BDB44",
+    desc:   "Upload and sell 3D models, AR/VR builds, and AutoCAD files on the SYNTHÉ marketplace.",
+    perks:  [
+      "Upload GLB, GLTF, OBJ, FBX, ZIP, DWG files",
+      "Sell models with Razorpay payments",
+      "Listed on the Connect developer marketplace",
+      "Developer dashboard with earnings analytics",
+    ],
+    fields: "portfolio",
+  },
+  mentor: {
+    icon:   "🧑‍🏫",
+    title:  "Become a Mentor",
+    color:  "#0F6E56",
+    bg:     "#E1F5EE",
+    border: "#1D9E7544",
+    desc:   "Host live workshops and 1-on-1 sessions. Teach AR/VR development to the community.",
+    perks:  [
+      "Host live workshops for the community",
+      "Accept 1-on-1 mentorship bookings",
+      "Set your own rates (free or paid)",
+      "Verified Mentor badge on your profile",
+    ],
+    fields: "expertise",
+  },
+};
 
 export default function JoinPage() {
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-      <Navbar />
+  const router  = useRouter();
+  const [user,    setUser]    = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [selected, setSelected] = useState<ApplyType | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [loading,   setLoading]   = useState(false);
+  const [error,     setError]     = useState("");
 
-      <main className="relative pt-28 pb-24 px-4 overflow-x-hidden flex-1 flex flex-col items-center justify-center">
+  // form fields
+  const [why,       setWhy]       = useState("");
+  const [portfolio, setPortfolio] = useState("");
+  const [expertise, setExpertise] = useState("");
+  const [experience,setExperience]= useState("");
+  const [skills,    setSkills]    = useState("");
 
-        <div className="relative z-10 max-w-4xl mx-auto w-full">
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (u) => {
+      if (!u) { router.push("/login"); return; }
+      setUser(u);
+      const snap = await getDoc(doc(db, "users", u.uid));
+      if (snap.exists()) setProfile(snap.data());
+    });
+    return () => unsub();
+  }, []);
 
-          {/* Header */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-            className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-200 bg-blue-50 mb-6 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-              <span className="text-blue-800 text-xs font-bold uppercase tracking-widest">Join Synthé</span>
+  const alreadyHasRole = (type: ApplyType) => {
+    if (!profile) return false;
+    if (profile.role === type) return true;
+    if (profile.roles?.includes(type)) return true;
+    return false;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !selected) return;
+    setLoading(true);
+    setError("");
+
+    try {
+      const data: any = {
+        userId:     user.uid,
+        userName:   user.displayName || user.email,
+        userPhoto:  user.photoURL || "",
+        userEmail:  user.email,
+        applyType:  selected,
+        status:     "pending",
+        createdAt:  serverTimestamp(),
+      };
+
+      if (selected === "learner")   data.why       = why.trim();
+      if (selected === "developer") data.portfolio = portfolio.trim();
+      if (selected === "mentor") {
+        data.expertise  = expertise.trim();
+        data.experience = experience.trim();
+        data.skills     = skills.split(",").map(s => s.trim()).filter(Boolean);
+      }
+
+      await addDoc(collection(db, "roleApplications"), data);
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (submitted && selected) {
+    const info = ROLE_INFO[selected];
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center px-4 py-24">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-3xl border border-gray-200 shadow-sm p-10 max-w-md w-full text-center"
+          >
+            <div className="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6"
+              style={{ background: info.bg }}>
+              {info.icon}
             </div>
-            <h1 className="text-5xl md:text-6xl font-black tracking-tight text-gray-900 leading-none mb-5">
-              Who Are You?
-            </h1>
-            <p className="text-gray-500 text-lg max-w-md mx-auto leading-relaxed font-medium">
-              Choose your path. Each has its own features, dashboard, and opportunities.
+            <h2 className="text-2xl font-black text-gray-900 mb-3">Application submitted!</h2>
+            <p className="text-gray-500 text-sm leading-relaxed mb-6">
+              Your {selected} application is under review. Admin will approve it shortly.
+              You'll be notified once your role is updated.
             </p>
-          </motion.div>
-
-          {/* Two cards */}
-          <div className="grid md:grid-cols-2 gap-6 mb-12">
-
-            {/* User / Client */}
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }} className="h-full">
-              <Link href="/signup?role=user">
-                <div className="group relative h-full rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all duration-300 cursor-pointer p-8 flex flex-col min-h-[420px]">
-                  
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-5 text-cyan-600">Path 01</p>
-
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition duration-300 group-hover:scale-110 bg-cyan-50 border border-cyan-100">
-                    <svg className="w-7 h-7 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-
-                  <h3 className="text-gray-900 font-extrabold text-2xl tracking-tight mb-3">I'm a Client</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed flex-grow mb-6 font-medium">
-                    Browse and download 3D models and XR Apps/Games. Connect with creators, post projects, and bring your ideas to life.
-                  </p>
-
-                  <div className="space-y-3 mb-8">
-                    {[
-                      "Browse & download 3D/AR/VR content",
-                      "Connect with creators directly",
-                      "Access AutoCAD files and designs",
-                    ].map((f, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 bg-cyan-100/50 border border-cyan-200">
-                          <svg className="w-2.5 h-2.5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <span className="text-gray-600 text-sm font-semibold">{f}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
-                    <div className="flex items-center gap-2 text-sm font-bold text-cyan-600 group-hover:gap-3 transition-all duration-200">
-                      Join as Client
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </div>
-                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Free</span>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-
-            {/* Developer */}
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }} className="h-full">
-              <Link href="/join/developer">
-                <div className="group relative h-full rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-lg hover:border-violet-300 transition-all duration-300 cursor-pointer p-8 flex flex-col min-h-[420px]">
-                  
-                  {/* Recommended badge */}
-                  <div className="absolute top-6 right-6 px-3 py-1.5 rounded-lg border border-amber-200 bg-amber-50">
-                    <span className="text-amber-700 text-[10px] font-black uppercase tracking-widest">✦ Earn Revenue</span>
-                  </div>
-
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-5 text-violet-600">Path 02</p>
-
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition duration-300 group-hover:scale-110 bg-violet-50 border border-violet-100">
-                    <svg className="w-7 h-7 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                    </svg>
-                  </div>
-
-                  <h3 className="text-gray-900 font-extrabold text-2xl tracking-tight mb-3">I'm a Creator</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed flex-grow mb-6 font-medium">
-                    Upload your 3D models, XR games/apps and AutoCAD files. Connect with peers, earn revenue, and build your reputation on Synthé.
-                  </p>
-
-                  <div className="space-y-3 mb-8">
-                    {[
-                      "Upload & sell 3D models and XR Apps/Games",
-                      "Connect with peers on learning projects",
-                      "Get certified — earn more & rank higher",
-                    ].map((f, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 bg-violet-100/50 border border-violet-200">
-                          <svg className="w-2.5 h-2.5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <span className="text-gray-600 text-sm font-semibold">{f}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
-                    <div className="flex items-center gap-2 text-sm font-bold text-violet-600 group-hover:gap-3 transition-all duration-200">
-                      Join as Creator
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </div>
-                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Approval</span>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          </div>
-
-          {/* Already have account */}
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-            className="text-center text-gray-500 font-medium text-sm">
-            Already have an account?{" "}
-            <Link href="/login">
-              <span className="text-blue-600 hover:text-blue-700 transition duration-200 font-bold cursor-pointer">
-                Sign in →
-              </span>
+            <Link href="/">
+              <button className="px-8 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
+                Back to home
+              </button>
             </Link>
-          </motion.p>
-
+          </motion.div>
         </div>
-      </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">
+      <Navbar />
+      <div className="max-w-4xl mx-auto px-4 py-16 flex-grow w-full">
+
+        <div className="mb-10">
+          <p className="text-sm font-semibold text-[#5B4BDB] mb-2">Upgrade your account</p>
+          <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-3">
+            What do you want to do?
+          </h1>
+          <p className="text-gray-500">
+            Choose a role. Admin reviews your application and approves it.
+          </p>
+        </div>
+
+        {/* Role selector cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+          {(["learner", "developer", "mentor"] as ApplyType[]).map(type => {
+            const info      = ROLE_INFO[type];
+            const isSelected = selected === type;
+            const hasRole   = alreadyHasRole(type);
+
+            return (
+              <button
+                key={type}
+                disabled={hasRole}
+                onClick={() => setSelected(type)}
+                className={`p-6 rounded-2xl border-2 text-left transition-all duration-200 hover:-translate-y-1
+                  ${hasRole ? "opacity-50 cursor-not-allowed border-gray-100 bg-white" :
+                    isSelected ? "shadow-md" : "border-gray-100 bg-white hover:border-gray-200 hover:shadow-sm"
+                  }`}
+                style={isSelected ? { borderColor: info.color, background: info.bg } : {}}
+              >
+                <div className="text-3xl mb-3">{info.icon}</div>
+                <h3 className="font-black text-gray-900 mb-1" style={isSelected ? { color: info.color } : {}}>
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                  {hasRole && <span className="ml-2 text-xs font-semibold text-gray-400">(current)</span>}
+                </h3>
+                <p className="text-xs text-gray-500 leading-relaxed">{info.desc}</p>
+                <ul className="mt-3 space-y-1">
+                  {info.perks.map(p => (
+                    <li key={p} className="text-xs text-gray-500 flex items-start gap-1.5">
+                      <span style={{ color: info.color }} className="mt-0.5 flex-shrink-0">✓</span>
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Application form */}
+        <AnimatePresence>
+          {selected && !alreadyHasRole(selected) && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
+                  style={{ background: ROLE_INFO[selected].bg }}>
+                  {ROLE_INFO[selected].icon}
+                </div>
+                <div>
+                  <h2 className="font-black text-gray-900">{ROLE_INFO[selected].title}</h2>
+                  <p className="text-xs text-gray-400">Tell us a bit about yourself</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+
+                {/* Learner fields */}
+                {selected === "learner" && (
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                      Why do you want to learn AR/VR? *
+                    </label>
+                    <textarea
+                      value={why}
+                      onChange={e => setWhy(e.target.value)}
+                      required
+                      rows={3}
+                      placeholder="Tell us what you want to learn and why..."
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/30 focus:border-[#5B4BDB] transition-all resize-none"
+                    />
+                  </div>
+                )}
+
+                {/* Developer fields */}
+                {selected === "developer" && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                        Portfolio / GitHub / Behance link *
+                      </label>
+                      <input
+                        type="url"
+                        value={portfolio}
+                        onChange={e => setPortfolio(e.target.value)}
+                        required
+                        placeholder="https://github.com/yourname"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/30 focus:border-[#5B4BDB] transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                        Skills (comma separated)
+                      </label>
+                      <input
+                        type="text"
+                        value={skills}
+                        onChange={e => setSkills(e.target.value)}
+                        placeholder="Unity, Blender, WebXR, ARCore"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/30 focus:border-[#5B4BDB] transition-all"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {/* Mentor fields */}
+                {selected === "mentor" && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                        Area of expertise *
+                      </label>
+                      <input
+                        type="text"
+                        value={expertise}
+                        onChange={e => setExpertise(e.target.value)}
+                        required
+                        placeholder="e.g. Unity AR development, WebXR, Unreal Engine VR"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/30 focus:border-[#5B4BDB] transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                        Years of experience *
+                      </label>
+                      <input
+                        type="text"
+                        value={experience}
+                        onChange={e => setExperience(e.target.value)}
+                        required
+                        placeholder="e.g. 3 years in Unity, 2 years in WebXR"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/30 focus:border-[#5B4BDB] transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                        Skills (comma separated)
+                      </label>
+                      <input
+                        type="text"
+                        value={skills}
+                        onChange={e => setSkills(e.target.value)}
+                        placeholder="Unity, ARCore, ARKit, Blender, Unreal"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/30 focus:border-[#5B4BDB] transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                        Portfolio / LinkedIn / YouTube *
+                      </label>
+                      <input
+                        type="url"
+                        value={portfolio}
+                        onChange={e => setPortfolio(e.target.value)}
+                        required
+                        placeholder="https://linkedin.com/in/yourname"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/30 focus:border-[#5B4BDB] transition-all"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {error && (
+                  <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                    {error}
+                  </div>
+                )}
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelected(null)}
+                    className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-all"
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 py-3 rounded-xl text-white font-bold text-sm border-b-[3px] transition-all active:translate-y-[1px] disabled:opacity-50"
+                    style={{
+                      background: ROLE_INFO[selected].color,
+                      borderColor: ROLE_INFO[selected].color + "cc",
+                    }}
+                  >
+                    {loading ? "Submitting..." : `Apply as ${selected.charAt(0).toUpperCase() + selected.slice(1)}`}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+      </div>
       <Footer />
     </div>
   );

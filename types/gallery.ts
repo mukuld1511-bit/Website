@@ -122,3 +122,10 @@ export interface ProjectRequest {
   status:      "open" | "in-progress" | "closed";
   createdAt:   any;
 }
+
+// ─── Payment types ───────────────────────────────────────────
+export interface RazorpayPaymentResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id:   string;
+  razorpay_signature:  string;
+}

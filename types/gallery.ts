@@ -3,6 +3,19 @@
 //  Updated: 5 user roles + workshop types added
 // ============================================================
 
+// ─── Gallery filter types (used by GalleryFilters.tsx) ───────
+export type SortOption   = "newest" | "popular" | "downloads" | "price-low" | "price-high";
+export type PriceRange   = "all" | "free" | "paid";
+
+export interface GalleryFiltersState {
+  search:    string;
+  category:  string;
+  fileType:  string;
+  priceRange: PriceRange;
+  sortBy:    SortOption;
+  tags:      string[];
+}
+
 // ─── User roles ──────────────────────────────────────────────
 export type UserRole = "user" | "learner" | "developer" | "mentor" | "admin";
 

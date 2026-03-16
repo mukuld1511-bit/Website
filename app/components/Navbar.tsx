@@ -8,16 +8,15 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../lib/firebase";
 
 // ── Category-specific dropdowns replacing the old single 'Explore' ────────────
-const XR_GAMES_LINKS = [
-  { label: "VR Games",   href: "/gallery?mode=vr&genre=game",      desc: "Oculus, Quest & SteamVR builds",   icon: "M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" },
-  { label: "AR Games",   href: "/gallery?mode=ar&genre=game", desc: "Interactive ARCore & ARKit games", icon: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2" },
-  { label: "Upload Game", href: "/upload",               desc: "Share your AR/VR game package",   icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
+const JEWELLERY_LINKS = [
+  { label: "High-end Jewellery", href: "/gallery?mode=3d&genre=jewellery", desc: "View VR Try-On rings & necklaces", icon: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" },
+  { label: "Upload Design", href: "/upload", desc: "Sell your luxury CAD designs", icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
 ];
 
-const XR_APPS_LINKS = [
-  { label: "AR Apps",    href: "/gallery?mode=ar&genre=app",  desc: "AR utilities & tools",          icon: "M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" },
-  { label: "VR Apps",    href: "/gallery?mode=vr&genre=app",  desc: "VR training & utility apps",    icon: "M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
-  { label: "Post App Project", href: "/requests/post",        desc: "Commission an XR app",          icon: "M12 4v16m8-8H4" },
+const XR_DEV_LINKS = [
+  { label: "Spatial Apps",    href: "/gallery?mode=ar&genre=app",  desc: "AR utilities & Enterprise tools", icon: "M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" },
+  { label: "Architecture",    href: "/gallery?mode=vr&genre=app",  desc: "VR walkthroughs & training",    icon: "M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
+  { label: "Commission App",  href: "/requests/post",              desc: "Request a custom XR solution",  icon: "M12 4v16m8-8H4" },
 ];
 
 const GALLERY_3D_LINKS = [
@@ -145,10 +144,10 @@ export default function Navbar() {
 
           {/* CENTER: Separate section dropdowns */}
           <div className="hidden lg:flex items-center gap-0.5">
-            {/* 🎮 XR Games */}
-            <DropdownPanel title="XR Games" links={XR_GAMES_LINKS} />
-            {/* 📱 XR Apps */}
-            <DropdownPanel title="XR Apps" links={XR_APPS_LINKS} />
+            {/* 💍 Jewellery Models */}
+            <DropdownPanel title="Jewellery Models" links={JEWELLERY_LINKS} />
+            {/* 📱 XR Dev */}
+            <DropdownPanel title="XR Development" links={XR_DEV_LINKS} />
             {/* Divider */}
             <span className="w-px h-4 bg-gray-200 mx-1" />
             {/* 📦 3D Gallery */}
@@ -248,10 +247,10 @@ export default function Navbar() {
               
               {/* Mobile Menu Sections */}
               <div className="space-y-6">
-                {/* 🎮 XR Games */}
+                {/* 💍 Jewellery */}
                 <div>
-                  <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase mb-4">XR Games</p>
-                  {XR_GAMES_LINKS.map(item => (
+                  <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase mb-4">Jewellery Models</p>
+                  {JEWELLERY_LINKS.map(item => (
                     <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
                       <div className="flex items-center gap-4 group mb-4">
                         <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>
@@ -264,10 +263,10 @@ export default function Navbar() {
                   ))}
                 </div>
 
-                {/* 📱 XR Apps */}
+                {/* 📱 XR Dev */}
                 <div>
-                  <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase mb-4">XR Apps</p>
-                  {XR_APPS_LINKS.map(item => (
+                  <p className="text-xs font-black tracking-[0.2em] text-[#5B4BDB] uppercase mb-4">XR Development</p>
+                  {XR_DEV_LINKS.map(item => (
                     <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
                       <div className="flex items-center gap-4 group mb-4">
                         <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB]"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon}/></svg></div>

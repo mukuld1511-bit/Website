@@ -6,15 +6,17 @@ import Link from "next/link";
 import type { GalleryModel, FileType } from "@/types/gallery";
 
 const FILE_ICONS: Record<FileType, string> = {
-  glb: "◈", gltf: "◈", obj: "⬡", fbx: "⬡", dwg: "⊞", dxf: "⊞",
+  glb: "◈", gltf: "◈", obj: "⬡", fbx: "⬡", dwg: "⊞", dxf: "⊞", zip: "📦", build: "🚀",
 };
 const FILE_COLORS: Record<FileType, { text: string; bg: string; border: string }> = {
-  glb:  { text: "text-violet-300", bg: "bg-violet-500/10",  border: "border-violet-500/25" },
-  gltf: { text: "text-violet-300", bg: "bg-violet-500/10",  border: "border-violet-500/25" },
-  obj:  { text: "text-cyan-300",   bg: "bg-cyan-500/10",    border: "border-cyan-500/25" },
-  fbx:  { text: "text-cyan-300",   bg: "bg-cyan-500/10",    border: "border-cyan-500/25" },
-  dwg:  { text: "text-amber-300",  bg: "bg-amber-500/10",   border: "border-amber-500/25" },
-  dxf:  { text: "text-amber-300",  bg: "bg-amber-500/10",   border: "border-amber-500/25" },
+  glb:   { text: "text-violet-300", bg: "bg-violet-500/10",  border: "border-violet-500/25" },
+  gltf:  { text: "text-violet-300", bg: "bg-violet-500/10",  border: "border-violet-500/25" },
+  obj:   { text: "text-cyan-300",   bg: "bg-cyan-500/10",    border: "border-cyan-500/25" },
+  fbx:   { text: "text-cyan-300",   bg: "bg-cyan-500/10",    border: "border-cyan-500/25" },
+  dwg:   { text: "text-amber-300",  bg: "bg-amber-500/10",   border: "border-amber-500/25" },
+  dxf:   { text: "text-amber-300",  bg: "bg-amber-500/10",   border: "border-amber-500/25" },
+  zip:   { text: "text-blue-300",   bg: "bg-blue-500/10",    border: "border-blue-500/25" },
+  build: { text: "text-emerald-300",bg: "bg-emerald-500/10", border: "border-emerald-500/25" },
 };
 
 interface ModelCardProps {

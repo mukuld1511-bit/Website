@@ -64,9 +64,10 @@ export interface Model {
   minimumSpecs?:    { ram: string; storage: string; os: string };
   changelog?:       string;
   polygons?:        string;
-  accessType?:      "buy" | "request";
+  accessType?:      AccessType;
 }
 
+export type AccessType = "buy" | "request";
 export type GalleryModel = Model;
 
 // ─── Workshop / live session ──────────────────────────────────

@@ -97,7 +97,9 @@ export default function HeroComponent({ user, stats, statsLoading }: HeroProps) 
               className="relative w-full aspect-square rounded-[3rem] bg-white border-4 border-white shadow-[0_20px_60px_-15px_rgba(59,130,246,0.5)] p-2 overflow-hidden group flex flex-col hover:rotate-0 transition-transform duration-500"
             >
               <div className="flex-1 relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-indigo-100 to-pink-100 flex items-center justify-center p-8">
-                <img 
+                <motion.img 
+                  animate={{ y: [0, -15, 0], rotate: [0, 2, -1, 0] }}
+                  transition={{ duration: 6, ease: "easeInOut", repeat: Infinity }}
                   src="/vr-headset.png" 
                   alt="VR Headset Prototype" 
                   className="w-full h-full object-contain filter drop-shadow-2xl mix-blend-multiply"

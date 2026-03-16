@@ -1,352 +1,364 @@
 "use client";
-
-import { supabase } from "../../lib/supabase";
+ 
 import { useEffect, useState } from "react";
 import { auth, db } from "../../lib/firebase";
-import { doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, limit, orderBy } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
-export default function Profile() {
+ 
+interface UserProfile {
+  displayName: string;
+  email: string;
+  photoURL: string;
+  role: "user" | "developer" | "mentor";
+  bio?: string;
+  portfolio?: string;
+  location?: string;
+  hourlyRate?: number;
+  skills?: string[];
+  rating?: number;
+}
+ 
+interface UserStats {
+  views: number;
+  downloads: number;
+  rating: string;
+  earnings: number;
+}
+ 
+const ACHIEVEMENTS = [
+  { icon: "🌟", label: "5-Star Mentor", check: (stats: UserStats) => parseFloat(stats.rating) >= 4.8 },
+  { icon: "🏆", label: "Top Creator", check: (stats: UserStats) => stats.downloads > 100 },
+  { icon: "🚀", label: "Rising Star", check: (stats: UserStats) => stats.views > 1000 },
+  { icon: "💎", label: "Premium Member", check: (profile: UserProfile) => profile.role === "mentor" },
+  { icon: "💰", label: "Earned ₹10k+", check: (stats: UserStats) => stats.earnings > 10000 },
+];
+ 
+export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [stats, setStats] = useState<UserStats | null>(null);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  
-  // Form States
-  const [name, setName] = useState("");
+ 
   const [bio, setBio] = useState("");
   const [portfolio, setPortfolio] = useState("");
   const [location, setLocation] = useState("");
-  const [availability, setAvailability] = useState("available"); // available, busy, away
   const [hourlyRate, setHourlyRate] = useState(0);
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
-  const [image, setImage] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-
-  // Stats / Analytics Mock
-  const [stats] = useState({
-    views: 1240,
-    downloads: 85,
-    collaborations: 12,
-    rating: 4.9
-  });
-
+ 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
       if (!u) { router.push("/login"); return; }
       setUser(u);
+      
       const snap = await getDoc(doc(db, "users", u.uid));
       if (snap.exists()) {
-        const data: any = snap.data();
+        const data = snap.data() as UserProfile;
         setProfile(data);
-        setName(data.name || "");
         setBio(data.bio || "");
         setPortfolio(data.portfolio || "");
         setLocation(data.location || "");
-        setAvailability(data.availability || "available");
         setHourlyRate(data.hourlyRate || 0);
         setSkills(data.skills || []);
+ 
+        // Generate mock stats based on role
+        setStats({
+          views: Math.floor(Math.random() * 5000),
+          downloads: Math.floor(Math.random() * 300),
+          rating: (Math.random() * 2 + 3).toFixed(1),
+          earnings: Math.floor(Math.random() * 100000),
+        });
       }
     });
     return () => unsub();
   }, []);
-
+ 
   const saveProfile = async () => {
     if (!user) return;
     setSaving(true);
-    let imageUrl = profile.profileImage;
-    if (image) {
-      try {
-        const safeName = image.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
-        const avatarPath = `${user.uid}/${Date.now()}_${safeName}`;
-        const { error: upErr } = await supabase.storage
-          .from("avatars")
-          .upload(avatarPath, image, { cacheControl: "3600", upsert: true });
-        if (!upErr) {
-          const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(avatarPath);
-          imageUrl = publicUrl;
-        }
-      } catch (e) { console.error(e); }
+    try {
+      await updateDoc(doc(db, "users", user.uid), {
+        bio,
+        portfolio,
+        location,
+        hourlyRate,
+        skills,
+      });
+      setProfile(p => p ? { ...p, bio, portfolio, location, hourlyRate, skills } : null);
+      setEditing(false);
+    } catch (err) {
+      console.error("Save failed:", err);
+    } finally {
+      setSaving(false);
     }
-
-    const updatedData = {
-      name, bio, portfolio, location, availability, hourlyRate, skills,
-      profileImage: imageUrl,
-      updatedAt: new Date()
-    };
-
-    await updateDoc(doc(db, "users", user.uid), updatedData);
-    setProfile((p: any) => ({ ...p, ...updatedData }));
-    setSaving(false);
-    setEditing(false);
   };
-
-  const handleAddSkill = () => {
+ 
+  const addSkill = () => {
     if (skillInput.trim() && !skills.includes(skillInput.trim())) {
       setSkills([...skills, skillInput.trim()]);
       setSkillInput("");
     }
   };
-
-  const roleBadge: Record<string, { label: string; cls: string }> = {
-    developer: { label: "Professional Creator", cls: "text-[#5B4BDB] bg-[#5B4BDB]/10 border-[#5B4BDB]/20" },
-    admin: { label: "System Admin", cls: "text-rose-700 bg-rose-50 border-rose-200" },
-    user: { label: "Standard Member", cls: "text-gray-600 bg-gray-100 border-gray-200" },
-  };
-
-  if (!profile) return (
-    <main className="min-h-screen bg-[#FDFDFF] flex items-center justify-center font-sans">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 rounded-full border-4 border-[#5B4BDB]/10 border-t-[#5B4BDB] animate-spin" />
-        <p className="text-[#5B4BDB] font-extrabold text-xs tracking-widest uppercase">Fetching Profile...</p>
-      </div>
-    </main>
-  );
-
+ 
+  if (!profile || !stats) {
+    return (
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin" />
+          <p className="text-blue-600 font-black text-xs uppercase">Loading Profile...</p>
+        </div>
+      </main>
+    );
+  }
+ 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] flex flex-col font-sans selection:bg-[#5B4BDB]/10">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col font-sans">
       <Navbar />
-
-      <main className="flex-1 pt-32 pb-24 px-4 overflow-hidden">
+ 
+      <main className="flex-1 pt-32 pb-24 px-4">
         <div className="max-w-6xl mx-auto">
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             
-            {/* Sidebar / Profile Card */}
-            <div className="lg:col-span-4 space-y-6">
-              <motion.div 
-                initial={{ opacity:0, x:-20 }} animate={{ opacity:1, x:0 }}
-                className="bg-white rounded-[2.5rem] border border-gray-100 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] p-10 text-center"
-              >
+            {/* SIDEBAR */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="lg:col-span-1 space-y-6"
+            >
+              {/* Profile Card */}
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-lg p-8 text-center sticky top-32">
                 <div className="relative inline-block mb-6">
-                  <img
-                    src={preview || profile.profileImage || "/avatar.png"}
-                    className="w-32 h-32 rounded-[2.5rem] object-cover border-4 border-white shadow-xl"
-                    alt={profile.name}
+                  <img 
+                    src={profile.photoURL || "/avatar.png"} 
+                    className="w-32 h-32 rounded-2xl object-cover border-4 border-white shadow-xl" 
+                    alt={profile.displayName} 
                   />
-                  <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full border-4 border-white shadow-md ${
-                    profile.availability === "available" ? "bg-green-500" : profile.availability === "busy" ? "bg-amber-500" : "bg-gray-400"
-                  }`} />
+                  <span className="absolute bottom-2 right-2 w-6 h-6 bg-green-500 rounded-full border-2 border-white" />
                 </div>
-
-                <h2 className="text-2xl font-black text-gray-900 mb-1">{profile.name}</h2>
-                <p className="text-gray-400 text-sm font-bold mb-6">{profile.email}</p>
-                
-                <div className="flex justify-center mb-8">
-                  <span className={`px-4 py-1.5 rounded-2xl border text-[10px] font-black uppercase tracking-widest shadow-sm ${roleBadge[profile.role]?.cls}`}>
-                    {roleBadge[profile.role]?.label}
-                  </span>
+ 
+                <h2 className="text-2xl font-black text-gray-900 mb-1">{profile.displayName}</h2>
+                <p className="text-gray-500 text-sm mb-6 font-bold">{profile.email}</p>
+ 
+                <div className="inline-block px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-black text-xs uppercase mb-8">
+                  {profile.role === "developer" ? "Creator" : profile.role === "mentor" ? "Educator" : "Member"}
                 </div>
-
-                <div className="grid grid-cols-2 gap-4 border-t border-gray-50 pt-8">
-                  <div>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Location</p>
-                    <p className="text-sm font-extrabold text-gray-800">{profile.location || "Remote"}</p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Rate / hr</p>
-                    <p className="text-sm font-extrabold text-gray-800">₹{profile.hourlyRate || 0}</p>
-                  </div>
-                </div>
-
+ 
                 {!editing && (
                   <button 
                     onClick={() => setEditing(true)}
-                    className="w-full mt-10 py-4 bg-gray-900 text-white rounded-2xl font-black text-sm hover:bg-black transition shadow-lg"
+                    className="w-full py-3 bg-black text-white rounded-2xl font-black text-sm hover:bg-gray-900 transition"
                   >
-                    Edit Profile Details
+                    Edit Profile
                   </button>
                 )}
-              </motion.div>
-
-              {/* Analytics Section */}
-              <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8">
-                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Performance</h3>
-                <div className="space-y-6">
-                  {[
-                    { label: "Profile Views", val: stats.views, icon: "👁️", color: "text-blue-500" },
-                    { label: "Total Downloads", val: stats.downloads, icon: "📥", color: "text-green-500" },
-                    { label: "Collaborations", val: stats.collaborations, icon: "🤝", color: "text-[#5B4BDB]" },
-                  ].map((s, i) => (
-                    <div key={i} className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <span className="text-lg">{s.icon}</span>
-                        <span className="text-xs font-bold text-gray-500">{s.label}</span>
-                      </div>
-                      <span className={`text-lg font-black ${s.color}`}>{s.val}</span>
-                    </div>
-                  ))}
+              </div>
+ 
+              {/* Stats Card */}
+              <div className="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl shadow-xl p-8 text-white">
+                <h3 className="text-xs font-black uppercase tracking-widest mb-6 opacity-80">Quick Stats</h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold">Views</span>
+                    <span className="text-2xl font-black">{stats.views.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold">Downloads</span>
+                    <span className="text-2xl font-black">{stats.downloads}</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-4 border-t border-white/20">
+                    <span className="font-bold">Rating</span>
+                    <span className="text-2xl font-black">⭐ {stats.rating}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* Main Content Area */}
-            <div className="lg:col-span-8 space-y-8">
-              
+ 
+              {/* Achievements */}
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-lg p-8">
+                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Achievements</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {ACHIEVEMENTS.map((ach, i) => {
+                    const unlocked = ach.check(stats);
+                    return (
+                      <div 
+                        key={i} 
+                        className={`p-4 rounded-2xl text-center transition-all ${
+                          unlocked ? "bg-yellow-100 border-2 border-yellow-300" : "bg-gray-100 opacity-50"
+                        }`}
+                      >
+                        <div className="text-2xl mb-2">{ach.icon}</div>
+                        <p className="text-[10px] font-black">{ach.label}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </motion.div>
+ 
+            {/* MAIN CONTENT */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="lg:col-span-2 space-y-8"
+            >
               <AnimatePresence mode="wait">
                 {editing ? (
                   <motion.div 
-                    initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-20 }}
-                    className="bg-white rounded-[3rem] border-2 border-[#5B4BDB]/10 shadow-xl p-10 md:p-14"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="bg-white rounded-3xl border border-gray-200 shadow-xl p-10"
                   >
-                    <h3 className="text-2xl font-black text-gray-900 mb-10">Configure Premium Profile</h3>
+                    <h3 className="text-3xl font-black text-gray-900 mb-10">Edit Profile</h3>
                     
-                    <div className="space-y-8">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div>
-                          <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Professional Name</label>
-                          <input value={name} onChange={e => setName(e.target.value)}
-                            className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-gray-900 focus:outline-none focus:ring-4 focus:ring-[#5B4BDB]/5 focus:border-[#5B4BDB] transition" />
-                        </div>
-                        <div>
-                          <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Location / Timezone</label>
-                          <input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. New Delhi / IST"
-                            className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-gray-900 focus:outline-none focus:ring-4 focus:ring-[#5B4BDB]/5 focus:border-[#5B4BDB] transition" />
-                        </div>
-                      </div>
-
+                    <div className="space-y-6">
                       <div>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Professional Bio</label>
-                        <textarea value={bio} onChange={e => setBio(e.target.value)} rows={4}
-                          className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-gray-900 focus:outline-none focus:ring-4 focus:ring-[#5B4BDB]/5 focus:border-[#5B4BDB] transition resize-none" />
+                        <label className="block text-xs font-black text-gray-500 uppercase mb-2">Bio</label>
+                        <textarea 
+                          value={bio} 
+                          onChange={e => setBio(e.target.value)} 
+                          rows={4}
+                          className="w-full px-6 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition resize-none" 
+                        />
                       </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+ 
+                      <div className="grid grid-cols-2 gap-6">
                         <div>
-                          <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Availability Status</label>
-                          <select value={availability} onChange={e => setAvailability(e.target.value)}
-                            className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-6 py-4 font-black text-gray-900 focus:outline-none focus:ring-4 focus:ring-[#5B4BDB]/5 focus:border-[#5B4BDB] transition appearance-none">
-                            <option value="available">🟢 Available for Work</option>
-                            <option value="busy">🟡 Busy with Projects</option>
-                            <option value="away">🔴 Away / Unavailable</option>
-                          </select>
+                          <label className="block text-xs font-black text-gray-500 uppercase mb-2">Location</label>
+                          <input 
+                            value={location} 
+                            onChange={e => setLocation(e.target.value)} 
+                            placeholder="City / Country"
+                            className="w-full px-6 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition" 
+                          />
                         </div>
                         <div>
-                          <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Hourly Rate (₹ INR)</label>
-                          <div className="relative">
-                            <span className="absolute left-6 top-1/2 -translate-y-1/2 font-black text-gray-400">₹</span>
-                            <input type="number" value={hourlyRate} onChange={e => setHourlyRate(Number(e.target.value))}
-                              className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl pl-12 pr-6 py-4 font-black text-gray-900 focus:outline-none focus:ring-4 focus:ring-[#5B4BDB]/5 focus:border-[#5B4BDB] transition" />
-                          </div>
+                          <label className="block text-xs font-black text-gray-500 uppercase mb-2">Hourly Rate (₹)</label>
+                          <input 
+                            type="number" 
+                            value={hourlyRate} 
+                            onChange={e => setHourlyRate(Number(e.target.value))}
+                            className="w-full px-6 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition" 
+                          />
                         </div>
                       </div>
-
+ 
                       <div>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Skills & Expertise</label>
+                        <label className="block text-xs font-black text-gray-500 uppercase mb-2">Portfolio Link</label>
+                        <input 
+                          value={portfolio} 
+                          onChange={e => setPortfolio(e.target.value)} 
+                          placeholder="https://..."
+                          className="w-full px-6 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition" 
+                        />
+                      </div>
+ 
+                      <div>
+                        <label className="block text-xs font-black text-gray-500 uppercase mb-3">Skills</label>
                         <div className="flex flex-wrap gap-2 mb-4">
                           {skills.map(s => (
-                            <span key={s} className="px-4 py-1.5 bg-[#5B4BDB]/10 text-[#5B4BDB] font-black text-[10px] rounded-xl flex items-center gap-2">
-                              {s} <button onClick={() => setSkills(skills.filter(x=>x!==s))} className="hover:text-red-500 transition">✕</button>
+                            <span key={s} className="px-4 py-2 bg-blue-100 text-blue-700 font-black text-xs rounded-xl flex items-center gap-2">
+                              {s} 
+                              <button 
+                                onClick={() => setSkills(skills.filter(x => x !== s))} 
+                                className="hover:text-red-600"
+                              >
+                                ✕
+                              </button>
                             </span>
                           ))}
                         </div>
-                        <div className="flex gap-4">
-                          <input value={skillInput} onChange={e => setSkillInput(e.target.value)} 
-                            onKeyDown={e => e.key === "Enter" && handleAddSkill()}
-                            placeholder="Add skill (e.g. Unity, CAD, XR)"
-                            className="flex-1 bg-gray-50/50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-gray-900 focus:outline-none focus:ring-4 focus:ring-[#5B4BDB]/5 focus:border-[#5B4BDB] transition" />
-                          <button onClick={handleAddSkill} className="px-8 py-4 bg-gray-100 rounded-2xl font-black text-sm hover:bg-gray-200 transition">Add</button>
+                        <div className="flex gap-2">
+                          <input 
+                            value={skillInput} 
+                            onChange={e => setSkillInput(e.target.value)} 
+                            onKeyDown={e => e.key === "Enter" && addSkill()}
+                            placeholder="Add skill..." 
+                            className="flex-1 px-6 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition" 
+                          />
+                          <button 
+                            onClick={addSkill} 
+                            className="px-6 py-4 bg-gray-200 rounded-2xl font-black text-sm hover:bg-gray-300 transition"
+                          >
+                            Add
+                          </button>
                         </div>
                       </div>
-
-                      <div>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Profile Snapshot</label>
-                        <div className="flex items-center gap-6">
-                           <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-md">
-                             <img src={preview || profile.profileImage || "/avatar.png"} className="w-full h-full object-cover" />
-                             <label className="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 flex items-center justify-center cursor-pointer transition">
-                               <input type="file" className="hidden" accept="image/*" onChange={e => {
-                                 const f = e.target.files?.[0];
-                                 if (f) { setImage(f); setPreview(URL.createObjectURL(f)); }
-                               }} />
-                               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
-                             </label>
-                           </div>
-                           <p className="text-xs text-gray-400 font-bold max-w-[200px]">Update your display photo. Premium creators with avatars get 40% more visibility.</p>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-4 pt-10 border-t border-gray-50">
-                        <button onClick={saveProfile} disabled={saving}
-                          className="px-10 py-5 bg-[#5B4BDB] text-white rounded-[2rem] font-black text-base hover:bg-[#4A39C2] transition shadow-xl disabled:opacity-50">
-                          {saving ? "Deploying Changes..." : "Apply Profile Updates"}
+ 
+                      <div className="flex gap-4 pt-6 border-t">
+                        <button 
+                          onClick={saveProfile} 
+                          disabled={saving} 
+                          className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-black hover:bg-blue-700 disabled:opacity-50 transition"
+                        >
+                          {saving ? "Saving..." : "Save Changes"}
                         </button>
-                        <button onClick={() => setEditing(false)}
-                          className="px-10 py-5 bg-white border border-gray-200 text-gray-500 rounded-[2rem] font-black text-base hover:bg-gray-50 transition">
-                          Discard
+                        <button 
+                          onClick={() => setEditing(false)} 
+                          className="px-8 py-4 border border-gray-200 text-gray-600 rounded-2xl font-black hover:bg-gray-50 transition"
+                        >
+                          Cancel
                         </button>
                       </div>
                     </div>
                   </motion.div>
                 ) : (
                   <motion.div 
-                    initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     className="space-y-8"
                   >
-                    {/* Bio & Skills Dashboard */}
-                    <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-10">
-                      <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">About Me</h3>
-                      <p className="text-gray-800 font-bold text-lg leading-relaxed mb-10">
-                        {profile.bio || "No description provided yet. Complete your profile to attract collaborators."}
+                    {/* Bio Section */}
+                    <div className="bg-white rounded-3xl border border-gray-200 shadow-lg p-10">
+                      <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">About</h3>
+                      <p className="text-gray-800 text-lg leading-relaxed font-bold">
+                        {bio || "No bio added yet. Click Edit to add one."}
                       </p>
-                      
-                      <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Expertise</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {profile.skills?.length > 0 ? profile.skills.map((s:string) => (
-                          <span key={s} className="px-5 py-2 bg-gray-50 text-gray-700 font-black text-xs rounded-2xl border border-gray-100">
-                            {s}
-                          </span>
-                        )) : <p className="text-gray-400 text-sm font-bold italic">No skills listed</p>}
-                      </div>
                     </div>
-
-                    {/* Resources & Portfolios */}
+ 
+                    {/* Skills & Details */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                       <div className="bg-[#141414] rounded-[2.5rem] p-10 text-white relative overflow-hidden group">
-                          <div className="absolute top-0 right-0 w-32 h-32 bg-[#5B4BDB]/20 filter blur-3xl rounded-full" />
-                          <h4 className="text-xl font-black mb-4 group-hover:text-[#5B4BDB] transition">External Portfolio</h4>
-                          <p className="text-gray-500 text-sm font-bold mb-8">View my high-end case studies and live deployments.</p>
-                          {profile.portfolio ? (
-                            <a href={profile.portfolio} target="_blank" className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white text-white hover:text-black rounded-xl font-black text-xs transition">
-                              Visit Link <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                            </a>
-                          ) : <span className="text-gray-600 font-black text-xs">NO LINK PROVIDED</span>}
-                       </div>
-
-                       <div className="bg-white rounded-[2.5rem] border border-gray-100 p-10 flex flex-col justify-between">
-                          <div>
-                            <h4 className="text-xl font-black text-gray-900 mb-4">Availability</h4>
-                            <div className="flex items-center gap-3">
-                              <span className={`w-3 h-3 rounded-full ${profile.availability === "available" ? "bg-green-500 animate-pulse" : "bg-gray-400"}`} />
-                              <span className="text-gray-800 font-black text-sm uppercase tracking-widest">{profile.availability || "Standard"}</span>
-                            </div>
-                          </div>
-                          {profile.role === "user" ? (
-                            <Link href="/join/developer" className="mt-8 px-6 py-4 bg-[#5B4BDB] text-white rounded-2xl font-black text-xs text-center hover:shadow-xl transition shadow-[#5B4BDB]/20">
-                              Become Creator
-                            </Link>
-                          ) : (
-                            <p className="mt-8 text-gray-400 text-xs font-bold">Standard Professional Access</p>
+                      <div className="bg-white rounded-3xl border border-gray-200 shadow-lg p-10">
+                        <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Skills</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {skills.length > 0 ? skills.map(s => (
+                            <span key={s} className="px-4 py-2 bg-blue-100 text-blue-700 font-black text-xs rounded-xl">
+                              {s}
+                            </span>
+                          )) : <p className="text-gray-500 font-bold italic">No skills added</p>}
+                        </div>
+                      </div>
+ 
+                      <div className="bg-white rounded-3xl border border-gray-200 shadow-lg p-10">
+                        <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Details</h3>
+                        <div className="space-y-4 text-sm font-bold text-gray-700">
+                          <p>📍 {location || "Remote"}</p>
+                          <p>💰 ₹{hourlyRate}/hour</p>
+                          {portfolio && (
+                            <p>
+                              <a href={portfolio} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                🔗 View Portfolio
+                              </a>
+                            </p>
                           )}
-                       </div>
+                        </div>
+                      </div>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
-
-            </div>
+            </motion.div>
           </div>
-
         </div>
       </main>
-
+ 
       <Footer />
     </div>
   );

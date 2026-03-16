@@ -67,7 +67,7 @@ export interface Model {
   accessType?:      AccessType;
 }
 
-export type AccessType = "buy" | "request";
+export type AccessType = "purchase" | "request" | "free" | "buy";
 export type GalleryModel = Model;
 
 // ─── Workshop / live session ──────────────────────────────────

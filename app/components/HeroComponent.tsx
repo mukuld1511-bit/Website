@@ -3,104 +3,6 @@
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { TorusKnot, MeshDistortMaterial, Environment } from "@react-three/drei";
-
-function RotatingModel() {
-  const groupRef = useRef<any>(null);
-  
-  useFrame((state, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.2;
-      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 1.5) * 0.15;
-    }
-  });
-
-  return (
-    <group ref={groupRef} scale={1.6}>
-      {/* Main Vision Pro Frame (Silver/Aluminum edge) */}
-      <mesh position={[0, 0, 0.4]}>
-        <boxGeometry args={[1.5, 0.82, 0.4]} />
-        <meshStandardMaterial color="#E5E7EB" roughness={0.3} metalness={0.8} />
-      </mesh>
-
-      {/* Curved Laminated Glass Front */}
-      <mesh position={[0, 0, 0.62]}>
-        {/* We use a thin cylinder scaled/rotated to fake the curved glass */}
-        <cylinderGeometry args={[1.6, 1.6, 0.85, 32, 1, false, Math.PI * 0.35, Math.PI * 0.3]} />
-        <meshPhysicalMaterial 
-          color="#0f172a" 
-          roughness={0.05} 
-          metalness={0.9} 
-          transmission={0.4}
-          ior={1.5}
-          envMapIntensity={2.5} 
-          clearcoat={1}
-          clearcoatRoughness={0.1}
-        />
-      </mesh>
-
-      {/* Internal "EyeSight" display screen behind glass */}
-      <mesh position={[0, 0, 0.60]}>
-        <boxGeometry args={[1.4, 0.7, 0.05]} />
-        <meshStandardMaterial color="#2d1b4e" emissive="#6d28d9" emissiveIntensity={0.6} />
-      </mesh>
-
-      {/* Camera/Sensor Domes on the front glass */}
-      <mesh position={[-0.4, -0.2, 0.64]}>
-        <capsuleGeometry args={[0.06, 0.05, 16, 16]} />
-        <meshStandardMaterial color="#000000" roughness={0.1} metalness={0.8} />
-      </mesh>
-      <mesh position={[0.4, -0.2, 0.64]}>
-        <capsuleGeometry args={[0.06, 0.05, 16, 16]} />
-        <meshStandardMaterial color="#000000" roughness={0.1} metalness={0.8} />
-      </mesh>
-      <mesh position={[0, -0.3, 0.64]}>
-        <circleGeometry args={[0.04, 32]} />
-        <meshStandardMaterial color="#1a1a1a" roughness={0.1} metalness={0.9} />
-      </mesh>
-
-      {/* Light Seal (Black padding behind frame) */}
-      <mesh position={[0, 0, 0.15]}>
-        <boxGeometry args={[1.48, 0.8, 0.3]} />
-        <meshStandardMaterial color="#1f2937" roughness={0.8} />
-      </mesh>
-
-      {/* Audio Straps (Side arms) */}
-      <mesh position={[-0.78, 0, 0]}>
-        <boxGeometry args={[0.1, 0.15, 0.8]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.5} />
-      </mesh>
-      <mesh position={[0.78, 0, 0]}>
-        <boxGeometry args={[0.1, 0.15, 0.8]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.5} />
-      </mesh>
-
-      {/* Solo Knit Band (Thick 3D Fabric Strap at back) */}
-      <mesh position={[0, 0, -0.45]}>
-        <torusGeometry args={[0.82, 0.22, 32, 64, Math.PI]} />
-        <meshStandardMaterial color="#f9fafb" roughness={1} />
-        {/* Subtle orange accent on band */}
-        <mesh position={[0.82, 0, 0]}>
-          <boxGeometry args={[0.45, 0.05, 0.05]} />
-          <meshStandardMaterial color="#f97316" roughness={0.5} />
-        </mesh>
-      </mesh>
-
-      {/* Digital Crown (Top Right) */}
-      <mesh position={[0.65, 0.42, 0.35]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.1, 0.1, 0.15, 32]} />
-        <meshStandardMaterial color="#e5e7eb" roughness={0.4} metalness={0.9} />
-      </mesh>
-      
-      {/* Top Button (Top Left) */}
-      <mesh position={[-0.65, 0.42, 0.35]}>
-        <boxGeometry args={[0.2, 0.05, 0.1]} />
-        <meshStandardMaterial color="#e5e7eb" roughness={0.4} metalness={0.9} />
-      </mesh>
-    </group>
-  );
-}
 
 interface HeroProps {
   user: any;
@@ -194,15 +96,12 @@ export default function HeroComponent({ user, stats, statsLoading }: HeroProps) 
               initial={{ opacity: 0, scale: 0.8, rotate: 5 }} animate={{ opacity: 1, scale: 1, rotate: -2 }} transition={{ duration: 0.8, delay: 0.2, type: "spring", bounce: 0.5 }}
               className="relative w-full aspect-square rounded-[3rem] bg-white border-4 border-white shadow-[0_20px_60px_-15px_rgba(59,130,246,0.5)] p-2 overflow-hidden group flex flex-col hover:rotate-0 transition-transform duration-500"
             >
-              <div className="flex-1 relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-indigo-100 to-pink-100">
-                <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-                  <ambientLight intensity={0.8} />
-                  <pointLight position={[10, 10, 10]} intensity={1.5} color="#ffffff" />
-                  <pointLight position={[-10, -10, -10]} intensity={1.5} color="#ec4899" />
-                  <pointLight position={[0, -10, 10]} intensity={1.5} color="#3b82f6" />
-                  <RotatingModel />
-                  <Environment preset="city" />
-                </Canvas>
+              <div className="flex-1 relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-indigo-100 to-pink-100 flex items-center justify-center p-8">
+                <img 
+                  src="/vr-headset.png" 
+                  alt="VR Headset Prototype" 
+                  className="w-full h-full object-contain filter drop-shadow-2xl mix-blend-multiply"
+                />
               </div>
               
               <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between bg-white/80 backdrop-blur-md px-6 py-4 rounded-2xl shadow-lg border border-white/50">

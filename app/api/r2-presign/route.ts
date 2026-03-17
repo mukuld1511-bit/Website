@@ -35,10 +35,16 @@ export async function POST(req: NextRequest) {
       expiresIn: 3600,
     });
 
+    // ← THE FIX: swap private cloudflarestorage.com domain for your public r2.dev URL
+    const publicPresignedUrl = presignedUrl.replace(
+      `https://${R2_BUCKET}.${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+      process.env.NEXT_PUBLIC_R2_PUBLIC_URL!
+    );
+
     const publicUrl = getR2PublicUrl(key);
 
     return NextResponse.json({
-      presignedUrl,
+      presignedUrl: publicPresignedUrl,
       publicUrl,
       key,
     });
@@ -50,4 +56,5 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-// hi // 
+
+

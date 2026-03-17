@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { r2Client, R2_BUCKET, generateR2Key, getR2PublicUrl, getFileCategory, ALLOWED_EXTENSIONS } from "@/lib/r2";
+import { r2PublicClient, R2_BUCKET, generateR2Key, getR2PublicUrl, getFileCategory, ALLOWED_EXTENSIONS } from "@/lib/r2";
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,20 +31,14 @@ export async function POST(req: NextRequest) {
       ContentType: fileType || "application/octet-stream",
     });
 
-    const presignedUrl = await getSignedUrl(r2Client, command, {
+    const presignedUrl = await getSignedUrl(r2PublicClient, command, {
       expiresIn: 3600,
     });
-
-    // ← THE FIX: swap private cloudflarestorage.com domain for your public r2.dev URL
-    const publicPresignedUrl = presignedUrl.replace(
-      `https://${R2_BUCKET}.${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-      process.env.NEXT_PUBLIC_R2_PUBLIC_URL!
-    );
 
     const publicUrl = getR2PublicUrl(key);
 
     return NextResponse.json({
-      presignedUrl: publicPresignedUrl,
+      presignedUrl,
       publicUrl,
       key,
     });
@@ -56,5 +50,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-
-

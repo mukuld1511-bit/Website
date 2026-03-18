@@ -1,6 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { collection, query, where, orderBy, getDocs, doc, getDoc } from "firebase/firestore";
+// Yeh line dhundo:
+
+// Isko yeh karo:
+import { collection, query, where, getDocs, doc, getDoc, limit } from "firebase/firestore";
 import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import Navbar from "../../components/Navbar";

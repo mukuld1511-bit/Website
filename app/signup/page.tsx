@@ -1,6 +1,5 @@
- 
 "use client";
- 
+
 import { useState, Suspense } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
@@ -8,26 +7,62 @@ import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
- 
+
 export const dynamic = "force-dynamic";
- 
+
+const ROLES = [
+  {
+    id: "user",
+    label: "Just browsing",
+    icon: "👤",
+    desc: "Explore the platform, browse 3D models, attend free workshops.",
+    color: "#5F5E5A",
+    bg: "#F1EFE8",
+  },
+  {
+    id: "learner",
+    label: "Learner",
+    icon: "🎓",
+    desc: "Learn AR/VR with AI roadmaps, live sessions, and 1-on-1 mentors.",
+    color: "#185FA5",
+    bg: "#E6F1FB",
+  },
+  {
+    id: "developer",
+    label: "Developer",
+    icon: "⚡",
+    desc: "Sell 3D models and AR/VR builds. Earn 85% commission on every sale.",
+    color: "#5B4BDB",
+    bg: "#EEEDFE",
+  },
+  {
+    id: "mentor",
+    label: "Mentor",
+    icon: "🧑‍🏫",
+    desc: "Host free live workshops and paid 1-on-1 sessions. Set your own rates.",
+    color: "#0F6E56",
+    bg: "#E1F5EE",
+  },
+];
+
 function SignupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const roleParam = searchParams.get("role");
- 
+
+  const [step, setStep] = useState<"role" | "details">("role");
+  const [selectedRole, setSelectedRole] = useState<string>(
+    ROLES.find(r => r.id === roleParam)?.id ?? "user"
+  );
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [role, setRole] = useState<"user" | "developer">(
-    roleParam === "developer" ? "developer" : "user"
-  );
   const [showPass, setShowPass] = useState(false);
   const [showConf, setShowConf] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
- 
+
   const strength = (() => {
     if (!password) return 0;
     let s = 0;
@@ -39,54 +74,37 @@ function SignupContent() {
   })();
   const strengthLabel = ["", "Weak", "Fair", "Good", "Strong"][strength];
   const strengthColor = ["", "#ef4444", "#f59e0b", "#10b981", "#06b6d4"][strength];
- 
+
+  const roleInfo = ROLES.find(r => r.id === selectedRole)!;
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
- 
     if (!name.trim()) { setError("Please enter your name."); return; }
     if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
     if (password !== confirm) { setError("Passwords do not match."); return; }
- 
+
     setLoading(true);
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
-      const user = cred.user;
- 
-      await updateProfile(user, {
-        displayName: name.trim(),
-        photoURL: "/avatar.png",
-      });
- 
-      await setDoc(doc(db, "users", user.uid), {
-        userId: user.uid,
+      await updateProfile(cred.user, { displayName: name.trim(), photoURL: "/avatar.png" });
+      await setDoc(doc(db, "users", cred.user.uid), {
+        userId: cred.user.uid,
         displayName: name.trim(),
         email: email.trim().toLowerCase(),
-        role: role,
+        role: selectedRole,
         photoURL: "/avatar.png",
         certified: false,
-        
-        // Profile completeness tracking
         profileCompletion: 20,
-        
-        // User stats
-        stats: {
-          views: 0,
-          downloads: 0,
-          collaborations: 0,
-          rating: 0,
-          reviews: 0,
-        },
-        
-        // Achievements/Badges
+        stats: { views: 0, downloads: 0, collaborations: 0, rating: 0, reviews: 0 },
         badges: ["MEMBER"],
-        
-        // Account metadata
         joinedAt: serverTimestamp(),
         createdAt: serverTimestamp(),
       });
- 
-      router.push(role === "developer" ? "/join/developer" : "/dashboard");
+      // developers and mentors go to join to apply for role upgrade
+      if (selectedRole === "developer") router.push("/join/developer");
+      else if (selectedRole === "mentor" || selectedRole === "learner") router.push("/join");
+      else router.push("/dashboard");
     } catch (err: any) {
       const map: Record<string, string> = {
         "auth/email-already-in-use": "Email already in use.",
@@ -98,158 +116,259 @@ function SignupContent() {
     }
     setLoading(false);
   };
- 
-  const inputCls = "w-full bg-white border-2 border-indigo-100 text-gray-900 placeholder-gray-400 font-bold text-base rounded-2xl pl-12 pr-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm";
- 
+
   const EyeIcon = ({ open }: { open: boolean }) => (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       {open ? (
-        <>
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-        </>
+        <><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></>
       ) : (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
       )}
     </svg>
   );
- 
+
   return (
-    <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 flex items-center justify-center px-4 py-24 relative overflow-hidden font-sans">
-      <div className="absolute top-0 right-0 w-80 h-80 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-0" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-pink-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-0" />
- 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="relative z-10 w-full max-w-md"
-      >
+    <main className="min-h-screen bg-[#F7F6F3] flex items-center justify-center px-4 py-16 font-sans">
+      <div className="w-full max-w-5xl">
+
+        {/* Logo */}
         <div className="text-center mb-10">
-          <Link href="/">
-            <div className="inline-flex items-center gap-3 mb-7 cursor-pointer">
-              <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-[#5B4BDB] shadow-lg">
-                <span className="text-xl font-black text-white">S</span>
-              </div>
-              <span className="font-black text-3xl text-gray-900">Synthé</span>
+          <Link href="/" className="inline-flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#5B4BDB] flex items-center justify-center">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/>
+              </svg>
             </div>
+            <span className="font-black text-2xl text-gray-900">SYNTHÉ</span>
           </Link>
-          <h1 className="text-5xl font-black text-gray-900 mb-3">Create Account</h1>
-          <p className="text-gray-500 font-bold">Join 5,000+ creators today</p>
         </div>
- 
-        <div className="rounded-3xl border-4 border-indigo-50 bg-white/80 backdrop-blur-md shadow-2xl p-10">
-          <form onSubmit={handleSignup} className="space-y-6">
- 
-            <AnimatePresence>
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl border border-red-200 bg-red-50 text-red-700 font-semibold"
-                >
-                  <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  {error}
-                </motion.div>
-              )}
-            </AnimatePresence>
- 
-            <div>
-              <label className="block text-xs font-black text-indigo-400 uppercase mb-2">Full Name</label>
-              <div className="relative">
-                <svg className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                <input type="text" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} required className={inputCls} />
+
+        <AnimatePresence mode="wait">
+
+          {/* ── STEP 1: ROLE PICKER ── */}
+          {step === "role" && (
+            <motion.div key="role" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
+              <div className="text-center mb-10">
+                <h1 className="text-4xl font-black text-gray-900 mb-3">Join SYNTHÉ</h1>
+                <p className="text-gray-500 text-base">Pick your role — you can upgrade anytime after joining.</p>
               </div>
-            </div>
- 
-            <div>
-              <label className="block text-xs font-black text-indigo-400 uppercase mb-2">Email</label>
-              <div className="relative">
-                <svg className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required className={inputCls} />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                {ROLES.map((role) => (
+                  <button
+                    key={role.id}
+                    onClick={() => setSelectedRole(role.id)}
+                    className={`relative p-6 rounded-2xl border-2 text-left transition-all duration-200 hover:-translate-y-0.5 ${
+                      selectedRole === role.id
+                        ? "shadow-lg scale-[1.02]"
+                        : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-md"
+                    }`}
+                    style={selectedRole === role.id ? { borderColor: role.color, background: role.bg } : {}}
+                  >
+                    {selectedRole === role.id && (
+                      <div className="absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: role.color }}>
+                        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="3">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                      </div>
+                    )}
+                    <div className="text-4xl mb-4">{role.icon}</div>
+                    <p className="font-black text-gray-900 text-base mb-1">{role.label}</p>
+                    <p className="text-xs text-gray-500 leading-relaxed">{role.desc}</p>
+                  </button>
+                ))}
               </div>
-            </div>
- 
-            <div>
-              <label className="block text-xs font-black text-indigo-400 uppercase mb-2">Password</label>
-              <div className="relative">
-                <svg className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-                <input type={showPass ? "text" : "password"} placeholder="Min. 6 characters" value={password} onChange={(e) => setPassword(e.target.value)} required className={inputCls + " pr-12"} />
-                <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition">
-                  <EyeIcon open={showPass} />
-                </button>
-              </div>
-              {password.length > 0 && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-3">
-                  <div className="flex gap-1 mb-1">
-                    {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="flex-1 h-2 rounded-full bg-gray-200 overflow-hidden">
-                        <motion.div animate={{ width: i <= strength ? "100%" : "0%" }} className="h-full" style={{ background: strengthColor }} />
+
+              {/* Role comparison table */}
+              <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden mb-8">
+                <div className="grid grid-cols-5 text-xs font-bold text-gray-400 uppercase tracking-wide px-6 py-3 border-b border-gray-100 bg-gray-50">
+                  <div>Feature</div>
+                  <div className="text-center">User</div>
+                  <div className="text-center text-blue-600">Learner</div>
+                  <div className="text-center text-violet-600">Developer</div>
+                  <div className="text-center text-teal-600">Mentor</div>
+                </div>
+                {[
+                  ["Browse gallery",          true,  true,  true,  true ],
+                  ["Attend free workshops",   false, true,  false, true ],
+                  ["AI learning roadmap",     false, true,  false, false],
+                  ["Book 1-on-1 mentors",     false, true,  false, false],
+                  ["Upload & sell 3D models", false, false, true,  false],
+                  ["Host live workshops",     false, false, false, true ],
+                  ["Earn 85% commission",     false, false, true,  true ],
+                  ["Set your own rates",      false, false, true,  true ],
+                  ["Verified role badge",     false, true,  true,  true ],
+                ].map(([label, u, l, d, m]) => (
+                  <div key={label as string} className="grid grid-cols-5 px-6 py-3 border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                    <div className="text-sm text-gray-700 font-medium">{label as string}</div>
+                    {[u, l, d, m].map((v, i) => (
+                      <div key={i} className="flex justify-center">
+                        {v
+                          ? <span className="text-green-500 font-black">✓</span>
+                          : <span className="text-gray-300">—</span>
+                        }
                       </div>
                     ))}
                   </div>
-                  <p className="text-xs font-black uppercase" style={{ color: strengthColor }}>{strengthLabel}</p>
-                </motion.div>
-              )}
-            </div>
- 
-            <div>
-              <label className="block text-xs font-black text-indigo-400 uppercase mb-2">Confirm Password</label>
-              <div className="relative">
-                <svg className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                ))}
+              </div>
+
+              <button
+                onClick={() => setStep("details")}
+                className="w-full py-4 rounded-2xl font-black text-white text-base transition-all hover:opacity-90 active:scale-[0.99]"
+                style={{ background: roleInfo.color }}
+              >
+                Continue as {roleInfo.label} →
+              </button>
+
+              <p className="text-center text-sm text-gray-500 mt-4">
+                Already have an account?{" "}
+                <Link href="/login" className="font-black text-[#5B4BDB] hover:underline">Sign in</Link>
+              </p>
+            </motion.div>
+          )}
+
+          {/* ── STEP 2: DETAILS FORM ── */}
+          {step === "details" && (
+            <motion.div key="details" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
+              className="max-w-md mx-auto">
+
+              <button onClick={() => setStep("role")} className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-700 mb-8 transition-colors">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
-                <input
-                  type={showConf ? "text" : "password"}
-                  placeholder="Repeat password"
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  required
-                  className={
-                    inputCls + " pr-12" +
-                    (confirm && confirm !== password ? " !border-red-300 !bg-red-50" : "") +
-                    (confirm && confirm === password ? " !border-green-300 !bg-green-50" : "")
-                  }
-                />
-                <button type="button" onClick={() => setShowConf(!showConf)} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400">
-                  <EyeIcon open={showConf} />
+                Back to role selection
+              </button>
+
+              {/* Selected role badge */}
+              <div className="flex items-center gap-3 mb-8 p-4 rounded-2xl border" style={{ background: roleInfo.bg, borderColor: roleInfo.color + "33" }}>
+                <span className="text-2xl">{roleInfo.icon}</span>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide" style={{ color: roleInfo.color }}>Joining as</p>
+                  <p className="font-black text-gray-900">{roleInfo.label}</p>
+                </div>
+                <button onClick={() => setStep("role")} className="ml-auto text-xs font-bold underline" style={{ color: roleInfo.color }}>
+                  Change
                 </button>
               </div>
-            </div>
- 
-            <motion.button
-              type="submit"
-              disabled={loading}
-              className="w-full py-5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-lg hover:shadow-xl disabled:opacity-50 transition-all mt-6"
-            >
-              {loading ? "Creating..." : "Create Account 🚀"}
-            </motion.button>
- 
-            <p className="text-center text-gray-600 font-medium text-sm">
-              Already have account?{" "}
-              <Link href="/login" className="text-indigo-600 font-black hover:text-pink-500 transition">
-                Sign In
-              </Link>
-            </p>
-          </form>
-        </div>
-      </motion.div>
+
+              <h1 className="text-3xl font-black text-gray-900 mb-8">Create your account</h1>
+
+              <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+                <form onSubmit={handleSignup} className="space-y-5">
+
+                  <AnimatePresence>
+                    {error && (
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl border border-red-200 bg-red-50 text-red-700 text-sm font-semibold">
+                        <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        {error}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Name */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Full name</label>
+                    <div className="relative">
+                      <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                      </svg>
+                      <input type="text" placeholder="Your name" value={name} onChange={e => setName(e.target.value)} required
+                        className="w-full bg-gray-50 border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all" />
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Email</label>
+                    <div className="relative">
+                      <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                      </svg>
+                      <input type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required
+                        className="w-full bg-gray-50 border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all" />
+                    </div>
+                  </div>
+
+                  {/* Password */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Password</label>
+                    <div className="relative">
+                      <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                      </svg>
+                      <input type={showPass ? "text" : "password"} placeholder="Min 6 characters" value={password} onChange={e => setPassword(e.target.value)} required
+                        className="w-full bg-gray-50 border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-10 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all" />
+                      <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700">
+                        <EyeIcon open={showPass} />
+                      </button>
+                    </div>
+                    {password.length > 0 && (
+                      <div className="mt-2">
+                        <div className="flex gap-1 mb-1">
+                          {[1,2,3,4].map(i => (
+                            <div key={i} className="flex-1 h-1.5 rounded-full bg-gray-200 overflow-hidden">
+                              <div className="h-full transition-all" style={{ width: i <= strength ? "100%" : "0%", background: strengthColor }} />
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs font-bold" style={{ color: strengthColor }}>{strengthLabel}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Confirm password */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Confirm password</label>
+                    <div className="relative">
+                      <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                      <input
+                        type={showConf ? "text" : "password"}
+                        placeholder="Repeat password"
+                        value={confirm}
+                        onChange={e => setConfirm(e.target.value)}
+                        required
+                        className={`w-full bg-gray-50 border focus:bg-white rounded-xl pl-10 pr-10 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all ${
+                          confirm && confirm !== password ? "border-red-300 bg-red-50" :
+                          confirm && confirm === password ? "border-green-300 bg-green-50" :
+                          "border-gray-200 focus:border-[#5B4BDB]"
+                        }`}
+                      />
+                      <button type="button" onClick={() => setShowConf(!showConf)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700">
+                        <EyeIcon open={showConf} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <button type="submit" disabled={loading}
+                    className="w-full py-4 rounded-xl font-black text-white text-sm transition-all hover:opacity-90 disabled:opacity-50 mt-2"
+                    style={{ background: roleInfo.color }}>
+                    {loading ? "Creating account..." : `Create account as ${roleInfo.label} →`}
+                  </button>
+
+                  <p className="text-center text-sm text-gray-500">
+                    Already have an account?{" "}
+                    <Link href="/login" className="font-black text-[#5B4BDB] hover:underline">Sign in</Link>
+                  </p>
+                </form>
+              </div>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+      </div>
     </main>
   );
 }
- 
+
 export default function Signup() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="w-10 h-10 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin" /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center"><div className="w-10 h-10 border-4 border-gray-200 border-t-[#5B4BDB] rounded-full animate-spin" /></div>}>
       <SignupContent />
     </Suspense>
   );

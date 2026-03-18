@@ -29,7 +29,7 @@ const HUB_CARDS = [
   },
   {
     label: "Tools Directory",
-    desc: "48 AR/VR tools, rated & filtered",
+    desc: "48 tools incl. WebXR, Unity, Blender",
     href: "/learn/tools",
     icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z",
     badge: "New",
@@ -469,10 +469,10 @@ export default function LearnPage() {
               <div className="space-y-2">
                 {[
                   { label: "Generate my XR roadmap", href: "/learn/roadmap", badge: "AI" },
+                  { label: "WebXR tools & resources", href: "/learn/tools?filter=WebXR", badge: "WebXR" },
                   { label: "Find the right tool", href: "/learn/tools", badge: "48 tools" },
                   { label: "Book a 1-on-1 mentor", href: "/hire", badge: null },
                   { label: "Join a challenge", href: "/learn/challenges", badge: null },
-                  { label: "Student showcase", href: "/learn/showcase", badge: null },
                 ].map(item => (
                   <Link key={item.href} href={item.href}>
                     <div className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors group cursor-pointer">

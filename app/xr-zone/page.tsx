@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface XRProject {
   id: string; title: string; thumbnailUrl: string; category: string;
-  isPaid: boolean; price: number; authorName: string; authorPhoto: string;
+  fileType: string; isPaid: boolean; price: number; authorName: string; authorPhoto: string;
   description: string; tags: string[]; views: number; downloads: number;
   platforms: string[]; genre: string; version: string; engagementScore: number; uploadedAt: any;
 }
@@ -35,6 +35,11 @@ function ProjectCard({ p, tab }: { p: XRProject; tab: Tab }) {
               : <div className="text-5xl">{tab === "AR" ? "📱" : "🥽"}</div>
             }
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
+            {(p.fileType === "glb" || p.fileType === "gltf") && (
+              <div className="absolute top-2 left-2">
+                <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-[#5B4BDB] text-white tracking-wider">WebXR</span>
+              </div>
+            )}
             <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${tab === "AR" ? "bg-teal-500 text-white" : "bg-violet-600 text-white"}`}>
                 {p.category}
@@ -162,6 +167,27 @@ export default function XRZonePage() {
           </div>
         </div>
       </div>
+
+
+        {/* ── WebXR highlight strip ── */}
+        <div className="border-b border-gray-800 px-0 py-4 bg-[#5B4BDB]/10">
+          <div className="max-w-7xl mx-auto flex items-center gap-4 flex-wrap px-6">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-[#5B4BDB] flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2"/>
+                </svg>
+              </div>
+              <span className="text-sm font-black text-white">WebXR Powered Platform</span>
+            </div>
+            <span className="text-sm text-gray-400">3D models support in-browser AR — place them in your real environment, no app needed</span>
+            <div className="flex gap-2 ml-auto flex-wrap">
+              {["Chrome Android","Safari iOS 16+","No app install","WebXR Device API"].map(f=>(
+                <span key={f} className="text-xs font-bold px-2.5 py-1 rounded-full bg-white/10 border border-white/20 text-gray-300">{f}</span>
+              ))}
+            </div>
+          </div>
+        </div>
 
       <div className="max-w-7xl mx-auto px-6 py-10 flex-grow w-full">
 

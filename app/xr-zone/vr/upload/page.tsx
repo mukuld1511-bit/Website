@@ -12,7 +12,7 @@ import Footer from "../../../components/Footer";
 // Drop at: app/xr-zone/ar/upload/page.tsx  AND  app/xr-zone/vr/upload/page.tsx
 // Change the `DEFAULT_MODE` constant accordingly
 
-const DEFAULT_MODE: "AR" | "VR" = "AR"; // ← change to "VR" for VR upload page
+const DEFAULT_MODE: "AR" | "VR" = "VR"; // ← change to "VR" for VR upload page
 
 const PLATFORMS = ["Windows", "Android", "iOS", "macOS", "Linux", "WebGL"];
 const AR_GENRES = ["Professional", "Utility", "Education", "Industrial", "AR Tool", "Simulation", "Enterprise"];

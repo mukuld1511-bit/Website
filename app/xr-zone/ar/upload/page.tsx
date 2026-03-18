@@ -135,7 +135,7 @@ export default function XRUploadPage() {
       setTimeout(() => { window.location.href = "/xr-zone"; }, 2000);
     } catch (e) { setError((e as Error).message); setUploading(false); setUploadStage(""); }
   };
-
+const DEFAULT_MODE: "AR" | "VR" = "AR"; // already correct
   const accentColor = mode === "AR" ? "teal" : "violet";
   const accentClass = mode === "AR" ? "bg-teal-500 hover:bg-teal-400 border-teal-700" : "bg-violet-600 hover:bg-violet-500 border-violet-800";
   const genres = mode === "AR" ? AR_GENRES : VR_GENRES;

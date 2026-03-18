@@ -246,14 +246,12 @@ export default function Navbar() {
               </button>
             </Link>
 
-            {/* Freelance dropdown */}
-            <Dropdown
-              title="Freelance"
-              links={FREELANCE_LINKS}
-              isOpen={activeDropdown === "Freelance"}
-              onToggle={() => toggle("Freelance")}
-              onClose={() => setActiveDropdown(null)}
-            />
+            {/* Freelance — direct link, no dropdown */}
+            <Link href="/freelance">
+              <button className="px-3 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+                Freelance
+              </button>
+            </Link>
 
             {/* Connect dropdown */}
             <Dropdown

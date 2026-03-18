@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   collection, query, where, orderBy,
   getDocs, addDoc, updateDoc, doc,
@@ -15,6 +15,212 @@ import type { Workshop, UserRole } from "../../types/gallery";
 
 const TAGS = ["All", "AR", "VR", "Unity", "Unreal", "WebXR", "Blender", "ARCore", "ARKit"];
 
+// ─── Hub nav cards ────────────────────────────────────────────────────────────
+const HUB_CARDS = [
+  {
+    label: "XR Roadmap",
+    desc: "AI-personalised learning path",
+    href: "/learn/roadmap",
+    icon: "M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7",
+    badge: "AI",
+    badgeStyle: "bg-violet-100 text-violet-700 border border-violet-200",
+    color: "#5B4BDB",
+    bg: "#EEEDFE",
+  },
+  {
+    label: "Tools Directory",
+    desc: "48 AR/VR tools, rated & filtered",
+    href: "/learn/tools",
+    icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z",
+    badge: "New",
+    badgeStyle: "bg-amber-100 text-amber-700 border border-amber-200",
+    color: "#B45309",
+    bg: "#FAEEDA",
+  },
+  {
+    label: "1-on-1 Mentors",
+    desc: "Book private paid sessions",
+    href: "/hire",
+    icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+    badge: null,
+    badgeStyle: "",
+    color: "#185FA5",
+    bg: "#E6F1FB",
+  },
+  {
+    label: "XR Challenges",
+    desc: "Build projects, earn badges",
+    href: "/learn/challenges",
+    icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z",
+    badge: null,
+    badgeStyle: "",
+    color: "#0F6E56",
+    bg: "#E1F5EE",
+  },
+  {
+    label: "Student Showcase",
+    desc: "See community work",
+    href: "/learn/showcase",
+    icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
+    badge: null,
+    badgeStyle: "",
+    color: "#9D174D",
+    bg: "#FBEAF0",
+  },
+];
+
+// ─── Gemini XR Chat (inline, no separate import needed) ───────────────────────
+interface Message { role: "user" | "ai"; text: string; }
+
+const QUICK_QUESTIONS = [
+  "What is WebXR?",
+  "How does AR work on phones?",
+  "AR vs VR — what's the difference?",
+  "What is SLAM tracking?",
+  "Best free tool to start VR?",
+  "What is a GLB file?",
+];
+
+async function askGemini(question: string, userRole: string): Promise<string> {
+  const ctx = `You are an XR education assistant on SYNTHÉ. Answer in simple, friendly language.
+${userRole === "learner" || userRole === "user" ? "Beginner — avoid jargon, use analogies." : "Developer — be technical."}
+Under 100 words. End with one tip.`;
+  const res = await fetch(
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" +
+      process.env.NEXT_PUBLIC_GEMINI_API_KEY,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: ctx + "\n\nQuestion: " + question }] }],
+        generationConfig: { temperature: 0.6, maxOutputTokens: 250 },
+      }),
+    }
+  );
+  if (!res.ok) throw new Error("API error");
+  const data = await res.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "Sorry, try again.";
+}
+
+function GeminiChat({ userRole }: { userRole: string }) {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  const send = async (text: string) => {
+    if (!text.trim() || loading) return;
+    const q = text.trim();
+    setInput("");
+    setMessages(p => [...p, { role: "user", text: q }]);
+    setLoading(true);
+    try {
+      const answer = await askGemini(q, userRole);
+      setMessages(p => [...p, { role: "ai", text: answer }]);
+    } catch {
+      setMessages(p => [...p, { role: "ai", text: "Something went wrong. Try again." }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm" style={{ height: 480 }}>
+      {/* Header */}
+      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100 bg-gray-50 shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-[#5B4BDB] flex items-center justify-center">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-bold text-gray-900">Ask anything about XR</p>
+          <p className="text-xs text-gray-400">Gemini AI · instant answers</p>
+        </div>
+        <span className="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full font-semibold">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+          Live
+        </span>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+        {messages.length === 0 && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+            <p className="text-xs text-gray-400 text-center">Ask me anything about AR, VR, or XR development</p>
+            <div className="grid grid-cols-2 gap-2">
+              {QUICK_QUESTIONS.map(q => (
+                <button key={q} onClick={() => send(q)}
+                  className="text-left text-xs bg-gray-50 hover:bg-[#5B4BDB]/5 border border-gray-200 hover:border-[#5B4BDB]/30 rounded-xl px-3 py-2.5 text-gray-600 hover:text-[#5B4BDB] transition-all leading-snug">
+                  {q}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        <AnimatePresence initial={false}>
+          {messages.map((m, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+              className={`flex ${m.role === "user" ? "justify-end" : "justify-start"} gap-2`}>
+              {m.role === "ai" && (
+                <div className="w-6 h-6 rounded-lg bg-[#5B4BDB] flex items-center justify-center shrink-0 mt-0.5">
+                  <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  </svg>
+                </div>
+              )}
+              <div className={`max-w-[82%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                m.role === "user"
+                  ? "bg-[#5B4BDB] text-white rounded-br-sm"
+                  : "bg-gray-100 text-gray-800 rounded-bl-sm"
+              }`}>
+                {m.text}
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+
+        {loading && (
+          <div className="flex gap-2">
+            <div className="w-6 h-6 rounded-lg bg-[#5B4BDB] flex items-center justify-center shrink-0">
+              <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+            </div>
+            <div className="bg-gray-100 rounded-2xl rounded-bl-sm px-4 py-2.5">
+              <div className="flex gap-1">
+                {[0,1,2].map(i => (
+                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB] animate-bounce" style={{ animationDelay: `${i * 0.12}s` }} />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Input */}
+      <div className="px-4 py-3 border-t border-gray-100 bg-gray-50 shrink-0">
+        <form onSubmit={e => { e.preventDefault(); send(input); }} className="flex gap-2">
+          <input value={input} onChange={e => setInput(e.target.value)}
+            placeholder="What is spatial computing?"
+            className="flex-1 bg-white border border-gray-200 focus:border-[#5B4BDB] rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors" />
+          <button type="submit" disabled={!input.trim() || loading}
+            className="px-4 py-2.5 bg-[#5B4BDB] hover:bg-[#4c3ec7] disabled:opacity-40 rounded-xl text-white text-sm font-bold transition-colors">
+            Ask
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ─── Helpers (unchanged from original) ───────────────────────────────────────
 function formatDate(ts: any): string {
   if (!ts) return "—";
   const d = ts.toDate ? ts.toDate() : new Date(ts);
@@ -43,13 +249,8 @@ function SeatsBar({ registered, max }: { registered: number; max: number }) {
   );
 }
 
-function WorkshopCard({
-  w, user, userRole, onRegister,
-}: {
-  w: Workshop;
-  user: any;
-  userRole: UserRole;
-  onRegister: (id: string) => void;
+function WorkshopCard({ w, user, userRole, onRegister }: {
+  w: Workshop; user: any; userRole: UserRole; onRegister: (id: string) => void;
 }) {
   const isRegistered = user && w.registeredUsers?.includes(user.uid);
   const isFull       = (w.registeredUsers?.length ?? 0) >= w.maxSeats;
@@ -57,30 +258,20 @@ function WorkshopCard({
   const canRegister  = ["learner", "developer", "mentor", "admin"].includes(userRole);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
-    >
-      {/* Tags */}
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
       <div className="flex flex-wrap gap-1.5 mb-3">
         {w.status === "live" && (
           <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-            Live now
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />Live now
           </span>
         )}
         {w.tags?.slice(0, 3).map(t => (
-          <span key={t} className="px-2 py-0.5 rounded-full bg-[#5B4BDB]/10 text-[#5B4BDB] text-xs font-semibold">
-            {t}
-          </span>
+          <span key={t} className="px-2 py-0.5 rounded-full bg-[#5B4BDB]/10 text-[#5B4BDB] text-xs font-semibold">{t}</span>
         ))}
       </div>
-
       <h3 className="font-black text-gray-900 text-base mb-1 leading-snug">{w.title}</h3>
       <p className="text-gray-500 text-xs leading-relaxed mb-3 line-clamp-2">{w.description}</p>
-
-      {/* Host */}
       <div className="flex items-center gap-2 mb-3">
         <div className="w-7 h-7 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center overflow-hidden flex-shrink-0">
           {w.hostPhoto
@@ -93,47 +284,26 @@ function WorkshopCard({
           <p className="text-xs text-gray-400">{w.duration} min · {w.price === 0 ? "Free" : `₹${w.price}`}</p>
         </div>
       </div>
-
-      {/* Date */}
       <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-3">
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
         {formatDate(w.date)}
       </div>
-
       <SeatsBar registered={w.registeredUsers?.length ?? 0} max={w.maxSeats} />
-
-      {/* Action */}
       <div className="mt-4">
         {isPast ? (
           <div className="text-center text-xs text-gray-400 py-2">Session ended</div>
         ) : isRegistered ? (
-          <div className="w-full py-2.5 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-bold text-center">
-            Registered ✓
-          </div>
+          <div className="w-full py-2.5 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-bold text-center">Registered ✓</div>
         ) : !user ? (
-          <Link href="/login">
-            <button className="w-full py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
-              Sign in to register
-            </button>
-          </Link>
+          <Link href="/login"><button className="w-full py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">Sign in to register</button></Link>
         ) : !canRegister ? (
-          <Link href="/join">
-            <button className="w-full py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-bold border-b-[3px] border-gray-200 hover:bg-gray-200 transition-all active:translate-y-[1px]">
-              Apply as Learner to register
-            </button>
-          </Link>
+          <Link href="/join"><button className="w-full py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-bold border-b-[3px] border-gray-200 hover:bg-gray-200 transition-all active:translate-y-[1px]">Apply as Learner to register</button></Link>
         ) : isFull ? (
-          <button disabled className="w-full py-2.5 rounded-xl bg-gray-100 text-gray-400 text-sm font-bold cursor-not-allowed">
-            Session full
-          </button>
+          <button disabled className="w-full py-2.5 rounded-xl bg-gray-100 text-gray-400 text-sm font-bold cursor-not-allowed">Session full</button>
         ) : (
-          <button
-            onClick={() => onRegister(w.id)}
-            className="w-full py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]"
-          >
+          <button onClick={() => onRegister(w.id)} className="w-full py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
             {w.price === 0 ? "Register free" : `Register · ₹${w.price}`}
           </button>
         )}
@@ -142,6 +312,7 @@ function WorkshopCard({
   );
 }
 
+// ─── Main page ────────────────────────────────────────────────────────────────
 export default function LearnPage() {
   const [user,      setUser]      = useState<any>(null);
   const [userRole,  setUserRole]  = useState<UserRole>("user");
@@ -163,56 +334,33 @@ export default function LearnPage() {
     return () => unsub();
   }, []);
 
-  useEffect(() => {
-    fetchWorkshops();
-  }, []);
+  useEffect(() => { fetchWorkshops(); }, []);
 
   const fetchWorkshops = async () => {
     setLoading(true);
     try {
-      const q = query(
-        collection(db, "workshops"),
-        where("status", "in", ["upcoming", "live"]),
-        orderBy("date", "asc")
-      );
+      const q = query(collection(db, "workshops"), where("status", "in", ["upcoming", "live"]), orderBy("date", "asc"));
       const snap = await getDocs(q);
       setWorkshops(snap.docs.map(d => ({ id: d.id, ...d.data() } as Workshop)));
-    } catch (err) {
-      console.error("Workshops fetch error:", err);
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) { console.error("Workshops fetch error:", err); }
+    finally { setLoading(false); }
   };
 
   const handleRegister = async (workshopId: string) => {
     if (!user) return;
     try {
-      await updateDoc(doc(db, "workshops", workshopId), {
-        registeredUsers: arrayUnion(user.uid),
-      });
-      setWorkshops(prev =>
-        prev.map(w => w.id === workshopId
-          ? { ...w, registeredUsers: [...(w.registeredUsers ?? []), user.uid] }
-          : w
-        )
-      );
+      await updateDoc(doc(db, "workshops", workshopId), { registeredUsers: arrayUnion(user.uid) });
+      setWorkshops(prev => prev.map(w => w.id === workshopId
+        ? { ...w, registeredUsers: [...(w.registeredUsers ?? []), user.uid] } : w));
       showToast("Registered! Meet link will be shared before the session.");
-    } catch (err) {
-      console.error("Register error:", err);
-      showToast("Something went wrong. Please try again.");
-    }
+    } catch (err) { console.error("Register error:", err); showToast("Something went wrong. Please try again."); }
   };
 
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 3500);
-  };
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3500); };
 
   const filtered = workshops.filter(w => {
     const tagMatch = activeTag === "All" || w.tags?.includes(activeTag);
-    const tabMatch = tab === "upcoming"
-      ? true
-      : user && w.registeredUsers?.includes(user.uid);
+    const tabMatch = tab === "upcoming" ? true : user && w.registeredUsers?.includes(user.uid);
     return tagMatch && tabMatch;
   });
 
@@ -222,15 +370,10 @@ export default function LearnPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">
       <Navbar />
 
-      {/* Toast */}
       <AnimatePresence>
         {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-xl"
-          >
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-xl">
             {toast}
           </motion.div>
         )}
@@ -238,26 +381,18 @@ export default function LearnPage() {
 
       <div className="max-w-6xl mx-auto px-4 py-14 flex-grow w-full">
 
-        {/* Hero */}
+        {/* ── HERO ── */}
         <div className="mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">
-            SYNTHÉ Learning Hub
-          </p>
+          <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">SYNTHÉ Learning Hub</p>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-4 leading-tight">
             Learn AR & VR<br />from real developers
           </h1>
           <p className="text-gray-500 text-lg max-w-xl">
-            Join live sessions hosted by verified mentors, or book a private 1-on-1 session
-            for hands-on guidance.
+            Join live sessions hosted by verified mentors, or book a private 1-on-1 session for hands-on guidance.
           </p>
-
-          {/* Role upgrade banner */}
           {user && userRole === "user" && (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 flex items-center justify-between gap-4 p-4 rounded-2xl border border-[#5B4BDB]/30 bg-[#5B4BDB]/5"
-            >
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+              className="mt-6 flex items-center justify-between gap-4 p-4 rounded-2xl border border-[#5B4BDB]/30 bg-[#5B4BDB]/5">
               <div>
                 <p className="text-sm font-bold text-gray-900">Unlock learning features</p>
                 <p className="text-xs text-gray-500 mt-0.5">Apply as a Learner to register for sessions and book mentors</p>
@@ -271,21 +406,92 @@ export default function LearnPage() {
           )}
         </div>
 
-        {/* Stats row */}
-        <div className="grid grid-cols-3 gap-4 mb-10">
-          {[
-            { label: "Live sessions", value: workshops.filter(w => w.status === "live").length || "—" },
-            { label: "Upcoming",      value: workshops.filter(w => w.status === "upcoming").length },
-            { label: "My sessions",   value: myRegistered.length },
-          ].map(({ label, value }) => (
-            <div key={label} className="bg-white border border-gray-100 rounded-2xl p-4 text-center shadow-sm">
-              <p className="text-2xl font-black text-gray-900">{value}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{label}</p>
-            </div>
+        {/* ── HUB NAV CARDS ── NEW ── */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-10">
+          {HUB_CARDS.map((card, i) => (
+            <motion.div key={card.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}>
+              <Link href={card.href}>
+                <div className="group p-4 rounded-2xl border border-gray-200 bg-white hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer h-full">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3 transition-colors" style={{ background: card.bg }}>
+                    <svg className="w-4 h-4" fill="none" stroke={card.color} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={card.icon} />
+                    </svg>
+                  </div>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <p className="text-sm font-black text-gray-900 group-hover:text-[#5B4BDB] transition-colors leading-tight">{card.label}</p>
+                    {card.badge && (
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${card.badgeStyle}`}>{card.badge}</span>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-400 leading-snug">{card.desc}</p>
+                </div>
+              </Link>
+            </motion.div>
           ))}
         </div>
 
-        {/* Tabs */}
+        {/* ── GEMINI CHAT + STATS ── NEW ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-12">
+
+          {/* Gemini chat — takes 3 cols */}
+          <div className="lg:col-span-3">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-5 h-5 rounded-md bg-[#5B4BDB] flex items-center justify-center">
+                <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+              <p className="text-sm font-bold text-gray-900">XR Concept Chat</p>
+              <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full font-semibold">Gemini AI</span>
+            </div>
+            <GeminiChat userRole={userRole} />
+          </div>
+
+          {/* Stats + quick links — takes 2 cols */}
+          <div className="lg:col-span-2 flex flex-col gap-4">
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { label: "Live now",  value: workshops.filter(w => w.status === "live").length || "—" },
+                { label: "Upcoming",  value: workshops.filter(w => w.status === "upcoming").length },
+                { label: "Joined",    value: myRegistered.length },
+              ].map(({ label, value }) => (
+                <div key={label} className="bg-white border border-gray-100 rounded-2xl p-4 text-center shadow-sm">
+                  <p className="text-2xl font-black text-gray-900">{value}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Quick links */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-5 flex-1">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-4">Quick links</p>
+              <div className="space-y-2">
+                {[
+                  { label: "Generate my XR roadmap", href: "/learn/roadmap", badge: "AI" },
+                  { label: "Find the right tool", href: "/learn/tools", badge: "48 tools" },
+                  { label: "Book a 1-on-1 mentor", href: "/hire", badge: null },
+                  { label: "Join a challenge", href: "/learn/challenges", badge: null },
+                  { label: "Student showcase", href: "/learn/showcase", badge: null },
+                ].map(item => (
+                  <Link key={item.href} href={item.href}>
+                    <div className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors group cursor-pointer">
+                      <p className="text-sm font-semibold text-gray-700 group-hover:text-[#5B4BDB] transition-colors">{item.label}</p>
+                      <div className="flex items-center gap-2">
+                        {item.badge && <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full font-semibold">{item.badge}</span>}
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="text-gray-300 group-hover:text-[#5B4BDB] transition-colors">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── TABS + TAG FILTERS (unchanged) ── */}
         <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
           <div className="flex gap-1 p-1 rounded-2xl bg-gray-100 w-fit">
             {(["upcoming", "registered"] as const).map(t => (
@@ -297,15 +503,11 @@ export default function LearnPage() {
               </button>
             ))}
           </div>
-
-          {/* Tag filters */}
           <div className="flex gap-1.5 flex-wrap">
             {TAGS.map(tag => (
               <button key={tag} onClick={() => setActiveTag(tag)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
-                  activeTag === tag
-                    ? "bg-[#5B4BDB] text-white border-[#4438b8]"
-                    : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
+                  activeTag === tag ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
                 }`}>
                 {tag}
               </button>
@@ -313,7 +515,7 @@ export default function LearnPage() {
           </div>
         </div>
 
-        {/* Workshop grid */}
+        {/* ── WORKSHOP GRID (unchanged) ── */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {[...Array(6)].map((_, i) => (
@@ -334,46 +536,28 @@ export default function LearnPage() {
               {tab === "registered" ? "No sessions registered yet" : "No sessions available"}
             </p>
             <p className="text-gray-500 text-sm">
-              {tab === "registered"
-                ? "Register for upcoming sessions to see them here"
-                : "Check back soon — mentors post new sessions regularly"
-              }
+              {tab === "registered" ? "Register for upcoming sessions to see them here" : "Check back soon — mentors post new sessions regularly"}
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.map(w => (
-              <WorkshopCard
-                key={w.id}
-                w={w}
-                user={user}
-                userRole={userRole}
-                onRegister={handleRegister}
-              />
+              <WorkshopCard key={w.id} w={w} user={user} userRole={userRole} onRegister={handleRegister} />
             ))}
           </div>
         )}
 
-        {/* 1-on-1 mentor section */}
+        {/* ── 1-ON-1 SECTION (unchanged) ── */}
         <div className="mt-16 rounded-3xl border border-gray-100 bg-white shadow-sm overflow-hidden">
           <div className="grid md:grid-cols-2 gap-0">
             <div className="p-8 md:p-10">
               <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">1-on-1 Sessions</p>
-              <h2 className="text-2xl font-black text-gray-900 mb-3 leading-tight">
-                Need personal guidance?
-              </h2>
+              <h2 className="text-2xl font-black text-gray-900 mb-3 leading-tight">Need personal guidance?</h2>
               <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                Browse verified mentors and book a private session.
-                You choose the topic, they bring the expertise.
-                Paid or free — depends on the mentor.
+                Browse verified mentors and book a private session. You choose the topic, they bring the expertise.
               </p>
               <div className="space-y-2 mb-6">
-                {[
-                  "Pick your topic — Unity, WebXR, Blender, anything",
-                  "Choose a mentor whose work you admire",
-                  "Send your request with your goal",
-                  "Mentor confirms → Meet link shared",
-                ].map((step, i) => (
+                {["Pick your topic — Unity, WebXR, Blender, anything", "Choose a mentor whose work you admire", "Send your request with your goal", "Mentor confirms → Meet link shared"].map((step, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <div className="w-5 h-5 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <span className="text-[#5B4BDB] text-xs font-bold">{i + 1}</span>
@@ -398,7 +582,6 @@ export default function LearnPage() {
           </div>
         </div>
 
-        {/* Become a mentor CTA */}
         {user && !["mentor", "admin"].includes(userRole) && (
           <div className="mt-8 p-6 rounded-2xl border border-gray-100 bg-white shadow-sm flex items-center justify-between gap-4 flex-wrap">
             <div>

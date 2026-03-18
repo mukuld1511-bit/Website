@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../lib/firebase";
 
-// ── All link types explicitly typed ──────────────────────────────────────────
 interface NavLink {
   label: string;
   href: string;
@@ -16,42 +15,47 @@ interface NavLink {
 }
 
 const GALLERY_LINKS: NavLink[] = [
-  { label: "3D Models",      href: "/gallery",        desc: "Browse GLB, OBJ, FBX, GLTF models", icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
-  { label: "AutoCAD",        href: "/autocad",        desc: "Browse DWG and DXF blueprints",      icon: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" },
-  { label: "Upload",         href: "/upload",         desc: "Sell your 3D models or CAD files",   icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
-  { label: "Post a request", href: "/requests/post",  desc: "Commission a custom 3D model",       icon: "M12 4v16m8-8H4" },
+  { label: "Browse Models",  href: "/gallery",       desc: "GLB, GLTF, OBJ, FBX files",       icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
+  { label: "Upload Model",   href: "/upload",        desc: "Sell your 3D assets on SYNTHÉ",    icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
+  { label: "Post a Request", href: "/requests/post", desc: "Commission a custom 3D model",     icon: "M12 4v16m8-8H4" },
 ];
 
 const LEARN_LINKS: NavLink[] = [
-  { label: "Live sessions",    href: "/learn",             desc: "Free AR/VR workshops",             icon: "M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" },
-  { label: "1-on-1 mentors",   href: "/hire",              desc: "Book a private session",           icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
-  { label: "XR Roadmap",       href: "/learn/roadmap",     desc: "AI-personalised learning path",    icon: "M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7", badge: "AI" },
-  { label: "Tools directory",  href: "/learn/tools",       desc: "48 AR/VR tools, rated & filtered", icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z", badge: "New" },
-  { label: "XR Challenges",    href: "/learn/challenges",  desc: "Build and win badges",             icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" },
-  { label: "Student showcase", href: "/learn/showcase",    desc: "Community work gallery",           icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" },
+  { label: "Live Sessions",   href: "/learn",            desc: "Free AR/VR workshops by mentors",   icon: "M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z", badge: "Free" },
+  { label: "XR Roadmap",      href: "/learn/roadmap",    desc: "AI-personalised learning path",      icon: "M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7", badge: "AI" },
+  { label: "Tools Directory", href: "/learn/tools",      desc: "48 AR/VR tools, rated & filtered",   icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z", badge: "New" },
+  { label: "1-on-1 Mentors",  href: "/hire",             desc: "Book a private paid session",        icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
+  { label: "XR Challenges",   href: "/learn/challenges", desc: "Build projects, earn badges",         icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" },
+  { label: "Student Showcase",href: "/learn/showcase",   desc: "Community work gallery",              icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" },
 ];
 
-const COMMUNITY_LINKS: NavLink[] = [
-  { label: "Connect",        href: "/connect",       desc: "Network with XR developers",  icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
-  { label: "Post a project", href: "/requests/post", desc: "Start a collaboration",        icon: "M12 4v16m8-8H4" },
-  { label: "PIET",           href: "/collaborators", desc: "Academic collaboration",       icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5" },
+const FREELANCE_LINKS: NavLink[] = [
+  { label: "Post a Project",   href: "/requests/post", desc: "Get bids from XR specialists",     icon: "M12 4v16m8-8H4" },
+  { label: "Open Requests",    href: "/requests/open", desc: "Browse client project requests",   icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
+  { label: "Hire a Developer", href: "/hire",          desc: "Book verified XR specialists",     icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+];
+
+const CONNECT_LINKS: NavLink[] = [
+  { label: "Connect",        href: "/connect",       desc: "Chat and network with creators",   icon: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" },
+  { label: "Certification",  href: "/certification", desc: "Get verified, earn badge",          icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" },
 ];
 
 const BADGE_STYLES: Record<string, string> = {
-  "AI":  "bg-violet-100 text-violet-700 border border-violet-200",
-  "New": "bg-amber-100 text-amber-700 border border-amber-200",
+  "AI":   "bg-violet-100 text-violet-700 border border-violet-200",
+  "New":  "bg-amber-100 text-amber-700 border border-amber-200",
+  "Free": "bg-green-100 text-green-700 border border-green-200",
 };
 
-// ── Dropdown component with correct types ─────────────────────────────────────
 interface DropdownProps {
   title: string;
   links: NavLink[];
   isOpen: boolean;
   onToggle: () => void;
   onClose: () => void;
+  showGeminiBadge?: boolean;
 }
 
-function Dropdown({ title, links, isOpen, onToggle, onClose }: DropdownProps) {
+function Dropdown({ title, links, isOpen, onToggle, onClose, showGeminiBadge }: DropdownProps) {
   return (
     <div className="relative">
       <button
@@ -61,13 +65,9 @@ function Dropdown({ title, links, isOpen, onToggle, onClose }: DropdownProps) {
         }`}
       >
         {title}
-        {title === "Learn" && (
-          <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
-        )}
-        <svg
-          className={`w-3.5 h-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`}
-          fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        >
+        {showGeminiBadge && <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />}
+        <svg className={`w-3.5 h-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
@@ -106,7 +106,7 @@ function Dropdown({ title, links, isOpen, onToggle, onClose }: DropdownProps) {
               </Link>
             ))}
 
-            {title === "Learn" && (
+            {showGeminiBadge && (
               <div className="mx-2 mb-1 mt-1 p-3 rounded-lg bg-violet-50 border border-violet-100">
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-md bg-violet-600 flex items-center justify-center flex-shrink-0">
@@ -126,7 +126,6 @@ function Dropdown({ title, links, isOpen, onToggle, onClose }: DropdownProps) {
   );
 }
 
-// ── Main Navbar ───────────────────────────────────────────────────────────────
 export default function Navbar() {
   const [user,           setUser]           = useState<any>(null);
   const [scrolled,       setScrolled]       = useState(false);
@@ -170,10 +169,15 @@ export default function Navbar() {
     router.push("/");
   }
 
-  const NAV_SECTIONS = [
-    { title: "Gallery",   links: GALLERY_LINKS   },
-    { title: "Learn",     links: LEARN_LINKS     },
-    { title: "Community", links: COMMUNITY_LINKS },
+  const toggle = (name: string) =>
+    setActiveDropdown((prev) => (prev === name ? null : name));
+
+  // Mobile — all sections flat
+  const ALL_MOBILE_SECTIONS = [
+    { section: "3D Gallery",  links: GALLERY_LINKS   },
+    { section: "Learn",       links: LEARN_LINKS     },
+    { section: "Freelance",   links: FREELANCE_LINKS },
+    { section: "Connect",     links: CONNECT_LINKS   },
   ];
 
   return (
@@ -199,17 +203,58 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-1">
-            {NAV_SECTIONS.map(({ title, links }) => (
-              <Dropdown
-                key={title}
-                title={title}
-                links={links}
-                isOpen={activeDropdown === title}
-                onToggle={() => setActiveDropdown(activeDropdown === title ? null : title)}
-                onClose={() => setActiveDropdown(null)}
-              />
-            ))}
+          <div className="hidden lg:flex items-center gap-0.5">
+
+            {/* 3D Gallery dropdown */}
+            <Dropdown
+              title="3D Gallery"
+              links={GALLERY_LINKS}
+              isOpen={activeDropdown === "3D Gallery"}
+              onToggle={() => toggle("3D Gallery")}
+              onClose={() => setActiveDropdown(null)}
+            />
+
+            {/* AutoCAD — direct link, no dropdown */}
+            <Link href="/autocad">
+              <button className="px-3 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+                AutoCAD
+              </button>
+            </Link>
+
+            {/* Learn dropdown */}
+            <Dropdown
+              title="Learn"
+              links={LEARN_LINKS}
+              isOpen={activeDropdown === "Learn"}
+              onToggle={() => toggle("Learn")}
+              onClose={() => setActiveDropdown(null)}
+              showGeminiBadge
+            />
+
+            {/* Freelance dropdown */}
+            <Dropdown
+              title="Freelance"
+              links={FREELANCE_LINKS}
+              isOpen={activeDropdown === "Freelance"}
+              onToggle={() => toggle("Freelance")}
+              onClose={() => setActiveDropdown(null)}
+            />
+
+            {/* Connect dropdown */}
+            <Dropdown
+              title="Connect"
+              links={CONNECT_LINKS}
+              isOpen={activeDropdown === "Connect"}
+              onToggle={() => toggle("Connect")}
+              onClose={() => setActiveDropdown(null)}
+            />
+
+            {/* PIET — direct link, no dropdown */}
+            <Link href="/collaborators">
+              <button className="px-3 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+                PIET
+              </button>
+            </Link>
           </div>
 
           {/* Auth */}
@@ -229,10 +274,8 @@ export default function Navbar() {
                   <span className="text-gray-800 text-sm font-bold max-w-[90px] truncate">
                     {user.displayName?.split(" ")[0] ?? "User"}
                   </span>
-                  <svg
-                    className={`w-3 h-3 text-gray-400 transition-transform ${profileOpen ? "rotate-180" : ""}`}
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                  >
+                  <svg className={`w-3 h-3 text-gray-400 transition-transform ${profileOpen ? "rotate-180" : ""}`}
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
@@ -262,10 +305,8 @@ export default function Navbar() {
                         </Link>
                       ))}
                       <div className="h-px bg-gray-100 my-1.5 mx-2" />
-                      <button
-                        onClick={logout}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 transition-colors group"
-                      >
+                      <button onClick={logout}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 transition-colors group">
                         <svg className="w-4 h-4 text-gray-400 group-hover:text-red-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
@@ -291,10 +332,8 @@ export default function Navbar() {
             )}
 
             {/* Mobile hamburger */}
-            <button
-              onClick={() => setMobileOpen((v) => !v)}
-              className="lg:hidden w-10 h-10 flex items-center justify-center text-gray-700"
-            >
+            <button onClick={() => setMobileOpen((v) => !v)}
+              className="lg:hidden w-10 h-10 flex items-center justify-center text-gray-700">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileOpen
                   ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -317,9 +356,47 @@ export default function Navbar() {
             className="fixed inset-0 z-40 bg-white flex flex-col pt-16 h-[100dvh] overflow-y-auto"
           >
             <div className="p-6 space-y-8 flex-1">
-              {NAV_SECTIONS.map(({ title, links }) => (
-                <div key={title}>
-                  <p className="text-[10px] font-black tracking-[0.18em] text-[#5B4BDB] uppercase mb-3">{title}</p>
+
+              {/* AutoCAD direct */}
+              <div>
+                <p className="text-[10px] font-black tracking-[0.18em] text-[#5B4BDB] uppercase mb-3">AutoCAD</p>
+                <Link href="/autocad" onClick={() => setMobileOpen(false)}>
+                  <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
+                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:text-[#5B4BDB] group-hover:bg-[#5B4BDB]/10 transition-colors">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900">AutoCAD Files</p>
+                      <p className="text-xs text-gray-400">Browse DWG and DXF blueprints</p>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              {/* PIET direct */}
+              <div>
+                <p className="text-[10px] font-black tracking-[0.18em] text-[#5B4BDB] uppercase mb-3">PIET</p>
+                <Link href="/collaborators" onClick={() => setMobileOpen(false)}>
+                  <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
+                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:text-[#5B4BDB] group-hover:bg-[#5B4BDB]/10 transition-colors">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900">PIET Collaborators</p>
+                      <p className="text-xs text-gray-400">Academic collaboration</p>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              {/* Other sections */}
+              {ALL_MOBILE_SECTIONS.map(({ section, links }) => (
+                <div key={section}>
+                  <p className="text-[10px] font-black tracking-[0.18em] text-[#5B4BDB] uppercase mb-3">{section}</p>
                   <div className="space-y-0.5">
                     {links.map((item) => (
                       <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
@@ -355,9 +432,7 @@ export default function Navbar() {
                     <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-pink-400 flex-shrink-0">
                       {user.photoURL
                         ? <img src={user.photoURL} className="w-full h-full object-cover" alt="" />
-                        : <div className="w-full h-full flex items-center justify-center text-white text-sm font-bold">
-                            {user.displayName?.[0] ?? "U"}
-                          </div>
+                        : <div className="w-full h-full flex items-center justify-center text-white text-sm font-bold">{user.displayName?.[0] ?? "U"}</div>
                       }
                     </div>
                     <div>
@@ -366,25 +441,17 @@ export default function Navbar() {
                     </div>
                   </div>
                   <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
-                    <button className="w-full py-3 rounded-xl font-bold text-sm bg-[#5B4BDB] text-white border-b-[3px] border-[#4438b8] mb-2">
-                      Dashboard
-                    </button>
+                    <button className="w-full py-3 rounded-xl font-bold text-sm bg-[#5B4BDB] text-white border-b-[3px] border-[#4438b8] mb-2">Dashboard</button>
                   </Link>
-                  <button onClick={logout} className="w-full py-3 rounded-xl font-bold text-sm bg-white border border-red-200 text-red-600">
-                    Sign out
-                  </button>
+                  <button onClick={logout} className="w-full py-3 rounded-xl font-bold text-sm bg-white border border-red-200 text-red-600">Sign out</button>
                 </div>
               ) : (
                 <div className="space-y-3">
                   <Link href="/join" onClick={() => setMobileOpen(false)}>
-                    <button className="w-full py-3.5 rounded-xl font-bold text-sm bg-[#5B4BDB] text-white border-b-[3px] border-[#4438b8]">
-                      Get started
-                    </button>
+                    <button className="w-full py-3.5 rounded-xl font-bold text-sm bg-[#5B4BDB] text-white border-b-[3px] border-[#4438b8]">Get started</button>
                   </Link>
                   <Link href="/login" onClick={() => setMobileOpen(false)}>
-                    <button className="w-full py-3.5 rounded-xl font-bold text-sm bg-white border border-gray-200 text-gray-700">
-                      Sign in
-                    </button>
+                    <button className="w-full py-3.5 rounded-xl font-bold text-sm bg-white border border-gray-200 text-gray-700">Sign in</button>
                   </Link>
                 </div>
               )}

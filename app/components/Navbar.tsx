@@ -15,9 +15,16 @@ interface NavLink {
 }
 
 const GALLERY_LINKS: NavLink[] = [
-  { label: "Browse Models",  href: "/gallery",       desc: "GLB, GLTF, OBJ, FBX files",       icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
-  { label: "Upload Model",   href: "/upload",        desc: "Sell your 3D assets on SYNTHÉ",    icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
-  { label: "Post a Request", href: "/requests/post", desc: "Commission a custom 3D model",     icon: "M12 4v16m8-8H4" },
+  { label: "Browse 3D Verse", href: "/verse",         desc: "GLB, GLTF, OBJ, FBX marketplace", icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
+  { label: "Upload Model",    href: "/verse/upload",  desc: "Sell your 3D models on SYNTHÉ",   icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" },
+  { label: "Post a Request",  href: "/requests/post", desc: "Commission a custom 3D model",    icon: "M12 4v16m8-8H4" },
+];
+
+const XR_ZONE_LINKS: NavLink[] = [
+  { label: "AR Projects",  href: "/xr-zone",           desc: "Browse augmented reality builds", icon: "M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" },
+  { label: "VR Projects",  href: "/xr-zone",           desc: "Browse virtual reality builds",   icon: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2" },
+  { label: "Upload AR",    href: "/xr-zone/ar/upload", desc: "Publish your AR application",     icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12", badge: "AR" },
+  { label: "Upload VR",    href: "/xr-zone/vr/upload", desc: "Publish your VR application",     icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12", badge: "VR" },
 ];
 
 const LEARN_LINKS: NavLink[] = [
@@ -44,6 +51,8 @@ const BADGE_STYLES: Record<string, string> = {
   "AI":   "bg-violet-100 text-violet-700 border border-violet-200",
   "New":  "bg-amber-100 text-amber-700 border border-amber-200",
   "Free": "bg-green-100 text-green-700 border border-green-200",
+  "AR":   "bg-teal-100 text-teal-700 border border-teal-200",
+  "VR":   "bg-violet-100 text-violet-700 border border-violet-200",
 };
 
 interface DropdownProps {
@@ -174,8 +183,7 @@ export default function Navbar() {
 
   // Mobile — all sections flat
   const ALL_MOBILE_SECTIONS = [
-    { section: "3D Gallery",  links: GALLERY_LINKS   },
-    { section: "Learn",       links: LEARN_LINKS     },
+    { section: "3D Verse",  links: GALLERY_LINKS   },
     { section: "Freelance",   links: FREELANCE_LINKS },
     { section: "Connect",     links: CONNECT_LINKS   },
   ];
@@ -207,10 +215,10 @@ export default function Navbar() {
 
             {/* 3D Gallery dropdown */}
             <Dropdown
-              title="3D Gallery"
+              title="3D Verse"
               links={GALLERY_LINKS}
-              isOpen={activeDropdown === "3D Gallery"}
-              onToggle={() => toggle("3D Gallery")}
+              isOpen={activeDropdown === "3D Verse"}
+              onToggle={() => toggle("3D Verse")}
               onClose={() => setActiveDropdown(null)}
             />
 
@@ -221,15 +229,22 @@ export default function Navbar() {
               </button>
             </Link>
 
-            {/* Learn dropdown */}
+            {/* XR Zone dropdown */}
             <Dropdown
-              title="Learn"
-              links={LEARN_LINKS}
-              isOpen={activeDropdown === "Learn"}
-              onToggle={() => toggle("Learn")}
+              title="XR Zone"
+              links={XR_ZONE_LINKS}
+              isOpen={activeDropdown === "XR Zone"}
+              onToggle={() => toggle("XR Zone")}
               onClose={() => setActiveDropdown(null)}
-              showGeminiBadge
             />
+
+            {/* Learn — direct link, no dropdown */}
+            <Link href="/learn">
+              <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+                Learn
+                <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
+              </button>
+            </Link>
 
             {/* Freelance dropdown */}
             <Dropdown
@@ -370,6 +385,27 @@ export default function Navbar() {
                     <div>
                       <p className="text-sm font-bold text-gray-900">AutoCAD Files</p>
                       <p className="text-xs text-gray-400">Browse DWG and DXF blueprints</p>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              {/* Learn direct */}
+              <div>
+                <p className="text-[10px] font-black tracking-[0.18em] text-[#5B4BDB] uppercase mb-3">Learn</p>
+                <Link href="/learn" onClick={() => setMobileOpen(false)}>
+                  <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
+                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:text-[#5B4BDB] group-hover:bg-[#5B4BDB]/10 transition-colors">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-bold text-gray-900">Learning Hub</p>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-violet-100 text-violet-700 border border-violet-200">AI</span>
+                      </div>
+                      <p className="text-xs text-gray-400">Sessions, roadmap, tools & more</p>
                     </div>
                   </div>
                 </Link>

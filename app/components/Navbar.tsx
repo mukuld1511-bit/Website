@@ -336,7 +336,7 @@ export default function Navbar() {
                     Sign in
                   </button>
                 </Link>
-                <Link href="/join">
+                <Link href="/signup">
                   <button className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] transition-all active:translate-y-[1px]">
                     Get started
                   </button>

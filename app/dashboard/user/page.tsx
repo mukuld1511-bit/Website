@@ -14,11 +14,17 @@ export default function UserDashboard() {
   const [reviews,      setReviews]      = useState<any[]>([]);
   const [projectChats, setProjectChats] = useState<any[]>([]);
   const [loading,      setLoading]      = useState(true);
-
+const [roleAppStatus, setRoleAppStatus] = useState<string | null>(null);
   useEffect(() => {
     const load = async () => {
       const user = auth.currentUser;
       if (!user) return;
+      const appSnap = await getDocs(
+    query(collection(db, "roleApplications"), where("userId", "==", user.uid))
+  );
+  if (!appSnap.empty) {
+    setRoleAppStatus(appSnap.docs[0].data().status ?? null);
+  }
 
       const reqQuery   = query(collection(db, "tutorialRequests"), where("userId",   "==", user.uid));
       const revQuery   = query(collection(db, "reviews"),          where("userId",   "==", user.uid));
@@ -75,6 +81,43 @@ export default function UserDashboard() {
           <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">User Dashboard</h1>
           <p className="text-gray-500 text-sm mt-3 font-medium">Track your requests, saved projects and activity.</p>
         </motion.div>
+        {roleAppStatus === "payment_pending" && (
+  <motion.div
+    initial={{ opacity: 0, y: -8 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="mb-8 p-5 bg-blue-50 border-2 border-blue-200 rounded-2xl flex items-center justify-between gap-4 flex-wrap shadow-sm"
+  >
+    <div>
+      <p className="font-black text-blue-900 text-sm">Your application was approved! 🎉</p>
+      <p className="text-xs text-blue-700 mt-0.5">
+        Complete the ₹999 one-time joining fee to activate your mentor/developer profile on SYNTHE.
+      </p>
+    </div>
+    <a href="/join/pay">
+      <button className="px-5 py-2.5 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm hover:bg-[#4c3ec7] transition-colors flex-shrink-0">
+        Pay ₹999 to Activate →
+      </button>
+    </a>
+  </motion.div>
+)}
+
+{roleAppStatus === "pending" && (
+  <div className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center gap-3">
+    <span className="text-lg">⏳</span>
+    <p className="text-sm text-amber-800 font-medium">
+      Your application is under review. We will notify you once approved.
+    </p>
+  </div>
+)}
+
+{roleAppStatus === "rejected" && (
+  <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl flex items-center gap-3">
+    <span className="text-lg">❌</span>
+    <p className="text-sm text-red-700 font-medium">
+      Your application was not approved. You can re-apply after 30 days.
+    </p>
+  </div>
+)}
 
         {/* STATS */}
         <motion.div
@@ -246,4 +289,71 @@ function Empty({ text, icon = "📭" }: { text: string; icon?: string }) {
       <p className="text-gray-600 font-bold text-base tracking-wide max-w-xs">{text}</p>
     </div>
   );
-}
+}// ─────────────────────────────────────────────────────────────────────────────
+// PATCH for existing app/dashboard/user/page.tsx
+// Add these 3 things to your existing UserDashboard:
+// ─────────────────────────────────────────────────────────────────────────────
+
+// 1. Add these imports at the top:
+// import { collection, getDocs, query, where } from "firebase/firestore";
+
+// 2. Add this state inside the component:
+// const [roleAppStatus, setRoleAppStatus] = useState<string | null>(null);
+
+// 3. Inside your useEffect load function, add:
+/*
+  const appSnap = await getDocs(
+    query(collection(db, "roleApplications"), where("userId", "==", user.uid))
+  );
+  if (!appSnap.empty) {
+    setRoleAppStatus(appSnap.docs[0].data().status ?? null);
+  }
+*/
+
+// 4. Add this banner right after your opening <main> or top section, BEFORE stats:
+// ─── COPY THIS JSX BLOCK ────────────────────────────────────────────────────
+
+/*
+{roleAppStatus === "payment_pending" && (
+  <motion.div
+    initial={{ opacity: 0, y: -8 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="mb-8 p-5 bg-blue-50 border-2 border-blue-200 rounded-2xl flex items-center justify-between gap-4 flex-wrap shadow-sm"
+  >
+    <div>
+      <p className="font-black text-blue-900 text-sm">Your application was approved! 🎉</p>
+      <p className="text-xs text-blue-700 mt-0.5">
+        Complete the ₹999 one-time joining fee to activate your mentor/developer profile on SYNTHE.
+      </p>
+    </div>
+    <a href="/join/pay">
+      <button className="px-5 py-2.5 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm hover:bg-[#4c3ec7] transition-colors flex-shrink-0">
+        Pay ₹999 to Activate →
+      </button>
+    </a>
+  </motion.div>
+)}
+
+{roleAppStatus === "pending" && (
+  <div className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center gap-3">
+    <span className="text-lg">⏳</span>
+    <p className="text-sm text-amber-800 font-medium">
+      Your application is under review. We will notify you once approved.
+    </p>
+  </div>
+)}
+
+{roleAppStatus === "rejected" && (
+  <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl flex items-center gap-3">
+    <span className="text-lg">❌</span>
+    <p className="text-sm text-red-700 font-medium">
+      Your application was not approved. You can re-apply after 30 days.
+    </p>
+  </div>
+)}
+*/
+
+// ─── END OF PATCH ────────────────────────────────────────────────────────────
+// No other changes needed. Rest of your existing dashboard stays the same.
+
+export {};

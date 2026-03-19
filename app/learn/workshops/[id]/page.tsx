@@ -1,277 +1,254 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
-import {
-  doc, getDoc, updateDoc, arrayUnion, serverTimestamp,
-} from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayUnion, serverTimestamp, addDoc, collection } from "firebase/firestore";
 import { db, auth } from "../../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import type { Workshop, UserRole } from "../../../../types/gallery";
 
-function formatDate(ts: any): string {
-  if (!ts) return "—";
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
-  return d.toLocaleDateString("en-IN", {
-    weekday: "long", day: "numeric", month: "long",
-    year: "numeric", hour: "2-digit", minute: "2-digit",
-  });
+interface Workshop {
+  id: string; title: string; description: string; date: any; duration: number;
+  maxSeats: number; price: number; isPaid: boolean; status: "upcoming"|"live"|"ended";
+  registeredUsers: string[]; tags: string[]; meetLink: string;
+  hostId: string; hostName: string; hostPhoto: string;
 }
 
 export default function WorkshopDetailPage() {
-  const params    = useParams();
-  const router    = useRouter();
-  const id        = params?.id as string;
+  const params = useParams();
+  const router = useRouter();
+  const id = params?.id as string;
 
-  const [workshop,  setWorkshop]  = useState<Workshop | null>(null);
-  const [user,      setUser]      = useState<any>(null);
-  const [userRole,  setUserRole]  = useState<UserRole>("user");
-  const [loading,   setLoading]   = useState(true);
-  const [working,   setWorking]   = useState(false);
-  const [toast,     setToast]     = useState("");
+  const [user, setUser] = useState<any>(null);
+  const [userRole, setUserRole] = useState("");
+  const [workshop, setWorkshop] = useState<Workshop|null>(null);
+  const [loading, setLoading] = useState(true);
+  const [registering, setRegistering] = useState(false);
+  const [toast, setToast] = useState("");
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (u) => {
-      setUser(u ?? null);
-      if (u) {
-        const snap = await getDoc(doc(db, "users", u.uid));
-        if (snap.exists()) setUserRole(snap.data().role as UserRole ?? "user");
-      }
+    const unsub = onAuthStateChanged(auth, async u => {
+      setUser(u??null);
+      if (u) { const snap = await getDoc(doc(db,"users",u.uid)); if(snap.exists()) setUserRole(snap.data().role||""); }
     });
-    return () => unsub();
+    return ()=>unsub();
   }, []);
 
   useEffect(() => {
     if (!id) return;
-    const fetch = async () => {
-      try {
-        const snap = await getDoc(doc(db, "workshops", id));
-        if (!snap.exists()) { router.push("/learn"); return; }
-        setWorkshop({ id: snap.id, ...snap.data() } as Workshop);
-      } catch (err) { console.error(err); }
-      finally { setLoading(false); }
-    };
-    fetch();
+    getDoc(doc(db,"workshops",id)).then(snap => {
+      if (!snap.exists()) { router.push("/learn"); return; }
+      setWorkshop({id:snap.id,...snap.data()} as Workshop);
+      setLoading(false);
+    });
   }, [id]);
 
-  const isRegistered  = user && workshop?.registeredUsers?.includes(user.uid);
-  const isFull        = (workshop?.registeredUsers?.length ?? 0) >= (workshop?.maxSeats ?? 0);
-  const isPast        = workshop?.status === "ended";
-  const isHost        = user && workshop?.hostId === user.uid;
-  const canRegister   = ["learner", "developer", "mentor", "admin"].includes(userRole);
-  const seatsLeft     = Math.max((workshop?.maxSeats ?? 0) - (workshop?.registeredUsers?.length ?? 0), 0);
+  const showToast = (msg:string) => { setToast(msg); setTimeout(()=>setToast(""),3000); };
 
   const handleRegister = async () => {
-    if (!user || !workshop) return;
-    setWorking(true);
+    if (!user) { router.push("/login"); return; }
+    if (!workshop) return;
+    setRegistering(true);
     try {
-      await updateDoc(doc(db, "workshops", workshop.id), {
-        registeredUsers: arrayUnion(user.uid),
-      });
-      setWorkshop(prev => prev ? {
-        ...prev,
-        registeredUsers: [...(prev.registeredUsers ?? []), user.uid],
-      } : prev);
-      showToast("Registered! Meet link is now visible below.");
-    } catch (err) {
-      showToast("Something went wrong. Try again.");
-    } finally {
-      setWorking(false);
-    }
+      if (workshop.isPaid && workshop.price > 0) {
+        // Razorpay
+        const orderRes = await fetch("/api/create-order", {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({ amount: workshop.price, type:"workshop", workshopId: id }),
+        });
+        if (!orderRes.ok) throw new Error("Payment setup failed");
+        const { orderId, amount, currency } = await orderRes.json();
+        const rzp = new (window as any).Razorpay({
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+          amount, currency, name:"SYNTHÉ Workshop",
+          description: workshop.title, order_id: orderId,
+          handler: async () => {
+            await updateDoc(doc(db,"workshops",id), { registeredUsers: arrayUnion(user.uid) });
+            await addDoc(collection(db,"notifications"), {
+              userId: user.uid, type:"workshop_registered",
+              message: `You're registered for "${workshop.title}". Meet link: ${workshop.meetLink}`,
+              read: false, createdAt: serverTimestamp(),
+            });
+            setWorkshop(prev=>prev?{...prev,registeredUsers:[...prev.registeredUsers,user.uid]}:prev);
+            showToast("Registered! Meet link sent to notifications ✓");
+          },
+          prefill: { email: user.email??"" }, theme:{ color:"#5B4BDB" },
+        });
+        rzp.open();
+      } else {
+        await updateDoc(doc(db,"workshops",id), { registeredUsers: arrayUnion(user.uid) });
+        await addDoc(collection(db,"notifications"), {
+          userId: user.uid, type:"workshop_registered",
+          message: `You're registered for "${workshop.title}". Meet link: ${workshop.meetLink}`,
+          read: false, createdAt: serverTimestamp(),
+        });
+        setWorkshop(prev=>prev?{...prev,registeredUsers:[...prev.registeredUsers,user.uid]}:prev);
+        showToast("Registered! Meet link sent to notifications ✓");
+      }
+    } catch(e) { showToast((e as Error).message); }
+    setRegistering(false);
   };
 
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 3500);
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="max-w-3xl mx-auto px-4 py-16 space-y-4">
-          <div className="h-8 bg-gray-200 rounded animate-pulse w-2/3" />
-          <div className="h-4 bg-gray-100 rounded animate-pulse w-1/2" />
-          <div className="h-48 bg-gray-200 rounded-2xl animate-pulse mt-6" />
-        </div>
-      </div>
-    );
-  }
-
+  if (loading) return <div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center"><div className="w-8 h-8 border-2 border-[#5B4BDB] border-t-transparent rounded-full animate-spin"/></div>;
   if (!workshop) return null;
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">
-      <Navbar />
+  const isRegistered = user && workshop.registeredUsers?.includes(user.uid);
+  const isFull = workshop.registeredUsers?.length >= workshop.maxSeats;
+  const isHost = user?.uid === workshop.hostId;
+  const seatsLeft = workshop.maxSeats - (workshop.registeredUsers?.length||0);
+  const canRegister = user && ["learner","developer","mentor","admin"].includes(userRole);
 
-      {/* Toast */}
+  const formatDate = (ts: any) => {
+    const d = ts?.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString("en-IN", { weekday:"long", day:"numeric", month:"long", hour:"2-digit", minute:"2-digit" });
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
+      <Navbar/>
       {toast && (
-        <motion.div
-          initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
-          className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-xl"
-        >
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-5 py-3 bg-gray-900 text-white text-sm font-bold rounded-xl shadow-xl">
           {toast}
-        </motion.div>
+        </div>
       )}
 
-      <div className="max-w-3xl mx-auto px-4 py-14 flex-grow w-full">
-
-        <Link href="/learn"
-          className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-700 text-sm font-semibold mb-6 transition">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-          </svg>
+      <div className="max-w-4xl mx-auto px-4 py-14 flex-grow w-full">
+        <Link href="/learn" className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-700 text-sm font-semibold mb-6 transition">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
           Back to Learn
         </Link>
 
-        {/* Header */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 mb-5">
-
-          {/* Status badges + tags */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {workshop.status === "live" && (
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" /> Live now
-              </span>
-            )}
-            {workshop.status === "ended" && (
-              <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-xs font-bold">Ended</span>
-            )}
-            {workshop.tags?.map(t => (
-              <span key={t} className="px-2.5 py-1 rounded-full bg-[#5B4BDB]/10 text-[#5B4BDB] text-xs font-semibold">
-                {t}
-              </span>
-            ))}
-          </div>
-
-          <h1 className="text-2xl font-black text-gray-900 mb-2 leading-tight">{workshop.title}</h1>
-          {workshop.description && (
-            <p className="text-gray-500 text-sm leading-relaxed mb-5">{workshop.description}</p>
-          )}
-
-          {/* Host */}
-          <div className="flex items-center gap-3 pb-5 border-b border-gray-100 mb-5">
-            <div className="w-10 h-10 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center overflow-hidden">
-              {workshop.hostPhoto
-                ? <img src={workshop.hostPhoto} className="w-full h-full object-cover" alt="" />
-                : <span className="text-[#5B4BDB] font-bold">{workshop.hostName?.charAt(0)}</span>
-              }
-            </div>
-            <div>
-              <p className="text-sm font-bold text-gray-900">{workshop.hostName}</p>
-              <p className="text-xs text-gray-400">Session host</p>
-            </div>
-          </div>
-
-          {/* Details grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {[
-              { label: "Date & time",  value: formatDate(workshop.date) },
-              { label: "Duration",     value: `${workshop.duration} min` },
-              { label: "Seats left",   value: isPast ? "—" : `${seatsLeft} / ${workshop.maxSeats}` },
-              { label: "Price",        value: workshop.price === 0 ? "Free" : `₹${workshop.price}` },
-            ].map(({ label, value }) => (
-              <div key={label}>
-                <p className="text-xs text-gray-400 mb-0.5">{label}</p>
-                <p className="text-sm font-bold text-gray-900">{value}</p>
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Main */}
+          <div className="md:col-span-2 space-y-5">
+            <div className="bg-white border border-gray-200 rounded-2xl p-7 shadow-sm">
+              <div className="flex flex-wrap gap-2 mb-4">
+                {workshop.status==="live" && (
+                  <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"/>Live now
+                  </span>
+                )}
+                {workshop.tags?.map(t=><span key={t} className="px-2.5 py-1 rounded-full bg-violet-50 text-violet-700 border border-violet-100 text-xs font-semibold">{t}</span>)}
               </div>
-            ))}
+
+              <h1 className="text-2xl font-black text-gray-900 mb-4">{workshop.title}</h1>
+
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-9 h-9 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+                  {workshop.hostPhoto ? <img src={workshop.hostPhoto} className="w-full h-full object-cover" alt=""/> : <div className="w-full h-full flex items-center justify-center font-black text-gray-400 text-sm">{workshop.hostName?.[0]}</div>}
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-gray-900">{workshop.hostName}</p>
+                  <p className="text-xs text-gray-400">{workshop.duration} min · {workshop.isPaid ? `₹${workshop.price}` : "Free"}</p>
+                </div>
+              </div>
+
+              {workshop.description && (
+                <div className="prose prose-sm max-w-none">
+                  <p className="text-gray-600 leading-relaxed">{workshop.description}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Host manage section */}
+            {isHost && (
+              <div className="bg-white border border-[#5B4BDB]/20 rounded-2xl p-6 shadow-sm">
+                <h3 className="font-black text-gray-900 mb-3">Manage Workshop</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                    <span className="text-sm font-bold text-gray-700">Registered learners</span>
+                    <span className="text-sm font-black text-[#5B4BDB]">{workshop.registeredUsers?.length||0}/{workshop.maxSeats}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                    <span className="text-sm font-bold text-gray-700">Session link</span>
+                    <a href={workshop.meetLink} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-[#5B4BDB] hover:underline truncate max-w-xs">Open →</a>
+                  </div>
+                  <div className="flex gap-2">
+                    {workshop.status==="upcoming" && (
+                      <button onClick={async()=>{await updateDoc(doc(db,"workshops",id),{status:"live"});setWorkshop(prev=>prev?{...prev,status:"live"}:prev);showToast("Workshop is now live!");}}
+                        className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold text-sm transition-colors">
+                        Go Live 🔴
+                      </button>
+                    )}
+                    {workshop.status==="live" && (
+                      <button onClick={async()=>{await updateDoc(doc(db,"workshops",id),{status:"ended"});setWorkshop(prev=>prev?{...prev,status:"ended"}:prev);showToast("Workshop ended");}}
+                        className="flex-1 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-900 text-white font-bold text-sm transition-colors">
+                        End Session
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Join section for registered learners */}
+            {isRegistered && workshop.meetLink && workshop.status !== "ended" && (
+              <div className="bg-gradient-to-r from-[#5B4BDB]/10 to-violet-50 border border-[#5B4BDB]/20 rounded-2xl p-6">
+                <p className="font-black text-[#5B4BDB] mb-1">You're registered! 🎉</p>
+                <p className="text-sm text-gray-500 mb-4">Session link is ready. Join when the host goes live.</p>
+                <a href={workshop.meetLink} target="_blank" rel="noopener noreferrer">
+                  <button className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#5B4BDB] hover:bg-[#4c3ec7] text-white font-bold text-sm transition-colors border-b-[2px] border-[#4438b8]">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    Join Session
+                  </button>
+                </a>
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-4">
+            <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+              <div className="space-y-3 mb-5">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Date</span>
+                  <span className="font-bold text-gray-900 text-right text-xs">{formatDate(workshop.date)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Duration</span>
+                  <span className="font-bold text-gray-900">{workshop.duration} min</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Seats left</span>
+                  <span className={`font-bold ${seatsLeft===0?"text-red-500":seatsLeft<=3?"text-amber-500":"text-green-600"}`}>
+                    {seatsLeft===0?"Full":`${seatsLeft} / ${workshop.maxSeats}`}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Price</span>
+                  <span className="font-black text-gray-900">{workshop.isPaid?`₹${workshop.price}`:"Free"}</span>
+                </div>
+              </div>
+
+              {/* Seats bar */}
+              <div className="h-2 bg-gray-100 rounded-full mb-5 overflow-hidden">
+                <div className="h-full rounded-full bg-[#5B4BDB] transition-all"
+                  style={{width:`${Math.min(((workshop.registeredUsers?.length||0)/workshop.maxSeats)*100,100)}%`}}/>
+              </div>
+
+              {!isRegistered && !isHost && workshop.status!=="ended" && (
+                !user ? (
+                  <Link href="/login"><button className="w-full py-3.5 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm hover:bg-[#4c3ec7] transition-colors">Sign in to register</button></Link>
+                ) : !canRegister ? (
+                  <Link href="/join"><button className="w-full py-3.5 rounded-xl bg-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-200 transition-colors">Apply as Learner to register</button></Link>
+                ) : isFull ? (
+                  <button disabled className="w-full py-3.5 rounded-xl bg-gray-100 text-gray-400 font-bold text-sm cursor-not-allowed">Session Full</button>
+                ) : (
+                  <button onClick={handleRegister} disabled={registering}
+                    className="w-full py-3.5 rounded-xl bg-[#5B4BDB] hover:bg-[#4c3ec7] text-white font-bold text-sm disabled:opacity-50 transition-colors border-b-[3px] border-[#4438b8] active:translate-y-[1px]">
+                    {registering ? "Processing..." : workshop.isPaid ? `Register · ₹${workshop.price}` : "Register Free"}
+                  </button>
+                )
+              )}
+              {isRegistered && <div className="w-full py-3 rounded-xl bg-green-50 border border-green-200 text-green-700 font-bold text-sm text-center">Registered ✓</div>}
+              {workshop.status==="ended" && <div className="w-full py-3 rounded-xl bg-gray-100 text-gray-500 font-bold text-sm text-center">Session ended</div>}
+            </div>
           </div>
         </div>
-
-        {/* Meet link — only visible after registration */}
-        {isRegistered && workshop.meetLink && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-            className="bg-green-50 border border-green-200 rounded-2xl p-6 mb-5"
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-green-600 text-lg">🔗</span>
-              <p className="font-black text-green-800">You're registered — here's your link</p>
-            </div>
-            <a href={workshop.meetLink} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-green-600 text-white font-bold text-sm hover:bg-green-700 transition-all">
-              Join session
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-              </svg>
-            </a>
-            <p className="text-green-700 text-xs mt-2">Don't share this link publicly</p>
-          </motion.div>
-        )}
-
-        {/* CTA card */}
-        {!isPast && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            {!user ? (
-              <div className="text-center">
-                <p className="text-gray-600 text-sm mb-4">Sign in to register for this session</p>
-                <Link href="/login">
-                  <button className="px-8 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm border-b-[3px] border-[#4438b8]">
-                    Sign in
-                  </button>
-                </Link>
-              </div>
-            ) : !canRegister ? (
-              <div className="text-center">
-                <p className="text-gray-600 text-sm mb-4">Apply as a Learner to join sessions</p>
-                <Link href="/join">
-                  <button className="px-8 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm border-b-[3px] border-[#4438b8]">
-                    Apply as Learner
-                  </button>
-                </Link>
-              </div>
-            ) : isRegistered ? (
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-2xl mx-auto mb-3">✅</div>
-                <p className="font-bold text-gray-900 mb-1">You're registered</p>
-                <p className="text-gray-500 text-sm">Meet link is shown above. See you there!</p>
-              </div>
-            ) : isFull ? (
-              <div className="text-center">
-                <p className="text-gray-500 text-sm">This session is full</p>
-              </div>
-            ) : isHost ? (
-              <div className="text-center">
-                <p className="font-bold text-gray-900 mb-1">You're hosting this session</p>
-                <p className="text-gray-500 text-sm">
-                  {workshop.registeredUsers?.length ?? 0} participant{workshop.registeredUsers?.length !== 1 ? "s" : ""} registered
-                </p>
-              </div>
-            ) : (
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <p className="font-black text-gray-900 text-lg">
-                      {workshop.price === 0 ? "Free session" : `₹${workshop.price}`}
-                    </p>
-                    <p className="text-gray-400 text-xs mt-0.5">{seatsLeft} seats remaining</p>
-                  </div>
-                  <button
-                    onClick={handleRegister}
-                    disabled={working}
-                    className="px-7 py-3.5 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px] disabled:opacity-50"
-                  >
-                    {working ? "Registering..." : workshop.price === 0 ? "Register free" : `Register · ₹${workshop.price}`}
-                  </button>
-                </div>
-                {/* Seats bar */}
-                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-[#5B4BDB] transition-all"
-                    style={{ width: `${Math.min(((workshop.registeredUsers?.length ?? 0) / workshop.maxSeats) * 100, 100)}%` }}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        )}
       </div>
-      <Footer />
+      <Footer/>
     </div>
   );
 }

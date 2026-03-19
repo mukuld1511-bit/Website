@@ -15,7 +15,7 @@ interface Model {
   engagementScore: number; uploadedAt: any;
 }
 
-const FILE_TYPES = ["All", "GLB", "GLTF", "OBJ", "FBX"];
+const FILE_TYPES = ["All", "WebXR", "GLB", "GLTF", "OBJ", "FBX"];
 const SORT_OPTIONS = [
   { label: "Newest",    value: "uploadedAt"      },
   { label: "Popular",   value: "engagementScore" },
@@ -50,6 +50,11 @@ function ModelCard({ m }: { m: Model }) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                 </svg>
             }
+            {(m.fileType?.toLowerCase()==="glb"||m.fileType?.toLowerCase()==="gltf") && (
+              <div className="absolute top-2 right-2">
+                <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-[#5B4BDB] text-white tracking-wider">WebXR</span>
+              </div>
+            )}
             <div className="absolute top-2 left-2">
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${TYPE_COLORS[m.fileType?.toLowerCase()] ?? "bg-gray-100 text-gray-600"}`}>
                 {m.fileType?.toUpperCase()}
@@ -161,6 +166,22 @@ export default function VersePage() {
               <span className={`w-2.5 h-2.5 rounded-full ${color}`} />{label}
             </div>
           ))}
+        </div>
+
+        {/* WebXR banner */}
+        <div className="flex items-center gap-3 px-5 py-3 mb-6 rounded-2xl bg-gradient-to-r from-[#5B4BDB]/10 to-violet-50 border border-[#5B4BDB]/20">
+          <div className="w-8 h-8 rounded-xl bg-[#5B4BDB] flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2"/>
+            </svg>
+          </div>
+          <div className="flex-1">
+            <span className="text-sm font-black text-[#5B4BDB]">WebXR Ready Models</span>
+            <span className="text-sm text-gray-500 ml-2">— GLB & GLTF models can be placed in your real environment via browser AR</span>
+          </div>
+          <button onClick={()=>setFilterType("WebXR")} className="text-xs font-bold px-3 py-1.5 rounded-xl bg-[#5B4BDB] text-white hover:bg-[#4c3ec7] transition-colors flex-shrink-0">
+            Filter WebXR →
+          </button>
         </div>
 
         {/* Filters */}

@@ -592,4 +592,222 @@ export default function AdminDashboard() {
       </AnimatePresence>
     </div>
   );
+}// ─────────────────────────────────────────────────────────────────────────────
+// ADD THIS to your existing AdminDashboard — app/dashboard/admin/page.tsx
+//
+// 1. Add "roleApplications" tab to existing TABS array
+// 2. Add the RoleApplications component below
+// 3. Add loadRoleApps() to your loadAll() function
+// ─────────────────────────────────────────────────────────────────────────────
+
+// STEP 1 — Add to your existing TABS array:
+// { id: "roleApplications", label: "Role Apps", badge: pendingRoleApps }
+
+// STEP 2 — Add to loadAll():
+// const raSnap = await getDocs(query(collection(db, "roleApplications"), orderBy("createdAt", "desc")));
+// setRoleApplications(raSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+
+// STEP 3 — Add state:
+// const [roleApplications, setRoleApplications] = useState<any[]>([]);
+// const pendingRoleApps = roleApplications.filter(a => a.status === "pending").length;
+
+// STEP 4 — Add this tab content inside your AnimatePresence block:
+
+/*
+{activeTab === "roleApplications" && (
+  <RoleApplicationsTab
+    applications={roleApplications}
+    onApprove={async (app) => {
+      await updateDoc(doc(db, "roleApplications", app.id), { status: "payment_pending" });
+      await addDoc(collection(db, "notifications"), {
+        userId: app.userId,
+        type: "application_approved",
+        message: `Your ${app.role} application is approved! Pay the joining fee to activate: ${window.location.origin}/join/pay?role=${app.role}`,
+        read: false,
+        createdAt: serverTimestamp(),
+        link: `/join/pay?role=${app.role}`,
+      });
+      setRoleApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: "payment_pending" } : a));
+      showToast(`${app.name} approved — payment link sent`);
+    }}
+    onReject={async (app) => {
+      await updateDoc(doc(db, "roleApplications", app.id), { status: "rejected" });
+      await addDoc(collection(db, "notifications"), {
+        userId: app.userId,
+        type: "application_rejected",
+        message: `Your ${app.role} application was not approved at this time.`,
+        read: false,
+        createdAt: serverTimestamp(),
+      });
+      setRoleApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: "rejected" } : a));
+      showToast("Rejected");
+    }}
+    onActivate={async (app) => {
+      await updateDoc(doc(db, "roleApplications", app.id), { status: "approved" });
+      await updateDoc(doc(db, "users", app.userId), { role: app.role });
+      await addDoc(collection(db, "notifications"), {
+        userId: app.userId,
+        type: "role_activated",
+        message: `Welcome! Your ${app.role} profile is now active on SYNTHE.`,
+        read: false,
+        createdAt: serverTimestamp(),
+      });
+      setRoleApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: "approved" } : a));
+      showToast(`${app.name} activated as ${app.role}`);
+    }}
+  />
+)}
+*/
+
+// ─── The RoleApplicationsTab component ───────────────────────────────────────
+// Add this as a separate component in the same file or import from here
+
+
+const STATUS_PILL: Record<string, string> = {
+  pending:         "border-amber-200 bg-amber-50 text-amber-700",
+  payment_pending: "border-blue-200 bg-blue-50 text-blue-700",
+  approved:        "border-green-200 bg-green-50 text-green-700",
+  rejected:        "border-red-200 bg-red-50 text-red-700",
+};
+
+interface RoleApp {
+  id: string; userId: string; name: string; email: string;
+  role: "mentor" | "developer" | "learner";
+  bio: string; skills: string[]; portfolio: string; reason: string;
+  status: "pending" | "payment_pending" | "approved" | "rejected";
+  hourlyRate?: number; paymentDone?: boolean; createdAt: any;
+}
+
+interface RoleApplicationsTabProps {
+  applications: RoleApp[];
+  onApprove: (app: RoleApp) => Promise<void>;
+  onReject: (app: RoleApp) => Promise<void>;
+  onActivate: (app: RoleApp) => Promise<void>;
+}
+
+export function RoleApplicationsTab({ applications, onApprove, onReject, onActivate }: RoleApplicationsTabProps) {
+  const pending = applications.filter(a => a.status === "pending");
+  const payPending = applications.filter(a => a.status === "payment_pending");
+  const rest = applications.filter(a => a.status === "approved" || a.status === "rejected");
+
+  return (
+    <div className="space-y-8">
+      {/* Pending approval */}
+      {pending.length > 0 && (
+        <div>
+          <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-4">
+            Pending Review ({pending.length})
+          </p>
+          <div className="space-y-4">
+            {pending.map((app, i) => (
+              <motion.div key={app.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                className="bg-white border-2 border-amber-100 rounded-2xl overflow-hidden shadow-sm">
+                <div className="p-6">
+                  <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="font-black text-gray-900 text-base">{app.name}</p>
+                        <span className="text-xs font-black px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200 capitalize">{app.role}</span>
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${STATUS_PILL[app.status]}`}>{app.status}</span>
+                      </div>
+                      <p className="text-xs text-gray-400">{app.email}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button onClick={() => onApprove(app)}
+                        className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white text-xs font-bold transition-colors shadow-sm">
+                        Approve + Send Payment Link
+                      </button>
+                      <button onClick={() => onReject(app)}
+                        className="px-4 py-2 rounded-xl border border-red-200 bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 transition-colors">
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+
+                  {app.bio && (
+                    <p className="text-sm text-gray-600 leading-relaxed mb-3 bg-gray-50 rounded-xl p-3">{app.bio}</p>
+                  )}
+                  {app.reason && (
+                    <p className="text-xs text-gray-400 italic mb-3">"{app.reason}"</p>
+                  )}
+                  {app.skills?.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      {app.skills.map(s => (
+                        <span key={s} className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium border border-gray-200">{s}</span>
+                      ))}
+                    </div>
+                  )}
+                  {app.portfolio && (
+                    <a href={app.portfolio} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs text-[#5B4BDB] font-semibold hover:underline">
+                      View portfolio →
+                    </a>
+                  )}
+                  {app.role === "mentor" && app.hourlyRate && (
+                    <p className="text-xs text-gray-500 mt-2">Hourly rate: ₹{app.hourlyRate}/hr</p>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Payment pending — activate after payment confirmation */}
+      {payPending.length > 0 && (
+        <div>
+          <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-4">
+            Payment Pending — Activate After Confirmation ({payPending.length})
+          </p>
+          <div className="space-y-3">
+            {payPending.map(app => (
+              <div key={app.id} className="flex items-center justify-between gap-4 p-5 bg-blue-50 border border-blue-200 rounded-2xl flex-wrap">
+                <div>
+                  <p className="font-bold text-gray-900 text-sm">{app.name}</p>
+                  <p className="text-xs text-gray-500">{app.email} · {app.role} · ₹999 joining fee</p>
+                  {app.paymentDone && (
+                    <span className="inline-flex items-center gap-1 text-xs font-bold text-green-600 mt-1">
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
+                      Razorpay payment received
+                    </span>
+                  )}
+                </div>
+                <button onClick={() => onActivate(app)}
+                  className="px-5 py-2.5 rounded-xl bg-[#5B4BDB] hover:bg-[#4c3ec7] text-white text-xs font-bold transition-colors">
+                  Activate {app.role}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Approved / Rejected history */}
+      {rest.length > 0 && (
+        <div>
+          <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-4">History</p>
+          <div className="space-y-2">
+            {rest.map(app => (
+              <div key={app.id} className="flex items-center justify-between gap-3 p-4 bg-white border border-gray-200 rounded-xl">
+                <div className="flex items-center gap-2">
+                  <p className="font-bold text-gray-900 text-sm">{app.name}</p>
+                  <span className="text-xs font-medium text-gray-400 capitalize">{app.role}</span>
+                </div>
+                <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${STATUS_PILL[app.status]}`}>
+                  {app.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {applications.length === 0 && (
+        <div className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-200">
+          <p className="text-3xl mb-3">📋</p>
+          <p className="font-bold text-gray-900">No role applications yet</p>
+        </div>
+      )}
+    </div>
+  );
 }

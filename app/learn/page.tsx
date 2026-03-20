@@ -88,32 +88,33 @@ const QUICK_QUESTIONS = [
 ];
 
 async function askGemini(question: string, userRole: string): Promise<string> {
-  const systemPrompt = `You are an XR education assistant on SYNTHÉ. Answer in simple, friendly language.
+  const prompt = `You are an XR education assistant on SYNTHÉ. Answer in simple, friendly language.
 ${userRole === "learner" || userRole === "user" ? "Beginner — avoid jargon, use analogies." : "Developer — be technical."}
-Under 100 words. End with one tip.`;
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user",   content: question },
-      ],
-      temperature: 0.6,
-      max_tokens: 250,
-    }),
-  });
+Under 100 words. End with one tip.
+
+Question: ${question}`;
+
+  const key = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+  if (!key) throw new Error("NEXT_PUBLIC_GEMINI_API_KEY not set");
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.6, maxOutputTokens: 250 },
+      }),
+    }
+  );
   if (!res.ok) {
     const errData = await res.json().catch(() => ({}));
-    console.error("OpenAI error:", res.status, errData);
+    console.error("Gemini error:", res.status, errData);
     throw new Error(errData?.error?.message ?? `API error ${res.status}`);
   }
   const data = await res.json();
-  return data.choices?.[0]?.message?.content ?? "Sorry, try again.";
+  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "Sorry, try again.";
 }
 
 function GeminiChat({ userRole }: { userRole: string }) {
@@ -152,7 +153,7 @@ function GeminiChat({ userRole }: { userRole: string }) {
         </div>
         <div className="flex-1">
           <p className="text-sm font-bold text-gray-900">Ask anything about XR</p>
-          <p className="text-xs text-gray-400">GPT-4o mini · instant answers</p>
+          <p className="text-xs text-gray-400">Gemini AI · instant answers</p>
         </div>
         <span className="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full font-semibold">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
@@ -801,7 +802,7 @@ export default function LearnPage() {
                 </svg>
               </div>
               <p className="text-sm font-bold text-gray-900">XR Concept Chat</p>
-              <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full font-semibold">GPT-4o mini</span>
+              <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full font-semibold">Gemini AI</span>
             </div>
             <GeminiChat userRole={userRole} />
           </div>

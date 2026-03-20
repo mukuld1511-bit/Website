@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { xrConceptChat } from "@/lib/openai";
+import { askAI } from "@/lib/openai";
 
 interface Message { role: "user" | "ai"; text: string; }
 
@@ -15,6 +15,19 @@ const QUICK_QUESTIONS = [
 ];
 
 interface Props { userRole?: string; }
+
+async function xrConceptChat(question: string, userRole: string): Promise<string> {
+  return askAI({
+    system: `You are an XR education assistant on SYNTHÉ. Answer in simple, friendly language.
+${userRole === "learner" || userRole === "user"
+  ? "The user is a beginner — avoid jargon, use real-world analogies."
+  : "The user is a developer — be technical and precise."}
+Keep answers under 80 words. End with one practical tip.`,
+    user: question,
+    temperature: 0.6,
+    maxTokens: 200,
+  });
+}
 
 export default function AIXRChat({ userRole = "user" }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -54,7 +67,7 @@ export default function AIXRChat({ userRole = "user" }: Props) {
         </div>
         <div className="flex-1">
           <p className="text-sm font-semibold text-gray-900">Ask anything about XR</p>
-          <p className="text-xs text-gray-400">GPT-4o mini · instant answers</p>
+          <p className="text-xs text-gray-400">Gemini AI · instant answers</p>
         </div>
         <span className="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full font-medium">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />

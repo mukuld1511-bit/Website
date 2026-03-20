@@ -37,7 +37,7 @@ export async function askAI(opts: AskAIOptions): Promise<string> {
 
   let res = await fetch(url, { method: "POST", headers, body });
 
-  // ── Auto-retry on rate limit (429) — wait 5s then try once more ──────
+  // Auto-retry on rate limit — wait 5s then try once more
   if (res.status === 429) {
     await new Promise(r => setTimeout(r, 5000));
     res = await fetch(url, { method: "POST", headers, body });

@@ -57,8 +57,6 @@ export default function AIXRChat({ userRole = "user" }: Props) {
 
   return (
     <div className="flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden h-[540px] shadow-sm">
-
-      {/* Header */}
       <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 shrink-0 bg-gray-50">
         <div className="w-9 h-9 rounded-xl bg-[#5B4BDB] flex items-center justify-center">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2">
@@ -70,18 +68,14 @@ export default function AIXRChat({ userRole = "user" }: Props) {
           <p className="text-xs text-gray-400">Gemini AI · instant answers</p>
         </div>
         <span className="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full font-medium">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-          Live
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />Live
         </span>
       </div>
 
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4">
         {messages.length === 0 && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
-            <div className="text-center py-2">
-              <p className="text-sm text-gray-500">Ask me anything about AR, VR, or XR</p>
-            </div>
+            <p className="text-sm text-gray-500 text-center">Ask me anything about AR, VR, or XR</p>
             <div className="grid grid-cols-2 gap-2">
               {QUICK_QUESTIONS.map(q => (
                 <button key={q} onClick={() => send(q)}
@@ -105,12 +99,8 @@ export default function AIXRChat({ userRole = "user" }: Props) {
                 </div>
               )}
               <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                m.role === "user"
-                  ? "bg-[#5B4BDB] text-white rounded-br-sm"
-                  : "bg-gray-100 text-gray-800 rounded-bl-sm"
-              }`}>
-                {m.text}
-              </div>
+                m.role === "user" ? "bg-[#5B4BDB] text-white rounded-br-sm" : "bg-gray-100 text-gray-800 rounded-bl-sm"
+              }`}>{m.text}</div>
             </motion.div>
           ))}
         </AnimatePresence>
@@ -134,14 +124,13 @@ export default function AIXRChat({ userRole = "user" }: Props) {
         <div ref={bottomRef} />
       </div>
 
-      {/* Input */}
       <div className="px-4 py-3 border-t border-gray-100 shrink-0 bg-gray-50">
         <form onSubmit={e => { e.preventDefault(); send(input); }} className="flex gap-2">
           <input type="text" value={input} onChange={e => setInput(e.target.value)}
             placeholder="What is spatial computing?"
             className="flex-1 bg-white border border-gray-200 focus:border-[#5B4BDB] rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors" />
           <button type="submit" disabled={!input.trim() || loading}
-            className="px-4 py-2.5 bg-[#5B4BDB] hover:bg-[#4c3ec7] disabled:opacity-40 disabled:cursor-not-allowed rounded-xl text-white text-sm font-semibold transition-colors">
+            className="px-4 py-2.5 bg-[#5B4BDB] hover:bg-[#4c3ec7] disabled:opacity-40 rounded-xl text-white text-sm font-semibold transition-colors">
             Ask
           </button>
         </form>

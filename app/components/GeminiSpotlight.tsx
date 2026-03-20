@@ -11,20 +11,16 @@ const AI_FEATURES = [
     desc: "Tell the AI your age, goal, and experience level. Get a step-by-step XR roadmap with tools, milestones, and a first action for today — in under 5 seconds.",
     href: "/learn/roadmap",
     cta: "Generate roadmap",
-    color: "#5B4BDB",
-    bg: "bg-violet-50",
-    border: "border-violet-200",
+    color: "#5B4BDB", bg: "bg-violet-50", border: "border-violet-200",
   },
   {
     id: "chat",
     title: "XR Concept Chat",
     short: "Ask anything about AR, VR, WebXR",
-    desc: "A live AI chat on the Learn page. Ask 'what is SLAM?', 'how does WebXR work?', 'best tool for Unity AR?' — GPT-4o mini answers in plain language, tuned to your role.",
+    desc: "A live AI chat on the Learn page. Ask 'what is SLAM?', 'how does WebXR work?', 'best tool for Unity AR?' — Gemini answers in plain language, tuned to your role.",
     href: "/learn",
     cta: "Ask a question",
-    color: "#0F6E56",
-    bg: "bg-teal-50",
-    border: "border-teal-200",
+    color: "#0F6E56", bg: "bg-teal-50", border: "border-teal-200",
   },
   {
     id: "tools",
@@ -33,9 +29,7 @@ const AI_FEATURES = [
     desc: "Type what you want to build inside the Tools Directory. AI reads all 48 tools and recommends the best 2–3 with reasons. No more guessing.",
     href: "/learn/tools",
     cta: "Find my tool",
-    color: "#B45309",
-    bg: "bg-amber-50",
-    border: "border-amber-200",
+    color: "#B45309", bg: "bg-amber-50", border: "border-amber-200",
   },
   {
     id: "writer",
@@ -44,9 +38,7 @@ const AI_FEATURES = [
     desc: "When uploading a 3D model, AI reads your filename and category then writes a polished title, description, 5 tags, and a suggested price — one click.",
     href: "/verse/upload",
     cta: "Try on upload",
-    color: "#9D174D",
-    bg: "bg-rose-50",
-    border: "border-rose-200",
+    color: "#9D174D", bg: "bg-rose-50", border: "border-rose-200",
   },
 ];
 
@@ -57,8 +49,6 @@ export default function AISpotlight() {
   return (
     <section className="py-20 px-4 bg-gray-950 border-y border-gray-800">
       <div className="max-w-6xl mx-auto">
-
-        {/* Header */}
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
           <div>
@@ -68,7 +58,7 @@ export default function AISpotlight() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
               </div>
-              <span className="text-xs font-bold text-violet-300 uppercase tracking-widest">GPT-4o mini built-in</span>
+              <span className="text-xs font-bold text-violet-300 uppercase tracking-widest">Gemini AI built-in</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight">
               AI that actually helps<br />you learn XR
@@ -79,28 +69,22 @@ export default function AISpotlight() {
           </p>
         </motion.div>
 
-        {/* Tab selector */}
         <div className="flex gap-2 flex-wrap mb-8">
           {AI_FEATURES.map((feat, i) => (
             <button key={feat.id} onClick={() => setActive(i)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-                active === i
-                  ? "bg-white text-gray-900"
-                  : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-gray-200 border border-white/10"
+                active === i ? "bg-white text-gray-900" : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-gray-200 border border-white/10"
               }`}>
               {feat.title}
             </button>
           ))}
         </div>
 
-        {/* Feature panel */}
         <AnimatePresence mode="wait">
           <motion.div key={f.id}
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
             className="bg-white/5 border border-white/10 rounded-2xl p-8 grid sm:grid-cols-2 gap-8 items-center">
-
-            {/* Left — text */}
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">{f.short}</p>
               <h3 className="text-2xl font-black text-white mb-4">{f.title}</h3>
@@ -116,7 +100,6 @@ export default function AISpotlight() {
               </Link>
             </div>
 
-            {/* Right — mock UI preview */}
             <div className={`${f.bg} ${f.border} border rounded-xl p-5 space-y-3`}>
               {f.id === "roadmap" && (
                 <>
@@ -145,7 +128,7 @@ export default function AISpotlight() {
                         <svg width="8" height="8" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                       </div>
                       <div className="bg-white border border-teal-200 rounded-2xl rounded-bl-sm px-3 py-2 text-xs text-gray-700 leading-relaxed">
-                        WebXR is a browser API that lets you build AR and VR directly in Chrome or Safari — no app download needed. Think of it like HTML but for 3D space. <span className="font-semibold text-teal-700">Tip: Start with A-Frame to learn the basics in 1 hour.</span>
+                        WebXR is a browser API that lets you build AR and VR directly in Chrome or Safari — no app download needed. <span className="font-semibold text-teal-700">Tip: Start with A-Frame to learn the basics in 1 hour.</span>
                       </div>
                     </div>
                   </div>
@@ -161,7 +144,7 @@ export default function AISpotlight() {
                     I want to build AR for Android without an app...
                   </div>
                   <div className="bg-violet-50 border border-violet-200 rounded-lg p-3 text-xs text-violet-900 leading-relaxed">
-                    <span className="font-bold">AI recommends:</span> Use <span className="font-bold">WebXR API</span> for zero-install browser AR, or <span className="font-bold">8th Wall</span> for advanced tracking. Both run in Chrome on Android with no download required.
+                    <span className="font-bold">AI recommends:</span> Use <span className="font-bold">WebXR API</span> for zero-install browser AR, or <span className="font-bold">8th Wall</span> for advanced tracking.
                   </div>
                 </>
               )}

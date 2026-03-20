@@ -1,7 +1,7 @@
 // lib/openai.ts
 // ─── AI utility — Gemini 2.0 Flash (Google AI Studio free key) ───────────
 // .env.local + Vercel: NEXT_PUBLIC_GEMINI_API_KEY=AIza...
-// Free tier: 1500 req/day, 15 req/min
+// Free tier: 1500 req/day, 15 req/min — auto-retries on 429
 // ─────────────────────────────────────────────────────────────────────────
 
 export interface AskAIOptions {
@@ -11,35 +11,45 @@ export interface AskAIOptions {
   maxTokens?:   number;
 }
 
+const MODEL = "gemini-2.0-flash";
+
+function buildBody(system: string, user: string, temperature: number, maxTokens: number) {
+  return JSON.stringify({
+    contents: [{ role: "user", parts: [{ text: system + "\n\nUser: " + user }] }],
+    generationConfig: { temperature, maxOutputTokens: maxTokens },
+  });
+}
+
+function extractText(data: any): string {
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+  return text.replace(/^```(?:json)?\n?/m, "").replace(/\n?```$/m, "").trim();
+}
+
 export async function askAI(opts: AskAIOptions): Promise<string> {
   const { system, user, temperature = 0.6, maxTokens = 400 } = opts;
 
   const key = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
   if (!key) throw new Error("NEXT_PUBLIC_GEMINI_API_KEY not set");
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
-    {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: system + "\n\nUser: " + user }] }],
-        generationConfig: { temperature, maxOutputTokens: maxTokens },
-      }),
-    }
-  );
+  const url     = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${key}`;
+  const headers = { "Content-Type": "application/json" };
+  const body    = buildBody(system, user, temperature, maxTokens);
+
+  let res = await fetch(url, { method: "POST", headers, body });
+
+  // ── Auto-retry on rate limit (429) — wait 5s then try once more ──────
+  if (res.status === 429) {
+    await new Promise(r => setTimeout(r, 5000));
+    res = await fetch(url, { method: "POST", headers, body });
+  }
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err?.error?.message ?? `Gemini error ${res.status}`);
   }
 
-  const data = await res.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-  return text.replace(/^```(?:json)?\n?/m, "").replace(/\n?```$/m, "").trim();
+  return extractText(await res.json());
 }
-
-// ─── XR Concept Chat (learn/page.tsx inline — do NOT import there) ────────
 
 // ─── Roadmap Generator ───────────────────────────────────────────────────
 export async function generateRoadmap(input: {

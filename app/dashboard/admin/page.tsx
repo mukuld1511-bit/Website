@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { db } from "../../../lib/firebase";
 import {
   collection, getDocs, updateDoc, deleteDoc,
-  doc, query, orderBy,
+  doc, query, orderBy, addDoc, serverTimestamp,
 } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -12,37 +12,42 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<"overview" | "models" | "users" | "applications" | "certifications">("overview");
-  const [models, setModels] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<"overview"|"models"|"users"|"applications"|"certifications"|"mentorApps">("overview");
+  const [models,       setModels]       = useState<any[]>([]);
+  const [users,        setUsers]        = useState<any[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
   const [certRequests, setCertRequests] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState("");
+  const [mentorApps,   setMentorApps]   = useState<any[]>([]);
+  const [loading,      setLoading]      = useState(true);
+  const [toast,        setToast]        = useState("");
+
+  // Mentor app detail modal
+  const [selectedApp, setSelectedApp]     = useState<any | null>(null);
+  const [rejectReason, setRejectReason]   = useState("");
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => { loadAll(); }, []);
 
   async function loadAll() {
     setLoading(true);
     try {
-      const [mSnap, uSnap, aSnap, cSnap] = await Promise.all([
+      const [mSnap, uSnap, aSnap, cSnap, raSnap] = await Promise.all([
         getDocs(query(collection(db, "models"), orderBy("uploadedAt", "desc"))),
         getDocs(collection(db, "users")),
         getDocs(collection(db, "developerApplications")),
         getDocs(collection(db, "certificationRequests")),
+        getDocs(query(collection(db, "roleApplications"), orderBy("createdAt", "desc"))),
       ]);
       setModels(mSnap.docs.map(d => ({ id: d.id, ...d.data() })));
       setUsers(uSnap.docs.map(d => ({ id: d.id, ...d.data() })));
       setApplications(aSnap.docs.map(d => ({ id: d.id, ...d.data() })));
       setCertRequests(cSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+      setMentorApps(raSnap.docs.map(d => ({ id: d.id, ...d.data() })));
     } catch (e) { console.error(e); }
     setLoading(false);
   }
 
-  function showToast(msg: string) {
-    setToast(msg);
-    setTimeout(() => setToast(""), 3000);
-  }
+  function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(""), 3500); }
 
   async function deleteModel(id: string) {
     if (!confirm("Delete this model?")) return;
@@ -56,7 +61,6 @@ export default function AdminDashboard() {
     setUsers(p => p.map(u => u.id === id ? { ...u, role: "developer" } : u));
     showToast("User promoted to developer.");
   }
-
   async function demoteUser(id: string) {
     await updateDoc(doc(db, "users", id), { role: "user" });
     setUsers(p => p.map(u => u.id === id ? { ...u, role: "user" } : u));
@@ -69,7 +73,6 @@ export default function AdminDashboard() {
     setApplications(p => p.map(a => a.id === app.id ? { ...a, status: "approved" } : a));
     showToast("Application approved.");
   }
-
   async function rejectApplication(id: string) {
     await updateDoc(doc(db, "developerApplications", id), { status: "rejected" });
     setApplications(p => p.map(a => a.id === id ? { ...a, status: "rejected" } : a));
@@ -82,45 +85,97 @@ export default function AdminDashboard() {
     setCertRequests(p => p.map(c => c.id === id ? { ...c, status: "approved" } : c));
     showToast("Certification approved ⭐");
   }
-
   async function rejectCert(id: string) {
     await updateDoc(doc(db, "certificationRequests", id), { status: "rejected" });
     setCertRequests(p => p.map(c => c.id === id ? { ...c, status: "rejected" } : c));
     showToast("Certification rejected.");
   }
 
-  // ── Derived stats ──
-  const developers = users.filter(u => u.role === "developer");
-  const admins = users.filter(u => u.role === "admin");
-  const freeModels = models.filter(m => !m.isPaid);
-  const paidModels = models.filter(m => m.isPaid);
-  const pendingApps = applications.filter(a => a.status === "pending");
+  // ── Mentor app actions ─────────────────────────────────────────────────
+  async function approveMentorApp(app: any) {
+    if ((app.certificates?.length ?? 0) < 2) {
+      showToast("Cannot approve — less than 2 certificates"); return;
+    }
+    setActionLoading(true);
+    try {
+      await updateDoc(doc(db, "roleApplications", app.id), { status: "approved", reviewedAt: serverTimestamp() });
+      await updateDoc(doc(db, "users", app.userId), {
+        role: "mentor",
+        hourlyRate:       app.hourlyRate ?? 500,
+        expertise:        app.expertise ?? "",
+        experience:       app.experience ?? "",
+        bio:              app.bio ?? "",
+        linkedin:         app.linkedin ?? "",
+        skills:           app.skills ?? [],
+        certificates:     app.certificates ?? [],
+        isVerifiedMentor: true,
+        mentorApprovedAt: serverTimestamp(),
+        updatedAt:        serverTimestamp(),
+      });
+      await addDoc(collection(db, "notifications"), {
+        userId:    app.userId,
+        message:   `🎉 Congratulations! Your mentor application has been approved. Start hosting sessions now!`,
+        read:      false,
+        createdAt: serverTimestamp(),
+      });
+      setMentorApps(prev => prev.map(a => a.id === app.id ? { ...a, status: "approved" } : a));
+      setSelectedApp(null);
+      showToast(`✅ ${app.userName} approved as Mentor`);
+    } catch (e: any) { showToast(e.message); }
+    finally { setActionLoading(false); }
+  }
+
+  async function rejectMentorApp(app: any) {
+    if (!rejectReason.trim()) { showToast("Enter a rejection reason first"); return; }
+    setActionLoading(true);
+    try {
+      await updateDoc(doc(db, "roleApplications", app.id), { status: "rejected", rejectReason: rejectReason.trim(), reviewedAt: serverTimestamp() });
+      await addDoc(collection(db, "notifications"), {
+        userId:    app.userId,
+        message:   `Your mentor application was not approved. Reason: ${rejectReason.trim()}. You may re-apply after addressing these issues.`,
+        read:      false,
+        createdAt: serverTimestamp(),
+      });
+      setMentorApps(prev => prev.map(a => a.id === app.id ? { ...a, status: "rejected" } : a));
+      setSelectedApp(null);
+      setRejectReason("");
+      showToast(`❌ ${app.userName} rejected`);
+    } catch (e: any) { showToast(e.message); }
+    finally { setActionLoading(false); }
+  }
+
+  // ── Stats ──
+  const developers   = users.filter(u => u.role === "developer");
+  const freeModels   = models.filter(m => !m.isPaid);
+  const paidModels   = models.filter(m => m.isPaid);
+  const pendingApps  = applications.filter(a => a.status === "pending");
   const pendingCerts = certRequests.filter(c => c.status === "pending");
+  const pendingMentor = mentorApps.filter(a => a.status === "pending");
 
   const STATS = [
-    { label: "Total Models", val: models.length, colorClass: "text-blue-600", bgClass: "bg-blue-50", borderClass: "border-blue-200", icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
-    { label: "Total Users", val: users.length, colorClass: "text-cyan-600", bgClass: "bg-cyan-50", borderClass: "border-cyan-200", icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
-    { label: "Developers", val: developers.length, colorClass: "text-emerald-600", bgClass: "bg-emerald-50", borderClass: "border-emerald-200", icon: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" },
-    { label: "Pending Actions", val: pendingApps.length + pendingCerts.length, colorClass: "text-amber-600", bgClass: "bg-amber-50", borderClass: "border-amber-200", icon: "M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { label: "Total Models",    val: models.length,         colorClass: "text-blue-600",    bgClass: "bg-blue-50",    borderClass: "border-blue-200",    icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
+    { label: "Total Users",     val: users.length,          colorClass: "text-cyan-600",    bgClass: "bg-cyan-50",    borderClass: "border-cyan-200",    icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+    { label: "Developers",      val: developers.length,     colorClass: "text-emerald-600", bgClass: "bg-emerald-50", borderClass: "border-emerald-200", icon: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" },
+    { label: "Pending Actions", val: pendingApps.length + pendingCerts.length + pendingMentor.length, colorClass: "text-amber-600", bgClass: "bg-amber-50", borderClass: "border-amber-200", icon: "M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
   ];
 
   const TABS: { id: typeof activeTab; label: string; badge?: number }[] = [
-    { id: "overview", label: "Overview" },
-    { id: "models", label: "Models", badge: models.length },
-    { id: "users", label: "Users", badge: users.length },
-    { id: "applications", label: "Applications", badge: pendingApps.length || undefined },
+    { id: "overview",     label: "Overview" },
+    { id: "models",       label: "Models",        badge: models.length },
+    { id: "users",        label: "Users",          badge: users.length },
+    { id: "applications", label: "Applications",   badge: pendingApps.length || undefined },
     { id: "certifications", label: "Certifications", badge: pendingCerts.length || undefined },
+    { id: "mentorApps",   label: "Mentor Apps",   badge: pendingMentor.length || undefined },
   ];
 
-  const FILE_COLORS: Record<string, { colorClass: string; bgClass: string; borderClass: string; hex: string }> = {
-    glb: { colorClass: "text-indigo-600", bgClass: "bg-indigo-50", borderClass: "border-indigo-200", hex: "#4f46e5" },
-    gltf: { colorClass: "text-indigo-600", bgClass: "bg-indigo-50", borderClass: "border-indigo-200", hex: "#4f46e5" },
-    obj: { colorClass: "text-cyan-600", bgClass: "bg-cyan-50", borderClass: "border-cyan-200", hex: "#0891b2" },
-    fbx: { colorClass: "text-cyan-600", bgClass: "bg-cyan-50", borderClass: "border-cyan-200", hex: "#0891b2" },
-    dwg: { colorClass: "text-amber-600", bgClass: "bg-amber-50", borderClass: "border-amber-200", hex: "#d97706" },
-    dxf: { colorClass: "text-amber-600", bgClass: "bg-amber-50", borderClass: "border-amber-200", hex: "#d97706" },
+  const FILE_COLORS: Record<string, { colorClass: string; bgClass: string; borderClass: string }> = {
+    glb:  { colorClass: "text-indigo-600", bgClass: "bg-indigo-50",  borderClass: "border-indigo-200" },
+    gltf: { colorClass: "text-indigo-600", bgClass: "bg-indigo-50",  borderClass: "border-indigo-200" },
+    obj:  { colorClass: "text-cyan-600",   bgClass: "bg-cyan-50",    borderClass: "border-cyan-200"   },
+    fbx:  { colorClass: "text-cyan-600",   bgClass: "bg-cyan-50",    borderClass: "border-cyan-200"   },
+    dwg:  { colorClass: "text-amber-600",  bgClass: "bg-amber-50",   borderClass: "border-amber-200"  },
+    dxf:  { colorClass: "text-amber-600",  bgClass: "bg-amber-50",   borderClass: "border-amber-200"  },
   };
-
   const getFileStyle = (ext: string) => FILE_COLORS[ext] ?? FILE_COLORS.glb;
 
   function timeAgo(ts: any): string {
@@ -146,6 +201,7 @@ export default function AdminDashboard() {
     const m: Record<string, string> = {
       admin: "border-red-200 bg-red-50 text-red-700",
       developer: "border-blue-200 bg-blue-50 text-blue-700",
+      mentor: "border-teal-200 bg-teal-50 text-teal-700",
       user: "border-gray-200 bg-white text-gray-500",
     };
     return `px-2.5 py-1 rounded-md text-[9px] font-black tracking-widest uppercase border shadow-sm ${m[r] ?? m.user}`;
@@ -161,23 +217,132 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50 font-sans">
       <Navbar />
 
+      {/* Mentor app detail modal */}
+      <AnimatePresence>
+        {selectedApp && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={e => { if (e.target === e.currentTarget) { setSelectedApp(null); setRejectReason(""); } }}>
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 16 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#0F6E56]/10 overflow-hidden flex items-center justify-center">
+                    {selectedApp.userPhoto
+                      ? <img src={selectedApp.userPhoto} className="w-full h-full object-cover" alt="" />
+                      : <span className="text-[#0F6E56] font-bold">{selectedApp.userName?.charAt(0)}</span>}
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">{selectedApp.userName}</p>
+                    <p className="text-xs text-gray-400">{selectedApp.userEmail}</p>
+                  </div>
+                </div>
+                <span className={statusPill(selectedApp.status)}>{selectedApp.status}</span>
+              </div>
+
+              <div className="px-6 py-5 space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { label: "Expertise",   value: selectedApp.expertise },
+                    { label: "Experience",  value: selectedApp.experience },
+                    { label: "Hourly Rate", value: selectedApp.hourlyRate ? `₹${selectedApp.hourlyRate}/hr` : null },
+                    { label: "LinkedIn",    value: selectedApp.linkedin, isLink: true },
+                  ].filter(i => i.value).map(item => (
+                    <div key={item.label} className="bg-gray-50 rounded-xl p-3">
+                      <p className="text-xs text-gray-400 mb-0.5">{item.label}</p>
+                      {item.isLink
+                        ? <a href={item.value!} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-[#5B4BDB] hover:underline truncate block">{item.value}</a>
+                        : <p className="text-sm font-semibold text-gray-800">{item.value}</p>}
+                    </div>
+                  ))}
+                </div>
+
+                {selectedApp.bio && (
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <p className="text-xs text-gray-400 mb-1.5">Professional Bio</p>
+                    <p className="text-sm text-gray-700 leading-relaxed">{selectedApp.bio}</p>
+                  </div>
+                )}
+
+                {selectedApp.skills?.length > 0 && (
+                  <div>
+                    <p className="text-xs text-gray-400 mb-2">Skills</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedApp.skills.map((s: string) => (
+                        <span key={s} className="text-xs bg-[#5B4BDB]/10 text-[#5B4BDB] px-2 py-0.5 rounded-full font-medium">{s}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {selectedApp.certificates?.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <p className="text-xs text-gray-400">Certificates ({selectedApp.certificates.length})</p>
+                      {selectedApp.certificates.length < 2 && (
+                        <span className="text-xs text-red-500 font-bold">⚠️ Less than 2 — cannot approve</span>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      {selectedApp.certificates.map((cert: any, i: number) => (
+                        <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-[#5B4BDB] hover:bg-[#5B4BDB]/5 transition group">
+                          <span className="text-lg">📄</span>
+                          <span className="text-sm font-semibold text-gray-700 group-hover:text-[#5B4BDB] flex-1 truncate">{cert.name}</span>
+                          <span className="text-xs text-[#5B4BDB] font-bold">View →</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {selectedApp.status === "pending" && (
+                  <div className="pt-4 border-t border-gray-100 space-y-3">
+                    <div>
+                      <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 block">Rejection Reason</label>
+                      <textarea value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={2}
+                        placeholder="e.g. Insufficient certificates, need more experience..."
+                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-red-400 transition resize-none" />
+                    </div>
+                    <div className="flex gap-3">
+                      <button onClick={() => rejectMentorApp(selectedApp)} disabled={actionLoading}
+                        className="flex-1 py-3 rounded-xl border-2 border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 transition disabled:opacity-50">
+                        {actionLoading ? "…" : "❌ Reject"}
+                      </button>
+                      <button onClick={() => approveMentorApp(selectedApp)}
+                        disabled={actionLoading || (selectedApp.certificates?.length ?? 0) < 2}
+                        className="flex-1 py-3 rounded-xl bg-[#0F6E56] text-white font-bold text-sm border-b-[3px] border-[#0a5240] hover:opacity-90 transition disabled:opacity-40">
+                        {actionLoading ? "…" : "✅ Approve as Mentor"}
+                      </button>
+                    </div>
+                    {(selectedApp.certificates?.length ?? 0) < 2 && (
+                      <p className="text-xs text-center text-red-500">Cannot approve — minimum 2 certificates required</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="relative z-10 max-w-7xl mx-auto px-4 pt-32 pb-20">
 
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-10">
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-red-200 bg-red-50 mb-4 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
             <span className="text-red-700 text-[10px] font-black uppercase tracking-widest">Control Panel</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-2">Admin Dashboard</h1>
-          <p className="text-gray-500 text-sm font-medium">Manage models, users, applications and certifications.</p>
+          <p className="text-gray-500 text-sm font-medium">Manage models, users, applications, certifications and mentor approvals.</p>
         </motion.div>
 
-        {/* Stats */}
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
+        {/* Main stats */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
           {STATS.map((s, i) => (
-            <div key={i} className={`relative p-6 rounded-3xl border-2 shadow-sm transition duration-300 ${s.bgClass} ${s.borderClass}`}>
+            <div key={i} className={`p-6 rounded-3xl border-2 shadow-sm ${s.bgClass} ${s.borderClass}`}>
               <svg className={`w-8 h-8 mb-4 ${s.colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={s.icon} />
               </svg>
@@ -187,14 +352,15 @@ export default function AdminDashboard() {
           ))}
         </motion.div>
 
-        {/* Secondary stats row */}
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+        {/* Secondary stats */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+          className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-10">
           {[
-            { label: "Free Models", val: freeModels.length, colorClass: "text-green-600", bgClass: "bg-green-50", borderClass: "border-green-200" },
-            { label: "Paid Models", val: paidModels.length, colorClass: "text-yellow-600", bgClass: "bg-yellow-50", borderClass: "border-yellow-200" },
-            { label: "Pending Apps", val: pendingApps.length, colorClass: "text-blue-600", bgClass: "bg-blue-50", borderClass: "border-blue-200" },
-            { label: "Pending Certs", val: pendingCerts.length, colorClass: "text-indigo-600", bgClass: "bg-indigo-50", borderClass: "border-indigo-200" },
+            { label: "Free Models",    val: freeModels.length,    colorClass: "text-green-600",   bgClass: "bg-green-50",   borderClass: "border-green-200"   },
+            { label: "Paid Models",    val: paidModels.length,    colorClass: "text-yellow-600",  bgClass: "bg-yellow-50",  borderClass: "border-yellow-200"  },
+            { label: "Pending Apps",   val: pendingApps.length,   colorClass: "text-blue-600",    bgClass: "bg-blue-50",    borderClass: "border-blue-200"    },
+            { label: "Pending Certs",  val: pendingCerts.length,  colorClass: "text-indigo-600",  bgClass: "bg-indigo-50",  borderClass: "border-indigo-200"  },
+            { label: "Mentor Reviews", val: pendingMentor.length, colorClass: "text-teal-600",    bgClass: "bg-teal-50",    borderClass: "border-teal-200"    },
           ].map((s, i) => (
             <div key={i} className="p-4 rounded-2xl border-2 border-indigo-50 bg-white shadow-sm flex items-center gap-4">
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border-2 shadow-sm ${s.bgClass} ${s.borderClass}`}>
@@ -212,12 +378,12 @@ export default function AdminDashboard() {
         <div className="flex gap-2 border-b border-gray-200 mb-8 overflow-x-auto pb-px">
           {TABS.map(t => (
             <button key={t.id} onClick={() => setActiveTab(t.id)}
-              className={`flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap transition duration-200 border-b-2 ${activeTab === t.id ? "border-blue-600 text-blue-700 bg-blue-50/50 rounded-t-lg" : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-t-lg"
-                }`}>
+              className={`flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap transition duration-200 border-b-2 ${
+                activeTab === t.id ? "border-blue-600 text-blue-700 bg-blue-50/50 rounded-t-lg" : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-t-lg"
+              }`}>
               {t.label}
               {t.badge !== undefined && t.badge > 0 && (
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black ${activeTab === t.id ? "bg-blue-200 text-blue-800" : "bg-gray-200 text-gray-600"
-                  }`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black ${activeTab === t.id ? "bg-blue-200 text-blue-800" : "bg-gray-200 text-gray-600"}`}>
                   {t.badge}
                 </span>
               )}
@@ -227,42 +393,37 @@ export default function AdminDashboard() {
 
         <AnimatePresence mode="wait">
 
-          {/* ── OVERVIEW ── */}
+          {/* OVERVIEW */}
           {activeTab === "overview" && (
-            <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+            <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                {/* Recent models */}
-                <div className="relative rounded-3xl border-2 border-indigo-50 bg-white shadow-sm p-6 overflow-hidden hover:shadow-md transition-shadow">
+                <div className="rounded-3xl border-2 border-indigo-50 bg-white shadow-sm p-6 hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="font-black text-gray-900 text-sm">Recent Uploads</h3>
-                    <button onClick={() => setActiveTab("models")} className="text-blue-600 font-black text-xs hover:text-blue-700 hover:underline transition-colors">View all →</button>
+                    <button onClick={() => setActiveTab("models")} className="text-blue-600 font-black text-xs hover:underline">View all →</button>
                   </div>
                   {models.length === 0 ? (
-                    <div className="w-full py-10 text-center border-2 border-indigo-100 border-dashed rounded-[2rem] bg-indigo-50/30 flex flex-col items-center gap-3">
-                       <span className="text-3xl filter hue-rotate-15">📦</span>
-                       <p className="text-gray-500 font-bold text-sm tracking-wide">No models yet</p>
+                    <div className="text-center py-10 border-2 border-dashed border-indigo-100 rounded-3xl bg-indigo-50/30">
+                      <span className="text-3xl">📦</span>
+                      <p className="text-gray-500 font-bold text-sm mt-2">No models yet</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {models.slice(0, 5).map(m => {
-                        const ext = m.fileType?.toLowerCase() ?? "glb";
+                        const ext   = m.fileType?.toLowerCase() ?? "glb";
                         const style = getFileStyle(ext);
                         return (
                           <div key={m.id} className="flex items-center gap-4">
                             <div className={`w-12 h-12 rounded-xl overflow-hidden border flex-shrink-0 flex items-center justify-center ${style.bgClass} ${style.borderClass} shadow-sm`}>
                               {m.thumbnailUrl
                                 ? <img src={m.thumbnailUrl} className="w-full h-full object-cover" />
-                                : <svg className={`w-5 h-5 ${style.colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
-                              }
+                                : <svg className={`w-5 h-5 ${style.colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-gray-900 text-sm font-extrabold truncate mb-0.5">{m.title || "Untitled"}</p>
-                              <p className="text-gray-500 font-medium text-[10px]">{m.authorName} · {timeAgo(m.uploadedAt)}</p>
+                              <p className="text-gray-900 text-sm font-extrabold truncate">{m.title || "Untitled"}</p>
+                              <p className="text-gray-500 text-[10px]">{m.authorName} · {timeAgo(m.uploadedAt)}</p>
                             </div>
-                            <span className={`text-[9px] font-black px-2 py-1 rounded-md border shadow-sm ${style.bgClass} ${style.borderClass} ${style.colorClass}`}>
-                              {ext.toUpperCase()}
-                            </span>
+                            <span className={`text-[9px] font-black px-2 py-1 rounded-md border shadow-sm ${style.bgClass} ${style.borderClass} ${style.colorClass}`}>{ext.toUpperCase()}</span>
                           </div>
                         );
                       })}
@@ -270,83 +431,55 @@ export default function AdminDashboard() {
                   )}
                 </div>
 
-                {/* Pending actions */}
-                <div className="relative rounded-3xl border-2 border-indigo-50 bg-white shadow-sm p-6 overflow-hidden hover:shadow-md transition-shadow">
+                <div className="rounded-3xl border-2 border-indigo-50 bg-white shadow-sm p-6 hover:shadow-md transition-shadow">
                   <h3 className="font-black text-gray-900 text-sm mb-6">Pending Actions</h3>
-                  <div className="space-y-4">
-                    {pendingApps.length === 0 && pendingCerts.length === 0 ? (
-                      <div className="text-center py-10 rounded-[2rem] border-2 border-emerald-100 bg-emerald-50/50 flex flex-col items-center">
-                        <div className="w-14 h-14 rounded-2xl border-2 border-emerald-200 bg-emerald-100 flex items-center justify-center mx-auto mb-3 shadow-sm">
-                          <span className="text-emerald-600 text-2xl font-black">✓</span>
-                        </div>
-                        <p className="text-emerald-800 text-base font-black">All clear!</p>
-                        <p className="text-emerald-600 font-bold text-xs mt-1">No pending actions</p>
+                  {pendingApps.length === 0 && pendingCerts.length === 0 && pendingMentor.length === 0 ? (
+                    <div className="text-center py-10 rounded-3xl border-2 border-emerald-100 bg-emerald-50/50">
+                      <div className="w-14 h-14 rounded-2xl border-2 border-emerald-200 bg-emerald-100 flex items-center justify-center mx-auto mb-3">
+                        <span className="text-emerald-600 text-2xl font-black">✓</span>
                       </div>
-                    ) : (
-                      <>
-                        {pendingApps.slice(0, 3).map(a => (
-                          <div key={a.id} className="flex items-center justify-between gap-3 p-4 rounded-xl border border-blue-200 bg-blue-50 shadow-sm">
-                            <div className="min-w-0">
-                              <p className="text-blue-900 text-xs font-bold truncate mb-0.5">{a.name}</p>
-                              <p className="text-blue-700 font-medium text-[10px]">Developer application</p>
-                            </div>
-                            <div className="flex gap-2 flex-shrink-0">
-                              <button onClick={() => approveApplication(a)}
-                                className="w-8 h-8 rounded-lg flex items-center justify-center font-black shadow-sm border border-green-200 bg-green-50 text-green-600 hover:bg-green-100 transition duration-150">
-                                ✓
-                              </button>
-                              <button onClick={() => rejectApplication(a.id)}
-                                className="w-8 h-8 rounded-lg flex items-center justify-center font-black shadow-sm border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition duration-150">
-                                ✕
-                              </button>
-                            </div>
+                      <p className="text-emerald-800 font-black">All clear!</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {pendingMentor.slice(0, 3).map(a => (
+                        <div key={a.id} className="flex items-center justify-between gap-3 p-4 rounded-xl border border-teal-200 bg-teal-50 shadow-sm cursor-pointer hover:shadow-md transition"
+                          onClick={() => setSelectedApp(a)}>
+                          <div className="min-w-0">
+                            <p className="text-teal-900 text-xs font-bold truncate">{a.userName}</p>
+                            <p className="text-teal-700 font-medium text-[10px]">Mentor application · {a.certCount ?? 0} certs</p>
                           </div>
-                        ))}
-                        {pendingCerts.slice(0, 3).map(c => (
-                          <div key={c.id} className="flex items-center justify-between gap-3 p-4 rounded-xl border border-indigo-200 bg-indigo-50 shadow-sm">
-                            <div className="min-w-0">
-                              <p className="text-indigo-900 text-xs font-bold truncate mb-0.5">{c.name}</p>
-                              <p className="text-indigo-700 font-medium text-[10px]">Certification request</p>
-                            </div>
-                            <div className="flex gap-2 flex-shrink-0">
-                              <button onClick={() => approveCert(c.id, c.userId)}
-                                className="w-8 h-8 rounded-lg flex items-center justify-center font-black shadow-sm border border-green-200 bg-green-50 text-green-600 hover:bg-green-100 transition duration-150">
-                                ✓
-                              </button>
-                              <button onClick={() => rejectCert(c.id)}
-                                className="w-8 h-8 rounded-lg flex items-center justify-center font-black shadow-sm border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition duration-150">
-                                ✕
-                              </button>
-                            </div>
+                          <span className="text-xs text-teal-600 font-bold">Review →</span>
+                        </div>
+                      ))}
+                      {pendingApps.slice(0, 2).map(a => (
+                        <div key={a.id} className="flex items-center justify-between gap-3 p-4 rounded-xl border border-blue-200 bg-blue-50 shadow-sm">
+                          <div className="min-w-0">
+                            <p className="text-blue-900 text-xs font-bold truncate">{a.name}</p>
+                            <p className="text-blue-700 font-medium text-[10px]">Developer application</p>
                           </div>
-                        ))}
-                      </>
-                    )}
-                  </div>
+                          <div className="flex gap-2">
+                            <button onClick={() => approveApplication(a)} className="w-8 h-8 rounded-lg flex items-center justify-center border border-green-200 bg-green-50 text-green-600 hover:bg-green-100 font-black transition">✓</button>
+                            <button onClick={() => rejectApplication(a.id)} className="w-8 h-8 rounded-lg flex items-center justify-center border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 font-black transition">✕</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
           )}
 
-          {/* ── MODELS ── */}
+          {/* MODELS */}
           {activeTab === "models" && (
-            <motion.div key="models" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+            <motion.div key="models" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <div className="flex items-center justify-between mb-6">
-                <p className="text-gray-500 font-medium text-sm">{models.length} model{models.length !== 1 ? "s" : ""} on platform</p>
-                <Link href="/upload">
-                  <button className="px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-blue-600 hover:bg-blue-700 shadow-sm transition">
-                    + Upload Model
-                  </button>
-                </Link>
+                <p className="text-gray-500 text-sm">{models.length} model{models.length !== 1 ? "s" : ""}</p>
+                <Link href="/upload"><button className="px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-blue-600 hover:bg-blue-700 shadow-sm transition">+ Upload Model</button></Link>
               </div>
-
               {models.length === 0 ? (
-                <div className="w-full py-24 text-center border-2 border-indigo-100 border-dashed rounded-[3rem] bg-indigo-50/30 flex flex-col items-center gap-4 shadow-sm">
-                  <div className="w-20 h-20 rounded-[1.5rem] bg-indigo-100 border-2 border-indigo-200 flex items-center justify-center mb-2 shadow-sm">
-                    <span className="text-4xl filter hue-rotate-15">📦</span>
-                  </div>
-                  <p className="text-gray-900 font-black text-xl">No models uploaded yet</p>
-                </div>
+                <div className="text-center py-24 border-2 border-dashed border-indigo-100 rounded-3xl bg-indigo-50/30"><span className="text-4xl">📦</span><p className="text-gray-900 font-black text-xl mt-4">No models uploaded yet</p></div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {models.map((m, i) => {
@@ -354,49 +487,20 @@ export default function AdminDashboard() {
                     const style = getFileStyle(ext);
                     return (
                       <motion.div key={m.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
-                        className="relative rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition duration-200 flex flex-col overflow-hidden">
-
-                        {/* Thumb */}
-                        <div className={`relative h-40 overflow-hidden flex-shrink-0 ${style.bgClass}`}>
+                        className="rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition flex flex-col overflow-hidden">
+                        <div className={`relative h-40 flex-shrink-0 ${style.bgClass}`}>
                           {m.thumbnailUrl
                             ? <img src={m.thumbnailUrl} alt={m.title} className="w-full h-full object-cover border-b border-gray-100" />
-                            : <div className="w-full h-full flex items-center justify-center border-b border-gray-100">
-                              <svg className={`w-10 h-10 ${style.colorClass} opacity-50`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                              </svg>
-                            </div>
-                          }
-                          <div className={`absolute top-3 left-3 px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest shadow-sm border bg-white ${style.borderClass} ${style.colorClass}`}>
-                            {ext}
-                          </div>
-                          {m.isPaid && (
-                            <div className="absolute top-3 right-3 px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest border border-green-200 bg-green-50 text-green-700 shadow-sm">
-                              ₹{m.price}
-                            </div>
-                          )}
+                            : <div className="w-full h-full flex items-center justify-center border-b border-gray-100"><svg className={`w-10 h-10 ${style.colorClass} opacity-50`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg></div>}
+                          <div className={`absolute top-3 left-3 px-2 py-1 rounded text-[9px] font-black uppercase border bg-white ${style.borderClass} ${style.colorClass}`}>{ext}</div>
+                          {m.isPaid && <div className="absolute top-3 right-3 px-2 py-1 rounded text-[9px] font-black border border-green-200 bg-green-50 text-green-700">₹{m.price}</div>}
                         </div>
-
                         <div className="p-5 flex-1 flex flex-col">
                           <p className="text-gray-900 text-sm font-extrabold truncate mb-1">{m.title || "Untitled"}</p>
-                          <div className="flex items-center justify-between text-gray-500 font-medium text-xs mb-4">
-                            <span className="truncate mr-2">{m.authorName}</span>
-                            <span className="flex-shrink-0">{timeAgo(m.uploadedAt)}</span>
-                          </div>
-                          <div className="flex items-center gap-4 text-gray-400 font-bold text-[10px] mb-5">
-                            <span className="flex items-center gap-1"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> {m.views ?? 0}</span>
-                            <span className="flex items-center gap-1"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg> {m.downloads ?? 0}</span>
-                            <span className="flex items-center gap-1"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg> {m.likes ?? 0}</span>
-                          </div>
+                          <div className="flex justify-between text-gray-500 text-xs mb-4"><span className="truncate">{m.authorName}</span><span>{timeAgo(m.uploadedAt)}</span></div>
                           <div className="flex gap-3 mt-auto">
-                            <Link href={`/gallery/${m.id}`} className="flex-1">
-                              <div className="py-2.5 rounded-xl text-center text-xs font-bold border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 shadow-sm transition duration-200 cursor-pointer">
-                                View
-                              </div>
-                            </Link>
-                            <button onClick={() => deleteModel(m.id)}
-                              className="flex-1 py-2.5 rounded-xl text-xs font-bold border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 shadow-sm transition duration-200">
-                              Delete
-                            </button>
+                            <Link href={`/gallery/${m.id}`} className="flex-1"><div className="py-2.5 rounded-xl text-center text-xs font-bold border border-gray-200 text-gray-700 hover:bg-gray-50 shadow-sm transition cursor-pointer">View</div></Link>
+                            <button onClick={() => deleteModel(m.id)} className="flex-1 py-2.5 rounded-xl text-xs font-bold border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 shadow-sm transition">Delete</button>
                           </div>
                         </div>
                       </motion.div>
@@ -407,72 +511,47 @@ export default function AdminDashboard() {
             </motion.div>
           )}
 
-          {/* ── USERS ── */}
+          {/* USERS */}
           {activeTab === "users" && (
-            <motion.div key="users" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-              <p className="text-gray-500 font-medium text-sm mb-6">{users.length} registered users</p>
-              {users.length === 0 ? (
-                <div className="w-full py-24 text-center border-2 border-indigo-100 border-dashed rounded-[3rem] bg-indigo-50/30 flex flex-col items-center gap-4 shadow-sm">
-                    <p className="text-gray-500 font-black text-lg">No users yet</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {users.map((u, i) => (
-                    <motion.div key={u.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
-                      className="flex items-center gap-4 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition duration-200">
-                      <div className={`w-12 h-12 rounded-2xl overflow-hidden border shadow-sm flex items-center justify-center flex-shrink-0 font-black text-sm uppercase ${u.role === "developer" ? "border-blue-200 bg-blue-50 text-blue-700" :
-                        u.role === "admin" ? "border-red-200 bg-red-50 text-red-700" :
-                          "border-gray-200 bg-gray-50 text-gray-500"
-                        }`}>
-                        {u.profileImage && u.profileImage !== "/avatar.png"
-                          ? <img src={u.profileImage} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = "none" }} />
-                          : (u.name?.[0] ?? u.email?.[0] ?? "?")
-                        }
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-gray-900 text-sm font-extrabold truncate mb-0.5">{u.name || "No name"}</p>
-                        <p className="text-gray-500 font-medium text-xs truncate">{u.email}</p>
-                      </div>
-                      <div className="flex items-center gap-3 flex-shrink-0 flex-wrap justify-end">
-                        <span className={rolePill(u.role)}>{u.role}</span>
-                        {u.certified && <span className="px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border border-yellow-300 bg-yellow-50 text-yellow-700 shadow-sm">⭐ Certified</span>}
-                        {u.role === "user" && (
-                          <button onClick={() => promoteUser(u.id)}
-                            className="px-3 py-1.5 rounded-lg text-[10px] font-bold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-sm transition duration-200">
-                            Promote to Dev
-                          </button>
-                        )}
-                        {u.role === "developer" && (
-                          <button onClick={() => demoteUser(u.id)}
-                            className="px-3 py-1.5 rounded-lg text-[10px] font-bold border border-gray-200 bg-white text-gray-600 hover:border-red-200 hover:bg-red-50 hover:text-red-600 shadow-sm transition duration-200">
-                            Demote to User
-                          </button>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
+            <motion.div key="users" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <p className="text-gray-500 text-sm mb-6">{users.length} registered users</p>
+              <div className="space-y-3">
+                {users.map((u, i) => (
+                  <motion.div key={u.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
+                    className="flex items-center gap-4 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition">
+                    <div className={`w-12 h-12 rounded-2xl overflow-hidden border shadow-sm flex items-center justify-center flex-shrink-0 font-black text-sm uppercase ${u.role === "developer" ? "border-blue-200 bg-blue-50 text-blue-700" : u.role === "admin" ? "border-red-200 bg-red-50 text-red-700" : u.role === "mentor" ? "border-teal-200 bg-teal-50 text-teal-700" : "border-gray-200 bg-gray-50 text-gray-500"}`}>
+                      {u.photoURL ? <img src={u.photoURL} className="w-full h-full object-cover" /> : (u.displayName?.[0] ?? u.email?.[0] ?? "?")}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-gray-900 text-sm font-extrabold truncate">{u.displayName || "No name"}</p>
+                      <p className="text-gray-500 text-xs truncate">{u.email}</p>
+                    </div>
+                    <div className="flex items-center gap-3 flex-shrink-0 flex-wrap justify-end">
+                      <span className={rolePill(u.role)}>{u.role}</span>
+                      {u.role === "user" && (
+                        <button onClick={() => promoteUser(u.id)} className="px-3 py-1.5 rounded-lg text-[10px] font-bold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-sm transition">Promote to Dev</button>
+                      )}
+                      {u.role === "developer" && (
+                        <button onClick={() => demoteUser(u.id)} className="px-3 py-1.5 rounded-lg text-[10px] font-bold border border-gray-200 bg-white text-gray-600 hover:border-red-200 hover:bg-red-50 hover:text-red-600 shadow-sm transition">Demote</button>
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
           )}
 
-          {/* ── APPLICATIONS ── */}
+          {/* APPLICATIONS */}
           {activeTab === "applications" && (
-            <motion.div key="applications" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-              <p className="text-gray-500 font-medium text-sm mb-6">{applications.length} total · {pendingApps.length} pending</p>
+            <motion.div key="applications" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <p className="text-gray-500 text-sm mb-6">{applications.length} total · {pendingApps.length} pending</p>
               {applications.length === 0 ? (
-                <div className="w-full py-24 text-center border-2 border-indigo-100 border-dashed rounded-[3rem] bg-indigo-50/30 flex flex-col items-center gap-4 shadow-sm">
-                  <div className="w-20 h-20 rounded-[1.5rem] bg-indigo-100 border-2 border-indigo-200 flex items-center justify-center mb-2 shadow-sm">
-                    <span className="text-4xl filter hue-rotate-15">📝</span>
-                  </div>
-                  <p className="text-gray-900 font-black text-xl">No applications yet</p>
-                </div>
+                <div className="text-center py-24 border-2 border-dashed border-indigo-100 rounded-3xl bg-indigo-50/30"><span className="text-4xl">📝</span><p className="text-gray-900 font-black text-xl mt-4">No applications yet</p></div>
               ) : (
                 <div className="space-y-4">
                   {applications.map((a, i) => (
                     <motion.div key={a.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
-                      className={`p-6 rounded-2xl border shadow-sm transition duration-200 ${a.status === "pending" ? "border-blue-200 bg-blue-50/50" : "border-gray-200 bg-white"
-                        }`}>
+                      className={`p-6 rounded-2xl border shadow-sm ${a.status === "pending" ? "border-blue-200 bg-blue-50/50" : "border-gray-200 bg-white"}`}>
                       <div className="flex items-start justify-between gap-5 flex-wrap">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-3 flex-wrap">
@@ -486,26 +565,15 @@ export default function AdminDashboard() {
                               ))}
                             </div>
                           )}
-                          {a.bio && (
-                            <div className="mb-4 bg-gray-50 rounded-xl p-4 border border-gray-100 shadow-inner">
-                              <p className="text-gray-700 text-sm font-medium leading-relaxed">{a.bio}</p>
-                            </div>
-                          )}
                           <div className="flex gap-4 mt-2 text-sm font-bold">
-                            {a.portfolio && <a href={a.portfolio} target="_blank" className="text-indigo-600 hover:text-indigo-700 hover:underline transition">Portfolio ↗</a>}
-                            {a.linkedin && <a href={a.linkedin} target="_blank" className="text-cyan-600 hover:text-cyan-700 hover:underline transition">LinkedIn ↗</a>}
+                            {a.portfolio && <a href={a.portfolio} target="_blank" className="text-indigo-600 hover:underline">Portfolio ↗</a>}
+                            {a.linkedin && <a href={a.linkedin} target="_blank" className="text-cyan-600 hover:underline">LinkedIn ↗</a>}
                           </div>
                         </div>
                         {a.status === "pending" && (
-                          <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0 w-full sm:w-auto">
-                            <button onClick={() => approveApplication(a)}
-                              className="px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-green-600 hover:bg-green-700 shadow-sm transition">
-                              ✓ Approve
-                            </button>
-                            <button onClick={() => rejectApplication(a.id)}
-                              className="px-5 py-2.5 rounded-xl font-bold text-red-600 text-xs border border-red-200 bg-red-50 hover:bg-red-100 shadow-sm transition">
-                              ✕ Reject
-                            </button>
+                          <div className="flex gap-3">
+                            <button onClick={() => approveApplication(a)} className="px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-green-600 hover:bg-green-700 shadow-sm transition">✓ Approve</button>
+                            <button onClick={() => rejectApplication(a.id)} className="px-5 py-2.5 rounded-xl font-bold text-red-600 text-xs border border-red-200 bg-red-50 hover:bg-red-100 shadow-sm transition">✕ Reject</button>
                           </div>
                         )}
                       </div>
@@ -516,56 +584,79 @@ export default function AdminDashboard() {
             </motion.div>
           )}
 
-          {/* ── CERTIFICATIONS ── */}
+          {/* CERTIFICATIONS */}
           {activeTab === "certifications" && (
-            <motion.div key="certifications" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-              <p className="text-gray-500 font-medium text-sm mb-6">{certRequests.length} total · {pendingCerts.length} pending</p>
+            <motion.div key="certifications" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <p className="text-gray-500 text-sm mb-6">{certRequests.length} total · {pendingCerts.length} pending</p>
               {certRequests.length === 0 ? (
-                <div className="w-full py-24 text-center border-2 border-indigo-100 border-dashed rounded-[3rem] bg-indigo-50/30 flex flex-col items-center gap-4 shadow-sm">
-                  <div className="w-20 h-20 rounded-[1.5rem] bg-indigo-100 border-2 border-indigo-200 flex items-center justify-center mb-2 shadow-sm">
-                    <span className="text-4xl filter hue-rotate-15">🎓</span>
-                  </div>
-                  <p className="text-gray-900 font-black text-xl">No certification requests yet</p>
-                </div>
+                <div className="text-center py-24 border-2 border-dashed border-indigo-100 rounded-3xl bg-indigo-50/30"><span className="text-4xl">🎓</span><p className="text-gray-900 font-black text-xl mt-4">No certification requests yet</p></div>
               ) : (
                 <div className="space-y-4">
                   {certRequests.map((c, i) => (
                     <motion.div key={c.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
-                      className={`p-6 rounded-2xl border shadow-sm transition duration-200 ${c.status === "pending" ? "border-indigo-200 bg-indigo-50/50" : "border-gray-200 bg-white"
-                        }`}>
+                      className={`p-6 rounded-2xl border shadow-sm ${c.status === "pending" ? "border-indigo-200 bg-indigo-50/50" : "border-gray-200 bg-white"}`}>
                       <div className="flex items-start justify-between gap-5 flex-wrap">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-2 flex-wrap">
                             <p className="text-gray-900 font-extrabold text-lg">{c.name}</p>
                             <span className={statusPill(c.status)}>{c.status}</span>
                           </div>
-                          <p className="text-gray-500 font-medium text-sm mb-4">{c.email}</p>
-
-                          {c.reason && (
-                            <div className="mb-4 bg-gray-50 rounded-xl p-4 border border-gray-100 shadow-inner">
-                              <p className="text-gray-400 text-[10px] uppercase font-black tracking-widest mb-1.5">Why they should be certified</p>
-                              <p className="text-gray-700 text-sm font-medium leading-relaxed">{c.reason}</p>
-                            </div>
-                          )}
-
-                          <div className="flex flex-wrap items-center gap-4 text-sm font-bold mt-4">
-                            {c.portfolio && <a href={c.portfolio} target="_blank" className="text-indigo-600 hover:text-indigo-700 hover:underline transition">Portfolio ↗</a>}
-                            {c.linkedin && <a href={c.linkedin} target="_blank" className="text-cyan-600 hover:text-cyan-700 hover:underline transition">LinkedIn ↗</a>}
-                            {c.experience && <span className="px-2.5 py-1 rounded bg-gray-100 text-gray-600 text-[10px] uppercase tracking-widest border border-gray-200 shadow-sm">{c.experience} yrs exp</span>}
+                          <p className="text-gray-500 text-sm mb-3">{c.email}</p>
+                          {c.reason && <div className="mb-4 bg-gray-50 rounded-xl p-4 border border-gray-100"><p className="text-gray-700 text-sm leading-relaxed">{c.reason}</p></div>}
+                          <div className="flex gap-4 text-sm font-bold">
+                            {c.portfolio && <a href={c.portfolio} target="_blank" className="text-indigo-600 hover:underline">Portfolio ↗</a>}
+                            {c.linkedin && <a href={c.linkedin} target="_blank" className="text-cyan-600 hover:underline">LinkedIn ↗</a>}
                           </div>
                         </div>
                         {c.status === "pending" && (
-                          <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0 w-full sm:w-auto">
-                            <button onClick={() => approveCert(c.id, c.userId)}
-                              className="px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-indigo-600 hover:bg-indigo-700 shadow-sm transition flex items-center justify-center gap-1.5">
-                              ⭐ Certify
-                            </button>
-                            <button onClick={() => rejectCert(c.id)}
-                              className="px-5 py-2.5 rounded-xl font-bold text-red-600 text-xs border border-red-200 bg-red-50 hover:bg-red-100 shadow-sm transition">
-                              ✕ Reject
-                            </button>
+                          <div className="flex gap-3">
+                            <button onClick={() => approveCert(c.id, c.userId)} className="px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-indigo-600 hover:bg-indigo-700 shadow-sm transition">⭐ Certify</button>
+                            <button onClick={() => rejectCert(c.id)} className="px-5 py-2.5 rounded-xl font-bold text-red-600 text-xs border border-red-200 bg-red-50 hover:bg-red-100 shadow-sm transition">✕ Reject</button>
                           </div>
                         )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          )}
+
+          {/* MENTOR APPS */}
+          {activeTab === "mentorApps" && (
+            <motion.div key="mentorApps" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <div className="flex items-center justify-between mb-6">
+                <p className="text-gray-500 text-sm">{mentorApps.length} total · <span className="text-amber-600 font-bold">{pendingMentor.length} pending review</span></p>
+              </div>
+              {mentorApps.length === 0 ? (
+                <div className="text-center py-24 border-2 border-dashed border-teal-100 rounded-3xl bg-teal-50/30">
+                  <span className="text-4xl">🧑‍🏫</span>
+                  <p className="text-gray-900 font-black text-xl mt-4">No mentor applications yet</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {mentorApps.map((app, i) => (
+                    <motion.div key={app.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
+                      onClick={() => setSelectedApp(app)}
+                      className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4 cursor-pointer hover:border-[#0F6E56]/30 hover:shadow-md transition">
+                      <div className="w-12 h-12 rounded-xl bg-[#0F6E56]/10 flex items-center justify-center overflow-hidden flex-shrink-0">
+                        {app.userPhoto
+                          ? <img src={app.userPhoto} className="w-full h-full object-cover" alt="" />
+                          : <span className="text-[#0F6E56] font-bold text-lg">{app.userName?.charAt(0)}</span>}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="font-black text-gray-900">{app.userName}</p>
+                          <span className="text-xs text-gray-400">{app.userEmail}</span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-0.5">{app.expertise} · {app.experience} · ₹{app.hourlyRate}/hr</p>
+                      </div>
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        <div className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${(app.certCount ?? 0) >= 2 ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600"}`}>
+                          📄 {app.certCount ?? 0} certs
+                        </div>
+                        <span className={statusPill(app.status)}>{app.status}</span>
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="text-gray-300"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
                       </div>
                     </motion.div>
                   ))}
@@ -577,237 +668,14 @@ export default function AdminDashboard() {
         </AnimatePresence>
       </div>
 
-      {/* Toast */}
       <AnimatePresence>
         {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ duration: 0.3 }}
+          <motion.div initial={{ opacity: 0, y: 20, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 20, scale: 0.95 }}
             className="fixed bottom-6 right-6 z-50 px-6 py-4 rounded-2xl border border-green-200 bg-green-50 text-green-800 text-sm font-bold shadow-lg flex items-center gap-2">
             <span className="w-5 h-5 rounded-full bg-green-200 text-green-700 flex items-center justify-center text-xs">✓</span> {toast}
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
-  );
-}// ─────────────────────────────────────────────────────────────────────────────
-// ADD THIS to your existing AdminDashboard — app/dashboard/admin/page.tsx
-//
-// 1. Add "roleApplications" tab to existing TABS array
-// 2. Add the RoleApplications component below
-// 3. Add loadRoleApps() to your loadAll() function
-// ─────────────────────────────────────────────────────────────────────────────
-
-// STEP 1 — Add to your existing TABS array:
-// { id: "roleApplications", label: "Role Apps", badge: pendingRoleApps }
-
-// STEP 2 — Add to loadAll():
-// const raSnap = await getDocs(query(collection(db, "roleApplications"), orderBy("createdAt", "desc")));
-// setRoleApplications(raSnap.docs.map(d => ({ id: d.id, ...d.data() })));
-
-// STEP 3 — Add state:
-// const [roleApplications, setRoleApplications] = useState<any[]>([]);
-// const pendingRoleApps = roleApplications.filter(a => a.status === "pending").length;
-
-// STEP 4 — Add this tab content inside your AnimatePresence block:
-
-/*
-{activeTab === "roleApplications" && (
-  <RoleApplicationsTab
-    applications={roleApplications}
-    onApprove={async (app) => {
-      await updateDoc(doc(db, "roleApplications", app.id), { status: "payment_pending" });
-      await addDoc(collection(db, "notifications"), {
-        userId: app.userId,
-        type: "application_approved",
-        message: `Your ${app.role} application is approved! Pay the joining fee to activate: ${window.location.origin}/join/pay?role=${app.role}`,
-        read: false,
-        createdAt: serverTimestamp(),
-        link: `/join/pay?role=${app.role}`,
-      });
-      setRoleApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: "payment_pending" } : a));
-      showToast(`${app.name} approved — payment link sent`);
-    }}
-    onReject={async (app) => {
-      await updateDoc(doc(db, "roleApplications", app.id), { status: "rejected" });
-      await addDoc(collection(db, "notifications"), {
-        userId: app.userId,
-        type: "application_rejected",
-        message: `Your ${app.role} application was not approved at this time.`,
-        read: false,
-        createdAt: serverTimestamp(),
-      });
-      setRoleApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: "rejected" } : a));
-      showToast("Rejected");
-    }}
-    onActivate={async (app) => {
-      await updateDoc(doc(db, "roleApplications", app.id), { status: "approved" });
-      await updateDoc(doc(db, "users", app.userId), { role: app.role });
-      await addDoc(collection(db, "notifications"), {
-        userId: app.userId,
-        type: "role_activated",
-        message: `Welcome! Your ${app.role} profile is now active on SYNTHE.`,
-        read: false,
-        createdAt: serverTimestamp(),
-      });
-      setRoleApplications(prev => prev.map(a => a.id === app.id ? { ...a, status: "approved" } : a));
-      showToast(`${app.name} activated as ${app.role}`);
-    }}
-  />
-)}
-*/
-
-// ─── The RoleApplicationsTab component ───────────────────────────────────────
-// Add this as a separate component in the same file or import from here
-
-
-const STATUS_PILL: Record<string, string> = {
-  pending:         "border-amber-200 bg-amber-50 text-amber-700",
-  payment_pending: "border-blue-200 bg-blue-50 text-blue-700",
-  approved:        "border-green-200 bg-green-50 text-green-700",
-  rejected:        "border-red-200 bg-red-50 text-red-700",
-};
-
-interface RoleApp {
-  id: string; userId: string; name: string; email: string;
-  role: "mentor" | "developer" | "learner";
-  bio: string; skills: string[]; portfolio: string; reason: string;
-  status: "pending" | "payment_pending" | "approved" | "rejected";
-  hourlyRate?: number; paymentDone?: boolean; createdAt: any;
-}
-
-interface RoleApplicationsTabProps {
-  applications: RoleApp[];
-  onApprove: (app: RoleApp) => Promise<void>;
-  onReject: (app: RoleApp) => Promise<void>;
-  onActivate: (app: RoleApp) => Promise<void>;
-}
-
-export function RoleApplicationsTab({ applications, onApprove, onReject, onActivate }: RoleApplicationsTabProps) {
-  const pending = applications.filter(a => a.status === "pending");
-  const payPending = applications.filter(a => a.status === "payment_pending");
-  const rest = applications.filter(a => a.status === "approved" || a.status === "rejected");
-
-  return (
-    <div className="space-y-8">
-      {/* Pending approval */}
-      {pending.length > 0 && (
-        <div>
-          <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-4">
-            Pending Review ({pending.length})
-          </p>
-          <div className="space-y-4">
-            {pending.map((app, i) => (
-              <motion.div key={app.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
-                className="bg-white border-2 border-amber-100 rounded-2xl overflow-hidden shadow-sm">
-                <div className="p-6">
-                  <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="font-black text-gray-900 text-base">{app.name}</p>
-                        <span className="text-xs font-black px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200 capitalize">{app.role}</span>
-                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${STATUS_PILL[app.status]}`}>{app.status}</span>
-                      </div>
-                      <p className="text-xs text-gray-400">{app.email}</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button onClick={() => onApprove(app)}
-                        className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white text-xs font-bold transition-colors shadow-sm">
-                        Approve + Send Payment Link
-                      </button>
-                      <button onClick={() => onReject(app)}
-                        className="px-4 py-2 rounded-xl border border-red-200 bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 transition-colors">
-                        Reject
-                      </button>
-                    </div>
-                  </div>
-
-                  {app.bio && (
-                    <p className="text-sm text-gray-600 leading-relaxed mb-3 bg-gray-50 rounded-xl p-3">{app.bio}</p>
-                  )}
-                  {app.reason && (
-                    <p className="text-xs text-gray-400 italic mb-3">"{app.reason}"</p>
-                  )}
-                  {app.skills?.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      {app.skills.map(s => (
-                        <span key={s} className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium border border-gray-200">{s}</span>
-                      ))}
-                    </div>
-                  )}
-                  {app.portfolio && (
-                    <a href={app.portfolio} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-[#5B4BDB] font-semibold hover:underline">
-                      View portfolio →
-                    </a>
-                  )}
-                  {app.role === "mentor" && app.hourlyRate && (
-                    <p className="text-xs text-gray-500 mt-2">Hourly rate: ₹{app.hourlyRate}/hr</p>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Payment pending — activate after payment confirmation */}
-      {payPending.length > 0 && (
-        <div>
-          <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-4">
-            Payment Pending — Activate After Confirmation ({payPending.length})
-          </p>
-          <div className="space-y-3">
-            {payPending.map(app => (
-              <div key={app.id} className="flex items-center justify-between gap-4 p-5 bg-blue-50 border border-blue-200 rounded-2xl flex-wrap">
-                <div>
-                  <p className="font-bold text-gray-900 text-sm">{app.name}</p>
-                  <p className="text-xs text-gray-500">{app.email} · {app.role} · ₹999 joining fee</p>
-                  {app.paymentDone && (
-                    <span className="inline-flex items-center gap-1 text-xs font-bold text-green-600 mt-1">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
-                      Razorpay payment received
-                    </span>
-                  )}
-                </div>
-                <button onClick={() => onActivate(app)}
-                  className="px-5 py-2.5 rounded-xl bg-[#5B4BDB] hover:bg-[#4c3ec7] text-white text-xs font-bold transition-colors">
-                  Activate {app.role}
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Approved / Rejected history */}
-      {rest.length > 0 && (
-        <div>
-          <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-4">History</p>
-          <div className="space-y-2">
-            {rest.map(app => (
-              <div key={app.id} className="flex items-center justify-between gap-3 p-4 bg-white border border-gray-200 rounded-xl">
-                <div className="flex items-center gap-2">
-                  <p className="font-bold text-gray-900 text-sm">{app.name}</p>
-                  <span className="text-xs font-medium text-gray-400 capitalize">{app.role}</span>
-                </div>
-                <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${STATUS_PILL[app.status]}`}>
-                  {app.status}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {applications.length === 0 && (
-        <div className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-200">
-          <p className="text-3xl mb-3">📋</p>
-          <p className="font-bold text-gray-900">No role applications yet</p>
-        </div>
-      )}
     </div>
   );
 }

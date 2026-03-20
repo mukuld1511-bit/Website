@@ -32,7 +32,7 @@ Answer specifically about ${tool.name}. Be concise (under 100 words). Friendly t
 
 interface Props { tool: Tool; onClose: () => void; }
 
-export default function AIToolChat({ tool, onClose }: Props) {
+export default function GeminiToolChat({ tool, onClose }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput]       = useState("");
   const [loading, setLoading]   = useState(false);
@@ -69,7 +69,7 @@ export default function AIToolChat({ tool, onClose }: Props) {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs font-semibold text-gray-900 truncate">Ask about {tool.name}</p>
-          <p className="text-xs text-gray-400">GPT-4o mini · tool expert</p>
+          <p className="text-xs text-gray-400">Gemini AI · tool expert</p>
         </div>
         <span className="flex items-center gap-1 text-xs text-green-600 font-medium">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />Live

@@ -88,24 +88,28 @@ const QUICK_QUESTIONS = [
 ];
 
 async function askGemini(question: string, userRole: string): Promise<string> {
-  const ctx = `You are an XR education assistant on SYNTHÉ. Answer in simple, friendly language.
+  const systemPrompt = `You are an XR education assistant on SYNTHÉ. Answer in simple, friendly language.
 ${userRole === "learner" || userRole === "user" ? "Beginner — avoid jargon, use analogies." : "Developer — be technical."}
 Under 100 words. End with one tip.`;
-  const res = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" +
-      process.env.NEXT_PUBLIC_GEMINI_API_KEY,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: ctx + "\n\nQuestion: " + question }] }],
-        generationConfig: { temperature: 0.6, maxOutputTokens: 250 },
-      }),
-    }
-  );
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user",   content: question },
+      ],
+      temperature: 0.6,
+      max_tokens: 250,
+    }),
+  });
   if (!res.ok) throw new Error("API error");
   const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "Sorry, try again.";
+  return data.choices?.[0]?.message?.content ?? "Sorry, try again.";
 }
 
 function GeminiChat({ userRole }: { userRole: string }) {

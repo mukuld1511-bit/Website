@@ -26,89 +26,110 @@ interface Collaborator {
 }
 interface TutorProfile {
   id: string; name: string; avatar: string; skills: string[];
-  hourlyRate: number; currency: string; rating: number; totalSessions: number; color: string;
+  hourlyRate: number; currency: string; rating: number; totalSessions: number;
+  color: string; certified?: boolean;
 }
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-const FILE_COLORS: Record<string, string> = {
-  glb:"#3b82f6", gltf:"#3b82f6", obj:"#10b981", fbx:"#10b981", dwg:"#f59e0b", dxf:"#f59e0b",
-};
-
-const FEATURES = [
-  { title:"3D Geometry Hub",     href:"/gallery",           color:"blue",   tag:"4 formats",
-    desc:"Browse and download precision GLB, GLTF, OBJ & FBX models for high-end visualization.",
-    icon:"M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
-  { title: "3D Asset Library", href: "/gallery", color: "rose", tag: "Premium",
-    desc: "High-poly, photorealistic models ready for AR visualization and detailed renders.",
-    icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
-  { title:"AutoCAD Hub",         href:"/autocad",           color:"amber",  tag:"Engineering",
-    desc:"Professional DWG/DXF blueprints — managed, previewed, and shared for industrial design.",
-    icon:"M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" },
-  { title:"XR Professional Dev", href:"/gallery?mode=ar&genre=app", color:"violet", tag:"Apps",
-    desc:"Deployable AR/VR utility apps, medical simulators, and enterprise training solutions.",
-    icon:"M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2" },
-  { title:"Live Workshops",       href:"/learn",            color:"pink",   tag:"Learning",
-    desc:"Join masterclasses on 3D Design, Spatial Computing, and Industrial CAD workflows.",
-    icon:"M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" },
-  { title:"Freelance Network",   href:"/connect",           color:"cyan",   tag:"Collaborate",
-    desc:"Connect with top-tier developers. Hire verified experts for your 3D and XR projects.",
-    icon:"M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" },
-  { title:"Certification",       href:"/certification",     color:"indigo", tag:"Verified",
-    desc:"Get Synthé Certified. Unlock a verified badge, priority listing, and premium trust.",
-    icon:"M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" },
-  { title:"PIET Collaboration",  href:"/collaborators",     color:"purple", tag:"Research",
-    desc:"Academic partnership with PIET — students and faculty co-building the future of 3D/AR/VR.",
-    icon:"M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" },
+// ─── Platform sections — updated to match new nav ─────────────────────────────
+const PLATFORM_SECTIONS = [
+  {
+    title: "3D Verse",
+    href: "/verse",
+    tag: "GLB · GLTF · OBJ · FBX",
+    tagColor: "bg-blue-50 text-blue-700 border-blue-200",
+    accent: "#1d4ed8",
+    accentBg: "#EFF6FF",
+    desc: "Browse and buy precision 3D models. Hover any card — it spins live in WebGL. Nothing like it in any marketplace.",
+    icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4",
+    cta: "Browse 3D Verse",
+  },
+  {
+    title: "XR Zone",
+    href: "/xr-zone",
+    tag: "AR · VR · WebXR",
+    tagColor: "bg-violet-50 text-violet-700 border-violet-200",
+    accent: "#5B4BDB",
+    accentBg: "#EEEDFE",
+    desc: "Immersive AR/VR builds from real developers. Place 3D objects in your room instantly — no app needed. Pure WebXR.",
+    icon: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2",
+    cta: "Enter XR Zone",
+  },
+  {
+    title: "AutoCAD Hub",
+    href: "/autocad",
+    tag: "DWG · DXF",
+    tagColor: "bg-amber-50 text-amber-700 border-amber-200",
+    accent: "#B45309",
+    accentBg: "#FAEEDA",
+    desc: "Professional blueprints and engineering drawings. Managed, previewed, and shared for industrial and architectural design.",
+    icon: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18",
+    cta: "Open AutoCAD Hub",
+  },
+  {
+    title: "Learn",
+    href: "/learn",
+    tag: "Live · AI Roadmap",
+    tagColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    accent: "#0F6E56",
+    accentBg: "#E1F5EE",
+    desc: "Live workshops from verified mentors. AI-generated XR roadmaps. Book 1-on-1 sessions. 48 curated tools. Everything to grow.",
+    icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253",
+    cta: "Start Learning",
+  },
+  {
+    title: "Freelance",
+    href: "/freelance",
+    tag: "Projects · Bids",
+    tagColor: "bg-pink-50 text-pink-700 border-pink-200",
+    accent: "#9D174D",
+    accentBg: "#FBEAF0",
+    desc: "Post projects, get bids, hire verified XR developers. Negotiable pricing, escrow payments, 85% goes to the developer.",
+    icon: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4",
+    cta: "Browse Freelance",
+  },
+  {
+    title: "Connect",
+    href: "/connect",
+    tag: "Network · Chat",
+    tagColor: "bg-cyan-50 text-cyan-700 border-cyan-200",
+    accent: "#0E7490",
+    accentBg: "#E0F7FA",
+    desc: "Find collaborators, send project requests, and chat directly. Gemini AI matches you with the right creator.",
+    icon: "M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z",
+    cta: "Connect Now",
+  },
 ];
 
-// ─── NEW: What's different feature data ───────────────────────────────────────
-const DIFF_FEATURES = [
+// ─── Gemini feature highlights ────────────────────────────────────────────────
+const GEMINI_FEATURES = [
   {
-    emoji: "✦",
-    emojiColor: "#5B4BDB",
-    bg: "bg-[#5B4BDB]/8",
-    border: "border-[#5B4BDB]/20",
-    hoverBorder: "hover:border-[#5B4BDB]/50",
-    hoverShadow: "hover:shadow-[0_8px_30px_rgba(91,75,219,0.12)]",
-    label: "Day 2 feature",
-    labelColor: "bg-[#5B4BDB]/10 text-[#5B4BDB]",
-    title: "Live 3D Gallery",
-    desc: "Hover any card — the thumbnail dissolves into a live rotating WebGL model. No click needed. Nothing like it exists in any XR marketplace.",
-    link: "/gallery",
-    linkText: "Open gallery",
+    title: "XR Roadmap Generator",
+    href: "/learn/roadmap",
+    desc: "Enter your age, goal, and experience — get a personalised 4-6 phase AR/VR learning path in seconds.",
+    icon: "M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7",
   },
   {
-    emoji: "◈",
-    emojiColor: "#B45309",
-    bg: "bg-amber-50",
-    border: "border-amber-200/60",
-    hoverBorder: "hover:border-amber-300",
-    hoverShadow: "hover:shadow-[0_8px_30px_rgba(180,83,9,0.10)]",
-    label: "Day 3 feature",
-    labelColor: "bg-amber-100 text-amber-700",
-    title: "Cinematic Viewer",
-    desc: "One click transforms any model into a product reveal. HDRI studio lighting, bloom post-processing, dramatic auto-orbit. Rivals Sketchfab.",
-    link: "/gallery",
-    linkText: "Try it",
+    title: "XR Concept Chat",
+    href: "/learn",
+    desc: "Ask anything — WebXR, SLAM, ARKit, Unity. Gemini answers in beginner or developer mode based on your role.",
+    icon: "M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z",
   },
   {
-    emoji: "⬡",
-    emojiColor: "#1d4ed8",
-    bg: "bg-blue-50",
-    border: "border-blue-200/60",
-    hoverBorder: "hover:border-blue-300",
-    hoverShadow: "hover:shadow-[0_8px_30px_rgba(29,78,216,0.10)]",
-    label: "Day 5 feature",
-    labelColor: "bg-blue-100 text-blue-700",
-    title: "AR in Your Room",
-    desc: "Tap 'View in your room' on any GLB model. Point your phone at the floor. The model is physically there. No app download. Pure WebXR.",
-    link: "/gallery",
-    linkText: "See how",
+    title: "AI Creator Matcher",
+    href: "/connect",
+    desc: "Describe what you need — Gemini reads all creator profiles and recommends the best 2-3 with reasoning.",
+    icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z",
+  },
+  {
+    title: "Model Meta Writer",
+    href: "/verse/upload",
+    desc: "Upload any 3D file — Gemini auto-generates a title, description, tags, and a suggested price instantly.",
+    icon: "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z",
   },
 ];
 
 // ─── Counter ──────────────────────────────────────────────────────────────────
-function Counter({ target, suffix="" }: { target:number; suffix?:string }) {
+function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
   const [val, setVal] = useState(0);
   const ran = useRef(false);
   useEffect(() => {
@@ -126,22 +147,22 @@ function Counter({ target, suffix="" }: { target:number; suffix?:string }) {
   return <>{target === 0 ? "—" : `${val}${suffix}`}</>;
 }
 
-// ─── Tilt model card ──────────────────────────────────────────────────────────
-function FloatingModelCard({ m, i }: { m:RecentModel; i:number }) {
-  const ext   = m.fileType?.toLowerCase() ?? "glb";
-  const ref   = useRef<HTMLDivElement>(null);
-  const [tilt, setTilt] = useState({ rx:0, ry:0 });
+// ─── Model card ───────────────────────────────────────────────────────────────
+function ModelCard({ m, i }: { m: RecentModel; i: number }) {
+  const ext = m.fileType?.toLowerCase() ?? "glb";
+  const ref = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
 
   return (
     <motion.div ref={ref}
-      initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
-      transition={{ duration:0.4, delay:i*0.05 }}
+      initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: i * 0.05 }}
       onMouseMove={e => {
         const r = ref.current!.getBoundingClientRect();
-        setTilt({ rx:-(((e.clientY-r.top)/r.height)-0.5)*10, ry:(((e.clientX-r.left)/r.width)-0.5)*10 });
+        setTilt({ rx: -(((e.clientY - r.top) / r.height) - 0.5) * 10, ry: (((e.clientX - r.left) / r.width) - 0.5) * 10 });
       }}
-      onMouseLeave={() => setTilt({ rx:0, ry:0 })}
-      style={{ willChange:"transform", transform:`perspective(600px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`, transition:"transform 0.1s ease" }}>
+      onMouseLeave={() => setTilt({ rx: 0, ry: 0 })}
+      style={{ willChange: "transform", transform: `perspective(600px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`, transition: "transform 0.1s ease" }}>
       <Link href={`/gallery/${m.id}`}>
         <div className="group relative rounded-2xl bg-white border border-gray-200 overflow-hidden hover:shadow-md transition duration-300 cursor-pointer shadow-sm flex flex-col h-full">
           <div className="relative aspect-square overflow-hidden bg-white border-b border-gray-100 flex items-center justify-center p-2">
@@ -153,9 +174,7 @@ function FloatingModelCard({ m, i }: { m:RecentModel; i:number }) {
                   </svg>
                 </div>
             }
-            <div className="absolute top-2 left-2 px-2 py-0.5 rounded text-[9px] font-bold uppercase bg-white text-gray-700 shadow-sm border border-gray-100">
-              {ext.toUpperCase()}
-            </div>
+            <div className="absolute top-2 left-2 px-2 py-0.5 rounded text-[9px] font-bold uppercase bg-white text-gray-700 shadow-sm border border-gray-100">{ext.toUpperCase()}</div>
             {m.isPaid
               ? <div className="absolute top-2 right-2 px-2 py-0.5 rounded text-[9px] font-bold bg-green-50 text-green-700 border border-green-200 shadow-sm">₹{m.price}</div>
               : <div className="absolute top-2 right-2 px-2 py-0.5 rounded text-[9px] font-bold bg-gray-100 text-gray-600 border border-gray-200 shadow-sm">Free</div>
@@ -171,82 +190,37 @@ function FloatingModelCard({ m, i }: { m:RecentModel; i:number }) {
   );
 }
 
-// ─── Feature card ─────────────────────────────────────────────────────────────
-function FeatureCard({ f, i }: { f:typeof FEATURES[0]; i:number }) {
-  const [hover, setHover] = useState(false);
-  return (
-    <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
-      transition={{ duration:0.4, delay:i*0.05 }}
-      onHoverStart={() => setHover(true)} onHoverEnd={() => setHover(false)}>
-      <Link href={f.href}>
-        <div className="group relative h-full p-6 rounded-[2rem] bg-white border-2 border-indigo-50 hover:border-indigo-100 hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden hover:-translate-y-1">
-          <div className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-${f.color}-400 to-${f.color}-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-          <div className="flex items-start justify-between mb-5">
-            <motion.div animate={{ scale:hover?1.05:1 }}
-              transition={{ type:"spring", stiffness:400, damping:20 }}
-              className={`w-12 h-12 rounded-xl flex items-center justify-center bg-${f.color}-50 border border-${f.color}-100`}>
-              <svg className={`w-5 h-5 text-${f.color}-600`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={f.icon} />
-              </svg>
-            </motion.div>
-            <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border bg-${f.color}-50 text-${f.color}-700 border-${f.color}-200`}>
-              {f.tag}
-            </span>
-          </div>
-          <h3 className="text-gray-900 font-extrabold text-lg mb-2">{f.title}</h3>
-          <p className="text-gray-500 text-sm leading-relaxed">{f.desc}</p>
-          <motion.div animate={{ x:hover?4:0, opacity:hover?1:0.5 }} transition={{ duration:0.2 }}
-            className={`absolute bottom-6 right-6 text-${f.color}-600`}>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </motion.div>
-        </div>
-      </Link>
-    </motion.div>
-  );
-}
-
 // ─── Tutor card ───────────────────────────────────────────────────────────────
-function TutorCard({ t, i }: { t:TutorProfile & { certified?: boolean }; i:number }) {
+function TutorCard({ t, i }: { t: TutorProfile; i: number }) {
   const isC = t.certified;
   return (
-    <motion.div initial={{ opacity:0, y:10 }} whileInView={{ opacity:1, y:0 }}
-      viewport={{ once:true }} transition={{ delay:i*0.05 }}>
+    <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
       <Link href="/connect">
-        <div className={`group flex items-center gap-4 p-4 rounded-3xl border-2 transition-all duration-300 cursor-pointer overflow-hidden relative hover:-translate-y-1 ${
-          isC
-            ? "border-[#5B4BDB]/30 bg-[#141414] shadow-[0_4px_20px_rgba(91,75,219,0.15)] hover:shadow-[0_8px_30px_rgba(91,75,219,0.25)] hover:border-[#5B4BDB]"
-            : "bg-white border-indigo-50 hover:border-indigo-200 hover:shadow-md"
+        <div className={`group flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer overflow-hidden relative hover:-translate-y-0.5 ${
+          isC ? "border-[#5B4BDB]/30 bg-gray-950 shadow-[0_4px_20px_rgba(91,75,219,0.15)] hover:border-[#5B4BDB]"
+              : "bg-white border-gray-100 hover:border-gray-200 hover:shadow-md"
         }`}>
-          {isC && <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#5B4BDB] to-purple-400 opacity-90" />}
+          {isC && <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#5B4BDB] to-purple-400" />}
           <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold overflow-hidden border ${
             isC ? "bg-[#5B4BDB]/10 text-[#5B4BDB] border-[#5B4BDB]/20" : "bg-gray-100 text-gray-500 border-gray-200"
           }`}>
-            {t.avatar
-              ? <img src={t.avatar} className="w-full h-full object-cover" />
-              : t.name?.split(" ").map((n:string)=>n[0]).join("").slice(0,2)
-            }
+            {t.avatar ? <img src={t.avatar} className="w-full h-full object-cover" alt="" /> : t.name?.split(" ").map((n: string) => n[0]).join("").slice(0, 2)}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <p className={`text-sm font-bold truncate ${isC ? "text-white group-hover:text-[#5B4BDB]" : "text-gray-900"}`}>{t.name}</p>
-              {isC && (
-                <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-[#5B4BDB]/20 text-[#5B4BDB] border border-[#5B4BDB]/30">
-                  Certified
-                </span>
-              )}
+              <p className={`text-sm font-bold truncate ${isC ? "text-white" : "text-gray-900"}`}>{t.name}</p>
+              {isC && <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-[#5B4BDB]/20 text-[#5B4BDB] border border-[#5B4BDB]/30">Certified</span>}
             </div>
             <div className="flex items-center gap-1 mt-0.5">
               <svg className="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
               <span className={`text-xs font-bold ${isC ? "text-gray-300" : "text-gray-700"}`}>{t.rating || "New"}</span>
               <span className={`text-[10px] ${isC ? "text-gray-500" : "text-gray-400"}`}>· {t.totalSessions || 0} sessions</span>
             </div>
           </div>
-          <span className={`text-sm font-extrabold flex-shrink-0 ${isC ? "text-white" : "text-blue-600"}`}>
-            {t.currency||"₹"}{t.hourlyRate||0}<span className={`text-xs font-medium ${isC ? "text-gray-500" : "text-gray-400"}`}>/hr</span>
+          <span className={`text-sm font-extrabold flex-shrink-0 ${isC ? "text-white" : "text-[#5B4BDB]"}`}>
+            {t.currency || "₹"}{t.hourlyRate || 0}<span className={`text-xs font-medium ${isC ? "text-gray-500" : "text-gray-400"}`}>/hr</span>
           </span>
         </div>
       </Link>
@@ -254,38 +228,34 @@ function TutorCard({ t, i }: { t:TutorProfile & { certified?: boolean }; i:numbe
   );
 }
 
-// ─── NEW: DiffFeatureCard ─────────────────────────────────────────────────────
-function DiffFeatureCard({ f, i }: { f: typeof DIFF_FEATURES[0]; i: number }) {
+// ─── Platform section card ────────────────────────────────────────────────────
+function SectionCard({ s, i }: { s: typeof PLATFORM_SECTIONS[0]; i: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.45, delay: i * 0.08 }}
-    >
-      <Link href={f.link}>
-        <div className={`group relative h-full p-7 rounded-2xl border ${f.bg} ${f.border} ${f.hoverBorder} ${f.hoverShadow} transition-all duration-300 cursor-pointer hover:-translate-y-1.5`}>
-          {/* Top row */}
-          <div className="flex items-center justify-between mb-5">
-            <div
-              className="w-11 h-11 rounded-xl flex items-center justify-center text-xl font-black"
-              style={{ background: `${f.emojiColor}12`, color: f.emojiColor, border: `1px solid ${f.emojiColor}22` }}
-            >
-              {f.emoji}
+      initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.06 }}>
+      <Link href={s.href}>
+        <div className="group h-full bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer overflow-hidden relative">
+          {/* Top accent line on hover */}
+          <div className="absolute top-0 left-0 right-0 h-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-2xl"
+            style={{ background: s.accent }} />
+
+          <div className="flex items-start justify-between mb-4">
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: s.accentBg }}>
+              <svg className="w-5 h-5" fill="none" stroke={s.accent} viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d={s.icon} />
+              </svg>
             </div>
-            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg ${f.labelColor}`}>
-              {f.label}
-            </span>
+            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border ${s.tagColor}`}>{s.tag}</span>
           </div>
 
-          <h3 className="text-gray-900 font-black text-lg mb-2 tracking-tight">{f.title}</h3>
-          <p className="text-gray-500 text-sm leading-relaxed mb-5">{f.desc}</p>
+          <h3 className="text-gray-900 font-black text-lg mb-2 tracking-tight group-hover:text-[#5B4BDB] transition-colors">{s.title}</h3>
+          <p className="text-gray-500 text-sm leading-relaxed mb-5">{s.desc}</p>
 
-          {/* Link row */}
-          <div className="flex items-center gap-1.5" style={{ color: f.emojiColor }}>
-            <span className="text-sm font-bold">{f.linkText}</span>
-            <svg className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          <div className="flex items-center gap-1.5 text-sm font-bold transition-transform duration-200 group-hover:translate-x-1" style={{ color: s.accent }}>
+            {s.cta}
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </div>
         </div>
@@ -294,58 +264,40 @@ function DiffFeatureCard({ f, i }: { f: typeof DIFF_FEATURES[0]; i: number }) {
   );
 }
 
-// ─── NEW: DemoStrip ───────────────────────────────────────────────────────────
+// ─── Demo steps strip ─────────────────────────────────────────────────────────
 const DEMO_STEPS = [
-  { step: "01", text: "Browse the gallery", sub: "Models glow based on popularity" },
+  { step: "01", text: "Browse 3D Verse", sub: "Models glow based on popularity" },
   { step: "02", text: "Hover any card", sub: "Model spins live — no click needed" },
   { step: "03", text: "Open cinematic mode", sub: "Studio lighting, bloom, auto-orbit" },
-  { step: "04", text: "Tap AR on phone", sub: "Model appears in your physical room" },
+  { step: "04", text: "Tap AR on phone", sub: "Model appears in your real room" },
 ];
 
 function DemoStrip() {
   return (
-    <div className="w-full bg-gray-950 py-14 px-4 border-y border-gray-800 overflow-hidden relative">
-      {/* subtle grid bg */}
+    <div className="w-full bg-gray-950 py-14 px-4 border-y border-gray-800 relative overflow-hidden">
       <div className="absolute inset-0 opacity-[0.04]" style={{
         backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
         backgroundSize: "40px 40px"
       }} />
-
       <div className="max-w-6xl mx-auto relative">
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-10"
-        >
+        <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+          className="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-10">
           The 30-second demo
         </motion.p>
-
         <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-gray-800 rounded-2xl overflow-hidden">
           {DEMO_STEPS.map((s, i) => (
-            <motion.div
-              key={s.step}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.07 }}
-              className="bg-gray-950 px-6 py-7 flex flex-col gap-3 group hover:bg-gray-900 transition-colors duration-200"
-            >
+            <motion.div key={s.step} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: i * 0.07 }}
+              className="bg-gray-950 px-6 py-7 flex flex-col gap-3 hover:bg-gray-900 transition-colors duration-200">
               <span className="text-[11px] font-black tracking-widest text-[#5B4BDB]">{s.step}</span>
               <p className="text-white text-sm font-bold leading-snug">{s.text}</p>
               <p className="text-gray-500 text-xs leading-relaxed">{s.sub}</p>
             </motion.div>
           ))}
         </div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="flex justify-center mt-8"
-        >
-          <Link href="/gallery">
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}
+          className="flex justify-center mt-8">
+          <Link href="/verse">
             <button className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
               <span className="w-2 h-2 rounded-full bg-white/60 animate-pulse" />
               Try it live
@@ -363,7 +315,7 @@ export default function HomePage() {
   const [recentModels,  setRecentModels]  = useState<RecentModel[]>([]);
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [tutors,        setTutors]        = useState<TutorProfile[]>([]);
-  const [stats,         setStats]         = useState({ models:0, developers:0, downloads:0, certifications:0 });
+  const [stats,         setStats]         = useState({ models: 0, developers: 0, downloads: 0, certifications: 0 });
   const [statsLoading,  setStatsLoading]  = useState(true);
 
   useEffect(() => {
@@ -376,43 +328,43 @@ export default function HomePage() {
       setStatsLoading(true);
       try {
         const [mSnap, pSnap, cSnap, uSnap] = await Promise.all([
-          getCountFromServer(collection(db,"models")),
-          getCountFromServer(collection(db,"purchases")),
-          getCountFromServer(collection(db,"certificationRequests")),
-          getDocs(query(collection(db,"users"))),
+          getCountFromServer(collection(db, "models")),
+          getCountFromServer(collection(db, "purchases")),
+          getCountFromServer(collection(db, "certificationRequests")),
+          getDocs(query(collection(db, "users"))),
         ]);
         setStats({
           models:         mSnap.data().count,
-          developers:     uSnap.docs.filter(d=>d.data().role==="developer").length,
+          developers:     uSnap.docs.filter(d => d.data().role === "developer").length,
           downloads:      pSnap.data().count,
           certifications: cSnap.data().count,
         });
-      } catch(e) { console.error(e); }
+      } catch (e) { console.error(e); }
       setStatsLoading(false);
     }
     load();
   }, []);
 
   useEffect(() => {
-    getDocs(query(collection(db,"models"), orderBy("uploadedAt","desc"), limit(8)))
-      .then(s => setRecentModels(s.docs.map(d=>({id:d.id,...d.data()} as RecentModel))))
+    getDocs(query(collection(db, "models"), orderBy("uploadedAt", "desc"), limit(8)))
+      .then(s => setRecentModels(s.docs.map(d => ({ id: d.id, ...d.data() } as RecentModel))))
       .catch(console.error);
   }, []);
 
   useEffect(() => {
-    getDocs(query(collection(db,"collaborators"), orderBy("createdAt","desc"), limit(6)))
-      .then(s => setCollaborators(s.docs.map(d=>({id:d.id,...d.data()} as Collaborator))))
+    getDocs(query(collection(db, "collaborators"), orderBy("createdAt", "desc"), limit(6)))
+      .then(s => setCollaborators(s.docs.map(d => ({ id: d.id, ...d.data() } as Collaborator))))
       .catch(console.error);
   }, []);
 
   useEffect(() => {
-    getDocs(query(collection(db,"tutorProfiles"), where("isAvailable","==",true), limit(4)))
-      .then(s => setTutors(s.docs.map(d=>({id:d.id,...d.data()} as TutorProfile))))
+    getDocs(query(collection(db, "tutorProfiles"), where("isAvailable", "==", true), limit(4)))
+      .then(s => setTutors(s.docs.map(d => ({ id: d.id, ...d.data() } as TutorProfile))))
       .catch(console.error);
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
       <Navbar />
 
       <div className="relative z-10 flex-grow pt-24">
@@ -420,47 +372,83 @@ export default function HomePage() {
         {/* HERO */}
         <HeroComponent user={user} stats={stats} statsLoading={statsLoading} />
 
-        {/* ── WHAT MAKES SYNTHÉ DIFFERENT ── ADDITION ── */}
+        {/* ── PLATFORM SECTIONS ── */}
         <section className="py-20 px-4 bg-white border-b border-gray-100">
-          <div className="max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-14"
-            >
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#5B4BDB]/20 bg-[#5B4BDB]/5 mb-4">
-                <span className="w-2 h-2 rounded-full bg-[#5B4BDB] animate-pulse" />
-                <span className="text-[#5B4BDB] text-xs font-bold uppercase tracking-widest">Just shipped</span>
+          <div className="max-w-7xl mx-auto">
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-2">Everything in one place</p>
+                <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">The AR/VR Ecosystem</h2>
               </div>
-              <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-3">
-                Built different. Built for XR.
-              </h2>
-              <p className="text-gray-500 text-base max-w-xl mx-auto leading-relaxed">
-                Three features you won't find in any other 3D marketplace — anywhere.
-              </p>
+              <p className="text-gray-500 text-sm max-w-xs">One unified platform for creators, developers, engineers and learners.</p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {DIFF_FEATURES.map((f, i) => (
-                <DiffFeatureCard key={f.title} f={f} i={i} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {PLATFORM_SECTIONS.map((s, i) => <SectionCard key={s.title} s={s} i={i} />)}
+            </div>
+          </div>
+        </section>
+
+        {/* ── DEMO STRIP ── */}
+        <DemoStrip />
+
+        {/* ── SCROLLING GALLERY ── */}
+        <div className="bg-white border-b border-gray-200 py-16">
+          <ScrollingGallery />
+        </div>
+
+        {/* ── GEMINI AI SECTION ── */}
+        <section className="py-20 px-4 bg-gray-950 relative overflow-hidden">
+          {/* grid bg */}
+          <div className="absolute inset-0 opacity-[0.04]" style={{
+            backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
+            backgroundSize: "32px 32px"
+          }} />
+          <div className="max-w-7xl mx-auto relative">
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#5B4BDB]/20 border border-[#5B4BDB]/30 mb-3">
+                  <svg className="w-3.5 h-3.5 text-[#5B4BDB]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span className="text-[#5B4BDB] text-[11px] font-bold uppercase tracking-widest">Powered by Gemini AI</span>
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight">AI built into everything</h2>
+              </div>
+              <Link href="/learn/roadmap">
+                <button className="px-5 py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
+                  Try AI Roadmap →
+                </button>
+              </Link>
+            </motion.div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {GEMINI_FEATURES.map((f, i) => (
+                <motion.div key={f.title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }} transition={{ delay: i * 0.07 }}>
+                  <Link href={f.href}>
+                    <div className="group h-full bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 hover:border-[#5B4BDB]/50 transition-all duration-200 cursor-pointer">
+                      <div className="w-10 h-10 rounded-xl bg-[#5B4BDB]/20 flex items-center justify-center mb-4">
+                        <svg className="w-5 h-5 text-[#5B4BDB]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d={f.icon} />
+                        </svg>
+                      </div>
+                      <h3 className="text-white font-bold text-sm mb-2 group-hover:text-[#5B4BDB] transition-colors">{f.title}</h3>
+                      <p className="text-gray-400 text-xs leading-relaxed">{f.desc}</p>
+                    </div>
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── DEMO STRIP ── ADDITION ── */}
-        <DemoStrip />
-
-        {/* SCROLLING GALLERY */}
-        <div className="bg-white border-b border-gray-200 py-16">
-          <ScrollingGallery />
-        </div>
-
-        {/* ── LIVE PLATFORM ACTIVITY ── */}
-        <section className="py-24 px-4 bg-gray-50">
+        {/* ── LIVE ACTIVITY ── */}
+        <section className="py-24 px-4 bg-[#F7F6F3]">
           <div className="max-w-7xl mx-auto">
-            <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               className="flex items-center gap-3 mb-12">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-green-200 bg-green-50 shadow-sm">
                 <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
@@ -470,30 +458,29 @@ export default function HomePage() {
             </motion.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
               {/* Recent uploads */}
               <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-gray-200 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-gray-900 text-lg font-bold">Recent Uploads</h3>
-                  <Link href="/gallery"><span className="text-blue-600 text-sm font-bold hover:text-blue-700 transition duration-200">View Gallery →</span></Link>
+                  <Link href="/verse"><span className="text-[#5B4BDB] text-sm font-bold hover:text-[#4c3ec7] transition">View 3D Verse →</span></Link>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {recentModels.slice(0,6).length > 0
-                    ? recentModels.slice(0,6).map((m,i) => {
-                        const ext = m.fileType?.toLowerCase()??"glb";
+                  {recentModels.slice(0, 6).length > 0
+                    ? recentModels.slice(0, 6).map((m, i) => {
+                        const ext = m.fileType?.toLowerCase() ?? "glb";
                         return (
-                          <motion.div key={m.id} initial={{ opacity:0, y:10 }} whileInView={{ opacity:1, y:0 }}
-                            viewport={{ once:true }} transition={{ delay:i*0.05 }}>
+                          <motion.div key={m.id} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
                             <Link href={`/gallery/${m.id}`}>
                               <div className="group flex items-center gap-4 p-3 rounded-2xl border border-gray-100 hover:border-gray-300 hover:shadow-sm bg-gray-50 hover:bg-white transition duration-200 cursor-pointer">
                                 <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-gray-200 bg-white">
                                   {m.thumbnailUrl
-                                    ? <img src={m.thumbnailUrl} className="w-full h-full object-cover group-hover:scale-105 transition" />
+                                    ? <img src={m.thumbnailUrl} className="w-full h-full object-cover group-hover:scale-105 transition" alt="" />
                                     : <div className="w-full h-full flex items-center justify-center text-[10px] font-bold text-gray-400 bg-gray-100">{ext.toUpperCase()}</div>
                                   }
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-gray-900 text-sm font-bold truncate group-hover:text-blue-600 transition">{m.title}</p>
+                                  <p className="text-gray-900 text-sm font-bold truncate group-hover:text-[#5B4BDB] transition">{m.title}</p>
                                   <p className="text-gray-500 text-xs mt-0.5 truncate">{m.authorName}</p>
                                 </div>
                                 <div className="flex-shrink-0">
@@ -507,130 +494,101 @@ export default function HomePage() {
                           </motion.div>
                         );
                       })
-                    : Array.from({length:6}).map((_,i) => (
+                    : Array.from({ length: 6 }).map((_, i) => (
                         <div key={i} className="h-20 rounded-2xl bg-gray-100 animate-pulse" />
                       ))
                   }
                 </div>
               </div>
 
-              {/* Live tutors */}
+              {/* Collaborators */}
               <div className="bg-white rounded-3xl p-8 border border-gray-200 shadow-sm flex flex-col">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-gray-900 text-lg font-bold">Available Collaborators</h3>
-                  <Link href="/connect"><span className="text-blue-600 text-sm font-bold hover:text-blue-700 transition duration-200">View all →</span></Link>
+                  <h3 className="text-gray-900 text-lg font-bold">Available Mentors</h3>
+                  <Link href="/hire"><span className="text-[#5B4BDB] text-sm font-bold hover:text-[#4c3ec7] transition">View all →</span></Link>
                 </div>
                 <div className="space-y-3 flex-grow">
                   {tutors.length > 0
-                    ? tutors.map((t,i) => <TutorCard key={t.id} t={t} i={i} />)
-                    : Array.from({length:4}).map((_,i) => (
+                    ? tutors.map((t, i) => <TutorCard key={t.id} t={t} i={i} />)
+                    : Array.from({ length: 4 }).map((_, i) => (
                         <div key={i} className="h-16 rounded-xl bg-gray-100 animate-pulse" />
                       ))
                   }
                 </div>
-                <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} transition={{ delay:0.2 }}
-                  className="mt-6 border-t border-gray-100 pt-6">
+                <div className="mt-6 border-t border-gray-100 pt-6">
                   <Link href="/connect">
-                    <div className="w-full py-3 rounded-xl border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition duration-200 cursor-pointer text-center text-gray-500 hover:text-blue-600 font-bold text-sm">
+                    <div className="w-full py-3 rounded-xl border-2 border-dashed border-gray-300 hover:border-[#5B4BDB]/50 hover:bg-[#5B4BDB]/5 transition duration-200 cursor-pointer text-center text-gray-500 hover:text-[#5B4BDB] font-bold text-sm">
                       + Become a Collaborator
                     </div>
                   </Link>
-                </motion.div>
-              </div>
-
-            </div>
-          </div>
-        </section>
-
-        {/* ── FEATURES GRID ── */}
-        <section className="py-24 px-4 bg-white border-y border-gray-200" id="features">
-          <div className="max-w-7xl mx-auto">
-            <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
-              className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-4">
-                The AR/VR Ecosystem
-              </h2>
-              <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-                One unified platform for 3D creators, AR/VR developers, engineers and global collaborators.
-              </p>
-            </motion.div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-cols-4 gap-6">
-              {FEATURES.map((f,i) => <FeatureCard key={f.href} f={f} i={i} />)}
-            </div>
-          </div>
-        </section>
-
-        {/* ── RECENT MODEL GALLERY ── */}
-        {recentModels.length > 0 && (
-          <section className="py-24 px-4 bg-gray-50">
-            <div className="max-w-7xl mx-auto">
-              <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
-                className="flex items-center justify-between mb-10 pb-4 border-b border-gray-200">
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-black tracking-tight text-gray-900">
-                    Featured Models
-                  </h2>
                 </div>
-                <Link href="/gallery">
-                  <button className="px-5 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 font-bold shadow-sm hover:bg-gray-50 transition">
-                    View Gallery →
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── FEATURED MODELS ── */}
+        {recentModels.length > 0 && (
+          <section className="py-24 px-4 bg-white border-y border-gray-100">
+            <div className="max-w-7xl mx-auto">
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                className="flex items-center justify-between mb-10 pb-4 border-b border-gray-100">
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight text-gray-900">Featured Models</h2>
+                <Link href="/verse">
+                  <button className="px-5 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-700 font-bold shadow-sm hover:bg-gray-50 transition text-sm">
+                    Browse 3D Verse →
                   </button>
                 </Link>
               </motion.div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-                {recentModels.map((m,i) => <FloatingModelCard key={m.id} m={m} i={i} />)}
+                {recentModels.map((m, i) => <ModelCard key={m.id} m={m} i={i} />)}
               </div>
             </div>
           </section>
         )}
 
-        {/* ── ECOSYSTEM STATS ── */}
+        {/* ── STATS ── */}
         <section className="w-full bg-[#5B4BDB] py-20 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 md:gap-y-0">
-
               {[
-                { label: "3D Models Uploaded",  val: stats.models,        delay: 0.1 },
-                { label: "Verified Developers", val: stats.developers,    delay: 0.2 },
-                { label: "Model Downloads",     val: stats.downloads,     delay: 0.3 },
-                { label: "Certifications",      val: stats.certifications, delay: 0.4 },
+                { label: "3D Models Uploaded",  val: stats.models,         suffix: "+" },
+                { label: "Verified Developers", val: stats.developers,     suffix: "+" },
+                { label: "Model Downloads",     val: stats.downloads,      suffix: "+" },
+                { label: "Certifications",      val: stats.certifications, suffix: "" },
               ].map((s, i) => (
                 <motion.div key={s.label}
                   initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }} transition={{ duration: 0.5, delay: s.delay }}
-                  className={`flex flex-col items-center text-center px-4 ${i > 0 ? "md:border-l border-white/20" : ""}`}
-                >
+                  viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className={`flex flex-col items-center text-center px-4 ${i > 0 ? "md:border-l border-white/20" : ""}`}>
                   <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight">
-                    {statsLoading ? "—" : <Counter target={s.val} suffix={i < 3 ? "+" : ""} />}
+                    {statsLoading ? "—" : <Counter target={s.val} suffix={s.suffix} />}
                   </div>
                   <div className="text-white/70 text-sm md:text-base font-medium">{s.label}</div>
                 </motion.div>
               ))}
-
             </div>
           </div>
         </section>
 
         {/* ── COLLABORATORS ── */}
         {collaborators.length > 0 && (
-          <section className="py-24 px-4 bg-gray-50">
+          <section className="py-24 px-4 bg-[#F7F6F3]">
             <div className="max-w-7xl mx-auto">
-              <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                 className="text-center mb-12">
-                <p className="text-gray-500 text-sm font-bold uppercase tracking-widest mb-2">Academic Partners</p>
-                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900">
-                  Our Collaborators
-                </h2>
+                <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Academic Partners</p>
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900">Our Collaborators</h2>
               </motion.div>
               <div className="flex flex-wrap justify-center gap-6">
-                {collaborators.map((c,i) => (
-                  <motion.div key={c.id} initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
-                    viewport={{ once:true }} transition={{ duration:0.4, delay:i*0.06 }}>
+                {collaborators.map((c, i) => (
+                  <motion.div key={c.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.06 }}>
                     <Link href="/collaborators">
                       <div className="w-40 p-6 rounded-2xl bg-white border border-gray-200 hover:shadow-md transition duration-300 cursor-pointer text-center group">
                         <div className="w-16 h-16 rounded-full overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition shadow-sm text-xl font-bold text-gray-400">
                           {c.avatar
-                            ? <img src={c.avatar} className="w-full h-full object-cover" onError={e=>{(e.target as HTMLImageElement).style.display="none"}} />
+                            ? <img src={c.avatar} className="w-full h-full object-cover" alt="" onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
                             : c.name?.[0]
                           }
                         </div>
@@ -648,23 +606,23 @@ export default function HomePage() {
         {/* ── CTA ── */}
         <section className="py-24 px-4 bg-white border-t border-gray-200">
           <div className="max-w-4xl mx-auto text-center">
-            <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
-              className="p-12 md:p-20">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-4">Ready to start?</p>
               <h2 className="text-4xl md:text-6xl font-black tracking-tight text-gray-900 mb-6">
-                Start Creating Today
+                Build the future of XR.
               </h2>
               <p className="text-gray-500 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
-                Join the network. Upload your 3D models, collaborate globally, and excel in your creative work on SYNTHÉ.
+                Join the network. Upload your 3D models, attend live workshops, and collaborate with XR developers on SYNTHÉ.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 {user ? (
                   <>
-                    <Link href="/upload">
+                    <Link href="/verse/upload">
                       <button className="px-10 py-4 rounded-xl font-bold text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] shadow-sm transition-all active:translate-y-[1px] flex items-center gap-2">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                         </svg>
-                        Upload a Project
+                        Upload a Model
                       </button>
                     </Link>
                     <Link href="/dashboard">
@@ -680,9 +638,9 @@ export default function HomePage() {
                         Get Started Free
                       </button>
                     </Link>
-                    <Link href="/gallery">
+                    <Link href="/verse">
                       <button className="px-10 py-4 rounded-xl font-bold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm transition">
-                        Explore Gallery →
+                        Explore 3D Verse →
                       </button>
                     </Link>
                   </>

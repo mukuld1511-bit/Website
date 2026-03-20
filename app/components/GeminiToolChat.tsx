@@ -1,16 +1,13 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { askAI } from "@/lib/openai";
 
 interface Message { role: "user" | "ai"; text: string; }
 
 interface Tool {
-  name: string;
-  desc: string;
-  level: string;
-  tags: string[];
-  pricing: string;
-  link: string;
+  name: string; desc: string; level: string;
+  tags: string[]; pricing: string; link: string;
 }
 
 const QUICK_QUESTIONS = (toolName: string) => [
@@ -23,33 +20,22 @@ const QUICK_QUESTIONS = (toolName: string) => [
 ];
 
 async function askAboutTool(question: string, tool: Tool): Promise<string> {
-  const context = `You are an XR tool expert on SYNTHÉ. The user is asking about: ${tool.name}.
+  return askAI({
+    system: `You are an XR tool expert on SYNTHÉ. The user is asking about: ${tool.name}.
 Tool details: ${tool.desc}. Level: ${tool.level}. Tags: ${tool.tags.join(", ")}. Pricing: ${tool.pricing}.
-Answer specifically about ${tool.name}. Be concise (under 100 words). Friendly tone. End with one actionable tip.`;
-
-  const response = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" +
-      process.env.NEXT_PUBLIC_GEMINI_API_KEY,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: context + "\n\nQuestion: " + question }] }],
-        generationConfig: { temperature: 0.6, maxOutputTokens: 250 },
-      }),
-    }
-  );
-  if (!response.ok) throw new Error("API error");
-  const data = await response.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "Sorry, try again.";
+Answer specifically about ${tool.name}. Be concise (under 100 words). Friendly tone. End with one actionable tip.`,
+    user: question,
+    temperature: 0.6,
+    maxTokens: 250,
+  });
 }
 
 interface Props { tool: Tool; onClose: () => void; }
 
-export default function GeminiToolChat({ tool, onClose }: Props) {
+export default function AIToolChat({ tool, onClose }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [input, setInput]       = useState("");
+  const [loading, setLoading]   = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -83,11 +69,10 @@ export default function GeminiToolChat({ tool, onClose }: Props) {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs font-semibold text-gray-900 truncate">Ask about {tool.name}</p>
-          <p className="text-xs text-gray-400">Gemini AI · tool expert</p>
+          <p className="text-xs text-gray-400">GPT-4o mini · tool expert</p>
         </div>
         <span className="flex items-center gap-1 text-xs text-green-600 font-medium">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-          Live
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />Live
         </span>
         <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-200 text-gray-400 transition-colors ml-1">
           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -124,9 +109,7 @@ export default function GeminiToolChat({ tool, onClose }: Props) {
                 </div>
               )}
               <div className={`max-w-[85%] rounded-xl px-3 py-2.5 text-xs leading-relaxed ${
-                m.role === "user"
-                  ? "bg-violet-600 text-white rounded-br-sm"
-                  : "bg-gray-100 text-gray-800 rounded-bl-sm"
+                m.role === "user" ? "bg-violet-600 text-white rounded-br-sm" : "bg-gray-100 text-gray-800 rounded-bl-sm"
               }`}>
                 {m.text}
               </div>

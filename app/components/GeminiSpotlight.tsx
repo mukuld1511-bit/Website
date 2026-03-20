@@ -8,7 +8,7 @@ const AI_FEATURES = [
     id: "roadmap",
     title: "Custom XR Roadmap",
     short: "Personalised 4–6 phase learning path",
-    desc: "Tell Gemini your age, goal, and experience level. Get a step-by-step XR roadmap with tools, milestones, and a first action for today — in under 5 seconds.",
+    desc: "Tell the AI your age, goal, and experience level. Get a step-by-step XR roadmap with tools, milestones, and a first action for today — in under 5 seconds.",
     href: "/learn/roadmap",
     cta: "Generate roadmap",
     color: "#5B4BDB",
@@ -19,7 +19,7 @@ const AI_FEATURES = [
     id: "chat",
     title: "XR Concept Chat",
     short: "Ask anything about AR, VR, WebXR",
-    desc: "A live AI chat on the Learn page. Ask 'what is SLAM?', 'how does WebXR work?', 'best tool for Unity AR?' — Gemini answers in plain language, tuned to your role.",
+    desc: "A live AI chat on the Learn page. Ask 'what is SLAM?', 'how does WebXR work?', 'best tool for Unity AR?' — GPT-4o mini answers in plain language, tuned to your role.",
     href: "/learn",
     cta: "Ask a question",
     color: "#0F6E56",
@@ -30,7 +30,7 @@ const AI_FEATURES = [
     id: "tools",
     title: "AI Tool Recommender",
     short: "Best tool for your specific goal",
-    desc: "Type what you want to build inside the Tools Directory. Gemini reads all 48 tools and recommends the best 2–3 with reasons. No more guessing.",
+    desc: "Type what you want to build inside the Tools Directory. AI reads all 48 tools and recommends the best 2–3 with reasons. No more guessing.",
     href: "/learn/tools",
     cta: "Find my tool",
     color: "#B45309",
@@ -41,8 +41,8 @@ const AI_FEATURES = [
     id: "writer",
     title: "Model Description Writer",
     short: "Auto-write title, tags & price",
-    desc: "When uploading a 3D model, Gemini reads your filename and category then writes a polished title, description, 5 tags, and a suggested price — one click.",
-    href: "/upload",
+    desc: "When uploading a 3D model, AI reads your filename and category then writes a polished title, description, 5 tags, and a suggested price — one click.",
+    href: "/verse/upload",
     cta: "Try on upload",
     color: "#9D174D",
     bg: "bg-rose-50",
@@ -50,7 +50,7 @@ const AI_FEATURES = [
   },
 ];
 
-export default function GeminiSpotlight() {
+export default function AISpotlight() {
   const [active, setActive] = useState(0);
   const f = AI_FEATURES[active];
 
@@ -59,12 +59,8 @@ export default function GeminiSpotlight() {
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12"
-        >
+        <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 mb-4">
               <div className="w-4 h-4 rounded-md bg-violet-600 flex items-center justify-center">
@@ -72,29 +68,26 @@ export default function GeminiSpotlight() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
               </div>
-              <span className="text-xs font-bold text-violet-300 uppercase tracking-widest">Gemini AI built-in</span>
+              <span className="text-xs font-bold text-violet-300 uppercase tracking-widest">GPT-4o mini built-in</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight">
               AI that actually helps<br />you learn XR
             </h2>
           </div>
           <p className="text-gray-500 text-sm max-w-xs leading-relaxed sm:text-right">
-            4 Gemini-powered features across SYNTHÉ — roadmaps, chat, tool recommendations, and auto-descriptions.
+            4 AI-powered features across SYNTHÉ — roadmaps, chat, tool recommendations, and auto-descriptions.
           </p>
         </motion.div>
 
         {/* Tab selector */}
         <div className="flex gap-2 flex-wrap mb-8">
           {AI_FEATURES.map((feat, i) => (
-            <button
-              key={feat.id}
-              onClick={() => setActive(i)}
+            <button key={feat.id} onClick={() => setActive(i)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                 active === i
                   ? "bg-white text-gray-900"
                   : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-gray-200 border border-white/10"
-              }`}
-            >
+              }`}>
               {feat.title}
             </button>
           ))}
@@ -102,26 +95,19 @@ export default function GeminiSpotlight() {
 
         {/* Feature panel */}
         <AnimatePresence mode="wait">
-          <motion.div
-            key={f.id}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
+          <motion.div key={f.id}
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="bg-white/5 border border-white/10 rounded-2xl p-8 grid sm:grid-cols-2 gap-8 items-center"
-          >
+            className="bg-white/5 border border-white/10 rounded-2xl p-8 grid sm:grid-cols-2 gap-8 items-center">
+
             {/* Left — text */}
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">
-                {f.short}
-              </p>
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">{f.short}</p>
               <h3 className="text-2xl font-black text-white mb-4">{f.title}</h3>
               <p className="text-gray-400 text-sm leading-relaxed mb-6">{f.desc}</p>
               <Link href={f.href}>
-                <button
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all"
-                  style={{ background: f.color }}
-                >
+                <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90"
+                  style={{ background: f.color }}>
                   {f.cta}
                   <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -175,7 +161,7 @@ export default function GeminiSpotlight() {
                     I want to build AR for Android without an app...
                   </div>
                   <div className="bg-violet-50 border border-violet-200 rounded-lg p-3 text-xs text-violet-900 leading-relaxed">
-                    <span className="font-bold">Gemini recommends:</span> Use <span className="font-bold">WebXR API</span> for zero-install browser AR, or <span className="font-bold">8th Wall</span> for advanced tracking. Both run in Chrome on Android with no download required.
+                    <span className="font-bold">AI recommends:</span> Use <span className="font-bold">WebXR API</span> for zero-install browser AR, or <span className="font-bold">8th Wall</span> for advanced tracking. Both run in Chrome on Android with no download required.
                   </div>
                 </>
               )}

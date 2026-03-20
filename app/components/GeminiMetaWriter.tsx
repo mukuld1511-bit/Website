@@ -1,149 +1,138 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { xrConceptChat } from "@/lib/openai";
 
-interface ModelMeta { fileName: string; fileType: string; category: string; tags: string[]; }
-interface GeneratedMeta { title: string; description: string; suggestedTags: string[]; suggestedPrice: string; }
+interface Message { role: "user" | "ai"; text: string; }
 
-async function generateModelMeta(meta: ModelMeta): Promise<GeneratedMeta> {
-  const prompt = `You are a copywriter for SYNTHÉ, a 3D model marketplace for AR/VR creators.
-Based on the file details below, generate polished marketplace metadata.
-File name: ${meta.fileName}
-File type: ${meta.fileType}
-Category: ${meta.category}
-Tags: ${meta.tags.join(", ") || "none"}
-Return ONLY valid JSON (no markdown, no extra text):
-{
-  "title": "compelling product title, max 8 words, no quotes",
-  "description": "2-3 sentence product description highlighting use cases for AR/VR/3D projects",
-  "suggestedTags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
-  "suggestedPrice": "a fair price range in INR e.g. ₹299 – ₹499 based on file type complexity"
-}`;
+const QUICK_QUESTIONS = [
+  "What is WebXR?",
+  "How does AR work on phones?",
+  "AR vs VR — what's the difference?",
+  "What is SLAM tracking?",
+  "Best free tool to start VR?",
+  "What is a GLB file?",
+];
 
-  const response = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" +
-      process.env.NEXT_PUBLIC_GEMINI_API_KEY,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 512 },
-      }),
-    }
-  );
-  if (!response.ok) throw new Error("Gemini error");
-  const data = await response.json();
-  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-  return JSON.parse(raw.replace(/```json|```/g, "").trim());
-}
+interface Props { userRole?: string; }
 
-interface Props {
-  fileName: string; fileType: string; category: string; tags: string[];
-  onAccept: (title: string, description: string, tags: string[]) => void;
-}
+export default function AIXRChat({ userRole = "user" }: Props) {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput]       = useState("");
+  const [loading, setLoading]   = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-export default function GeminiMetaWriter({ fileName, fileType, category, tags, onAccept }: Props) {
-  const [state, setState] = useState<"idle" | "loading" | "done">("idle");
-  const [result, setResult] = useState<GeneratedMeta | null>(null);
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
-  const generate = async () => {
-    setState("loading");
+  const send = async (text: string) => {
+    if (!text.trim() || loading) return;
+    const q = text.trim();
+    setInput("");
+    setMessages(prev => [...prev, { role: "user", text: q }]);
+    setLoading(true);
     try {
-      const meta = await generateModelMeta({ fileName, fileType, category, tags });
-      setResult(meta);
-      setState("done");
+      const answer = await xrConceptChat(q, userRole);
+      setMessages(prev => [...prev, { role: "ai", text: answer }]);
     } catch {
-      setState("idle");
+      setMessages(prev => [...prev, { role: "ai", text: "Something went wrong. Please try again." }]);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="bg-white border-2 border-dashed border-violet-200 rounded-2xl p-5 hover:border-violet-300 transition-colors">
+    <div className="flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden h-[540px] shadow-sm">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-violet-600 flex items-center justify-center">
-            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
-          <p className="text-sm font-semibold text-gray-900">AI Description Writer</p>
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 shrink-0 bg-gray-50">
+        <div className="w-9 h-9 rounded-xl bg-[#5B4BDB] flex items-center justify-center">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
         </div>
-        <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2.5 py-1 rounded-full font-medium">
-          Gemini
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-gray-900">Ask anything about XR</p>
+          <p className="text-xs text-gray-400">GPT-4o mini · instant answers</p>
+        </div>
+        <span className="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+          Live
         </span>
       </div>
 
-      <AnimatePresence mode="wait">
-
-        {/* Idle */}
-        {state === "idle" && (
-          <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <p className="text-xs text-gray-500 mb-4 leading-relaxed">
-              Let Gemini write a polished title, description, and tags based on your file — one click, instant results.
-            </p>
-            <button onClick={generate}
-              className="w-full py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold rounded-xl transition-colors">
-              Auto-write with AI →
-            </button>
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4">
+        {messages.length === 0 && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+            <div className="text-center py-2">
+              <p className="text-sm text-gray-500">Ask me anything about AR, VR, or XR</p>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {QUICK_QUESTIONS.map(q => (
+                <button key={q} onClick={() => send(q)}
+                  className="text-left text-xs bg-gray-50 hover:bg-[#5B4BDB]/5 border border-gray-200 hover:border-[#5B4BDB]/30 rounded-xl px-3 py-3 text-gray-600 hover:text-[#5B4BDB] transition-all leading-snug">
+                  {q}
+                </button>
+              ))}
+            </div>
           </motion.div>
         )}
 
-        {/* Loading */}
-        {state === "loading" && (
-          <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="flex items-center gap-3 py-3">
-            <div className="w-5 h-5 border-2 border-violet-200 border-t-violet-600 rounded-full animate-spin shrink-0" />
-            <p className="text-sm text-gray-500">Gemini is writing your description...</p>
-          </motion.div>
-        )}
+        <AnimatePresence initial={false}>
+          {messages.map((m, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+              className={`flex ${m.role === "user" ? "justify-end" : "justify-start"} gap-2`}>
+              {m.role === "ai" && (
+                <div className="w-6 h-6 rounded-lg bg-[#5B4BDB] flex items-center justify-center shrink-0 mt-1">
+                  <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+              )}
+              <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                m.role === "user"
+                  ? "bg-[#5B4BDB] text-white rounded-br-sm"
+                  : "bg-gray-100 text-gray-800 rounded-bl-sm"
+              }`}>
+                {m.text}
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
 
-        {/* Done */}
-        {state === "done" && result && (
-          <motion.div key="done" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
-
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Title</p>
-              <p className="text-sm font-semibold text-gray-900">{result.title}</p>
+        {loading && (
+          <div className="flex gap-2">
+            <div className="w-6 h-6 rounded-lg bg-[#5B4BDB] flex items-center justify-center shrink-0">
+              <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
             </div>
-
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Description</p>
-              <p className="text-sm text-gray-700 leading-relaxed">{result.description}</p>
-            </div>
-
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Tags</p>
-              <div className="flex flex-wrap gap-1.5">
-                {result.suggestedTags.map((t) => (
-                  <span key={t} className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2.5 py-1 rounded-full font-medium">
-                    {t}
-                  </span>
+            <div className="bg-gray-100 rounded-2xl rounded-bl-sm px-4 py-3">
+              <div className="flex gap-1 items-center h-4">
+                {[0,1,2].map(i => (
+                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB]/60 animate-bounce" style={{ animationDelay: `${i * 0.12}s` }} />
                 ))}
               </div>
             </div>
-
-            <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5">
-              <p className="text-xs text-amber-700 font-medium">Suggested price</p>
-              <p className="text-sm font-bold text-amber-900">{result.suggestedPrice}</p>
-            </div>
-
-            <div className="flex gap-2 pt-1">
-              <button onClick={() => onAccept(result.title, result.description, result.suggestedTags)}
-                className="flex-1 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold rounded-xl transition-colors">
-                Use this →
-              </button>
-              <button onClick={generate}
-                className="px-4 py-2.5 bg-white border border-gray-200 hover:border-gray-300 text-gray-600 text-sm rounded-xl transition-colors">
-                Retry
-              </button>
-            </div>
-          </motion.div>
+          </div>
         )}
+        <div ref={bottomRef} />
+      </div>
 
-      </AnimatePresence>
+      {/* Input */}
+      <div className="px-4 py-3 border-t border-gray-100 shrink-0 bg-gray-50">
+        <form onSubmit={e => { e.preventDefault(); send(input); }} className="flex gap-2">
+          <input type="text" value={input} onChange={e => setInput(e.target.value)}
+            placeholder="What is spatial computing?"
+            className="flex-1 bg-white border border-gray-200 focus:border-[#5B4BDB] rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors" />
+          <button type="submit" disabled={!input.trim() || loading}
+            className="px-4 py-2.5 bg-[#5B4BDB] hover:bg-[#4c3ec7] disabled:opacity-40 disabled:cursor-not-allowed rounded-xl text-white text-sm font-semibold transition-colors">
+            Ask
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

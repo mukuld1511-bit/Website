@@ -107,7 +107,11 @@ Under 100 words. End with one tip.`;
       max_tokens: 250,
     }),
   });
-  if (!res.ok) throw new Error("API error");
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    console.error("OpenAI error:", res.status, errData);
+    throw new Error(errData?.error?.message ?? `API error ${res.status}`);
+  }
   const data = await res.json();
   return data.choices?.[0]?.message?.content ?? "Sorry, try again.";
 }
@@ -148,7 +152,7 @@ function GeminiChat({ userRole }: { userRole: string }) {
         </div>
         <div className="flex-1">
           <p className="text-sm font-bold text-gray-900">Ask anything about XR</p>
-          <p className="text-xs text-gray-400">Gemini AI · instant answers</p>
+          <p className="text-xs text-gray-400">GPT-4o mini · instant answers</p>
         </div>
         <span className="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full font-semibold">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
@@ -797,7 +801,7 @@ export default function LearnPage() {
                 </svg>
               </div>
               <p className="text-sm font-bold text-gray-900">XR Concept Chat</p>
-              <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full font-semibold">Gemini AI</span>
+              <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full font-semibold">GPT-4o mini</span>
             </div>
             <GeminiChat userRole={userRole} />
           </div>

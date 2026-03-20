@@ -5,11 +5,29 @@ import { r2PublicClient, R2_BUCKET, generateR2Key, getR2PublicUrl, getFileCatego
 
 export async function POST(req: NextRequest) {
   try {
-    const { fileName, fileType, userId } = await req.json();
+    const body = await req.json();
 
+    // ── Support both call signatures ──────────────────────────────
+    // Old (CertUploader):  { key, contentType }
+    // New (model upload):  { fileName, fileType, userId }
+    const { key: rawKey, contentType, fileName, fileType, userId } = body;
+
+    // ── Path A — direct key provided (CertUploader style) ─────────
+    if (rawKey) {
+      const command = new PutObjectCommand({
+        Bucket: R2_BUCKET,
+        Key: rawKey,
+        ContentType: contentType || "application/octet-stream",
+      });
+      const url = await getSignedUrl(r2PublicClient, command, { expiresIn: 3600 });
+      const publicUrl = getR2PublicUrl(rawKey);
+      return NextResponse.json({ url, presignedUrl: url, publicUrl, key: rawKey });
+    }
+
+    // ── Path B — fileName + userId provided (model upload style) ──
     if (!fileName || !userId) {
       return NextResponse.json(
-        { error: "fileName and userId are required" },
+        { error: "Provide either 'key' or both 'fileName' and 'userId'" },
         { status: 400 }
       );
     }
@@ -23,7 +41,7 @@ export async function POST(req: NextRequest) {
     }
 
     const folder = getFileCategory(fileName);
-    const key = generateR2Key(userId, fileName, folder);
+    const key    = generateR2Key(userId, fileName, folder);
 
     const command = new PutObjectCommand({
       Bucket: R2_BUCKET,
@@ -31,22 +49,13 @@ export async function POST(req: NextRequest) {
       ContentType: fileType || "application/octet-stream",
     });
 
-    const presignedUrl = await getSignedUrl(r2PublicClient, command, {
-      expiresIn: 3600,
-    });
+    const presignedUrl = await getSignedUrl(r2PublicClient, command, { expiresIn: 3600 });
+    const publicUrl    = getR2PublicUrl(key);
 
-    const publicUrl = getR2PublicUrl(key);
+    return NextResponse.json({ presignedUrl, url: presignedUrl, publicUrl, key });
 
-    return NextResponse.json({
-      presignedUrl,
-      publicUrl,
-      key,
-    });
   } catch (error) {
     console.error("R2 presign error:", error);
-    return NextResponse.json(
-      { error: "Failed to generate upload URL" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to generate upload URL" }, { status: 500 });
   }
 }

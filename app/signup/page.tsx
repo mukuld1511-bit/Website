@@ -18,6 +18,7 @@ const ROLES = [
     desc: "Explore the platform, browse 3D models, attend free workshops.",
     color: "#5F5E5A",
     bg: "#F1EFE8",
+    approvalNote: null,
   },
   {
     id: "learner",
@@ -26,6 +27,7 @@ const ROLES = [
     desc: "Learn AR/VR with AI roadmaps, live sessions, and 1-on-1 mentors.",
     color: "#185FA5",
     bg: "#E6F1FB",
+    approvalNote: "⚡ Instant activation after signup",
   },
   {
     id: "developer",
@@ -34,6 +36,7 @@ const ROLES = [
     desc: "Sell 3D models and AR/VR builds. Earn 85% commission on every sale.",
     color: "#5B4BDB",
     bg: "#EEEDFE",
+    approvalNote: "⚡ Instant activation — complete profile after signup",
   },
   {
     id: "mentor",
@@ -42,6 +45,7 @@ const ROLES = [
     desc: "Host free live workshops and paid 1-on-1 sessions. Set your own rates.",
     color: "#0F6E56",
     bg: "#E1F5EE",
+    approvalNote: "🔍 Requires admin review — role locked until approved",
   },
 ];
 
@@ -54,14 +58,14 @@ function SignupContent() {
   const [selectedRole, setSelectedRole] = useState<string>(
     ROLES.find(r => r.id === roleParam)?.id ?? "user"
   );
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName]       = useState("");
+  const [email, setEmail]     = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [showConf, setShowConf] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError]     = useState("");
 
   const strength = (() => {
     if (!password) return 0;
@@ -80,37 +84,50 @@ function SignupContent() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!name.trim()) { setError("Please enter your name."); return; }
-    if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
-    if (password !== confirm) { setError("Passwords do not match."); return; }
+    if (!name.trim())          { setError("Please enter your name."); return; }
+    if (password.length < 6)   { setError("Password must be at least 6 characters."); return; }
+    if (password !== confirm)  { setError("Passwords do not match."); return; }
 
     setLoading(true);
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(cred.user, { displayName: name.trim(), photoURL: "/avatar.png" });
+
+      // ── CRITICAL: mentor & developer are ALWAYS saved as role:"user" at signup ──
+      // Their actual role only activates after they complete the apply flow:
+      //   developer → /join/developer  (instant on form submit)
+      //   mentor    → /join/mentor     (pending until admin approves)
+      const savedRole = (selectedRole === "mentor" || selectedRole === "developer")
+        ? "user"
+        : selectedRole;
+
       await setDoc(doc(db, "users", cred.user.uid), {
-        userId: cred.user.uid,
-        displayName: name.trim(),
-        email: email.trim().toLowerCase(),
-        role: selectedRole,
-        photoURL: "/avatar.png",
-        certified: false,
+        userId:            cred.user.uid,
+        displayName:       name.trim(),
+        email:             email.trim().toLowerCase(),
+        role:              savedRole,          // never "mentor" or "developer" at signup
+        intendedRole:      selectedRole,       // remember what they wanted — used to pre-select on join page
+        photoURL:          "/avatar.png",
+        certified:         false,
         profileCompletion: 20,
-        stats: { views: 0, downloads: 0, collaborations: 0, rating: 0, reviews: 0 },
-        badges: ["MEMBER"],
-        joinedAt: serverTimestamp(),
-        createdAt: serverTimestamp(),
+        stats:             { views: 0, downloads: 0, collaborations: 0, rating: 0, reviews: 0 },
+        badges:            ["MEMBER"],
+        joinedAt:          serverTimestamp(),
+        createdAt:         serverTimestamp(),
       });
-      // developers and mentors go to join to apply for role upgrade
+
+      // ── Redirect based on intended role ──
       if (selectedRole === "developer") router.push("/join/developer");
-      else if (selectedRole === "mentor" || selectedRole === "learner") router.push("/join");
+      else if (selectedRole === "mentor")  router.push("/join/mentor");
+      else if (selectedRole === "learner") router.push("/join/learner");
       else router.push("/dashboard");
+
     } catch (err: any) {
       const map: Record<string, string> = {
-        "auth/email-already-in-use": "Email already in use.",
-        "auth/invalid-email": "Invalid email address.",
-        "auth/weak-password": "Password too weak.",
-        "auth/network-request-failed": "Network error.",
+        "auth/email-already-in-use":    "Email already in use.",
+        "auth/invalid-email":           "Invalid email address.",
+        "auth/weak-password":           "Password too weak.",
+        "auth/network-request-failed":  "Network error.",
       };
       setError(map[err.code] ?? err.message);
     }
@@ -155,16 +172,14 @@ function SignupContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 {ROLES.map((role) => (
-                  <button
-                    key={role.id}
-                    onClick={() => setSelectedRole(role.id)}
+                  <button key={role.id} onClick={() => setSelectedRole(role.id)}
                     className={`relative p-6 rounded-2xl border-2 text-left transition-all duration-200 hover:-translate-y-0.5 ${
                       selectedRole === role.id
                         ? "shadow-lg scale-[1.02]"
                         : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-md"
                     }`}
-                    style={selectedRole === role.id ? { borderColor: role.color, background: role.bg } : {}}
-                  >
+                    style={selectedRole === role.id ? { borderColor: role.color, background: role.bg } : {}}>
+
                     {selectedRole === role.id && (
                       <div className="absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: role.color }}>
                         <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="3">
@@ -172,9 +187,21 @@ function SignupContent() {
                         </svg>
                       </div>
                     )}
+
                     <div className="text-4xl mb-4">{role.icon}</div>
                     <p className="font-black text-gray-900 text-base mb-1">{role.label}</p>
-                    <p className="text-xs text-gray-500 leading-relaxed">{role.desc}</p>
+                    <p className="text-xs text-gray-500 leading-relaxed mb-3">{role.desc}</p>
+
+                    {/* Approval note */}
+                    {role.approvalNote && (
+                      <div className={`text-[10px] font-bold px-2 py-1 rounded-full inline-flex items-center gap-1 ${
+                        role.approvalNote.startsWith("🔍")
+                          ? "bg-amber-50 text-amber-700 border border-amber-200"
+                          : "bg-green-50 text-green-700 border border-green-200"
+                      }`}>
+                        {role.approvalNote}
+                      </div>
+                    )}
                   </button>
                 ))}
               </div>
@@ -203,21 +230,31 @@ function SignupContent() {
                     <div className="text-sm text-gray-700 font-medium">{label as string}</div>
                     {[u, l, d, m].map((v, i) => (
                       <div key={i} className="flex justify-center">
-                        {v
-                          ? <span className="text-green-500 font-black">✓</span>
-                          : <span className="text-gray-300">—</span>
-                        }
+                        {v ? <span className="text-green-500 font-black">✓</span> : <span className="text-gray-300">—</span>}
                       </div>
                     ))}
                   </div>
                 ))}
               </div>
 
-              <button
-                onClick={() => setStep("details")}
+              {/* Mentor warning banner */}
+              {selectedRole === "mentor" && (
+                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                  className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
+                  <span className="text-amber-500 text-lg mt-0.5">🔍</span>
+                  <div>
+                    <p className="text-sm font-black text-amber-800 mb-1">Mentor role requires admin approval</p>
+                    <p className="text-xs text-amber-700 leading-relaxed">
+                      After creating your account, you'll complete a mentor application (min 2 certificates, bio, LinkedIn).
+                      Your account will be created as a regular user — <span className="font-bold">mentor access only activates after an admin reviews and approves your application</span>.
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+
+              <button onClick={() => setStep("details")}
                 className="w-full py-4 rounded-2xl font-black text-white text-base transition-all hover:opacity-90 active:scale-[0.99]"
-                style={{ background: roleInfo.color }}
-              >
+                style={{ background: roleInfo.color }}>
                 Continue as {roleInfo.label} →
               </button>
 
@@ -241,16 +278,28 @@ function SignupContent() {
               </button>
 
               {/* Selected role badge */}
-              <div className="flex items-center gap-3 mb-8 p-4 rounded-2xl border" style={{ background: roleInfo.bg, borderColor: roleInfo.color + "33" }}>
+              <div className="flex items-center gap-3 mb-6 p-4 rounded-2xl border" style={{ background: roleInfo.bg, borderColor: roleInfo.color + "33" }}>
                 <span className="text-2xl">{roleInfo.icon}</span>
-                <div>
+                <div className="flex-1">
                   <p className="text-xs font-bold uppercase tracking-wide" style={{ color: roleInfo.color }}>Joining as</p>
                   <p className="font-black text-gray-900">{roleInfo.label}</p>
+                  {roleInfo.approvalNote && (
+                    <p className={`text-[10px] font-bold mt-0.5 ${roleInfo.approvalNote.startsWith("🔍") ? "text-amber-600" : "text-green-600"}`}>
+                      {roleInfo.approvalNote}
+                    </p>
+                  )}
                 </div>
-                <button onClick={() => setStep("role")} className="ml-auto text-xs font-bold underline" style={{ color: roleInfo.color }}>
+                <button onClick={() => setStep("role")} className="text-xs font-bold underline" style={{ color: roleInfo.color }}>
                   Change
                 </button>
               </div>
+
+              {/* Mentor notice in details step */}
+              {selectedRole === "mentor" && (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-6 text-xs text-amber-700 leading-relaxed">
+                  <span className="font-bold">Note:</span> Account will be created as a regular user. After signup you'll fill out the mentor application — role activates only after admin approval.
+                </div>
+              )}
 
               <h1 className="text-3xl font-black text-gray-900 mb-8">Create your account</h1>
 
@@ -327,18 +376,12 @@ function SignupContent() {
                       <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                       </svg>
-                      <input
-                        type={showConf ? "text" : "password"}
-                        placeholder="Repeat password"
-                        value={confirm}
-                        onChange={e => setConfirm(e.target.value)}
-                        required
+                      <input type={showConf ? "text" : "password"} placeholder="Repeat password" value={confirm} onChange={e => setConfirm(e.target.value)} required
                         className={`w-full bg-gray-50 border focus:bg-white rounded-xl pl-10 pr-10 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all ${
                           confirm && confirm !== password ? "border-red-300 bg-red-50" :
                           confirm && confirm === password ? "border-green-300 bg-green-50" :
                           "border-gray-200 focus:border-[#5B4BDB]"
-                        }`}
-                      />
+                        }`} />
                       <button type="button" onClick={() => setShowConf(!showConf)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700">
                         <EyeIcon open={showConf} />
                       </button>
@@ -348,7 +391,7 @@ function SignupContent() {
                   <button type="submit" disabled={loading}
                     className="w-full py-4 rounded-xl font-black text-white text-sm transition-all hover:opacity-90 disabled:opacity-50 mt-2"
                     style={{ background: roleInfo.color }}>
-                    {loading ? "Creating account..." : `Create account as ${roleInfo.label} →`}
+                    {loading ? "Creating account..." : `Create account →`}
                   </button>
 
                   <p className="text-center text-sm text-gray-500">

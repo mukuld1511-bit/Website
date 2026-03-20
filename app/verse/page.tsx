@@ -1,12 +1,12 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { collection, query, where, orderBy, getDocs, limit, startAfter } from "firebase/firestore";
 import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 interface Model {
   id: string; title: string; thumbnailUrl: string; fileType: string;
@@ -22,8 +22,10 @@ const SORT_OPTIONS = [
   { label: "Downloads", value: "downloads"       },
 ];
 const TYPE_COLORS: Record<string, string> = {
-  glb: "bg-blue-100 text-blue-700", gltf: "bg-blue-100 text-blue-700",
-  obj: "bg-teal-100 text-teal-700", fbx: "bg-violet-100 text-violet-700",
+  glb:  "bg-blue-100 text-blue-700",
+  gltf: "bg-blue-100 text-blue-700",
+  obj:  "bg-teal-100 text-teal-700",
+  fbx:  "bg-violet-100 text-violet-700",
 };
 const AURA: Record<string, string> = {
   hot:  "shadow-[0_0_0_2px_#EF9F27]",
@@ -36,49 +38,92 @@ function aura(score: number) {
   return AURA.cold;
 }
 
-function ModelCard({ m }: { m: Model }) {
-  const [hovered, setHovered] = useState(false);
+// Check if URL is an actual image (not a GLB/model file)
+function isImageUrl(url: string): boolean {
+  if (!url) return false;
+  const lower = url.toLowerCase();
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-      onHoverStart={() => setHovered(true)} onHoverEnd={() => setHovered(false)}>
+    lower.endsWith(".jpg") || lower.endsWith(".jpeg") ||
+    lower.endsWith(".png") || lower.endsWith(".webp") ||
+    lower.endsWith(".gif") || lower.includes("dicebear") ||
+    lower.includes("firebasestorage") && !lower.includes(".glb") ||
+    lower.includes("imagedelivery") || lower.includes("r2.dev") && !lower.includes(".glb")
+  );
+}
+
+function ModelCard({ m }: { m: Model }) {
+  const isWebXR = ["glb", "gltf"].includes(m.fileType?.toLowerCase());
+  const hasRealThumbnail = isImageUrl(m.thumbnailUrl);
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
       <Link href={`/gallery/${m.id}`}>
         <div className={`group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 cursor-pointer ${aura(m.engagementScore ?? 0)}`}>
+
+          {/* Thumbnail */}
           <div className="relative aspect-square overflow-hidden bg-gray-50 flex items-center justify-center">
-            {m.thumbnailUrl
-              ? <img src={m.thumbnailUrl} alt={m.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-              : <svg className="w-10 h-10 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                </svg>
-            }
-            {(m.fileType?.toLowerCase()==="glb"||m.fileType?.toLowerCase()==="gltf") && (
-              <div className="absolute top-2 right-2">
-                <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-[#5B4BDB] text-white tracking-wider">WebXR</span>
+            {hasRealThumbnail ? (
+              <img src={m.thumbnailUrl} alt={m.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+            ) : (
+              // GLB has no image thumbnail — show a styled placeholder
+              <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#5B4BDB]/5 to-violet-50">
+                <div className="w-14 h-14 rounded-2xl bg-[#5B4BDB]/10 flex items-center justify-center mb-3 group-hover:scale-110 transition duration-300">
+                  <svg className="w-7 h-7 text-[#5B4BDB]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/>
+                  </svg>
+                </div>
+                <span className="text-[10px] font-black text-[#5B4BDB] uppercase tracking-widest">3D Model</span>
+                <span className="text-[9px] text-gray-400 mt-0.5">{m.fileType?.toUpperCase()}</span>
               </div>
             )}
+
+            {/* WebXR badge — top right */}
+            {isWebXR && (
+              <div className="absolute top-2 right-2">
+                <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-[#5B4BDB] text-white tracking-wider shadow-sm">
+                  WebXR
+                </span>
+              </div>
+            )}
+
+            {/* File type badge — top left */}
             <div className="absolute top-2 left-2">
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${TYPE_COLORS[m.fileType?.toLowerCase()] ?? "bg-gray-100 text-gray-600"}`}>
                 {m.fileType?.toUpperCase()}
               </span>
             </div>
-            <div className="absolute top-2 right-2">
+
+            {/* Price badge — bottom right (only if WebXR badge not there, or use bottom) */}
+            <div className="absolute bottom-2 right-2">
               {m.isPaid
-                ? <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">₹{m.price}</span>
-                : <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Free</span>
+                ? <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200 shadow-sm">₹{m.price}</span>
+                : <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/90 text-gray-600 border border-gray-200 shadow-sm">Free</span>
               }
             </div>
           </div>
+
+          {/* Info */}
           <div className="p-4">
             <p className="font-bold text-gray-900 text-sm truncate mb-1">{m.title}</p>
             <p className="text-xs text-gray-400 truncate">{m.authorName}</p>
             <div className="flex items-center gap-3 mt-3 text-xs text-gray-400">
               <span className="flex items-center gap-1">
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                {m.views ?? 0}
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+                {(m.views ?? 0).toLocaleString()}
               </span>
               <span className="flex items-center gap-1">
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                {m.downloads ?? 0}
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                {(m.downloads ?? 0).toLocaleString()}
               </span>
+              {(m.engagementScore ?? 0) >= 70 && (
+                <span className="ml-auto text-amber-500 font-black text-[10px]">🔥 Trending</span>
+              )}
             </div>
           </div>
         </div>
@@ -88,14 +133,14 @@ function ModelCard({ m }: { m: Model }) {
 }
 
 export default function VersePage() {
-  const [user, setUser] = useState<any>(null);
-  const [models, setModels] = useState<Model[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser]         = useState<any>(null);
+  const [models, setModels]     = useState<Model[]>([]);
+  const [loading, setLoading]   = useState(true);
   const [filterType, setFilterType] = useState("All");
-  const [sort, setSort] = useState("uploadedAt");
-  const [search, setSearch] = useState("");
-  const [lastDoc, setLastDoc] = useState<any>(null);
-  const [hasMore, setHasMore] = useState(true);
+  const [sort, setSort]         = useState("engagementScore");
+  const [search, setSearch]     = useState("");
+  const [lastDoc, setLastDoc]   = useState<any>(null);
+  const [hasMore, setHasMore]   = useState(true);
   const PAGE = 12;
 
   useEffect(() => {
@@ -108,8 +153,15 @@ export default function VersePage() {
   const fetchModels = async (reset = false) => {
     setLoading(true);
     try {
-      const allowed = ["glb","gltf","obj","fbx"];
-      const types = filterType === "All" ? allowed : [filterType.toLowerCase()];
+      const allowed = ["glb", "gltf", "obj", "fbx"];
+
+      // ── WebXR filter = only glb + gltf ──────────────────────────
+      const types = filterType === "All"
+        ? allowed
+        : filterType === "WebXR"
+          ? ["glb", "gltf"]          // ← fix: was ["webxr"] which never matched
+          : [filterType.toLowerCase()];
+
       const q = query(
         collection(db, "models"),
         where("fileType", "in", types),
@@ -123,12 +175,18 @@ export default function VersePage() {
       setModels(reset ? docs : prev => [...prev, ...docs]);
       setLastDoc(snap.docs[snap.docs.length - 1] ?? null);
       setHasMore(snap.docs.length === PAGE);
-    } catch (e) { console.error(e); }
-    finally { setLoading(false); }
+    } catch (e) {
+      console.error("fetchModels error:", e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const filtered = search
-    ? models.filter(m => m.title?.toLowerCase().includes(search.toLowerCase()) || m.tags?.some(t => t.toLowerCase().includes(search.toLowerCase())))
+    ? models.filter(m =>
+        m.title?.toLowerCase().includes(search.toLowerCase()) ||
+        m.tags?.some(t => t.toLowerCase().includes(search.toLowerCase()))
+      )
     : models;
 
   return (
@@ -148,7 +206,9 @@ export default function VersePage() {
             </div>
             <Link href="/verse/upload">
               <button className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-sm transition-all border-b-[3px] border-black/30 active:translate-y-[1px]">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
                 Upload model
               </button>
             </Link>
@@ -179,31 +239,34 @@ export default function VersePage() {
             <span className="text-sm font-black text-[#5B4BDB]">WebXR Ready Models</span>
             <span className="text-sm text-gray-500 ml-2">— GLB & GLTF models can be placed in your real environment via browser AR</span>
           </div>
-          <button onClick={()=>setFilterType("WebXR")} className="text-xs font-bold px-3 py-1.5 rounded-xl bg-[#5B4BDB] text-white hover:bg-[#4c3ec7] transition-colors flex-shrink-0">
+          <button
+            onClick={() => setFilterType("WebXR")}
+            className="text-xs font-bold px-3 py-1.5 rounded-xl bg-[#5B4BDB] text-white hover:bg-[#4c3ec7] transition-colors flex-shrink-0">
             Filter WebXR →
           </button>
         </div>
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-3 mb-8">
-          {/* Search */}
           <div className="relative flex-1 min-w-[180px] max-w-xs">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search models..."
               className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-violet-400 transition-colors" />
           </div>
 
-          {/* File type tabs */}
           <div className="flex gap-1 p-1 bg-white border border-gray-200 rounded-xl">
             {FILE_TYPES.map(t => (
               <button key={t} onClick={() => setFilterType(t)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${filterType === t ? "bg-gray-900 text-white" : "text-gray-500 hover:text-gray-800"}`}>
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  filterType === t ? "bg-gray-900 text-white" : "text-gray-500 hover:text-gray-800"
+                }`}>
                 {t}
               </button>
             ))}
           </div>
 
-          {/* Sort */}
           <select value={sort} onChange={e => setSort(e.target.value)}
             className="bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-700 font-semibold outline-none focus:border-violet-400 transition-colors">
             {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}

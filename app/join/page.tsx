@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { doc, getDoc, addDoc, updateDoc, collection, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, addDoc, updateDoc, collection, serverTimestamp, query, where, getDocs } from "firebase/firestore";
 import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import Navbar from "../components/Navbar";
@@ -148,6 +148,9 @@ export default function JoinPage() {
   const [loading, setLoading]       = useState(false);
   const [error, setError]           = useState("");
 
+  // ── block reapply if already pending ──────────────────────────────────
+  const [hasPendingApplication, setHasPendingApplication] = useState(false);
+
   const [why, setWhy]               = useState("");
   const [portfolio, setPortfolio]   = useState("");
   const [devSkills, setDevSkills]   = useState("");
@@ -165,6 +168,16 @@ export default function JoinPage() {
       setUser(u);
       const snap = await getDoc(doc(db, "users", u.uid));
       if (snap.exists()) setProfile(snap.data());
+
+      // Check if a pending mentor application already exists for this user
+      const appQ = query(
+        collection(db, "roleApplications"),
+        where("userId", "==", u.uid),
+        where("applyType", "==", "mentor"),
+        where("status", "==", "pending")
+      );
+      const appSnap = await getDocs(appQ);
+      if (!appSnap.empty) setHasPendingApplication(true);
     });
     return () => unsub();
   }, []);
@@ -204,7 +217,13 @@ export default function JoinPage() {
         return;
       }
 
-      // ── MENTOR — strict manual review ─────────────────────────────────
+      // ── MENTOR — strict manual review, NO role update until admin approves ──
+      if (hasPendingApplication) {
+        setError("You already have a pending mentor application. Please wait for admin review.");
+        setLoading(false);
+        return;
+      }
+
       const uploadedCerts = certs.filter(c => c.url);
       if (uploadedCerts.length < 2) { setError("Please upload at least 2 certificates."); setLoading(false); return; }
       if (bio.trim().length < 50)   { setError("Bio must be at least 50 characters."); setLoading(false); return; }
@@ -213,13 +232,14 @@ export default function JoinPage() {
       if (Number(hourlyRate) < 100) { setError("Hourly rate must be at least ₹100."); setLoading(false); return; }
       if (!linkedin.trim())         { setError("LinkedIn URL is required."); setLoading(false); return; }
 
+      // ── Save application with status: "pending" — user role NOT changed here ──
       await addDoc(collection(db, "roleApplications"), {
         userId:    user.uid,
         userName:  user.displayName || user.email,
         userPhoto: user.photoURL || "",
         userEmail: user.email,
         applyType: "mentor",
-        status:    "pending",
+        status:    "pending",          // ← held here until admin approves
         expertise, experience,
         bio:       bio.trim(),
         hourlyRate: Number(hourlyRate),
@@ -229,7 +249,21 @@ export default function JoinPage() {
         certificates: uploadedCerts.map(c => ({ name: c.name, url: c.url })),
         certCount: uploadedCerts.length,
         createdAt: serverTimestamp(),
+        reviewedAt: null,
+        reviewedBy: null,
+        rejectionReason: null,
       });
+
+      // ── Notify admin (optional: send notification to admin UID) ──
+      await addDoc(collection(db, "notifications"), {
+        userId:    "ADMIN",            // Admin sees this in their notification feed
+        message:   `📋 New mentor application from ${user.displayName || user.email}. Review in Admin Dashboard.`,
+        read:      false,
+        createdAt: serverTimestamp(),
+        type:      "mentor_application",
+        applicantId: user.uid,
+      });
+
       setSubmitted(true);
     } catch (err: any) {
       setError(err.message || "Something went wrong.");
@@ -239,6 +273,44 @@ export default function JoinPage() {
   };
 
   const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0F6E56] transition-colors bg-white";
+
+  // ── Pending application banner ─────────────────────────────────────────
+  if (hasPendingApplication && !submitted) {
+    return (
+      <div className="min-h-screen bg-[#F7F6F3] flex flex-col">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center px-4 py-24">
+          <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-3xl border border-amber-200 shadow-2xl p-12 max-w-md w-full text-center">
+            <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 bg-amber-50">
+              ⏳
+            </div>
+            <h2 className="text-2xl font-black text-gray-900 mb-3">Application Under Review</h2>
+            <p className="text-gray-500 text-sm leading-relaxed mb-6">
+              Your mentor application has been submitted and is currently being reviewed by our admin team.
+              You'll be notified once it's approved — typically within <span className="font-bold text-amber-700">24–48 hours</span>.
+            </p>
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
+              <p className="text-xs font-bold text-amber-700 mb-1">What happens next?</p>
+              <ul className="space-y-1">
+                {["Admin reviews your certificates & profile", "You get a notification on approval", "Your Mentor role activates automatically", "You can start hosting sessions immediately"].map((s, i) => (
+                  <li key={i} className="text-xs text-gray-600 flex gap-2">
+                    <span className="text-amber-500 font-bold">{i + 1}.</span>{s}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <Link href="/dashboard">
+              <button className="w-full py-3.5 rounded-xl font-black text-white text-sm bg-[#0F6E56] hover:opacity-90 transition">
+                Go to Dashboard →
+              </button>
+            </Link>
+          </motion.div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (submitted && selected) {
     const info    = ROLES[selected];
@@ -254,19 +326,20 @@ export default function JoinPage() {
               {info.icon}
             </motion.div>
             <h2 className="text-3xl font-black text-gray-900 mb-2">
-              {instant ? "Role Activated! 🎉" : "Application Submitted!"}
+              {instant ? "Role Activated! 🎉" : "Application Submitted! ⏳"}
             </h2>
             <p className="text-gray-600 text-sm leading-relaxed mb-8">
               {instant
                 ? `Your ${info.title} role is active immediately. Go explore!`
-                : "Your mentor application is under review. Admin will verify your certificates within 24–48 hours."}
+                : "Your mentor application is pending admin review. You'll receive a notification once approved (24–48 hrs). Your role will NOT be active until then."}
             </p>
             {!instant && selected === "mentor" && (
               <div className="bg-[#E1F5EE] border border-[#1D9E7533] rounded-2xl p-4 mb-6 text-left">
-                <p className="text-xs font-bold text-[#0F6E56] mb-2">Certificates submitted</p>
+                <p className="text-xs font-bold text-[#0F6E56] mb-2">Certificates submitted for review</p>
                 {certs.filter(c => c.url).map((c, i) => (
                   <p key={i} className="text-xs text-gray-600 flex gap-2"><span className="text-green-500">✓</span>{c.name}</p>
                 ))}
+                <p className="text-xs text-amber-700 font-semibold mt-3">⚠️ Mentor role activates only after admin approval.</p>
               </div>
             )}
             <Link href="/dashboard">
@@ -358,7 +431,7 @@ export default function JoinPage() {
                   <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold mt-1 ${
                     ROLES[selected].approval === "instant" ? "bg-green-50 text-green-700 border border-green-200" : "bg-amber-50 text-amber-700 border border-amber-200"
                   }`}>
-                    {ROLES[selected].approval === "instant" ? "⚡ Activates immediately" : "🔍 Admin review required"}
+                    {ROLES[selected].approval === "instant" ? "⚡ Activates immediately" : "🔍 Admin review required — role locked until approved"}
                   </div>
                 </div>
               </div>
@@ -394,8 +467,8 @@ export default function JoinPage() {
                 {selected === "mentor" && (
                   <>
                     <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
-                      <p className="font-bold mb-1">⚠️ Strict verification</p>
-                      <p className="text-xs">Min 2 certificates, 50+ char bio, LinkedIn, and hourly rate required. Incomplete applications are rejected.</p>
+                      <p className="font-bold mb-1">⚠️ Strict verification — role locked until approved</p>
+                      <p className="text-xs">Min 2 certificates, 50+ char bio, LinkedIn, and hourly rate required. Your mentor role will only activate after an admin manually approves your application.</p>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -472,7 +545,7 @@ export default function JoinPage() {
                     {loading ? "Processing..." :
                       ROLES[selected].approval === "instant"
                         ? `Activate ${ROLES[selected].title} Role →`
-                        : "Submit for Review"}
+                        : "Submit for Review →"}
                   </button>
                 </div>
               </form>

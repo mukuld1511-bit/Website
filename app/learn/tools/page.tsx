@@ -235,10 +235,10 @@ const TOOLS = [
     items: [
       {
         id: "openai",
-        name: "OpenAI GPT-4o",
+        name: "Google Gemini",
         logo: null, logoText: "AI", logoColor: "#10a37f",
         desc: "OpenAI's multimodal AI. Powers SYNTHÉ's roadmap generator, XR chat, tool recommender and model descriptions.",
-        longDesc: "GPT-4o mini is used on SYNTHÉ for personalised roadmaps, XR concept chat, tool recommendations, creator matching, and auto-description generation. Free tier via OpenAI API.",
+        longDesc: "Gemini 2.0 Flash is used on SYNTHÉ for personalised roadmaps, XR concept chat, tool recommendations, creator matching, and auto-description generation. Free tier via Google AI Studio API.",
         tags: ["AI", "Multimodal", "API", "Used on SYNTHÉ"],
         link: "https://platform.openai.com",
         color: "#10a37f", level: "Intermediate", pricing: "Free tier", rating: 4.8, users: "2M+ devs", featured: true,
@@ -499,7 +499,7 @@ export default function ToolsPage() {
                   </svg>
                 </div>
                 <p className="text-sm font-semibold text-gray-900">AI Tool Recommender</p>
-                <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full">GPT-4o mini</span>
+                <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full">Gemini AI</span>
               </div>
               <div className="flex gap-2">
                 <input value={aiGoal} onChange={e => setAiGoal(e.target.value)}

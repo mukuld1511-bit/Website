@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { generateRoadmap as generateRoadmapAI } from "@/lib/ai";
+import Link from "next/link";
 
 interface RoadmapPhase {
   phase:       number;
@@ -90,7 +91,7 @@ export default function RoadmapPage() {
     }, 1200);
 
     try {
-      // generateRoadmap from lib/openai.ts returns JSON string — parse it
+      // generateRoadmap from lib/ai.ts returns JSON string — parse it
       const raw = await generateRoadmapAI({
         age:        ageGroup,
         goal:       `${goal}${interests ? ` — interests: ${interests}` : ""}`,
@@ -128,7 +129,7 @@ export default function RoadmapPage() {
             </div>
             <div>
               <p className="text-sm font-semibold text-gray-900 leading-none">XR Roadmap</p>
-              <p className="text-xs text-gray-400 mt-0.5">Powered by GPT-4o mini</p>
+              <p className="text-xs text-gray-400 mt-0.5">Powered by Gemini AI</p>
             </div>
           </div>
           {step === "result" && (
@@ -420,6 +421,24 @@ export default function RoadmapPage() {
                   Regenerate
                 </button>
               </div>
+
+              {/* Finalize */}
+              <Link href={`/finalize`}>
+                <div className="bg-gradient-to-r from-[#5B4BDB]/10 to-violet-50 border border-[#5B4BDB]/20 rounded-2xl p-6 flex items-center gap-4 hover:shadow-md transition-all cursor-pointer">
+                  <div className="w-10 h-10 rounded-xl bg-[#5B4BDB] flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-[#5B4BDB]">Finalize this roadmap</p>
+                    <p className="text-xs text-gray-500">Convert into an actionable, step-by-step execution plan with checklists</p>
+                  </div>
+                  <svg className="w-5 h-5 text-[#5B4BDB]/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
             </motion.div>
           )}
 

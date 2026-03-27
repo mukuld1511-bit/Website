@@ -111,8 +111,7 @@ body {
 /* ─── Theme-Aware Overrides ───────────────────────────────── */
 /* These catch ALL hardcoded Tailwind bg/text classes across pages */
 .dark .bg-white        { background-color: var(--color-surface)   !important; }
-.dark .bg-\[\\#F7F6F3\] { background-color: var(--color-bg)        !important; }
-.dark .bg-\[\\#f7f6f3\] { background-color: var(--color-bg)        !important; }
+.dark .bg-gray-50      { background-color: var(--color-surface)   !important; }
 .dark .bg-gray-50      { background-color: var(--color-surface)   !important; }
 .dark .bg-gray-100     { background-color: var(--color-surface-2) !important; }
 .dark .bg-gray-200     { background-color: #252540               !important; }
@@ -136,10 +135,8 @@ body {
 
 /* ─── Dark Navbar Override ────────────────────────────────── */
 .dark nav { background: var(--nav-bg) !important; border-color: var(--nav-border) !important; }
-.dark nav .bg-white\/95 { background: var(--nav-bg) !important; }
 
 /* ─── Dark Dropdowns + Modals ─────────────────────────────── */
-.dark [class*="shadow-\[0_10px_40px"] { box-shadow: var(--dropdown-shadow) !important; }
 
 /* ─── Dark Inputs ─────────────────────────────────────────── */
 .dark input, .dark textarea, .dark select {
@@ -167,8 +164,6 @@ body {
 .dark .bg-pink-50    { background-color: rgba(236, 72, 153, 0.12)  !important; }
 
 /* ─── Dark Hero/Dark Sections (already dark — keep them) ─── */
-.dark .bg-\[\\#050008\]  { background-color: #050008 !important; }
-.dark .bg-\[\\#0A0A0F\]  { background-color: #0A0A0F !important; }
 
 /* ─── Button System ───────────────────────────────────────── */
 .btn-primary {

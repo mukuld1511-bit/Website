@@ -6,7 +6,6 @@ import { auth, db } from "../../../lib/firebase";
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import Link from "next/link";
 
@@ -58,8 +57,6 @@ export default function BookingsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
-      <Navbar />
-
       <div className="relative z-10 pt-32 pb-24 px-4 max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
           <Link href="/dashboard/developer">

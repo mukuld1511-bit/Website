@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { collection, query, where, getDocs, doc, updateDoc, addDoc, orderBy, onSnapshot, serverTimestamp, getDoc } from "firebase/firestore";
 import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -104,9 +103,7 @@ export default function MentorDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
-      <Navbar/>
-      <AnimatePresence>
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      <AnimatePresence>
         {toast && (
           <motion.div initial={{opacity:0,y:-16}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-16}}
             className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-5 py-3 bg-gray-900 text-white text-sm font-bold rounded-xl shadow-xl">

@@ -5,7 +5,6 @@ import { db, auth } from "../../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 
 // This file is used for BOTH AR and VR — mode is passed via props or detected from pathname
@@ -142,9 +141,7 @@ export default function XRUploadPage() {
   const inputCls = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white/30 transition-colors";
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col font-sans">
-      <Navbar />
-      <div className="max-w-2xl mx-auto px-4 py-14 flex-grow w-full">
+    <div className="min-h-screen bg-gray-950 flex flex-col font-sans">      <div className="max-w-2xl mx-auto px-4 py-14 flex-grow w-full">
 
         <AnimatePresence>
           {success && (

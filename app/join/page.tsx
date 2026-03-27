@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -92,9 +91,7 @@ export default function JoinHubPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans text-gray-900">
-      <Navbar />
-      <div className="max-w-5xl mx-auto px-4 py-20 flex-grow w-full">
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans text-gray-900">      <div className="max-w-5xl mx-auto px-4 py-20 flex-grow w-full">
 
         <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#5B4BDB]/10 border border-[#5B4BDB]/20 mb-4">

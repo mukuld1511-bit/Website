@@ -3,7 +3,6 @@ import { useState, useEffect, Suspense } from "react";
 import { doc, updateDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../../components/Navbar";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
@@ -116,9 +115,7 @@ function PayContent() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
-      <Navbar />
-      <div className="max-w-lg mx-auto px-4 py-20 flex-grow w-full">
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      <div className="max-w-lg mx-auto px-4 py-20 flex-grow w-full">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}

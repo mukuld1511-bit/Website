@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { generateModelMeta } from "@/lib/openai";
+import { generateModelMeta } from "@/lib/ai";
 
 interface ModelMeta {
   fileName: string; fileType: string; category: string; tags: string[];

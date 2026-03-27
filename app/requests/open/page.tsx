@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { collection, query, orderBy, getDocs, addDoc, serverTimestamp, doc, getDoc, Timestamp, where } from "firebase/firestore";
 import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 interface ProjectApplication {
@@ -247,8 +246,6 @@ export default function RequestsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 flex flex-col font-sans text-gray-900">
-      <Navbar />
-
       <div className="relative z-10 pt-28 pb-24 px-4 flex-grow">
         {/* Decorative colorful background elements */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-[-1]" />

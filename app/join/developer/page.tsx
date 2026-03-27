@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { doc, getDoc, updateDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -81,9 +80,7 @@ export default function JoinLearnerPage() {
   );
 
   if (alreadyActive) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col">
-      <Navbar />
-      <div className="flex-grow flex items-center justify-center px-4 py-24">
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col">      <div className="flex-grow flex items-center justify-center px-4 py-24">
         <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
           className="bg-white rounded-3xl border border-blue-200 shadow-2xl p-12 max-w-md w-full text-center">
           <div className="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center text-4xl mx-auto mb-6">🎓</div>
@@ -99,9 +96,7 @@ export default function JoinLearnerPage() {
   );
 
   if (submitted) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col">
-      <Navbar />
-      <div className="flex-grow flex items-center justify-center px-4 py-24">
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col">      <div className="flex-grow flex items-center justify-center px-4 py-24">
         <motion.div initial={{ opacity: 0, scale: 0.96, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }}
           className="bg-white rounded-3xl border border-gray-200 shadow-2xl p-12 max-w-md w-full text-center">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}
@@ -125,9 +120,7 @@ export default function JoinLearnerPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans text-gray-900">
-      <Navbar />
-      <div className="max-w-2xl mx-auto px-4 py-20 flex-grow w-full">
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans text-gray-900">      <div className="max-w-2xl mx-auto px-4 py-20 flex-grow w-full">
 
         <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#185FA5]/10 border border-[#185FA5]/20 mb-4">

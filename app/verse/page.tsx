@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { collection, query, where, orderBy, getDocs, limit, startAfter } from "firebase/firestore";
 import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -190,9 +189,7 @@ export default function VersePage() {
     : models;
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
-      <Navbar />
-      <div className="max-w-7xl mx-auto px-4 py-14 flex-grow w-full">
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      <div className="max-w-7xl mx-auto px-4 py-14 flex-grow w-full">
 
         {/* Header */}
         <div className="mb-10">

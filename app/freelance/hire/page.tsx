@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { collection, query, where, getDocs, doc, getDoc, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -282,9 +281,7 @@ export default function HirePage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
-      <Navbar/>
-      {bookingMentor && user && <BookingModal mentor={bookingMentor} user={user} onClose={()=>setBookingMentor(null)}/>}
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      {bookingMentor && user && <BookingModal mentor={bookingMentor} user={user} onClose={()=>setBookingMentor(null)}/>}
       {bookingMentor && !user && (typeof window!=="undefined" && (window.location.href="/login"))}
 
       <div className="max-w-7xl mx-auto px-4 py-14 flex-grow w-full">

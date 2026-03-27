@@ -5,7 +5,6 @@ import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const MODEL_EXTENSIONS = ["glb", "gltf", "obj", "fbx"];
@@ -236,9 +235,7 @@ export default function UploadContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">
-      <Navbar />
-      <div className="relative z-10 max-w-4xl mx-auto px-4 py-24 flex-grow w-full">
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">      <div className="relative z-10 max-w-4xl mx-auto px-4 py-24 flex-grow w-full">
 
         <AnimatePresence>
           {success && (

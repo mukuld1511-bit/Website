@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { collection, query, where, orderBy, getDocs, limit, doc, getDoc, addDoc, updateDoc, serverTimestamp, arrayUnion } from "firebase/firestore";
 import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -221,9 +220,7 @@ export default function FreelancePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
-      <Navbar />
-      <div className="max-w-7xl mx-auto px-4 flex-grow w-full">
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      <div className="max-w-7xl mx-auto px-4 flex-grow w-full">
 
         {/* Hero */}
         <div className="py-14 border-b border-gray-200">

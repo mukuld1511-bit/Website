@@ -7,7 +7,6 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -719,8 +718,6 @@ export default function LearnPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">
-      <Navbar />
-
       {/* ── Toast ── */}
       <AnimatePresence>
         {toast && (

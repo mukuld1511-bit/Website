@@ -1,148 +1,145 @@
-/* Tailwind layers */
+/* ============================================================
+   SYNTHÉ — Global Styles
+   Design tokens + base styles + utility classes
+   ============================================================ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Design Tokens ────────────────────────────────────────── */
+:root {
+  --color-primary:     #5B4BDB;
+  --color-primary-dark: #4438b8;
+  --color-primary-hover:#4c3ec7;
+  --color-primary-bg:  #EEEDFE;
 
-/* Global theme */
+  --color-bg:          #F7F6F3;
+  --color-surface:     #FFFFFF;
+  --color-border:      #E5E7EB;
+  --color-border-light:#F3F4F6;
 
-body {
-  margin: 0;
-  font-family: Inter, system-ui, sans-serif;
+  --color-text:        #1e293b;
+  --color-text-secondary: #6B7280;
+  --color-text-muted:  #9CA3AF;
 
-  background: radial-gradient(circle at top, #f0f9ff, #e0f2fe, #dbeafe);
+  --color-success:     #10B981;
+  --color-warning:     #F59E0B;
+  --color-error:       #EF4444;
 
-  color: #1e293b;
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  20px;
+  --radius-2xl: 24px;
+
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg:  0 12px 32px -8px rgba(0,0,0,0.14);
+
+  --font-sans: Inter, system-ui, -apple-system, sans-serif;
 }
 
-
-/* Button system */
-
-.btn-primary {
-  padding: 14px 28px;
-  border-radius: 12px;
-  border: none;
-
-  background: linear-gradient(135deg, #6366f1, #3b82f6);
-
-  color: white;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: 0.25s;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(99,102,241,0.25);
-}
-
-
-.btn-secondary {
-  padding: 14px 28px;
-  border-radius: 12px;
-
-  background: white;
-  border: 1px solid #e5e7eb;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.btn-secondary:hover {
-  background: #f8fafc;
-}
-.btn-primary{
-padding:14px 28px;
-border-radius:12px;
-background:linear-gradient(135deg,#6366f1,#3b82f6);
-color:white;
-font-weight:600;
-transition:all .25s ease;
-}
-
-.btn-primary:hover{
-transform:translateY(-3px) scale(1.02);
-box-shadow:0 12px 30px rgba(99,102,241,.3);
-}
-
-.btn-secondary{
-padding:14px 28px;
-border-radius:12px;
-background:white;
-border:1px solid #e5e7eb;
-transition:all .2s;
-}
-
-.btn-secondary:hover{
-background:#f1f5f9;
-}
-body{
-margin:0;
-font-family:Inter,system-ui,sans-serif;
-
-background:
-radial-gradient(circle at top,#0f172a,#020617);
-
-color:#e2e8f0;
-}
-.xr-grid{
-
-background-image:
-linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
-linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
-
-background-size:40px 40px;
-
-}
-
-/* ── Synthé Aura system ─────────────────────────────────────────── */
-@keyframes aura-pulse {
-  0%, 100% { opacity: 0.45; }
-  50%       { opacity: 1;    }
-}
-
-@keyframes float-up {
-  0%   { transform: translateY(0px);   }
-  50%  { transform: translateY(-6px);  }
-  100% { transform: translateY(0px);   }
-}
-
-@keyframes shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position: 400px 0;  }
-}
-
-/* Card lift on hover — applied globally so every card feels alive */
-.card-hover {
-  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.22s ease;
-}
-.card-hover:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.14);
-}
-
-/* Smooth scroll site-wide */
+/* ─── Base Styles ──────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
 }
 
-/* Hide scrollbar but keep scroll */
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Button System ────────────────────────────────────────── */
+.btn-primary {
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border-bottom: 3px solid var(--color-primary-dark);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(91, 75, 219, 0.25);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-secondary {
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #d1d5db;
+}
+
+/* ─── Card Hover ───────────────────────────────────────────── */
+.card-hover {
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.22s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ─── Grid Background ─────────────────────────────────────── */
+.xr-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ─── Animations ───────────────────────────────────────────── */
+@keyframes aura-pulse {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 1; }
+}
+
+@keyframes float-up {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────── */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Shimmer animation for skeleton */
+/* ─── Skeleton Shimmer ─────────────────────────────────────── */
 .skeleton-shimmer {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 400px 100%;
   animation: shimmer 1.4s ease-in-out infinite;
 }
 
-/* Dark mode shimmer */
-.dark .skeleton-shimmer,
 .skeleton-shimmer-dark {
   background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
   background-size: 400px 100%;

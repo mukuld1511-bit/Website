@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const OPTIONS = [
@@ -35,8 +34,6 @@ const OPTIONS = [
 export default function RequestsPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-      <Navbar />
-
       <main className="flex-1 relative z-10 pt-32 pb-24 px-4 overflow-hidden">
         <div className="max-w-4xl mx-auto">
 

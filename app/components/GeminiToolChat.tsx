@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { askAI } from "@/lib/openai";
+import { askAI } from "@/lib/ai";
 
 interface Message { role: "user" | "ai"; text: string; }
 

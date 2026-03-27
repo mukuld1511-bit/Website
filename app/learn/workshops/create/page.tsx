@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { collection, addDoc, serverTimestamp, doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -185,9 +184,7 @@ export default function CreateSessionPage() {
   const activeCat = SESSION_CATEGORIES.find(c => c.type === category)!;
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
-      <Navbar />
-      <div className="max-w-2xl mx-auto px-4 py-14 flex-grow w-full">
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      <div className="max-w-2xl mx-auto px-4 py-14 flex-grow w-full">
 
         {/* Back */}
         <Link href="/learn" className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-700 text-sm font-semibold mb-6 transition">

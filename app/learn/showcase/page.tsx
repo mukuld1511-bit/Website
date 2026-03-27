@@ -5,7 +5,6 @@ import {
   getDocs, limit,
 } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -237,9 +236,7 @@ function ShowcaseContent() {
 
 export default function ShowcasePage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">
-      <Navbar />
-      <Suspense fallback={
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">      <Suspense fallback={
         <div className="flex-grow flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-[#5B4BDB]/30 border-t-[#5B4BDB] rounded-full animate-spin" />
         </div>

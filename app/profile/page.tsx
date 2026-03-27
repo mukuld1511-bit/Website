@@ -7,7 +7,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
  
 interface UserProfile {
@@ -119,9 +118,7 @@ export default function ProfilePage() {
   }
  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col font-sans">
-      <Navbar />
- 
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col font-sans"> 
       <main className="flex-1 pt-32 pb-24 px-4">
         <div className="max-w-6xl mx-auto">
           

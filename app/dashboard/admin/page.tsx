@@ -8,7 +8,6 @@ import {
 } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 export default function AdminDashboard() {
@@ -215,8 +214,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
-      <Navbar />
-
       {/* Mentor app detail modal */}
       <AnimatePresence>
         {selectedApp && (

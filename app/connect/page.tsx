@@ -6,7 +6,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 interface Developer {
@@ -399,8 +398,6 @@ export default function ConnectPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
-      <Navbar />
-
       <div className="max-w-7xl mx-auto px-4 py-14 flex-grow w-full">
 
         {/* Header */}

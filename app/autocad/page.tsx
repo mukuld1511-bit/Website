@@ -6,7 +6,6 @@ import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 interface Model {
@@ -212,8 +211,6 @@ export default function AutoCADPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 font-sans flex flex-col relative">
-      <Navbar />
-
       <div className="flex-grow pt-[100px] pb-24 px-4 overflow-x-hidden relative z-10">
         {/* Decorative elements */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-[-1]" />

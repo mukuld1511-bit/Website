@@ -10,7 +10,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import HeroComponent from "./components/HeroComponent";
 
@@ -365,8 +364,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
-      <Navbar />
-
       <div className="relative z-10 flex-grow pt-24">
 
         {/* HERO */}

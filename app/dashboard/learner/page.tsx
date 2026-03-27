@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { collection, query, where, getDocs, doc, getDoc, orderBy, onSnapshot } from "firebase/firestore";
 import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -67,9 +66,7 @@ export default function LearnerDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
-      <Navbar/>
-      <div className="max-w-4xl mx-auto px-4 py-14 flex-grow w-full">
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      <div className="max-w-4xl mx-auto px-4 py-14 flex-grow w-full">
         <div className="mb-8">
           <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-2">Learner Dashboard</p>
           <h1 className="text-3xl font-black text-gray-900 mb-1">My Learning</h1>

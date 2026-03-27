@@ -6,7 +6,6 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -470,8 +469,6 @@ export default function HirePage() {
 
   return (
     <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
-      <Navbar />
-
       {/* Toast */}
       <AnimatePresence>
         {toast && (

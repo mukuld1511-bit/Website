@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../../../lib/firebase";
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -97,8 +96,6 @@ export default function PostRequestPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 font-sans flex flex-col">
-      <Navbar />
-
       <main className="relative z-10 pt-32 pb-24 px-4 max-w-3xl mx-auto w-full flex-grow">
         <AnimatePresence>
           {success && (

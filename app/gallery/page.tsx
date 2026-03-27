@@ -6,7 +6,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useSearchParams, useRouter } from "next/navigation";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ModelCardLive, { ModelData } from "../components/gallery/ModelCardLive";
 import SkeletonCard from "../components/gallery/SkeletonCard";
@@ -119,9 +118,7 @@ function GalleryContent() {
              : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"}`;
 
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-500 ${dark ? "bg-gray-950" : "bg-gradient-to-br from-indigo-50 via-white to-pink-50"}`}>
-      <Navbar />
-      <div className="max-w-7xl mx-auto px-4 py-12 flex-grow w-full">
+    <div className={`min-h-screen flex flex-col transition-colors duration-500 ${dark ? "bg-gray-950" : "bg-gradient-to-br from-indigo-50 via-white to-pink-50"}`}>      <div className="max-w-7xl mx-auto px-4 py-12 flex-grow w-full">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">

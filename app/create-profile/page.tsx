@@ -8,7 +8,6 @@ import app from "../../lib/firebase";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
 
 export default function CreateProfile() {
   const auth = getAuth(app);
@@ -45,9 +44,7 @@ export default function CreateProfile() {
   ];
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-24 relative overflow-hidden font-sans">
-      <Navbar />
-      
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-24 relative overflow-hidden font-sans">      
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}

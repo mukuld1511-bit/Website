@@ -5,7 +5,6 @@ import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 const AUTOCAD_EXTENSIONS = ["dwg", "dxf"];
@@ -126,9 +125,7 @@ export default function AutoCADUploadPage() {
   const inputCls = "w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors";
 
   return (
-    <div className="min-h-screen bg-amber-50 flex flex-col font-sans">
-      <Navbar />
-      <div className="max-w-2xl mx-auto px-4 py-14 flex-grow w-full">
+    <div className="min-h-screen bg-amber-50 flex flex-col font-sans">      <div className="max-w-2xl mx-auto px-4 py-14 flex-grow w-full">
 
         <AnimatePresence>
           {success && (

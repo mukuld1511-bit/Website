@@ -6,7 +6,6 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -105,9 +104,7 @@ export default function ChallengesPage() {
   const canSubmit = ["learner","developer","mentor","admin"].includes(userRole);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">
-      <Navbar />
-      <div className="max-w-4xl mx-auto px-4 py-14 flex-grow w-full">
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">      <div className="max-w-4xl mx-auto px-4 py-14 flex-grow w-full">
 
         <div className="mb-10">
           <Link href="/learn" className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-700 text-sm font-semibold mb-5 transition">

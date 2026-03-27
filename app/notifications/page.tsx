@@ -9,7 +9,6 @@ import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 interface Notification {
@@ -144,8 +143,6 @@ export default function NotificationsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
-      <Navbar />
-
       <div className="relative pt-28 pb-24 px-4 overflow-x-hidden">
 
         <div className="relative z-10 max-w-2xl mx-auto">

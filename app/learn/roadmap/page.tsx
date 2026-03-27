@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { generateRoadmap as generateRoadmapAI } from "@/lib/openai";
+import { generateRoadmap as generateRoadmapAI } from "@/lib/ai";
 
 interface RoadmapPhase {
   phase:       number;

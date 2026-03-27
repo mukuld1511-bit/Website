@@ -35,9 +35,9 @@ const PLATFORM_SECTIONS = [
     title: "3D Verse",
     href: "/verse",
     tag: "GLB · GLTF · OBJ · FBX",
-    tagColor: "bg-blue-50 text-blue-700 border-blue-200",
-    accent: "#1d4ed8",
-    accentBg: "#EFF6FF",
+    tagColor: "bg-blue-500/15 text-blue-400 border border-blue-500/20",
+    accent: "#3B82F6",
+    accentBg: "#172554",
     desc: "Browse and buy precision 3D models. Hover any card — it spins live in WebGL. Nothing like it in any marketplace.",
     icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4",
     cta: "Browse 3D Verse",
@@ -46,9 +46,9 @@ const PLATFORM_SECTIONS = [
     title: "XR Zone",
     href: "/xr-zone",
     tag: "AR · VR · WebXR",
-    tagColor: "bg-violet-50 text-violet-700 border-violet-200",
+    tagColor: "bg-violet-500/15 text-violet-400 border border-violet-500/20",
     accent: "#5B4BDB",
-    accentBg: "#EEEDFE",
+    accentBg: "#2E1065",
     desc: "Immersive AR/VR builds from real developers. Place 3D objects in your room instantly — no app needed. Pure WebXR.",
     icon: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2",
     cta: "Enter XR Zone",
@@ -57,9 +57,9 @@ const PLATFORM_SECTIONS = [
     title: "AutoCAD Hub",
     href: "/autocad",
     tag: "DWG · DXF",
-    tagColor: "bg-amber-50 text-amber-700 border-amber-200",
-    accent: "#B45309",
-    accentBg: "#FAEEDA",
+    tagColor: "bg-amber-500/15 text-amber-400 border border-amber-500/20",
+    accent: "#F59E0B",
+    accentBg: "#451A03",
     desc: "Professional blueprints and engineering drawings. Managed, previewed, and shared for industrial and architectural design.",
     icon: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18",
     cta: "Open AutoCAD Hub",
@@ -68,9 +68,9 @@ const PLATFORM_SECTIONS = [
     title: "Learn",
     href: "/learn",
     tag: "Live · AI Roadmap",
-    tagColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    accent: "#0F6E56",
-    accentBg: "#E1F5EE",
+    tagColor: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20",
+    accent: "#10B981",
+    accentBg: "#064E3B",
     desc: "Live workshops from verified mentors. AI-generated XR roadmaps. Book 1-on-1 sessions. 48 curated tools. Everything to grow.",
     icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253",
     cta: "Start Learning",
@@ -79,9 +79,9 @@ const PLATFORM_SECTIONS = [
     title: "Freelance",
     href: "/freelance",
     tag: "Projects · Bids",
-    tagColor: "bg-pink-50 text-pink-700 border-pink-200",
-    accent: "#9D174D",
-    accentBg: "#FBEAF0",
+    tagColor: "bg-pink-500/15 text-pink-400 border border-pink-500/20",
+    accent: "#EC4899",
+    accentBg: "#831843",
     desc: "Post projects, get bids, hire verified XR developers. Negotiable pricing, escrow payments, 85% goes to the developer.",
     icon: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4",
     cta: "Browse Freelance",
@@ -90,9 +90,9 @@ const PLATFORM_SECTIONS = [
     title: "Connect",
     href: "/connect",
     tag: "Network · Chat",
-    tagColor: "bg-cyan-50 text-cyan-700 border-cyan-200",
-    accent: "#0E7490",
-    accentBg: "#E0F7FA",
+    tagColor: "bg-cyan-500/15 text-cyan-400 border border-cyan-500/20",
+    accent: "#06B6D4",
+    accentBg: "#164E63",
     desc: "Find collaborators, send project requests, and chat directly. Gemini AI matches you with the right creator.",
     icon: "M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z",
     cta: "Connect Now",
@@ -163,25 +163,25 @@ function ModelCard({ m, i }: { m: RecentModel; i: number }) {
       onMouseLeave={() => setTilt({ rx: 0, ry: 0 })}
       style={{ willChange: "transform", transform: `perspective(600px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`, transition: "transform 0.1s ease" }}>
       <Link href={`/gallery/${m.id}`}>
-        <div className="group relative rounded-2xl bg-white border border-gray-200 overflow-hidden hover:shadow-md transition duration-300 cursor-pointer shadow-sm flex flex-col h-full">
-          <div className="relative aspect-square overflow-hidden bg-white border-b border-gray-100 flex items-center justify-center p-2">
+        <div className="group relative rounded-2xl bg-[#141420] border border-[#2A2A3E] overflow-hidden hover:shadow-[0_8px_30px_rgba(91,75,219,0.15)] hover:border-[#5B4BDB]/40 transition duration-300 cursor-pointer shadow-sm flex flex-col h-full">
+          <div className="relative aspect-square overflow-hidden bg-[#0A0A0F] border-b border-[#2A2A3E] flex items-center justify-center p-2">
             {m.thumbnailUrl
               ? <img src={m.thumbnailUrl} alt={m.title} className="max-w-full max-h-full object-contain group-hover:scale-105 transition duration-500 rounded" />
-              : <div className="w-full h-full flex items-center justify-center bg-[#0A0A0F] rounded">
-                  <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              : <div className="w-full h-full flex items-center justify-center bg-[#07060B] rounded">
+                  <svg className="w-8 h-8 text-[#2A2A3E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
                 </div>
             }
-            <div className="absolute top-2 left-2 px-2 py-0.5 rounded text-[9px] font-bold uppercase bg-white text-gray-700 shadow-sm border border-gray-100">{ext.toUpperCase()}</div>
+            <div className="absolute top-2 left-2 px-2 py-0.5 rounded text-[9px] font-bold uppercase backdrop-blur-md bg-[#141420]/90 text-white shadow-[0_4px_10px_rgba(0,0,0,0.5)] border border-[#2A2A3E]/50">{ext.toUpperCase()}</div>
             {m.isPaid
-              ? <div className="absolute top-2 right-2 px-2 py-0.5 rounded text-[9px] font-bold bg-green-50 text-green-700 border border-green-200 shadow-sm">₹{m.price}</div>
-              : <div className="absolute top-2 right-2 px-2 py-0.5 rounded text-[9px] font-bold bg-gray-100 text-gray-600 border border-gray-200 shadow-sm">Free</div>
+              ? <div className="absolute top-2 right-2 px-2 py-0.5 rounded text-[9px] font-bold bg-green-500/10 text-green-400 border border-green-500/30 shadow-[0_4px_10px_rgba(0,0,0,0.5)] backdrop-blur-md">₹{m.price}</div>
+              : <div className="absolute top-2 right-2 px-2 py-0.5 rounded text-[9px] font-bold bg-[#141420]/90 text-[#9494AD] border border-[#2A2A3E]/50 shadow-[0_4px_10px_rgba(0,0,0,0.5)] backdrop-blur-md">Free</div>
             }
           </div>
           <div className="p-4 flex-1 flex flex-col justify-end">
             <p className="text-white text-sm font-bold line-clamp-1">{m.title}</p>
-            <p className="text-gray-500 font-medium text-[10px] truncate mt-1">{m.authorName}</p>
+            <p className="text-[#6B6B85] font-medium text-[10px] truncate mt-1">{m.authorName}</p>
           </div>
         </div>
       </Link>
@@ -196,30 +196,30 @@ function TutorCard({ t, i }: { t: TutorProfile; i: number }) {
     <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
       <Link href="/connect">
         <div className={`group flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer overflow-hidden relative hover:-translate-y-0.5 ${
-          isC ? "border-[#5B4BDB]/30 bg-gray-950 shadow-[0_4px_20px_rgba(91,75,219,0.15)] hover:border-[#5B4BDB]"
-              : "bg-white border-gray-100 hover:border-gray-200 hover:shadow-md"
+          isC ? "border-[#5B4BDB]/30 bg-[#141420] shadow-[0_4px_20px_rgba(91,75,219,0.15)] hover:border-[#5B4BDB]"
+              : "bg-[#141420] border-[#2A2A3E] hover:border-[#5B4BDB]/40 hover:shadow-[0_4px_20px_rgba(91,75,219,0.15)]"
         }`}>
-          {isC && <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#5B4BDB] to-purple-400" />}
+          {isC && <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#5B4BDB] to-[#A594FF]" />}
           <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold overflow-hidden border ${
-            isC ? "bg-[#5B4BDB]/10 text-[#5B4BDB] border-[#5B4BDB]/20" : "bg-gray-100 text-gray-500 border-gray-200"
+            isC ? "bg-[#5B4BDB]/10 text-[#A594FF] border-[#5B4BDB]/20" : "bg-white/5 text-[#9494AD] border-[#2A2A3E]"
           }`}>
             {t.avatar ? <img src={t.avatar} className="w-full h-full object-cover" alt="" /> : t.name?.split(" ").map((n: string) => n[0]).join("").slice(0, 2)}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <p className={`text-sm font-bold truncate ${isC ? "text-white" : "text-white"}`}>{t.name}</p>
-              {isC && <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-[#5B4BDB]/20 text-[#5B4BDB] border border-[#5B4BDB]/30">Certified</span>}
+              {isC && <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-[#5B4BDB]/20 text-[#A594FF] border border-[#5B4BDB]/30">Certified</span>}
             </div>
             <div className="flex items-center gap-1 mt-0.5">
-              <svg className="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
-              <span className={`text-xs font-bold ${isC ? "text-gray-300" : "text-gray-700"}`}>{t.rating || "New"}</span>
-              <span className={`text-[10px] ${isC ? "text-gray-500" : "text-gray-400"}`}>· {t.totalSessions || 0} sessions</span>
+              <span className={`text-xs font-bold ${isC ? "text-white" : "text-[#9494AD]"}`}>{t.rating || "New"}</span>
+              <span className={`text-[10px] ${isC ? "text-[#6B6B85]" : "text-[#6B6B85]"}`}>· {t.totalSessions || 0} sessions</span>
             </div>
           </div>
-          <span className={`text-sm font-extrabold flex-shrink-0 ${isC ? "text-white" : "text-[#5B4BDB]"}`}>
-            {t.currency || "₹"}{t.hourlyRate || 0}<span className={`text-xs font-medium ${isC ? "text-gray-500" : "text-gray-400"}`}>/hr</span>
+          <span className={`text-sm font-extrabold flex-shrink-0 ${isC ? "text-[#A594FF]" : "text-[#7C6EF6]"}`}>
+            {t.currency || "₹"}{t.hourlyRate || 0}<span className={`text-xs font-medium ${isC ? "text-[#6B6B85]" : "text-[#6B6B85]"}`}>/hr</span>
           </span>
         </div>
       </Link>
@@ -243,12 +243,12 @@ function SectionCard({ s, i }: { s: typeof PLATFORM_SECTIONS[0]; i: number }) {
             style={{ background: s.accent }} />
 
           <div className="flex items-start justify-between mb-4">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-white/5 border border-white/10 group-hover:border-[#5B4BDB]/40 group-hover:bg-[#5B4BDB]/10 transition-all duration-300">
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-[#1A1A2E] border border-[#2A2A3E] group-hover:border-[#5B4BDB]/40 group-hover:bg-[#5B4BDB]/10 transition-all duration-300">
               <svg className="w-5 h-5 transition-colors duration-300" fill="none" stroke={s.accent} viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d={s.icon} />
               </svg>
             </div>
-            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/10 bg-white/5 text-gray-400`}>{s.tag}</span>
+            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border ${s.tagColor}`}>{s.tag}</span>
           </div>
 
           <h3 className="text-white font-black text-lg mb-2 tracking-tight group-hover:text-[#7C6EF6] transition-colors">{s.title}</h3>
@@ -276,24 +276,24 @@ const DEMO_STEPS = [
 
 function DemoStrip() {
   return (
-    <div className="w-full bg-gray-950 py-14 px-4 border-y border-gray-800 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.04]" style={{
+    <div className="w-full bg-[#07060B] py-14 px-4 border-y border-[#2A2A3E] relative overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.02]" style={{
         backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
         backgroundSize: "40px 40px"
       }} />
       <div className="max-w-6xl mx-auto relative">
         <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-          className="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-10">
+          className="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-[#6B6B85] mb-10">
           The 30-second demo
         </motion.p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-gray-800 rounded-2xl overflow-hidden">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#2A2A3E] rounded-2xl overflow-hidden border border-[#2A2A3E]">
           {DEMO_STEPS.map((s, i) => (
             <motion.div key={s.step} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.07 }}
-              className="bg-gray-950 px-6 py-7 flex flex-col gap-3 hover:bg-gray-900 transition-colors duration-200">
-              <span className="text-[11px] font-black tracking-widest text-[#5B4BDB]">{s.step}</span>
+              className="bg-[#0A0A0F] px-6 py-7 flex flex-col gap-3 hover:bg-[#141420] transition-colors duration-200">
+              <span className="text-[11px] font-black tracking-widest text-[#7C6EF6]">{s.step}</span>
               <p className="text-white text-sm font-bold leading-snug">{s.text}</p>
-              <p className="text-gray-500 text-xs leading-relaxed">{s.sub}</p>
+              <p className="text-[#6B6B85] text-xs leading-relaxed">{s.sub}</p>
             </motion.div>
           ))}
         </div>

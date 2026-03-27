@@ -167,7 +167,7 @@ function ModelCard({ m, i }: { m: RecentModel; i: number }) {
           <div className="relative aspect-square overflow-hidden bg-white border-b border-gray-100 flex items-center justify-center p-2">
             {m.thumbnailUrl
               ? <img src={m.thumbnailUrl} alt={m.title} className="max-w-full max-h-full object-contain group-hover:scale-105 transition duration-500 rounded" />
-              : <div className="w-full h-full flex items-center justify-center bg-gray-50 rounded">
+              : <div className="w-full h-full flex items-center justify-center bg-[#0A0A0F] rounded">
                   <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
@@ -180,7 +180,7 @@ function ModelCard({ m, i }: { m: RecentModel; i: number }) {
             }
           </div>
           <div className="p-4 flex-1 flex flex-col justify-end">
-            <p className="text-gray-900 text-sm font-bold line-clamp-1">{m.title}</p>
+            <p className="text-white text-sm font-bold line-clamp-1">{m.title}</p>
             <p className="text-gray-500 font-medium text-[10px] truncate mt-1">{m.authorName}</p>
           </div>
         </div>
@@ -207,7 +207,7 @@ function TutorCard({ t, i }: { t: TutorProfile; i: number }) {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <p className={`text-sm font-bold truncate ${isC ? "text-white" : "text-gray-900"}`}>{t.name}</p>
+              <p className={`text-sm font-bold truncate ${isC ? "text-white" : "text-white"}`}>{t.name}</p>
               {isC && <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-[#5B4BDB]/20 text-[#5B4BDB] border border-[#5B4BDB]/30">Certified</span>}
             </div>
             <div className="flex items-center gap-1 mt-0.5">

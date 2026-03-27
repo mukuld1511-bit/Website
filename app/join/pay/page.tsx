@@ -95,10 +95,10 @@ function PayContent() {
   const roleLabel = appRole.charAt(0).toUpperCase() + appRole.slice(1);
 
   if (done) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
       <div className="text-center bg-white p-10 rounded-2xl border border-gray-200 shadow-xl max-w-sm w-full mx-4">
         <div className="text-5xl mb-4">🎉</div>
-        <h2 className="text-2xl font-black text-gray-900 mb-2">Payment successful!</h2>
+        <h2 className="text-2xl font-black text-white mb-2">Payment successful!</h2>
         <p className="text-gray-500 text-sm mb-2">
           Our team will activate your {appRole} profile within 24 hours.
         </p>
@@ -115,7 +115,7 @@ function PayContent() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      <div className="max-w-lg mx-auto px-4 py-20 flex-grow w-full">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">      <div className="max-w-lg mx-auto px-4 py-20 flex-grow w-full">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -123,28 +123,28 @@ function PayContent() {
         >
           <div className="text-center mb-8">
             <div className="text-5xl mb-4">{emoji}</div>
-            <h1 className="text-2xl font-black text-gray-900 mb-2">{roleLabel} Joining Fee</h1>
+            <h1 className="text-2xl font-black text-white mb-2">{roleLabel} Joining Fee</h1>
             <p className="text-gray-500 text-sm">
               Your application has been approved! Complete payment to go live on SYNTHE.
             </p>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-6 space-y-3">
+          <div className="bg-[#0A0A0F] border border-gray-200 rounded-xl p-5 mb-6 space-y-3">
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Role</span>
-              <span className="font-bold text-gray-900 capitalize">{appRole}</span>
+              <span className="font-bold text-white capitalize">{appRole}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Joining fee</span>
-              <span className="font-bold text-gray-900">999 one-time</span>
+              <span className="font-bold text-white">999 one-time</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Validity</span>
-              <span className="font-bold text-gray-900">Lifetime</span>
+              <span className="font-bold text-white">Lifetime</span>
             </div>
             <div className="flex justify-between text-sm border-t border-gray-200 pt-3">
-              <span className="font-bold text-gray-900">Total</span>
-              <span className="font-black text-gray-900">999</span>
+              <span className="font-bold text-white">Total</span>
+              <span className="font-black text-white">999</span>
             </div>
           </div>
 
@@ -182,7 +182,7 @@ function PayContent() {
 
 export default function JoinPayPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F7F6F3]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0A0A0F]" />}>
       <PayContent />
     </Suspense>
   );

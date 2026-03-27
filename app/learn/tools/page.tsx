@@ -379,7 +379,7 @@ export default function ToolsPage() {
   const compareTools = compareList.map(id => allTools.find(t => t.id === id)).filter(Boolean);
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans text-gray-900">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white">
       {/* ── HERO ── */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-6 py-12">
@@ -393,7 +393,7 @@ export default function ToolsPage() {
                 <span className="text-xs font-bold uppercase tracking-widest text-violet-600 bg-violet-50 border border-violet-200 px-3 py-1 rounded-full">Tools & Resources</span>
                 <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full">{allTools.length} tools</span>
               </div>
-              <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-3">AR/VR Tools Directory</h1>
+              <h1 className="text-4xl font-black tracking-tight text-white mb-3">AR/VR Tools Directory</h1>
               <p className="text-gray-500 text-lg max-w-xl">Every tool you need to build spatial experiences — curated, rated, and explained.</p>
             </div>
             <div className="flex gap-3">
@@ -415,7 +415,7 @@ export default function ToolsPage() {
               { label: "Categories",        value: TOOLS.length },
             ].map(s => (
               <div key={s.label}>
-                <p className="text-2xl font-black text-gray-900">{s.value}</p>
+                <p className="text-2xl font-black text-white">{s.value}</p>
                 <p className="text-xs text-gray-400 mt-0.5">{s.label}</p>
               </div>
             ))}
@@ -498,14 +498,14 @@ export default function ToolsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                   </svg>
                 </div>
-                <p className="text-sm font-semibold text-gray-900">AI Tool Recommender</p>
+                <p className="text-sm font-semibold text-white">AI Tool Recommender</p>
                 <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full">Gemini AI</span>
               </div>
               <div className="flex gap-2">
                 <input value={aiGoal} onChange={e => setAiGoal(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && getAiRec()}
                   placeholder="What do you want to build? e.g. AR app for Android..."
-                  className="flex-1 bg-gray-50 border border-gray-200 focus:border-violet-400 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors" />
+                  className="flex-1 bg-[#0A0A0F] border border-gray-200 focus:border-violet-400 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors" />
                 <button onClick={getAiRec} disabled={!aiGoal.trim() || aiLoading}
                   className="px-4 py-2.5 bg-violet-600 hover:bg-violet-700 disabled:opacity-40 text-white text-sm font-semibold rounded-xl transition-colors shrink-0">
                   {aiLoading ? "..." : "Recommend →"}
@@ -560,7 +560,7 @@ export default function ToolsPage() {
                                   <ToolLogo tool={tool} />
                                 </div>
                                 <div>
-                                  <h3 className="font-black text-gray-900 text-sm">{tool.name}</h3>
+                                  <h3 className="font-black text-white text-sm">{tool.name}</h3>
                                   <StarRating rating={tool.rating} />
                                 </div>
                               </div>
@@ -600,7 +600,7 @@ export default function ToolsPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <p className="font-bold text-sm text-gray-900">{tool.name}</p>
+                            <p className="font-bold text-sm text-white">{tool.name}</p>
                             {tool.featured && <span className="text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-semibold">Featured</span>}
                             <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${LEVEL_STYLES[tool.level]}`}>{tool.level}</span>
                           </div>
@@ -655,7 +655,7 @@ export default function ToolsPage() {
                     <ToolLogo tool={detailTool} />
                   </div>
                   <div>
-                    <h2 className="text-lg font-black text-gray-900">{detailTool.name}</h2>
+                    <h2 className="text-lg font-black text-white">{detailTool.name}</h2>
                     <StarRating rating={detailTool.rating} />
                   </div>
                 </div>
@@ -716,7 +716,7 @@ export default function ToolsPage() {
               className="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
               onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-black text-gray-900">Compare tools</h2>
+                <h2 className="text-lg font-black text-white">Compare tools</h2>
                 <button onClick={() => setDetailTool(null)} className="p-2 rounded-xl hover:bg-gray-100 text-gray-400">
                   <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
@@ -728,7 +728,7 @@ export default function ToolsPage() {
                       <div className="w-8 h-8 rounded-lg flex items-center justify-center p-1" style={{ background: tool.color }}>
                         <ToolLogo tool={tool} />
                       </div>
-                      <p className="font-black text-sm text-gray-900">{tool.name}</p>
+                      <p className="font-black text-sm text-white">{tool.name}</p>
                     </div>
                     <StarRating rating={tool.rating} />
                     <div className="mt-3 space-y-2 text-xs">

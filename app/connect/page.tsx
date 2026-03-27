@@ -110,7 +110,7 @@ function RequestModal({ dev, user, onClose, onSuccess }: { dev:Developer; user:a
               }
             </div>
             <div>
-              <p className="font-black text-gray-900 text-sm">{dev.name}</p>
+              <p className="font-black text-white text-sm">{dev.name}</p>
               <p className="text-xs text-gray-400">Send project request</p>
             </div>
           </div>
@@ -126,7 +126,7 @@ function RequestModal({ dev, user, onClose, onSuccess }: { dev:Developer; user:a
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Project / Subject *</label>
             <input value={subject} onChange={e=>setSubject(e.target.value)} required
               placeholder="e.g. AR Product Visualizer for iOS"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#5B4BDB] transition-colors placeholder-gray-400"/>
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#5B4BDB] transition-colors placeholder-gray-400"/>
             {dev.subjects?.length ? (
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {dev.subjects.map(s => (
@@ -157,7 +157,7 @@ function RequestModal({ dev, user, onClose, onSuccess }: { dev:Developer; user:a
                     <p className="text-xs font-semibold text-violet-700">Describe your idea roughly — Gemini will write it professionally</p>
                     <input value={roughIdea} onChange={e=>setRoughIdea(e.target.value)}
                       placeholder="I need someone to build an AR app that..."
-                      className="w-full border border-violet-200 bg-white rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-violet-500 transition-colors"/>
+                      className="w-full border border-violet-200 bg-white rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"/>
                     <button type="button" onClick={handleAiWrite} disabled={aiLoading||!roughIdea.trim()}
                       className="w-full py-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold disabled:opacity-40 transition-colors">
                       {aiLoading ? "Writing..." : "Generate brief →"}
@@ -169,7 +169,7 @@ function RequestModal({ dev, user, onClose, onSuccess }: { dev:Developer; user:a
 
             <textarea value={message} onChange={e=>setMessage(e.target.value)} required rows={4}
               placeholder="Describe your project — scope, timeline, references..."
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#5B4BDB] transition-colors resize-none placeholder-gray-400"/>
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#5B4BDB] transition-colors resize-none placeholder-gray-400"/>
           </div>
 
           <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs text-blue-700 font-medium">
@@ -178,7 +178,7 @@ function RequestModal({ dev, user, onClose, onSuccess }: { dev:Developer; user:a
 
           <div className="flex gap-3 pt-1">
             <button type="button" onClick={onClose}
-              className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-colors">
+              className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition-colors">
               Cancel
             </button>
             <button type="submit" disabled={loading}
@@ -217,7 +217,7 @@ function DevCard({ dev, user, onRequest, onChat }: { dev:Developer; user:any; on
             <div className="flex items-start justify-between gap-2">
               <div>
                 <Link href={`/developer/${dev.userId||dev.id}`}>
-                  <p className="font-black text-gray-900 hover:text-[#5B4BDB] transition-colors cursor-pointer text-sm leading-tight">{dev.name}</p>
+                  <p className="font-black text-white hover:text-[#5B4BDB] transition-colors cursor-pointer text-sm leading-tight">{dev.name}</p>
                 </Link>
                 {dev.certified && (
                   <span className="inline-flex items-center gap-1 text-[9px] font-black px-2 py-0.5 rounded-full bg-[#5B4BDB] text-white mt-1">
@@ -228,7 +228,7 @@ function DevCard({ dev, user, onRequest, onChat }: { dev:Developer; user:any; on
               </div>
               {dev.hourlyRate ? (
                 <div className="text-right flex-shrink-0">
-                  <p className="font-black text-gray-900 text-sm">₹{dev.hourlyRate.toLocaleString()}</p>
+                  <p className="font-black text-white text-sm">₹{dev.hourlyRate.toLocaleString()}</p>
                   <p className="text-xs text-gray-400">/hr</p>
                 </div>
               ) : null}
@@ -292,11 +292,11 @@ function DevCard({ dev, user, onRequest, onChat }: { dev:Developer; user:any; on
             </button>
             <div className="flex gap-2">
               <button onClick={()=>onChat(dev)}
-                className="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-bold text-sm hover:bg-gray-50 transition-colors">
+                className="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-bold text-sm hover:bg-[#0A0A0F] transition-colors">
                 Message
               </button>
               <Link href={`/developer/${dev.userId||dev.id}`} className="flex-1">
-                <button className="w-full py-2.5 rounded-xl border border-gray-200 text-gray-700 font-bold text-sm hover:bg-gray-50 transition-colors">
+                <button className="w-full py-2.5 rounded-xl border border-gray-200 text-gray-700 font-bold text-sm hover:bg-[#0A0A0F] transition-colors">
                   Profile
                 </button>
               </Link>
@@ -397,7 +397,7 @@ export default function ConnectPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">
       <div className="max-w-7xl mx-auto px-4 py-14 flex-grow w-full">
 
         {/* Header */}
@@ -405,7 +405,7 @@ export default function ConnectPage() {
           <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">Connect</p>
           <div className="flex items-end justify-between flex-wrap gap-4">
             <div>
-              <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-2">Find a Creator</h1>
+              <h1 className="text-4xl font-black tracking-tight text-white mb-2">Find a Creator</h1>
               <p className="text-gray-500 max-w-lg">Browse verified AR/VR/3D creators. Send a request to collaborate, or message directly.</p>
             </div>
             <div className="flex gap-4">
@@ -415,7 +415,7 @@ export default function ConnectPage() {
                 {label:"Skills", value:stats.skills},
               ].map(s=>(
                 <div key={s.label} className="text-center">
-                  <p className="text-2xl font-black text-gray-900">{loading?"—":s.value}</p>
+                  <p className="text-2xl font-black text-white">{loading?"—":s.value}</p>
                   <p className="text-xs text-gray-400">{s.label}</p>
                 </div>
               ))}
@@ -429,7 +429,7 @@ export default function ConnectPage() {
             <div className="w-7 h-7 rounded-lg bg-[#5B4BDB] flex items-center justify-center flex-shrink-0">
               <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             </div>
-            <p className="text-sm font-bold text-gray-900">AI Creator Matcher</p>
+            <p className="text-sm font-bold text-white">AI Creator Matcher</p>
             <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full font-semibold">Gemini</span>
           </div>
           <div className="flex gap-2">
@@ -492,7 +492,7 @@ export default function ConnectPage() {
         ) : filtered.length===0 ? (
           <div className="text-center py-24 bg-white rounded-2xl border border-gray-200">
             <p className="text-4xl mb-4">👀</p>
-            <p className="font-bold text-gray-900 mb-2">No creators found</p>
+            <p className="font-bold text-white mb-2">No creators found</p>
             <button onClick={()=>{setSearch("");setSkillFilter("All");setCertOnly(false);}}
               className="mt-4 px-6 py-2.5 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm hover:bg-[#4c3ec7] transition-colors">
               Clear filters

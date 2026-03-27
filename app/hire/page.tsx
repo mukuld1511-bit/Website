@@ -172,7 +172,7 @@ function BookingModal({ mentor, user, onClose, onSuccess }: {
                   : <span className="text-[#5B4BDB] font-bold text-sm">{mentor.displayName?.charAt(0)}</span>}
               </div>
               <div>
-                <p className="font-bold text-gray-900 text-sm">{mentor.displayName}</p>
+                <p className="font-bold text-white text-sm">{mentor.displayName}</p>
                 <p className="text-xs text-gray-400">₹{rate}/hr · {mentor.experience}</p>
               </div>
             </div>
@@ -219,7 +219,7 @@ function BookingModal({ mentor, user, onClose, onSuccess }: {
                 {DURATIONS.map(d => (
                   <button key={d} type="button" onClick={() => setDuration(d)}
                     className={`py-2 rounded-xl text-sm font-bold border transition-all ${
-                      duration === d ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                      duration === d ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-600 border-gray-200 hover:bg-[#0A0A0F]"
                     }`}>{d}m</button>
                 ))}
               </div>
@@ -281,7 +281,7 @@ function BookingModal({ mentor, user, onClose, onSuccess }: {
             </div>
 
             {/* Price summary */}
-            <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-1.5 text-sm">
+            <div className="bg-[#0A0A0F] border border-gray-100 rounded-xl p-4 space-y-1.5 text-sm">
               <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Price breakdown</p>
               {sessionType === "group" ? (
                 <>
@@ -319,7 +319,7 @@ function BookingModal({ mentor, user, onClose, onSuccess }: {
                 </>
               )}
               <div className="h-px bg-gray-200 my-1" />
-              <div className="flex justify-between font-black text-gray-900">
+              <div className="flex justify-between font-black text-white">
                 <span>You pay</span>
                 <span className="text-[#5B4BDB]">₹{price}</span>
               </div>
@@ -328,7 +328,7 @@ function BookingModal({ mentor, user, onClose, onSuccess }: {
 
           {/* Footer */}
           <div className="px-6 pb-6 flex gap-3">
-            <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition">Cancel</button>
+            <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition">Cancel</button>
             <button onClick={handleBook} disabled={loading || !topic.trim() || (sessionType !== "doubt" && !date)}
               className="flex-1 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] disabled:opacity-40 transition active:translate-y-[1px]">
               {loading ? "Processing…" : `Pay ₹${price}`}
@@ -357,7 +357,7 @@ function MentorCard({ mentor, onBook, canBook }: {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <p className="font-black text-gray-900">{mentor.displayName}</p>
+              <p className="font-black text-white">{mentor.displayName}</p>
               <p className="text-xs text-gray-500 mt-0.5">{mentor.expertise}</p>
             </div>
             <span className="text-sm font-black text-[#5B4BDB] shrink-0">₹{mentor.hourlyRate}/hr</span>
@@ -390,7 +390,7 @@ function MentorCard({ mentor, onBook, canBook }: {
       </div>
 
       {/* Session type quick prices */}
-      <div className="bg-gray-50 rounded-xl p-3 mb-4 grid grid-cols-3 gap-2 text-center">
+      <div className="bg-[#0A0A0F] rounded-xl p-3 mb-4 grid grid-cols-3 gap-2 text-center">
         {[
           { label: "1-on-1", price: calc1on1Price(mentor.hourlyRate ?? 500, 60) },
           { label: "Group/head", price: calcGroupPerHead(mentor.hourlyRate ?? 500, 60, 5) },
@@ -468,7 +468,7 @@ export default function HirePage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">
       {/* Toast */}
       <AnimatePresence>
         {toast && (
@@ -489,7 +489,7 @@ export default function HirePage() {
       <section className="pt-28 pb-12 px-4 text-center">
         <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}>
           <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">Verified Mentors</p>
-          <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
             Book a Session
           </h1>
           <p className="text-gray-500 text-lg max-w-lg mx-auto mb-8">
@@ -506,7 +506,7 @@ export default function HirePage() {
               <div key={item.type} className="bg-white border border-gray-200 rounded-2xl px-5 py-3 flex items-center gap-3 shadow-sm">
                 <span className="text-2xl">{item.icon}</span>
                 <div className="text-left">
-                  <p className="text-sm font-black text-gray-900">{item.type}</p>
+                  <p className="text-sm font-black text-white">{item.type}</p>
                   <p className="text-xs text-gray-500">{item.desc}</p>
                 </div>
               </div>
@@ -531,7 +531,7 @@ export default function HirePage() {
             {ALL_SKILLS.map(s => (
               <button key={s} onClick={() => setSkillFilter(s)}
                 className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
-                  skillFilter === s ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
+                  skillFilter === s ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-500 border-gray-200 hover:bg-[#0A0A0F]"
                 }`}>{s}</button>
             ))}
           </div>
@@ -545,7 +545,7 @@ export default function HirePage() {
         ) : filtered.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-5xl mb-3">🧑‍🏫</p>
-            <p className="font-black text-gray-900 mb-2">{mentors.length === 0 ? "No mentors yet" : "No mentors match"}</p>
+            <p className="font-black text-white mb-2">{mentors.length === 0 ? "No mentors yet" : "No mentors match"}</p>
             <p className="text-gray-500 text-sm">Check back soon — we're onboarding verified XR mentors.</p>
           </div>
         ) : (
@@ -563,7 +563,7 @@ export default function HirePage() {
           <h2 className="text-2xl font-black mb-2">Are you an XR expert?</h2>
           <p className="text-[#E1F5EE] mb-6 max-w-md mx-auto text-sm">Join SYNTHÉ as a verified mentor. Set your own rates, host 1-on-1 and group sessions, and earn 85% on every booking.</p>
           <Link href="/join">
-            <button className="px-8 py-3.5 bg-white text-[#0F6E56] font-black rounded-xl hover:bg-gray-50 transition-all">
+            <button className="px-8 py-3.5 bg-white text-[#0F6E56] font-black rounded-xl hover:bg-[#0A0A0F] transition-all">
               Apply as Mentor →
             </button>
           </Link>

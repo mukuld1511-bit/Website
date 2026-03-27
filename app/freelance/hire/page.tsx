@@ -102,7 +102,7 @@ function BookingModal({ mentor, user, onClose }: { mentor: Mentor; user: any; on
         {done ? (
           <div className="p-10 text-center">
             <div className="text-5xl mb-4">✅</div>
-            <h3 className="text-xl font-black text-gray-900 mb-2">Session Requested!</h3>
+            <h3 className="text-xl font-black text-white mb-2">Session Requested!</h3>
             <p className="text-gray-500 text-sm mb-2">{mentor.displayName} will confirm your session.</p>
             <p className="text-gray-400 text-xs mb-6">You'll get a notification once accepted. Meet link will be shared before the session.</p>
             <button onClick={onClose} className="px-8 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm hover:bg-[#4c3ec7] transition-colors">Done</button>
@@ -115,7 +115,7 @@ function BookingModal({ mentor, user, onClose }: { mentor: Mentor; user: any; on
                   {mentor.photoURL ? <img src={mentor.photoURL} className="w-full h-full object-cover" alt=""/> : <div className="w-full h-full flex items-center justify-center font-black text-gray-400">{mentor.displayName?.[0]}</div>}
                 </div>
                 <div>
-                  <p className="font-black text-gray-900 text-sm">{mentor.displayName}</p>
+                  <p className="font-black text-white text-sm">{mentor.displayName}</p>
                   <p className="text-xs text-gray-400">₹{mentor.hourlyRate}/hr · 1-on-1 session</p>
                 </div>
               </div>
@@ -130,14 +130,14 @@ function BookingModal({ mentor, user, onClose }: { mentor: Mentor; user: any; on
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">What do you want to learn? *</label>
                 <input value={topic} onChange={e=>setTopic(e.target.value)} placeholder="e.g. Unity AR setup for Android, WebXR basics..."
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#5B4BDB] transition-colors"/>
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#5B4BDB] transition-colors"/>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Date & Time *</label>
                   <input type="datetime-local" value={date} onChange={e=>setDate(e.target.value)} min={new Date().toISOString().slice(0,16)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#5B4BDB] transition-colors"/>
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#5B4BDB] transition-colors"/>
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Duration</label>
@@ -156,14 +156,14 @@ function BookingModal({ mentor, user, onClose }: { mentor: Mentor; user: any; on
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Additional context (optional)</label>
                 <textarea value={message} onChange={e=>setMessage(e.target.value)} rows={3}
                   placeholder="Your current level, specific questions, what you've tried..."
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#5B4BDB] transition-colors resize-none"/>
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#5B4BDB] transition-colors resize-none"/>
               </div>
 
               {/* Price summary */}
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-2">
+              <div className="bg-[#0A0A0F] border border-gray-200 rounded-xl p-4 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">{duration} min session</span>
-                  <span className="font-bold text-gray-900">₹{total.toLocaleString()}</span>
+                  <span className="font-bold text-white">₹{total.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-xs text-gray-400">
                   <span>Platform fee (15%)</span>
@@ -209,14 +209,14 @@ function MentorCard({ mentor, onBook }: { mentor: Mentor; onBook: () => void }) 
             <div className="flex items-start justify-between gap-2">
               <div>
                 <div className="flex items-center gap-1.5 mb-0.5">
-                  <p className="font-black text-gray-900">{mentor.displayName}</p>
+                  <p className="font-black text-white">{mentor.displayName}</p>
                   {mentor.certified && <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-[#5B4BDB] text-white">PRO</span>}
                 </div>
                 <StarRating rating={mentor.rating || 0}/>
                 <p className="text-xs text-gray-400 mt-0.5">{mentor.totalSessions||0} sessions · {mentor.experience||"XR Expert"}</p>
               </div>
               <div className="text-right flex-shrink-0">
-                <p className="text-xl font-black text-gray-900">₹{(mentor.hourlyRate||0).toLocaleString()}</p>
+                <p className="text-xl font-black text-white">₹{(mentor.hourlyRate||0).toLocaleString()}</p>
                 <p className="text-xs text-gray-400">/hour</p>
               </div>
             </div>
@@ -230,9 +230,9 @@ function MentorCard({ mentor, onBook }: { mentor: Mentor; onBook: () => void }) 
           {(mentor.skills?.length??0) > 4 && <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">+{mentor.skills.length-4}</span>}
         </div>
 
-        <div className="grid grid-cols-3 gap-2 mb-5 p-3 bg-gray-50 rounded-xl">
-          <div className="text-center"><p className="text-sm font-black text-gray-900">{mentor.totalSessions||0}</p><p className="text-xs text-gray-400">Sessions</p></div>
-          <div className="text-center border-x border-gray-200"><p className="text-sm font-black text-gray-900">{(mentor.rating||0).toFixed(1)}</p><p className="text-xs text-gray-400">Rating</p></div>
+        <div className="grid grid-cols-3 gap-2 mb-5 p-3 bg-[#0A0A0F] rounded-xl">
+          <div className="text-center"><p className="text-sm font-black text-white">{mentor.totalSessions||0}</p><p className="text-xs text-gray-400">Sessions</p></div>
+          <div className="text-center border-x border-gray-200"><p className="text-sm font-black text-white">{(mentor.rating||0).toFixed(1)}</p><p className="text-xs text-gray-400">Rating</p></div>
           <div className="text-center"><p className="text-sm font-black text-green-600">85%</p><p className="text-xs text-gray-400">Earns</p></div>
         </div>
 
@@ -281,13 +281,13 @@ export default function HirePage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      {bookingMentor && user && <BookingModal mentor={bookingMentor} user={user} onClose={()=>setBookingMentor(null)}/>}
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">      {bookingMentor && user && <BookingModal mentor={bookingMentor} user={user} onClose={()=>setBookingMentor(null)}/>}
       {bookingMentor && !user && (typeof window!=="undefined" && (window.location.href="/login"))}
 
       <div className="max-w-7xl mx-auto px-4 py-14 flex-grow w-full">
         <div className="mb-10">
           <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">1-on-1 Mentorship</p>
-          <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-3">Book a Mentor</h1>
+          <h1 className="text-4xl font-black tracking-tight text-white mb-3">Book a Mentor</h1>
           <p className="text-gray-500 max-w-xl">Learn from verified XR professionals. Pick a topic, choose a time, pay after confirmation.</p>
         </div>
 
@@ -301,7 +301,7 @@ export default function HirePage() {
           ].map(s=>(
             <div key={s.step} className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
               <p className="text-xs font-black text-[#5B4BDB] tracking-widest mb-2">{s.step}</p>
-              <p className="font-black text-gray-900 text-sm mb-1">{s.title}</p>
+              <p className="font-black text-white text-sm mb-1">{s.title}</p>
               <p className="text-xs text-gray-400 leading-snug">{s.desc}</p>
             </div>
           ))}
@@ -331,7 +331,7 @@ export default function HirePage() {
         ) : filtered.length===0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-gray-200">
             <p className="text-4xl mb-4">🧑‍🏫</p>
-            <p className="font-bold text-gray-900 mb-2">No mentors found</p>
+            <p className="font-bold text-white mb-2">No mentors found</p>
             <p className="text-gray-400 text-sm">Try a different filter</p>
           </div>
         ) : (

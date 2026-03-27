@@ -115,15 +115,15 @@ function GalleryContent() {
     `px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${active
       ? "bg-[#5B4BDB] text-white border-[#4438b8]"
       : dark ? "bg-gray-800 text-gray-400 border-gray-700 hover:text-white"
-             : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"}`;
+             : "bg-white text-gray-500 border-gray-200 hover:bg-[#0A0A0F]"}`;
 
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-500 ${dark ? "bg-gray-950" : "bg-gradient-to-br from-indigo-50 via-white to-pink-50"}`}>      <div className="max-w-7xl mx-auto px-4 py-12 flex-grow w-full">
+    <div className={`min-h-screen flex flex-col transition-colors duration-500 ${dark ? "bg-gray-950" : "bg-[#0A0A0F]"}`}>      <div className="max-w-7xl mx-auto px-4 py-12 flex-grow w-full">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className={`text-3xl font-black tracking-tight ${dark ? "text-white" : "text-gray-900"}`}>
+            <h1 className={`text-3xl font-black tracking-tight ${dark ? "text-white" : "text-white"}`}>
               Gallery
             </h1>
             <p className={`text-sm mt-1 ${dark ? "text-gray-400" : "text-gray-500"}`}>
@@ -151,7 +151,7 @@ function GalleryContent() {
             <button key={key} onClick={() => handleTabChange(key)}
               className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-1.5 ${
                 tab === key
-                  ? dark ? "bg-gray-700 text-white shadow-sm" : "bg-white text-gray-900 shadow-sm"
+                  ? dark ? "bg-gray-700 text-white shadow-sm" : "bg-white text-white shadow-sm"
                   : dark ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-700"
               }`}>
               <span>{emoji}</span> {label}
@@ -173,7 +173,7 @@ function GalleryContent() {
               placeholder="Search models, tags..."
               className={`w-full pl-8 pr-3 py-2 rounded-xl text-xs border focus:outline-none focus:ring-2 focus:ring-[#5B4BDB]/30 ${
                 dark ? "bg-gray-800 border-gray-700 text-white placeholder-gray-500"
-                     : "bg-white border-gray-200 text-gray-900 placeholder-gray-400"
+                     : "bg-white border-gray-200 text-white placeholder-gray-400"
               }`}
             />
           </div>
@@ -221,7 +221,7 @@ function GalleryContent() {
               ${dark ? "bg-gray-800" : "bg-gray-100"}`}>
               {filters.search ? "🔍" : "📦"}
             </div>
-            <p className={`text-lg font-bold mb-2 ${dark ? "text-white" : "text-gray-900"}`}>
+            <p className={`text-lg font-bold mb-2 ${dark ? "text-white" : "text-white"}`}>
               {filters.search ? `No results for "${filters.search}"` : "Nothing here yet"}
             </p>
             <p className={`text-sm mb-6 ${dark ? "text-gray-500" : "text-gray-400"}`}>
@@ -270,7 +270,7 @@ function GalleryContent() {
                   className={`px-8 py-3 rounded-xl text-sm font-bold border-b-[3px] transition-all active:translate-y-[1px] ${
                     dark
                       ? "bg-gray-800 text-white border-gray-700 hover:bg-gray-700"
-                      : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                      : "bg-white text-gray-700 border-gray-200 hover:bg-[#0A0A0F]"
                   }`}>
                   Load more
                 </button>
@@ -286,7 +286,7 @@ function GalleryContent() {
 
 export default function GalleryPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0A0A0F]" />}>
       <GalleryContent />
     </Suspense>
   );

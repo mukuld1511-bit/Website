@@ -123,7 +123,7 @@ export default function DeveloperDashboard() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
+      <main className="min-h-screen bg-[#0A0A0F] flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 rounded-full border-2 border-gray-200 border-t-blue-500 animate-spin" />
           <p className="text-gray-500 text-sm font-medium">Loading your dashboard…</p>
@@ -133,7 +133,7 @@ export default function DeveloperDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8 py-28 relative overflow-hidden font-sans">
+    <main className="min-h-screen bg-[#0A0A0F] px-4 sm:px-6 lg:px-8 py-28 relative overflow-hidden font-sans">
 
       <div className="relative z-10 max-w-5xl mx-auto">
 
@@ -145,7 +145,7 @@ export default function DeveloperDashboard() {
           className="mb-10"
         >
           <p className="text-blue-600 text-xs uppercase tracking-[0.2em] font-bold mb-2">Developer Portal</p>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 leading-tight mb-3">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight mb-3">
             Your Dashboard
           </h1>
           <p className="text-gray-500 text-sm font-medium">Track your uploads, earnings, bids, and connect sessions.</p>
@@ -155,7 +155,7 @@ export default function DeveloperDashboard() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="mb-10 bg-white p-6 rounded-[2rem] border border-gray-200 shadow-sm flex flex-col md:flex-row gap-6 items-center">
           <div className="flex-1">
-            <h2 className="text-xl font-black text-gray-900 mb-1">Payout Details</h2>
+            <h2 className="text-xl font-black text-white mb-1">Payout Details</h2>
             <p className="text-sm font-medium text-gray-500">Enter your UPI ID or Bank Details to receive payments for your models.</p>
           </div>
           <div className="flex-1 w-full flex gap-3">
@@ -164,7 +164,7 @@ export default function DeveloperDashboard() {
               placeholder="UPI ID or Account Number & IFSC..." 
               value={paymentInfo}
               onChange={(e) => setPaymentInfo(e.target.value)}
-              className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
+              className="flex-1 bg-[#0A0A0F] border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
             />
             <button 
               onClick={savePaymentInfo}
@@ -237,7 +237,7 @@ export default function DeveloperDashboard() {
             ].map((e, i) => (
               <div key={i} className="rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
                 <p className={`text-2xl font-black mb-1 text-${e.color}-600`}>{e.val}</p>
-                <p className="text-gray-900 font-bold text-sm">{e.label}</p>
+                <p className="text-white font-bold text-sm">{e.label}</p>
                 <p className="text-gray-500 text-xs mt-0.5 font-medium">{e.sub}</p>
               </div>
             ))}
@@ -268,7 +268,7 @@ export default function DeveloperDashboard() {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-gray-900 font-bold text-sm truncate group-hover:text-violet-600 transition">{m.title}</h3>
+                      <h3 className="text-white font-bold text-sm truncate group-hover:text-violet-600 transition">{m.title}</h3>
                       <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                         <span className="text-[9px] font-bold uppercase py-0.5 px-2 rounded bg-violet-50 text-violet-700 border border-violet-200">
                           {m.category ?? "3D"}
@@ -309,7 +309,7 @@ export default function DeveloperDashboard() {
                   }
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                      <span className="text-gray-900 font-bold text-sm">{s.studentName}</span>
+                      <span className="text-white font-bold text-sm">{s.studentName}</span>
                       <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${statusBadge(s.status)}`}>
                         {s.status}
                       </span>
@@ -346,7 +346,7 @@ export default function DeveloperDashboard() {
                     )
                   }
                   <div className="flex-1 min-w-0">
-                    <p className="text-gray-900 font-bold text-sm truncate">{c.requestTitle || "Project Chat"}</p>
+                    <p className="text-white font-bold text-sm truncate">{c.requestTitle || "Project Chat"}</p>
                     <p className="text-gray-500 font-medium text-xs truncate">with {c.clientName}</p>
                   </div>
                   {c.funded && (
@@ -371,7 +371,7 @@ export default function DeveloperDashboard() {
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-2xl">🎓</span>
                 <div>
-                  <p className="text-gray-900 font-bold text-sm">Certification Status</p>
+                  <p className="text-white font-bold text-sm">Certification Status</p>
                   <p className="text-gray-500 font-medium text-xs">Certified developers appear first on the Connect page</p>
                 </div>
               </div>
@@ -410,7 +410,7 @@ function DashSection({ title, subtitle, delay, children, accent = "bg-blue-500" 
       <div className="flex items-center gap-3 mb-5">
         <div className={`w-1.5 h-7 rounded-sm ${accent}`} />
         <div>
-          <h2 className="text-xl font-bold text-gray-900 tracking-tight">{title}</h2>
+          <h2 className="text-xl font-bold text-white tracking-tight">{title}</h2>
           <p className="text-gray-500 font-medium text-xs mt-0.5">{subtitle}</p>
         </div>
       </div>

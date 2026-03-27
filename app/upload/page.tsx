@@ -105,9 +105,9 @@ export default function UploadContent() {
     : ["oculus", "webxr", "metaverse", "quest", "steamvr", "htc-vive", "psvr"];
 
   if (!user) return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center font-sans">
       <div className="text-center bg-white p-10 rounded-2xl shadow-sm border border-gray-200">
-        <h1 className="text-gray-900 text-3xl font-extrabold mb-4">Sign in required</h1>
+        <h1 className="text-white text-3xl font-extrabold mb-4">Sign in required</h1>
         <p className="text-gray-500 mb-8">You must be signed in to upload content.</p>
         <Link href="/login">
           <button className="px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 transition text-white font-bold shadow-sm">Sign In</button>
@@ -235,7 +235,7 @@ export default function UploadContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">      <div className="relative z-10 max-w-4xl mx-auto px-4 py-24 flex-grow w-full">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white">      <div className="relative z-10 max-w-4xl mx-auto px-4 py-24 flex-grow w-full">
 
         <AnimatePresence>
           {success && (
@@ -248,7 +248,7 @@ export default function UploadContent() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                   </motion.svg>
                 </div>
-                <h2 className="text-gray-900 text-2xl font-black mb-2">Published!</h2>
+                <h2 className="text-white text-2xl font-black mb-2">Published!</h2>
                 <p className="text-gray-500 text-sm">Redirecting to gallery...</p>
               </div>
             </motion.div>
@@ -256,11 +256,11 @@ export default function UploadContent() {
         </AnimatePresence>
 
         <div className="mb-10 lg:pl-4">
-          <Link href="/gallery" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 text-sm font-semibold mb-6 transition">
+          <Link href="/gallery" className="inline-flex items-center gap-2 text-gray-500 hover:text-white text-sm font-semibold mb-6 transition">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
             Back to Gallery
           </Link>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3 tracking-tight">Upload Content</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">Upload Content</h1>
           <p className="text-gray-500 text-lg">Share 3D models, AutoCAD drawings, AR or VR builds with the world.</p>
           <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-50 border border-orange-200">
             <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span>
@@ -285,8 +285,8 @@ export default function UploadContent() {
                   return (
                     <button key={type} onClick={() => { setUploadType(type); setStep(1); }}
                       className={`p-6 rounded-3xl border-[3px] transition-all duration-200 text-center flex flex-col items-center justify-center h-full shadow-sm hover:shadow-md hover:-translate-y-1 ${isSel ? sel[accent]+" shadow-md" : "border-gray-100 bg-white hover:border-gray-200"}`}>
-                      <span className={`text-3xl mb-4 w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm ${isSel ? bg[accent] : "bg-gray-50"}`}>{icon}</span>
-                      <p className="font-black text-base mb-1 text-gray-900">{title}</p>
+                      <span className={`text-3xl mb-4 w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm ${isSel ? bg[accent] : "bg-[#0A0A0F]"}`}>{icon}</span>
+                      <p className="font-black text-base mb-1 text-white">{title}</p>
                       <p className="text-xs text-gray-500 font-medium">{desc}</p>
                     </button>
                   );
@@ -306,7 +306,7 @@ export default function UploadContent() {
               <div className="mb-8 flex justify-between items-start">
                 <div>
                   <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Step 1 of {uploadType === "model" ? "3" : "4"}</p>
-                  <h2 className="text-3xl font-extrabold text-gray-900">Upload Media</h2>
+                  <h2 className="text-3xl font-extrabold text-white">Upload Media</h2>
                 </div>
                 {uploadType === "xr-build" && <span className="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1.5 rounded-lg border border-purple-200">XR builds require .zip</span>}
                 {uploadType === "autocad" && <span className="bg-orange-100 text-orange-800 text-xs font-bold px-3 py-1.5 rounded-lg border border-orange-200">AutoCAD: .dwg or .dxf only</span>}
@@ -317,20 +317,20 @@ export default function UploadContent() {
                   className="group border-2 border-dashed border-gray-300 rounded-2xl p-8 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition text-center flex flex-col justify-center min-h-[220px]">
                   <input ref={fileInputRef} type="file" onChange={handleFileSelect} className="hidden"
                     accept={uploadType === "autocad" ? AUTOCAD_EXTENSIONS.map(e=>`.${e}`).join(",") : uploadType === "xr-build" ? ".zip" : MODEL_EXTENSIONS.map(e=>`.${e}`).join(",")} />
-                  <div className="w-16 h-16 rounded-full bg-gray-50 group-hover:bg-white flex items-center justify-center mx-auto mb-4 border border-gray-100 shadow-sm transition">
+                  <div className="w-16 h-16 rounded-full bg-[#0A0A0F] group-hover:bg-white flex items-center justify-center mx-auto mb-4 border border-gray-100 shadow-sm transition">
                     <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                     </svg>
                   </div>
                   {file ? (
                     <div>
-                      <p className="text-gray-900 font-bold text-sm truncate px-4">{file.name}</p>
+                      <p className="text-white font-bold text-sm truncate px-4">{file.name}</p>
                       <p className="text-gray-500 text-xs mt-1 font-medium">{(file.size/(1024*1024)).toFixed(2)} MB</p>
                       <p className="text-orange-600 text-xs mt-1 font-semibold">→ Cloudflare R2</p>
                     </div>
                   ) : (
                     <div>
-                      <p className="text-gray-900 font-bold text-sm mb-1">Upload Main File</p>
+                      <p className="text-white font-bold text-sm mb-1">Upload Main File</p>
                       <p className="text-gray-500 text-xs">
                         {uploadType === "model" ? "GLB, GLTF, OBJ, FBX" : uploadType === "autocad" ? "DWG or DXF" : ".zip packages only"}
                       </p>
@@ -344,14 +344,14 @@ export default function UploadContent() {
                   <input ref={thumbnailInputRef} type="file" onChange={handleThumbnailSelect} className="hidden" accept="image/*" />
                   {thumbnailPreview && <img src={thumbnailPreview} className="w-full h-full object-cover rounded-xl shadow-sm absolute inset-0 z-0" alt="thumbnail" />}
                   <div className={`relative z-10 w-full h-full flex flex-col items-center justify-center ${thumbnailPreview ? "absolute inset-0 bg-white/80 p-4 rounded-xl opacity-0 hover:opacity-100 transition" : ""}`}>
-                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border shadow-sm transition ${thumbnailPreview ? "bg-white border-gray-200" : "bg-gray-50 group-hover:bg-white border-gray-100"}`}>
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border shadow-sm transition ${thumbnailPreview ? "bg-white border-gray-200" : "bg-[#0A0A0F] group-hover:bg-white border-gray-100"}`}>
                       <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                     </div>
                     {thumbnailPreview
-                      ? <p className="text-gray-900 font-bold text-sm">Replace Thumbnail</p>
-                      : <><p className="text-gray-900 font-bold text-sm mb-1">Upload Thumbnail {uploadType !== "model" && <span className="text-amber-600">*</span>}</p><p className="text-gray-500 text-xs">High quality images only<br/>(Max 5MB)</p></>
+                      ? <p className="text-white font-bold text-sm">Replace Thumbnail</p>
+                      : <><p className="text-white font-bold text-sm mb-1">Upload Thumbnail {uploadType !== "model" && <span className="text-amber-600">*</span>}</p><p className="text-gray-500 text-xs">High quality images only<br/>(Max 5MB)</p></>
                     }
                   </div>
                 </div>
@@ -363,7 +363,7 @@ export default function UploadContent() {
                 </div>
               )}
               <div className="flex gap-4 justify-between border-t border-gray-100 pt-6">
-                <button onClick={() => setStep(0)} className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-gray-50 transition">← Back</button>
+                <button onClick={() => setStep(0)} className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-[#0A0A0F] transition">← Back</button>
                 <button onClick={() => setStep(2)} disabled={!file}
                   className="px-10 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-sm disabled:opacity-50 disabled:bg-gray-400 text-white font-bold transition">Continue</button>
               </div>
@@ -377,25 +377,25 @@ export default function UploadContent() {
             <div className="rounded-2xl border border-gray-200 bg-white p-8 md:p-10 shadow-sm space-y-6">
               <div className="mb-8 border-b border-gray-100 pb-6">
                 <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Step 2 of {uploadType === "model" ? "3" : "4"}</p>
-                <h2 className="text-3xl font-extrabold text-gray-900">Content Details</h2>
+                <h2 className="text-3xl font-extrabold text-white">Content Details</h2>
               </div>
               <div>
                 <label className="block text-gray-700 text-sm font-bold mb-2">Title *</label>
                 <input value={title} onChange={(e) => setTitle(e.target.value)}
                   placeholder={uploadType === "model" ? "e.g. Low Poly Industrial Warehouse" : uploadType === "xr-build" ? "e.g. AR Interior Designer" : "e.g. Floor Plan"}
-                  className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm" />
+                  className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm" />
               </div>
               <div>
                 <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
                 <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4}
                   placeholder="Describe your content..."
-                  className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm resize-none" />
+                  className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm resize-none" />
               </div>
               {uploadType === "model" && (
                 <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Category</label>
                   <select value={category} onChange={(e) => setCategory(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm">
+                    className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm">
                     <option value="">Select a sub-category</option>
                     {MODEL_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
@@ -414,7 +414,7 @@ export default function UploadContent() {
                       <div className="flex gap-2">
                         {(["AR","VR"] as const).map((m) => (
                           <button key={m} onClick={() => setTargetMedium(m)}
-                            className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition border ${targetMedium === m ? (m==="AR" ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-indigo-500 bg-indigo-50 text-indigo-700") : "border-gray-200 bg-gray-50 text-gray-500 hover:bg-gray-100"}`}>
+                            className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition border ${targetMedium === m ? (m==="AR" ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-indigo-500 bg-indigo-50 text-indigo-700") : "border-gray-200 bg-[#0A0A0F] text-gray-500 hover:bg-gray-100"}`}>
                             {m} {m==="AR" ? "(Augmented)" : "(Virtual)"}
                           </button>
                         ))}
@@ -423,7 +423,7 @@ export default function UploadContent() {
                     <div>
                       <label className="block text-gray-700 text-sm font-bold mb-2">Content Genre *</label>
                       <select value={genre} onChange={(e) => setGenre(e.target.value)}
-                        className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm">
+                        className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm">
                         <option value="">Select genre</option>
                         {BUILD_GENRES.map((g) => <option key={g} value={g}>{g}</option>)}
                       </select>
@@ -432,7 +432,7 @@ export default function UploadContent() {
                   <div>
                     <label className="block text-gray-700 text-sm font-bold mb-2">Version</label>
                     <input value={version} onChange={(e) => setVersion(e.target.value)} placeholder="1.0.0"
-                      className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm" />
+                      className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm" />
                   </div>
                   <div>
                     <label className="block text-gray-700 text-sm font-bold mb-3">Supported Platforms *</label>
@@ -441,7 +441,7 @@ export default function UploadContent() {
                         const sel = platforms.includes(p);
                         return (
                           <button key={p} onClick={() => setPlatforms(sel ? platforms.filter(x=>x!==p) : [...platforms,p])}
-                            className={`px-4 py-2 rounded-lg font-bold text-xs transition border shadow-sm ${sel ? "border-blue-600 bg-blue-50 text-blue-700" : "border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50"}`}>
+                            className={`px-4 py-2 rounded-lg font-bold text-xs transition border shadow-sm ${sel ? "border-blue-600 bg-blue-50 text-blue-700" : "border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-[#0A0A0F]"}`}>
                             {p}
                           </button>
                         );
@@ -465,7 +465,7 @@ export default function UploadContent() {
                   <input value={tagInput} onChange={(e) => setTagInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddTag())}
                     placeholder="Add tags (e.g. low-poly, scifi)"
-                    className="flex-1 bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm shadow-sm" />
+                    className="flex-1 bg-white border border-gray-300 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm shadow-sm" />
                   <button onClick={handleAddTag} className="px-6 py-3 rounded-xl bg-gray-100 border border-gray-200 text-gray-700 font-bold text-sm hover:bg-gray-200 transition shadow-sm whitespace-nowrap">Add Tag</button>
                 </div>
                 {uploadType === "xr-build" && (
@@ -479,10 +479,10 @@ export default function UploadContent() {
               </div>
               {/* Pricing */}
               <div className="pt-2 border-t border-gray-100 mt-4">
-                <div className="flex items-center gap-4 p-5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 transition cursor-pointer mt-4" onClick={() => setIsPaid(!isPaid)}>
+                <div className="flex items-center gap-4 p-5 rounded-xl border border-gray-200 bg-[#0A0A0F] hover:border-gray-300 transition cursor-pointer mt-4" onClick={() => setIsPaid(!isPaid)}>
                   <input type="checkbox" checked={isPaid} onChange={(e) => setIsPaid(e.target.checked)}
                     className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" onClick={(e) => e.stopPropagation()} />
-                  <label className="text-gray-900 font-bold text-base cursor-pointer">Monetize this content (Razorpay)</label>
+                  <label className="text-white font-bold text-base cursor-pointer">Monetize this content (Razorpay)</label>
                 </div>
                 {isPaid && (
                   <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="pt-4">
@@ -491,14 +491,14 @@ export default function UploadContent() {
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₹</span>
                       <input type="number" value={price || ""} onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
                         placeholder="99" min="0"
-                        className="w-full bg-white border border-gray-300 rounded-xl pl-8 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm font-semibold" />
+                        className="w-full bg-white border border-gray-300 rounded-xl pl-8 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm font-semibold" />
                     </div>
                     <p className="text-gray-500 text-xs font-semibold mt-2">15% platform fee + ~2% Razorpay fee applies.</p>
                   </motion.div>
                 )}
               </div>
               <div className="flex gap-4 justify-between border-t border-gray-100 pt-8 mt-4">
-                <button onClick={() => setStep(1)} className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-gray-50 transition">← Back</button>
+                <button onClick={() => setStep(1)} className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-[#0A0A0F] transition">← Back</button>
                 <button onClick={() => setStep(3)}
                   disabled={!title || (uploadType === "xr-build" && (!genre || !platforms.length)) || (isPaid && (!price || price <= 0))}
                   className="px-10 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-sm disabled:opacity-50 disabled:bg-gray-400 text-white font-bold transition">Continue</button>
@@ -513,7 +513,7 @@ export default function UploadContent() {
             <div className="rounded-2xl border border-gray-200 bg-white p-8 md:p-10 shadow-sm space-y-6">
               <div className="mb-8 border-b border-gray-100 pb-6">
                 <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Step 3 of 4</p>
-                <h2 className="text-3xl font-extrabold text-gray-900">Minimum Specifications</h2>
+                <h2 className="text-3xl font-extrabold text-white">Minimum Specifications</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {[
@@ -526,7 +526,7 @@ export default function UploadContent() {
                     <input value={minimumSpecs[key as keyof typeof minimumSpecs]}
                       onChange={(e) => setMinimumSpecs({ ...minimumSpecs, [key]: e.target.value })}
                       placeholder={placeholder}
-                      className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm" />
+                      className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm" />
                   </div>
                 ))}
               </div>
@@ -534,10 +534,10 @@ export default function UploadContent() {
                 <label className="block text-gray-700 text-sm font-bold mb-2">Release Notes / Changelog</label>
                 <textarea value={changelog} onChange={(e) => setChangelog(e.target.value)}
                   placeholder="What's new in this version?" rows={4}
-                  className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm resize-none" />
+                  className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition shadow-sm resize-none" />
               </div>
               <div className="flex gap-4 justify-between border-t border-gray-100 pt-8 mt-4">
-                <button onClick={() => setStep(2)} className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-gray-50 transition">← Back</button>
+                <button onClick={() => setStep(2)} className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-[#0A0A0F] transition">← Back</button>
                 <button onClick={() => setStep(4)} className="px-10 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-sm text-white font-bold transition">Continue</button>
               </div>
             </div>
@@ -550,14 +550,14 @@ export default function UploadContent() {
             <div className="rounded-2xl border border-gray-200 bg-white p-8 md:p-10 shadow-sm space-y-6">
               <div className="mb-8 border-b border-gray-100 pb-6">
                 <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Final Step</p>
-                <h2 className="text-3xl font-extrabold text-gray-900">Distribution & Publish</h2>
+                <h2 className="text-3xl font-extrabold text-white">Distribution & Publish</h2>
               </div>
-              <div className="p-6 rounded-xl border border-gray-200 bg-gray-50">
-                <p className="text-gray-900 font-black mb-4">Summary Configuration</p>
+              <div className="p-6 rounded-xl border border-gray-200 bg-[#0A0A0F]">
+                <p className="text-white font-black mb-4">Summary Configuration</p>
                 <div className="grid grid-cols-2 gap-y-3 font-medium text-sm">
-                  <p className="text-gray-500">Asset Title</p>  <p className="text-gray-900 text-right truncate font-bold">{title || "Untitled"}</p>
-                  <p className="text-gray-500">Class</p>        <p className="text-gray-900 text-right font-bold">{uploadType === "model" ? "3D Model" : uploadType === "autocad" ? "AutoCAD Drawing" : targetMedium === "AR" ? "AR Application" : "VR Application"}</p>
-                  <p className="text-gray-500">Payload</p>      <p className="text-gray-900 text-right font-bold">{file ? (file.size/(1024*1024)).toFixed(2) : 0} MB</p>
+                  <p className="text-gray-500">Asset Title</p>  <p className="text-white text-right truncate font-bold">{title || "Untitled"}</p>
+                  <p className="text-gray-500">Class</p>        <p className="text-white text-right font-bold">{uploadType === "model" ? "3D Model" : uploadType === "autocad" ? "AutoCAD Drawing" : targetMedium === "AR" ? "AR Application" : "VR Application"}</p>
+                  <p className="text-gray-500">Payload</p>      <p className="text-white text-right font-bold">{file ? (file.size/(1024*1024)).toFixed(2) : 0} MB</p>
                   <p className="text-gray-500">Storage</p>      <p className="text-orange-600 text-right font-bold">Cloudflare R2</p>
                   <p className="text-gray-500">Listing</p>      <p className={`text-right font-bold ${isPaid ? "text-green-600" : "text-blue-600"}`}>{isPaid ? `Premium (₹${price})` : "Free Access"}</p>
                 </div>
@@ -581,7 +581,7 @@ export default function UploadContent() {
               )}
               <div className="flex gap-4 justify-between border-t border-gray-100 pt-8 mt-4">
                 <button onClick={() => setStep(uploadType === "model" || uploadType === "autocad" ? 2 : 3)} disabled={uploading}
-                  className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-gray-50 transition disabled:opacity-50">← Edit</button>
+                  className="px-8 py-3.5 rounded-xl border border-gray-300 text-gray-700 font-bold shadow-sm hover:bg-[#0A0A0F] transition disabled:opacity-50">← Edit</button>
                 <button onClick={handlePublish} disabled={uploading}
                   className="px-10 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:bg-gray-400 text-white font-bold transition shadow-sm w-48">
                   {uploading ? "Publishing..." : "Publish Content"}

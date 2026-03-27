@@ -35,7 +35,7 @@ export default function CreateProfile() {
     setLoading(false);
   };
 
-  const inputClass = "w-full bg-white border border-gray-300 text-gray-900 placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm transition duration-200";
+  const inputClass = "w-full bg-white border border-gray-300 text-white placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm transition duration-200";
 
   const fields = [
     { label: "Your Name", placeholder: "e.g. Mukul Sharma", value: name, set: setName, icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z", type: "input" },
@@ -44,7 +44,7 @@ export default function CreateProfile() {
   ];
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-24 relative overflow-hidden font-sans">      
+    <main className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4 py-24 relative overflow-hidden font-sans">      
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
@@ -62,7 +62,7 @@ export default function CreateProfile() {
             <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
             <span className="text-blue-700 text-xs font-bold uppercase tracking-widest">Developer Profile</span>
           </motion.div>
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 leading-none mb-3">
+          <h1 className="text-4xl font-extrabold tracking-tight text-white leading-none mb-3">
             Create Your{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
               Profile

@@ -51,7 +51,7 @@ function ModelCard({ m }: { m: ShowcaseModel }) {
           </div>
         </div>
         <div className="p-4">
-          <h3 className="font-bold text-gray-900 text-sm truncate mb-0.5">{m.title}</h3>
+          <h3 className="font-bold text-white text-sm truncate mb-0.5">{m.title}</h3>
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center overflow-hidden flex-shrink-0">
               {m.authorPhoto
@@ -132,7 +132,7 @@ function ShowcaseContent() {
           Back to Learn
         </Link>
         <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-2">Community</p>
-        <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-3">Student showcase</h1>
+        <h1 className="text-4xl font-black tracking-tight text-white mb-3">Student showcase</h1>
         <p className="text-gray-500 text-lg max-w-xl">
           Real AR/VR work built by SYNTHÉ learners and developers.
         </p>
@@ -146,7 +146,7 @@ function ShowcaseContent() {
           { label: "Challenge submissions",  value: challengeCount     },
         ].map(({ label, value }) => (
           <div key={label} className="bg-white border border-gray-100 rounded-2xl p-4 text-center shadow-sm">
-            <p className="text-2xl font-black text-gray-900">{value}</p>
+            <p className="text-2xl font-black text-white">{value}</p>
             <p className="text-xs text-gray-500 mt-0.5">{label}</p>
           </div>
         ))}
@@ -161,7 +161,7 @@ function ShowcaseContent() {
         ] as const).map(({ key, label }) => (
           <button key={key} onClick={() => setFilter(key)}
             className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-              filter === key ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+              filter === key ? "bg-white text-white shadow-sm" : "text-gray-500"
             }`}>
             {label}
           </button>
@@ -184,7 +184,7 @@ function ShowcaseContent() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
           <p className="text-4xl mb-4">🎨</p>
-          <p className="font-black text-gray-900 text-lg mb-2">Nothing here yet</p>
+          <p className="font-black text-white text-lg mb-2">Nothing here yet</p>
           <p className="text-gray-500 text-sm mb-5">
             Upload a model to the gallery with the tag "showcase" and it'll appear here
           </p>
@@ -195,7 +195,7 @@ function ShowcaseContent() {
               </button>
             </Link>
             <Link href="/learn/challenges">
-              <button className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-all">
+              <button className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition-all">
                 View challenges
               </button>
             </Link>
@@ -210,7 +210,7 @@ function ShowcaseContent() {
       {/* CTA */}
       {filtered.length > 0 && (
         <div className="mt-10 p-6 rounded-2xl border border-gray-100 bg-white shadow-sm text-center">
-          <p className="font-black text-gray-900 mb-2">Want to be featured here?</p>
+          <p className="font-black text-white mb-2">Want to be featured here?</p>
           <p className="text-gray-500 text-sm mb-4">
             Upload your AR/VR work to the gallery and add the tag{" "}
             <code className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-700 text-xs">showcase</code>{" "}
@@ -223,7 +223,7 @@ function ShowcaseContent() {
               </button>
             </Link>
             <Link href="/learn/challenges">
-              <button className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-all">
+              <button className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition-all">
                 View challenges
               </button>
             </Link>
@@ -236,7 +236,7 @@ function ShowcaseContent() {
 
 export default function ShowcasePage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">      <Suspense fallback={
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white">      <Suspense fallback={
         <div className="flex-grow flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-[#5B4BDB]/30 border-t-[#5B4BDB] rounded-full animate-spin" />
         </div>

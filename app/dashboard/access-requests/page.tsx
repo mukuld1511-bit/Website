@@ -85,18 +85,18 @@ export default function AccessRequestsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] font-sans">
       <div className="relative z-10 pt-32 pb-24 px-4 max-w-4xl mx-auto">
 
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
           <Link href="/dashboard/developer">
-            <p className="text-gray-500 text-sm font-bold mb-3 hover:text-gray-900 transition flex items-center gap-1">
+            <p className="text-gray-500 text-sm font-bold mb-3 hover:text-white transition flex items-center gap-1">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Developer Dashboard
             </p>
           </Link>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900 mb-2">
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-2">
             Access <span className="text-blue-600">Requests</span>
           </h1>
           <p className="text-gray-500 font-medium text-base">
@@ -112,7 +112,7 @@ export default function AccessRequestsPage() {
               className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition duration-200 shadow-sm border ${
                 filter === f
                   ? "bg-blue-50 border-blue-200 text-blue-700"
-                  : "bg-white border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                  : "bg-white border-gray-200 text-gray-500 hover:text-white hover:bg-[#0A0A0F]"
               }`}>
               {f} <span className={`ml-1 px-1.5 py-0.5 rounded text-[10px] ${filter === f ? "bg-blue-100" : "bg-gray-100"}`}>{counts[f]}</span>
             </button>
@@ -127,7 +127,7 @@ export default function AccessRequestsPage() {
         ) : filtered.length === 0 ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="flex flex-col items-center justify-center py-24 gap-5 text-center rounded-3xl border border-gray-200 bg-white shadow-sm">
-            <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-200 shadow-sm flex items-center justify-center text-3xl">
+            <div className="w-16 h-16 rounded-2xl bg-[#0A0A0F] border border-gray-200 shadow-sm flex items-center justify-center text-3xl">
               📬
             </div>
             <p className="text-gray-500 font-bold text-sm">No {filter === "all" ? "" : filter} access requests yet.</p>
@@ -155,23 +155,23 @@ export default function AccessRequestsPage() {
                             : ""}
                         </span>
                       </div>
-                      <p className="text-gray-900 font-extrabold text-sm truncate">{req.userName || req.userEmail}</p>
+                      <p className="text-white font-extrabold text-sm truncate">{req.userName || req.userEmail}</p>
                       <p className="text-gray-500 font-medium text-xs truncate mt-0.5">{req.userEmail}</p>
                     </div>
 
                     <Link href={`/gallery/${req.modelId}`}
-                      className="flex-shrink-0 text-[10px] font-black px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-500 shadow-sm hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 transition">
+                      className="flex-shrink-0 text-[10px] font-black px-3 py-1.5 rounded-lg bg-[#0A0A0F] border border-gray-200 text-gray-500 shadow-sm hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 transition">
                       {req.modelTitle || "View Model"} →
                     </Link>
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-4 mb-5">
-                    <div className="rounded-xl bg-gray-50 border border-gray-200 shadow-sm px-4 py-3">
+                    <div className="rounded-xl bg-[#0A0A0F] border border-gray-200 shadow-sm px-4 py-3">
                       <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Use Case</p>
                       <p className="text-gray-700 font-medium text-sm">{req.useCase}</p>
                     </div>
                     {req.message && (
-                      <div className="rounded-xl bg-gray-50 border border-gray-200 shadow-sm px-4 py-3">
+                      <div className="rounded-xl bg-[#0A0A0F] border border-gray-200 shadow-sm px-4 py-3">
                         <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Message</p>
                         <p className="text-gray-700 font-medium text-sm leading-relaxed">{req.message}</p>
                       </div>

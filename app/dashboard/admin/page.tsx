@@ -193,7 +193,7 @@ export default function AdminDashboard() {
       approved: "border-green-200 bg-green-50 text-green-700",
       rejected: "border-red-200 bg-red-50 text-red-700",
     };
-    return `px-2.5 py-1 rounded-md text-[9px] font-black tracking-widest uppercase border shadow-sm ${m[s] ?? "border-gray-200 bg-gray-50 text-gray-500"}`;
+    return `px-2.5 py-1 rounded-md text-[9px] font-black tracking-widest uppercase border shadow-sm ${m[s] ?? "border-gray-200 bg-[#0A0A0F] text-gray-500"}`;
   };
 
   const rolePill = (r: string) => {
@@ -207,13 +207,13 @@ export default function AdminDashboard() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center font-sans">
       <div className="w-12 h-12 rounded-full border-2 border-gray-200 border-t-blue-600 animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] font-sans">
       {/* Mentor app detail modal */}
       <AnimatePresence>
         {selectedApp && (
@@ -231,7 +231,7 @@ export default function AdminDashboard() {
                       : <span className="text-[#0F6E56] font-bold">{selectedApp.userName?.charAt(0)}</span>}
                   </div>
                   <div>
-                    <p className="font-bold text-gray-900">{selectedApp.userName}</p>
+                    <p className="font-bold text-white">{selectedApp.userName}</p>
                     <p className="text-xs text-gray-400">{selectedApp.userEmail}</p>
                   </div>
                 </div>
@@ -246,7 +246,7 @@ export default function AdminDashboard() {
                     { label: "Hourly Rate", value: selectedApp.hourlyRate ? `₹${selectedApp.hourlyRate}/hr` : null },
                     { label: "LinkedIn",    value: selectedApp.linkedin, isLink: true },
                   ].filter(i => i.value).map(item => (
-                    <div key={item.label} className="bg-gray-50 rounded-xl p-3">
+                    <div key={item.label} className="bg-[#0A0A0F] rounded-xl p-3">
                       <p className="text-xs text-gray-400 mb-0.5">{item.label}</p>
                       {item.isLink
                         ? <a href={item.value!} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-[#5B4BDB] hover:underline truncate block">{item.value}</a>
@@ -256,7 +256,7 @@ export default function AdminDashboard() {
                 </div>
 
                 {selectedApp.bio && (
-                  <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="bg-[#0A0A0F] rounded-xl p-4">
                     <p className="text-xs text-gray-400 mb-1.5">Professional Bio</p>
                     <p className="text-sm text-gray-700 leading-relaxed">{selectedApp.bio}</p>
                   </div>
@@ -331,7 +331,7 @@ export default function AdminDashboard() {
             <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
             <span className="text-red-700 text-[10px] font-black uppercase tracking-widest">Control Panel</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-2">Admin Dashboard</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-2">Admin Dashboard</h1>
           <p className="text-gray-500 text-sm font-medium">Manage models, users, applications, certifications and mentor approvals.</p>
         </motion.div>
 
@@ -364,7 +364,7 @@ export default function AdminDashboard() {
                 <span className={`text-xl font-black ${s.colorClass}`}>{s.val}</span>
               </div>
               <div>
-                <p className="text-gray-900 font-extrabold text-sm">{s.val}</p>
+                <p className="text-white font-extrabold text-sm">{s.val}</p>
                 <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mt-0.5">{s.label}</p>
               </div>
             </div>
@@ -376,7 +376,7 @@ export default function AdminDashboard() {
           {TABS.map(t => (
             <button key={t.id} onClick={() => setActiveTab(t.id)}
               className={`flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap transition duration-200 border-b-2 ${
-                activeTab === t.id ? "border-blue-600 text-blue-700 bg-blue-50/50 rounded-t-lg" : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-t-lg"
+                activeTab === t.id ? "border-blue-600 text-blue-700 bg-blue-50/50 rounded-t-lg" : "border-transparent text-gray-500 hover:text-white hover:bg-[#0A0A0F] rounded-t-lg"
               }`}>
               {t.label}
               {t.badge !== undefined && t.badge > 0 && (
@@ -396,7 +396,7 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="rounded-3xl border-2 border-indigo-50 bg-white shadow-sm p-6 hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="font-black text-gray-900 text-sm">Recent Uploads</h3>
+                    <h3 className="font-black text-white text-sm">Recent Uploads</h3>
                     <button onClick={() => setActiveTab("models")} className="text-blue-600 font-black text-xs hover:underline">View all →</button>
                   </div>
                   {models.length === 0 ? (
@@ -417,7 +417,7 @@ export default function AdminDashboard() {
                                 : <svg className={`w-5 h-5 ${style.colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-gray-900 text-sm font-extrabold truncate">{m.title || "Untitled"}</p>
+                              <p className="text-white text-sm font-extrabold truncate">{m.title || "Untitled"}</p>
                               <p className="text-gray-500 text-[10px]">{m.authorName} · {timeAgo(m.uploadedAt)}</p>
                             </div>
                             <span className={`text-[9px] font-black px-2 py-1 rounded-md border shadow-sm ${style.bgClass} ${style.borderClass} ${style.colorClass}`}>{ext.toUpperCase()}</span>
@@ -429,7 +429,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="rounded-3xl border-2 border-indigo-50 bg-white shadow-sm p-6 hover:shadow-md transition-shadow">
-                  <h3 className="font-black text-gray-900 text-sm mb-6">Pending Actions</h3>
+                  <h3 className="font-black text-white text-sm mb-6">Pending Actions</h3>
                   {pendingApps.length === 0 && pendingCerts.length === 0 && pendingMentor.length === 0 ? (
                     <div className="text-center py-10 rounded-3xl border-2 border-emerald-100 bg-emerald-50/50">
                       <div className="w-14 h-14 rounded-2xl border-2 border-emerald-200 bg-emerald-100 flex items-center justify-center mx-auto mb-3">
@@ -476,7 +476,7 @@ export default function AdminDashboard() {
                 <Link href="/upload"><button className="px-5 py-2.5 rounded-xl font-bold text-white text-xs bg-blue-600 hover:bg-blue-700 shadow-sm transition">+ Upload Model</button></Link>
               </div>
               {models.length === 0 ? (
-                <div className="text-center py-24 border-2 border-dashed border-indigo-100 rounded-3xl bg-indigo-50/30"><span className="text-4xl">📦</span><p className="text-gray-900 font-black text-xl mt-4">No models uploaded yet</p></div>
+                <div className="text-center py-24 border-2 border-dashed border-indigo-100 rounded-3xl bg-indigo-50/30"><span className="text-4xl">📦</span><p className="text-white font-black text-xl mt-4">No models uploaded yet</p></div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {models.map((m, i) => {
@@ -493,10 +493,10 @@ export default function AdminDashboard() {
                           {m.isPaid && <div className="absolute top-3 right-3 px-2 py-1 rounded text-[9px] font-black border border-green-200 bg-green-50 text-green-700">₹{m.price}</div>}
                         </div>
                         <div className="p-5 flex-1 flex flex-col">
-                          <p className="text-gray-900 text-sm font-extrabold truncate mb-1">{m.title || "Untitled"}</p>
+                          <p className="text-white text-sm font-extrabold truncate mb-1">{m.title || "Untitled"}</p>
                           <div className="flex justify-between text-gray-500 text-xs mb-4"><span className="truncate">{m.authorName}</span><span>{timeAgo(m.uploadedAt)}</span></div>
                           <div className="flex gap-3 mt-auto">
-                            <Link href={`/gallery/${m.id}`} className="flex-1"><div className="py-2.5 rounded-xl text-center text-xs font-bold border border-gray-200 text-gray-700 hover:bg-gray-50 shadow-sm transition cursor-pointer">View</div></Link>
+                            <Link href={`/gallery/${m.id}`} className="flex-1"><div className="py-2.5 rounded-xl text-center text-xs font-bold border border-gray-200 text-gray-700 hover:bg-[#0A0A0F] shadow-sm transition cursor-pointer">View</div></Link>
                             <button onClick={() => deleteModel(m.id)} className="flex-1 py-2.5 rounded-xl text-xs font-bold border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 shadow-sm transition">Delete</button>
                           </div>
                         </div>
@@ -516,11 +516,11 @@ export default function AdminDashboard() {
                 {users.map((u, i) => (
                   <motion.div key={u.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
                     className="flex items-center gap-4 p-5 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition">
-                    <div className={`w-12 h-12 rounded-2xl overflow-hidden border shadow-sm flex items-center justify-center flex-shrink-0 font-black text-sm uppercase ${u.role === "developer" ? "border-blue-200 bg-blue-50 text-blue-700" : u.role === "admin" ? "border-red-200 bg-red-50 text-red-700" : u.role === "mentor" ? "border-teal-200 bg-teal-50 text-teal-700" : "border-gray-200 bg-gray-50 text-gray-500"}`}>
+                    <div className={`w-12 h-12 rounded-2xl overflow-hidden border shadow-sm flex items-center justify-center flex-shrink-0 font-black text-sm uppercase ${u.role === "developer" ? "border-blue-200 bg-blue-50 text-blue-700" : u.role === "admin" ? "border-red-200 bg-red-50 text-red-700" : u.role === "mentor" ? "border-teal-200 bg-teal-50 text-teal-700" : "border-gray-200 bg-[#0A0A0F] text-gray-500"}`}>
                       {u.photoURL ? <img src={u.photoURL} className="w-full h-full object-cover" /> : (u.displayName?.[0] ?? u.email?.[0] ?? "?")}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-gray-900 text-sm font-extrabold truncate">{u.displayName || "No name"}</p>
+                      <p className="text-white text-sm font-extrabold truncate">{u.displayName || "No name"}</p>
                       <p className="text-gray-500 text-xs truncate">{u.email}</p>
                     </div>
                     <div className="flex items-center gap-3 flex-shrink-0 flex-wrap justify-end">
@@ -543,7 +543,7 @@ export default function AdminDashboard() {
             <motion.div key="applications" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <p className="text-gray-500 text-sm mb-6">{applications.length} total · {pendingApps.length} pending</p>
               {applications.length === 0 ? (
-                <div className="text-center py-24 border-2 border-dashed border-indigo-100 rounded-3xl bg-indigo-50/30"><span className="text-4xl">📝</span><p className="text-gray-900 font-black text-xl mt-4">No applications yet</p></div>
+                <div className="text-center py-24 border-2 border-dashed border-indigo-100 rounded-3xl bg-indigo-50/30"><span className="text-4xl">📝</span><p className="text-white font-black text-xl mt-4">No applications yet</p></div>
               ) : (
                 <div className="space-y-4">
                   {applications.map((a, i) => (
@@ -552,7 +552,7 @@ export default function AdminDashboard() {
                       <div className="flex items-start justify-between gap-5 flex-wrap">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-3 flex-wrap">
-                            <p className="text-gray-900 font-extrabold text-lg">{a.name}</p>
+                            <p className="text-white font-extrabold text-lg">{a.name}</p>
                             <span className={statusPill(a.status)}>{a.status}</span>
                           </div>
                           {a.skills && (
@@ -586,7 +586,7 @@ export default function AdminDashboard() {
             <motion.div key="certifications" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <p className="text-gray-500 text-sm mb-6">{certRequests.length} total · {pendingCerts.length} pending</p>
               {certRequests.length === 0 ? (
-                <div className="text-center py-24 border-2 border-dashed border-indigo-100 rounded-3xl bg-indigo-50/30"><span className="text-4xl">🎓</span><p className="text-gray-900 font-black text-xl mt-4">No certification requests yet</p></div>
+                <div className="text-center py-24 border-2 border-dashed border-indigo-100 rounded-3xl bg-indigo-50/30"><span className="text-4xl">🎓</span><p className="text-white font-black text-xl mt-4">No certification requests yet</p></div>
               ) : (
                 <div className="space-y-4">
                   {certRequests.map((c, i) => (
@@ -595,11 +595,11 @@ export default function AdminDashboard() {
                       <div className="flex items-start justify-between gap-5 flex-wrap">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-2 flex-wrap">
-                            <p className="text-gray-900 font-extrabold text-lg">{c.name}</p>
+                            <p className="text-white font-extrabold text-lg">{c.name}</p>
                             <span className={statusPill(c.status)}>{c.status}</span>
                           </div>
                           <p className="text-gray-500 text-sm mb-3">{c.email}</p>
-                          {c.reason && <div className="mb-4 bg-gray-50 rounded-xl p-4 border border-gray-100"><p className="text-gray-700 text-sm leading-relaxed">{c.reason}</p></div>}
+                          {c.reason && <div className="mb-4 bg-[#0A0A0F] rounded-xl p-4 border border-gray-100"><p className="text-gray-700 text-sm leading-relaxed">{c.reason}</p></div>}
                           <div className="flex gap-4 text-sm font-bold">
                             {c.portfolio && <a href={c.portfolio} target="_blank" className="text-indigo-600 hover:underline">Portfolio ↗</a>}
                             {c.linkedin && <a href={c.linkedin} target="_blank" className="text-cyan-600 hover:underline">LinkedIn ↗</a>}
@@ -628,7 +628,7 @@ export default function AdminDashboard() {
               {mentorApps.length === 0 ? (
                 <div className="text-center py-24 border-2 border-dashed border-teal-100 rounded-3xl bg-teal-50/30">
                   <span className="text-4xl">🧑‍🏫</span>
-                  <p className="text-gray-900 font-black text-xl mt-4">No mentor applications yet</p>
+                  <p className="text-white font-black text-xl mt-4">No mentor applications yet</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -643,7 +643,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <p className="font-black text-gray-900">{app.userName}</p>
+                          <p className="font-black text-white">{app.userName}</p>
                           <span className="text-xs text-gray-400">{app.userEmail}</span>
                         </div>
                         <p className="text-xs text-gray-500 mt-0.5">{app.expertise} · {app.experience} · ₹{app.hourlyRate}/hr</p>

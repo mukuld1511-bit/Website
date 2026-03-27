@@ -108,7 +108,7 @@ export default function ProfilePage() {
  
   if (!profile || !stats) {
     return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
+      <main className="min-h-screen bg-[#0A0A0F] flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin" />
           <p className="text-blue-600 font-black text-xs uppercase">Loading Profile...</p>
@@ -118,7 +118,7 @@ export default function ProfilePage() {
   }
  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col font-sans"> 
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans"> 
       <main className="flex-1 pt-32 pb-24 px-4">
         <div className="max-w-6xl mx-auto">
           
@@ -141,7 +141,7 @@ export default function ProfilePage() {
                   <span className="absolute bottom-2 right-2 w-6 h-6 bg-green-500 rounded-full border-2 border-white" />
                 </div>
  
-                <h2 className="text-2xl font-black text-gray-900 mb-1">{profile.displayName}</h2>
+                <h2 className="text-2xl font-black text-white mb-1">{profile.displayName}</h2>
                 <p className="text-gray-500 text-sm mb-6 font-bold">{profile.email}</p>
  
                 <div className="inline-block px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-black text-xs uppercase mb-8">
@@ -213,7 +213,7 @@ export default function ProfilePage() {
                     exit={{ opacity: 0, y: -20 }}
                     className="bg-white rounded-3xl border border-gray-200 shadow-xl p-10"
                   >
-                    <h3 className="text-3xl font-black text-gray-900 mb-10">Edit Profile</h3>
+                    <h3 className="text-3xl font-black text-white mb-10">Edit Profile</h3>
                     
                     <div className="space-y-6">
                       <div>
@@ -299,7 +299,7 @@ export default function ProfilePage() {
                         </button>
                         <button 
                           onClick={() => setEditing(false)} 
-                          className="px-8 py-4 border border-gray-200 text-gray-600 rounded-2xl font-black hover:bg-gray-50 transition"
+                          className="px-8 py-4 border border-gray-200 text-gray-600 rounded-2xl font-black hover:bg-[#0A0A0F] transition"
                         >
                           Cancel
                         </button>

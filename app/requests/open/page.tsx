@@ -245,7 +245,7 @@ export default function RequestsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 flex flex-col font-sans text-gray-900">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white">
       <div className="relative z-10 pt-28 pb-24 px-4 flex-grow">
         {/* Decorative colorful background elements */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-[-1]" />
@@ -255,7 +255,7 @@ export default function RequestsPage() {
           {/* Header */}
           <div className="mb-12 flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-center">
             <div>
-              <h1 className="text-5xl md:text-6xl font-black tracking-tight text-gray-900 mb-4 leading-tight">
+              <h1 className="text-5xl md:text-6xl font-black tracking-tight text-white mb-4 leading-tight">
                 Explore <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500">Learn & Build</span>
               </h1>
               <p className="text-gray-600 text-lg md:text-xl font-bold max-w-xl">
@@ -283,7 +283,7 @@ export default function RequestsPage() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search by title, skill, or AR/VR category..."
-              className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-3xl pl-16 pr-6 py-5 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition shadow-lg"
+              className="w-full bg-white border-2 border-indigo-100 text-white font-bold placeholder-gray-400 text-lg rounded-3xl pl-16 pr-6 py-5 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition shadow-lg"
             />
           </div>
 
@@ -296,7 +296,7 @@ export default function RequestsPage() {
           ) : filtered.length === 0 ? (
             <div className="text-center py-32 border-4 border-dashed border-indigo-100 rounded-[3rem] bg-white/50 backdrop-blur-sm">
               <div className="text-6xl mb-6">🏜️</div>
-              <h3 className="text-3xl font-black text-gray-900 mb-4">No projects right now</h3>
+              <h3 className="text-3xl font-black text-white mb-4">No projects right now</h3>
               <p className="text-gray-500 font-bold mb-8 max-w-md mx-auto text-lg">
                 {search ? `We couldn't find anything matching "${search}". Try a different keyword.` : "Check back later or be the first to post a new learning project."}
               </p>
@@ -339,7 +339,7 @@ export default function RequestsPage() {
                         </div>
 
                         {/* Title & Desc */}
-                        <h3 className="text-gray-900 font-black text-2xl mb-4 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
+                        <h3 className="text-white font-black text-2xl mb-4 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
                           {req.title}
                         </h3>
                         <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-6 flex-grow font-semibold">
@@ -350,13 +350,13 @@ export default function RequestsPage() {
                         <div className="grid grid-cols-2 gap-4 mb-6">
                           <div className="p-4 rounded-2xl bg-white shadow-sm border border-indigo-50 group-hover:border-blue-100 transition-colors">
                             <p className="text-blue-500 text-[10px] font-black uppercase tracking-widest mb-1.5">Commitment ⏳</p>
-                            <p className="font-extrabold text-gray-900 text-sm md:text-base truncate">
+                            <p className="font-extrabold text-white text-sm md:text-base truncate">
                               {req.budget || "Flexible"}
                             </p>
                           </div>
                           <div className="p-4 rounded-2xl bg-white shadow-sm border border-indigo-50 group-hover:border-blue-100 transition-colors">
                             <p className="text-pink-500 text-[10px] font-black uppercase tracking-widest mb-1.5">Timeline ⏱️</p>
-                            <p className="font-extrabold text-gray-900 text-sm md:text-base truncate">
+                            <p className="font-extrabold text-white text-sm md:text-base truncate">
                               {req.timeline || "Flexible"}
                             </p>
                           </div>
@@ -388,7 +388,7 @@ export default function RequestsPage() {
                               alt={req.userName}
                             />
                             <div>
-                              <p className="text-gray-900 text-sm font-black break-words max-w-[150px] sm:max-w-[200px]">{req.userName || "Anonymous"}</p>
+                              <p className="text-white text-sm font-black break-words max-w-[150px] sm:max-w-[200px]">{req.userName || "Anonymous"}</p>
                               <p className="text-blue-500 text-[10px] font-black uppercase tracking-wider">Creator</p>
                             </div>
                           </div>
@@ -447,7 +447,7 @@ export default function RequestsPage() {
               <div className="bg-indigo-50/50 rounded-[2rem] p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-3xl">🚀</span>
-                  <h2 className="text-3xl font-black text-gray-900 tracking-tight">Connect on this Project</h2>
+                  <h2 className="text-3xl font-black text-white tracking-tight">Connect on this Project</h2>
                 </div>
                 <p className="text-gray-600 font-bold mb-6 pb-6 border-b-2 border-indigo-100 border-dashed">Joining: <span className="text-blue-600">"{applyingTo.title}"</span></p>
                 
@@ -455,17 +455,17 @@ export default function RequestsPage() {
                   <div>
                     <label className="block text-[11px] font-black uppercase tracking-widest text-gray-500 mb-2">Your Pitch / Points</label>
                     <input type="number" placeholder="50" value={applyBid} onChange={e=>setApplyBid(e.target.value)}
-                      className="w-full bg-white border-2 border-indigo-100 rounded-2xl px-5 py-4 text-gray-900 font-bold text-lg placeholder-gray-300 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
+                      className="w-full bg-white border-2 border-indigo-100 rounded-2xl px-5 py-4 text-white font-bold text-lg placeholder-gray-300 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
                   </div>
                   <div>
                     <label className="block text-[11px] font-black uppercase tracking-widest text-gray-500 mb-2">Why do you want to collaborate?</label>
                     <textarea placeholder="Share your experience and what you hope to learn or contribute..." rows={5} value={applyMessage} onChange={e=>setApplyMessage(e.target.value)}
-                      className="w-full bg-white border-2 border-indigo-100 rounded-2xl px-5 py-4 text-gray-900 font-bold placeholder-gray-300 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition resize-none shadow-sm" />
+                      className="w-full bg-white border-2 border-indigo-100 rounded-2xl px-5 py-4 text-white font-bold placeholder-gray-300 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition resize-none shadow-sm" />
                   </div>
                 </div>
 
                 <div className="flex gap-4">
-                  <button onClick={() => setApplyingTo(null)} disabled={isApplying} className="flex-1 py-4 bg-white border-2 border-gray-200 text-gray-600 font-bold rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition shadow-sm">Cancel</button>
+                  <button onClick={() => setApplyingTo(null)} disabled={isApplying} className="flex-1 py-4 bg-white border-2 border-gray-200 text-gray-600 font-bold rounded-2xl hover:bg-[#0A0A0F] hover:border-gray-300 transition shadow-sm">Cancel</button>
                   <button onClick={submitApplication} disabled={isApplying || !applyBid || !applyMessage} 
                     className="flex-1 py-4 text-white font-black text-lg bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 rounded-2xl transition-all shadow-lg disabled:opacity-50">
                     {isApplying ? "Sending..." : "Submit Pitch"}
@@ -485,10 +485,10 @@ export default function RequestsPage() {
               <div className="bg-indigo-50/30 p-6 md:p-8 flex flex-col h-full border-2 border-indigo-50 rounded-[2rem] m-2">
                 <div className="flex justify-between items-start mb-6 pb-6 border-b-2 border-indigo-100 border-dashed">
                   <div>
-                    <h2 className="text-3xl font-black text-gray-900 mb-2">Connections <span className="text-blue-600 bg-blue-100 px-3 py-1 rounded-xl text-2xl">{applicants.length}</span></h2>
+                    <h2 className="text-3xl font-black text-white mb-2">Connections <span className="text-blue-600 bg-blue-100 px-3 py-1 rounded-xl text-2xl">{applicants.length}</span></h2>
                     <p className="text-gray-600 font-bold">"{viewingApplicantsFor.title}"</p>
                   </div>
-                  <button onClick={() => setViewingApplicantsFor(null)} className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-900 transition font-bold text-xl">✕</button>
+                  <button onClick={() => setViewingApplicantsFor(null)} className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-white transition font-bold text-xl">✕</button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto space-y-4 pr-2">
@@ -500,7 +500,7 @@ export default function RequestsPage() {
                   ) : applicants.length === 0 ? (
                     <div className="text-center py-20 px-4 bg-white rounded-3xl border border-indigo-50">
                       <div className="text-5xl mb-4">👀</div>
-                      <p className="text-gray-900 font-black text-xl mb-2">No connections yet</p>
+                      <p className="text-white font-black text-xl mb-2">No connections yet</p>
                       <p className="text-gray-500 font-semibold">When peers want to collaborate, they'll appear here.</p>
                     </div>
                   ) : (
@@ -511,10 +511,10 @@ export default function RequestsPage() {
                             <img src={app.developerPhoto || "/avatar.png"} alt={app.developerName} className="w-16 h-16 rounded-2xl object-cover border-2 border-indigo-50 shadow-sm" />
                             <div className="flex-1 mt-1">
                               <div className="flex items-center justify-between">
-                                <Link href={`/developer/${app.developerId}`} className="text-gray-900 font-black text-lg hover:text-blue-600 transition tracking-tight">{app.developerName}</Link>
+                                <Link href={`/developer/${app.developerId}`} className="text-white font-black text-lg hover:text-blue-600 transition tracking-tight">{app.developerName}</Link>
                                 <span className="text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wide border border-indigo-100">Pitch: {app.bidAmount}</span>
                               </div>
-                              <p className="text-gray-500 text-xs font-bold mt-1 bg-gray-50 inline-block px-2 py-1 rounded-md">{timeAgo(app.createdAt?.toDate())}</p>
+                              <p className="text-gray-500 text-xs font-bold mt-1 bg-[#0A0A0F] inline-block px-2 py-1 rounded-md">{timeAgo(app.createdAt?.toDate())}</p>
                             </div>
                           </div>
                           <div className="p-5 rounded-2xl bg-indigo-50/50 border border-indigo-100 text-gray-700 font-semibold text-sm leading-relaxed">

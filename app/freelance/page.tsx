@@ -86,7 +86,7 @@ function ProjectCard({ p, userId, userRole }: { p: Project; userId: string | nul
                 </span>
               )}
             </div>
-            <h3 className="font-black text-gray-900 text-base leading-snug">{p.title}</h3>
+            <h3 className="font-black text-white text-base leading-snug">{p.title}</h3>
           </div>
           <BudgetBadge type={p.budgetType} amount={p.budget} />
         </div>
@@ -99,7 +99,7 @@ function ProjectCard({ p, userId, userRole }: { p: Project; userId: string | nul
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-4 flex items-center justify-between gap-4 bg-gray-50">
+      <div className="px-6 py-4 flex items-center justify-between gap-4 bg-[#0A0A0F]">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center text-xs font-bold text-gray-600">
             {p.authorPhoto ? <img src={p.authorPhoto} className="w-full h-full object-cover" alt="" /> : p.authorName?.[0]}
@@ -141,14 +141,14 @@ function ProjectCard({ p, userId, userRole }: { p: Project; userId: string | nul
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden border-t border-gray-200">
             <div className="p-5 bg-white space-y-4">
-              <p className="text-sm font-bold text-gray-900">Submit your bid</p>
+              <p className="text-sm font-bold text-white">Submit your bid</p>
               {p.budgetType === "negotiable" && (
                 <div>
                   <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block mb-1.5">Your price (₹)</label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">₹</span>
                     <input type="number" value={bidAmount} onChange={e => setBidAmount(Number(e.target.value))} min={0}
-                      className="w-full pl-7 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#5B4BDB] transition-colors" />
+                      className="w-full pl-7 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm text-white focus:outline-none focus:border-[#5B4BDB] transition-colors" />
                   </div>
                   <p className="text-xs text-gray-400 mt-1">Client budget: ~₹{p.budget.toLocaleString()}</p>
                 </div>
@@ -156,10 +156,10 @@ function ProjectCard({ p, userId, userRole }: { p: Project; userId: string | nul
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block mb-1.5">Cover message *</label>
                 <textarea value={bidMessage} onChange={e => setBidMessage(e.target.value)} rows={3} placeholder="Explain your approach, timeline, and relevant experience..."
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-[#5B4BDB] transition-colors resize-none" />
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-white focus:outline-none focus:border-[#5B4BDB] transition-colors resize-none" />
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setShowBid(false)} className="px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 text-xs font-bold hover:bg-gray-50 transition-colors">Cancel</button>
+                <button onClick={() => setShowBid(false)} className="px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 text-xs font-bold hover:bg-[#0A0A0F] transition-colors">Cancel</button>
                 <button onClick={submitBid} disabled={submitting || !bidMessage.trim()}
                   className="flex-1 py-2.5 rounded-xl bg-[#5B4BDB] text-white text-xs font-bold hover:bg-[#4c3ec7] disabled:opacity-50 transition-colors border-b-[2px] border-[#4438b8]">
                   {submitting ? "Submitting..." : p.budgetType === "negotiable" ? `Submit bid · ₹${bidAmount.toLocaleString()}` : "Submit application"}
@@ -220,14 +220,14 @@ export default function FreelancePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      <div className="max-w-7xl mx-auto px-4 flex-grow w-full">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">      <div className="max-w-7xl mx-auto px-4 flex-grow w-full">
 
         {/* Hero */}
         <div className="py-14 border-b border-gray-200">
           <div className="flex items-end justify-between flex-wrap gap-6 mb-10">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">Freelance Hub</p>
-              <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-3">XR & 3D Project Marketplace</h1>
+              <h1 className="text-4xl font-black tracking-tight text-white mb-3">XR & 3D Project Marketplace</h1>
               <p className="text-gray-500 max-w-xl">Post projects, receive bids, negotiate, and get work done by verified XR specialists.</p>
             </div>
             <Link href="/requests/post">
@@ -249,7 +249,7 @@ export default function FreelancePage() {
                         <path strokeLinecap="round" strokeLinejoin="round" d={card.icon}/>
                       </svg>
                     </div>
-                    <p className="font-black text-gray-900 text-sm mb-1 group-hover:text-[#5B4BDB] transition-colors">{card.label}</p>
+                    <p className="font-black text-white text-sm mb-1 group-hover:text-[#5B4BDB] transition-colors">{card.label}</p>
                     <p className="text-xs text-gray-400 leading-snug">{card.desc}</p>
                   </div>
                 </Link>
@@ -265,7 +265,7 @@ export default function FreelancePage() {
               { label: "Avg. budget",   value: `₹${stats.avgBudget.toLocaleString()}` },
             ].map(s => (
               <div key={s.label} className="bg-white border border-gray-200 rounded-2xl p-5 text-center shadow-sm">
-                <p className="text-2xl font-black text-gray-900">{s.value}</p>
+                <p className="text-2xl font-black text-white">{s.value}</p>
                 <p className="text-xs text-gray-400 mt-1">{s.label}</p>
               </div>
             ))}
@@ -275,7 +275,7 @@ export default function FreelancePage() {
         {/* Projects section */}
         <div id="projects" className="py-10">
           <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-            <h2 className="text-xl font-black text-gray-900">Open Projects</h2>
+            <h2 className="text-xl font-black text-white">Open Projects</h2>
             <div className="flex gap-2">
               {(["all", "fixed", "negotiable"] as const).map(f => (
                 <button key={f} onClick={() => setFilter(f)}
@@ -316,7 +316,7 @@ export default function FreelancePage() {
           ) : filtered.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl border border-gray-200">
               <p className="text-4xl mb-4">📋</p>
-              <p className="font-bold text-gray-900 mb-2">No projects found</p>
+              <p className="font-bold text-white mb-2">No projects found</p>
               <p className="text-gray-400 text-sm mb-6">Be the first to post one</p>
               <Link href="/requests/post">
                 <button className="px-6 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm hover:bg-[#4c3ec7] transition-colors">

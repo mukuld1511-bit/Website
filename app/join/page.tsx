@@ -91,14 +91,14 @@ export default function JoinHubPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans text-gray-900">      <div className="max-w-5xl mx-auto px-4 py-20 flex-grow w-full">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white">      <div className="max-w-5xl mx-auto px-4 py-20 flex-grow w-full">
 
         <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#5B4BDB]/10 border border-[#5B4BDB]/20 mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB] animate-pulse" />
             <span className="text-xs font-bold text-[#5B4BDB] uppercase tracking-widest">Upgrade your account</span>
           </div>
-          <h1 className="text-5xl font-black tracking-tight text-gray-900 mb-4">Choose your role</h1>
+          <h1 className="text-5xl font-black tracking-tight text-white mb-4">Choose your role</h1>
           <p className="text-gray-500 max-w-xl mx-auto">
             Learner & Developer activate <span className="font-bold text-green-600">instantly</span>.{" "}
             Mentor requires <span className="font-bold text-amber-600">manual admin review</span>.
@@ -121,7 +121,7 @@ export default function JoinHubPage() {
                   </div>
 
                   <div className="text-4xl mb-4 mt-2">{role.icon}</div>
-                  <h3 className="font-black text-xl mb-1 text-gray-900">{role.title}</h3>
+                  <h3 className="font-black text-xl mb-1 text-white">{role.title}</h3>
                   {role.earnings && <p className="text-sm font-black mb-3" style={{ color: role.color }}>{role.earnings}</p>}
                   <p className="text-sm text-gray-500 leading-relaxed mb-4">{role.tagline}</p>
 
@@ -166,12 +166,12 @@ export default function JoinHubPage() {
           <div className="flex items-center gap-3">
             <span className="text-2xl">💡</span>
             <div>
-              <p className="text-sm font-black text-gray-900">You can hold multiple roles</p>
+              <p className="text-sm font-black text-white">You can hold multiple roles</p>
               <p className="text-xs text-gray-400">Be a Learner + Developer, or Developer + Mentor simultaneously.</p>
             </div>
           </div>
           <Link href="/dashboard">
-            <button className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition whitespace-nowrap">
+            <button className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition whitespace-nowrap">
               Back to Dashboard
             </button>
           </Link>

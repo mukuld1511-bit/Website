@@ -151,7 +151,7 @@ export default function RoadmapPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3]">
+    <div className="min-h-screen bg-[#0A0A0F]">
 
       {/* ── TOP BAR ── */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
@@ -163,7 +163,7 @@ export default function RoadmapPage() {
               </svg>
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-900 leading-none">XR Roadmap</p>
+              <p className="text-sm font-semibold text-white leading-none">XR Roadmap</p>
               <p className="text-xs text-gray-400 mt-0.5">Powered by Gemini AI</p>
             </div>
           </div>
@@ -192,7 +192,7 @@ export default function RoadmapPage() {
           {step === "form" && (
             <motion.div key="form" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
               <div className="mb-10">
-                <h1 className="text-4xl font-bold text-gray-900 tracking-tight leading-tight">
+                <h1 className="text-4xl font-bold text-white tracking-tight leading-tight">
                   Your personal<br />
                   <span className="text-violet-600">XR learning path</span>
                 </h1>
@@ -234,7 +234,7 @@ export default function RoadmapPage() {
                           goal === g.id ? "border-violet-500" : "bg-white border-gray-200 hover:border-gray-300"
                         }`}>
                         {goal === g.id && <div className={`absolute inset-0 bg-gradient-to-br ${g.color} opacity-10`} />}
-                        <p className="text-sm font-semibold text-gray-900 relative">{g.label}</p>
+                        <p className="text-sm font-semibold text-white relative">{g.label}</p>
                         <p className="text-xs text-gray-500 mt-0.5 relative">{g.sub}</p>
                       </button>
                     ))}
@@ -315,7 +315,7 @@ export default function RoadmapPage() {
                 <div className="absolute inset-3 rounded-full border-4 border-t-violet-300 animate-spin" style={{ animationDirection: "reverse", animationDuration: "0.7s" }} />
               </div>
               <div className="text-center">
-                <p className="text-xl font-semibold text-gray-900">{loadingText}</p>
+                <p className="text-xl font-semibold text-white">{loadingText}</p>
                 <p className="text-gray-400 text-sm mt-2">AI is crafting your personal XR path</p>
               </div>
             </motion.div>
@@ -375,7 +375,7 @@ export default function RoadmapPage() {
                               onClick={() => setExpandedPhase(isOpen ? null : idx)}>
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 mb-0.5">
-                                  <p className="text-sm font-semibold text-gray-900">{phase.title}</p>
+                                  <p className="text-sm font-semibold text-white">{phase.title}</p>
                                   <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${accent.chip}`}>{phase.duration}</span>
                                 </div>
                                 <p className="text-xs text-gray-500 truncate">{phase.description}</p>
@@ -410,7 +410,7 @@ export default function RoadmapPage() {
                                     </div>
                                     <div>
                                       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Milestone</p>
-                                      <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
+                                      <div className="bg-[#0A0A0F] border border-gray-200 rounded-xl p-3">
                                         <div className={`w-6 h-6 rounded-lg ${accent.num} flex items-center justify-center mb-2`}>
                                           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />

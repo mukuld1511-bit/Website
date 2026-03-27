@@ -69,7 +69,7 @@ export default function AutoCADUploadPage() {
   if (!user) return (
     <div className="min-h-screen bg-amber-50 flex items-center justify-center font-sans">
       <div className="text-center bg-white p-10 rounded-2xl shadow-sm border border-amber-200">
-        <h1 className="text-2xl font-black text-gray-900 mb-4">Sign in required</h1>
+        <h1 className="text-2xl font-black text-white mb-4">Sign in required</h1>
         <Link href="/login"><button className="px-8 py-3.5 rounded-xl bg-amber-500 text-white font-bold">Sign in</button></Link>
       </div>
     </div>
@@ -122,7 +122,7 @@ export default function AutoCADUploadPage() {
     } catch (e) { setError((e as Error).message); setUploading(false); setUploadStage(""); }
   };
 
-  const inputCls = "w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors";
+  const inputCls = "w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 transition-colors";
 
   return (
     <div className="min-h-screen bg-amber-50 flex flex-col font-sans">      <div className="max-w-2xl mx-auto px-4 py-14 flex-grow w-full">
@@ -133,7 +133,7 @@ export default function AutoCADUploadPage() {
               className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900/40 backdrop-blur-sm">
               <div className="bg-white rounded-3xl p-10 text-center shadow-2xl max-w-sm w-full mx-4">
                 <div className="text-6xl mb-4">📐</div>
-                <h2 className="text-2xl font-black text-gray-900 mb-2">Published!</h2>
+                <h2 className="text-2xl font-black text-white mb-2">Published!</h2>
                 <p className="text-gray-500 text-sm">Redirecting to AutoCAD hub...</p>
               </div>
             </motion.div>
@@ -148,7 +148,7 @@ export default function AutoCADUploadPage() {
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-100 border border-amber-300 px-3 py-1 rounded-full">📐 AutoCAD</span>
           </div>
-          <h1 className="text-3xl font-black text-gray-900 mb-1">Upload AutoCAD File</h1>
+          <h1 className="text-3xl font-black text-white mb-1">Upload AutoCAD File</h1>
           <p className="text-gray-500 text-sm">DWG or DXF files only — no size limit via Cloudflare R2</p>
         </div>
 
@@ -159,7 +159,7 @@ export default function AutoCADUploadPage() {
               <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${step > i + 1 ? "bg-green-500 text-white" : step === i + 1 ? "bg-amber-500 text-white" : "bg-amber-200 text-amber-600"}`}>
                 {step > i + 1 ? "✓" : i + 1}
               </div>
-              <span className={`text-sm font-semibold ${step === i + 1 ? "text-gray-900" : "text-amber-400"}`}>{s}</span>
+              <span className={`text-sm font-semibold ${step === i + 1 ? "text-white" : "text-amber-400"}`}>{s}</span>
               {i < 2 && <div className="flex-1 h-px bg-amber-200 w-8" />}
             </div>
           ))}
@@ -169,7 +169,7 @@ export default function AutoCADUploadPage() {
         {step === 1 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-2xl border border-amber-200 p-8 space-y-5 shadow-sm">
-            <h2 className="text-lg font-black text-gray-900">Upload files</h2>
+            <h2 className="text-lg font-black text-white">Upload files</h2>
 
             <div onClick={() => fileRef.current?.click()}
               className="border-2 border-dashed border-amber-200 rounded-xl p-8 cursor-pointer hover:border-amber-500 hover:bg-amber-50 transition-all text-center group">
@@ -179,12 +179,12 @@ export default function AutoCADUploadPage() {
               </div>
               {file ? (
                 <div>
-                  <p className="font-bold text-gray-900 text-sm">{file.name}</p>
+                  <p className="font-bold text-white text-sm">{file.name}</p>
                   <p className="text-xs text-gray-400 mt-1">{(file.size / (1024 * 1024)).toFixed(2)} MB · Cloudflare R2</p>
                 </div>
               ) : (
                 <div>
-                  <p className="font-bold text-gray-900 text-sm mb-1">Upload AutoCAD file</p>
+                  <p className="font-bold text-white text-sm mb-1">Upload AutoCAD file</p>
                   <p className="text-xs text-gray-400">DWG or DXF only · No size limit</p>
                 </div>
               )}
@@ -195,7 +195,7 @@ export default function AutoCADUploadPage() {
               <input ref={thumbRef} type="file" onChange={handleThumb} className="hidden" accept="image/*" />
               {thumbnailPreview && <img src={thumbnailPreview} alt="thumb" className="absolute inset-0 w-full h-full object-cover opacity-20" />}
               <div className="relative">
-                <p className="font-bold text-gray-900 text-sm mb-1">{thumbnail ? thumbnail.name : "Upload preview image (optional)"}</p>
+                <p className="font-bold text-white text-sm mb-1">{thumbnail ? thumbnail.name : "Upload preview image (optional)"}</p>
                 <p className="text-xs text-gray-400">PNG, JPG · Max 5MB</p>
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function AutoCADUploadPage() {
         {step === 2 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-2xl border border-amber-200 p-8 space-y-5 shadow-sm">
-            <h2 className="text-lg font-black text-gray-900">Drawing details</h2>
+            <h2 className="text-lg font-black text-white">Drawing details</h2>
 
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Title *</label>
@@ -257,9 +257,9 @@ export default function AutoCADUploadPage() {
 
             {/* Pricing */}
             <div className="pt-2 border-t border-gray-100">
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 cursor-pointer hover:border-gray-300 transition" onClick={() => setIsPaid(!isPaid)}>
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-[#0A0A0F] border border-gray-200 cursor-pointer hover:border-gray-300 transition" onClick={() => setIsPaid(!isPaid)}>
                 <input type="checkbox" checked={isPaid} onChange={e => setIsPaid(e.target.checked)} onClick={e => e.stopPropagation()} className="w-4 h-4" />
-                <p className="font-bold text-gray-900 text-sm">Sell this drawing (paid listing)</p>
+                <p className="font-bold text-white text-sm">Sell this drawing (paid listing)</p>
               </div>
               {isPaid && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="pt-3">
@@ -274,7 +274,7 @@ export default function AutoCADUploadPage() {
             </div>
 
             <div className="flex gap-3 justify-between pt-2">
-              <button onClick={() => setStep(1)} className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition">← Back</button>
+              <button onClick={() => setStep(1)} className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition">← Back</button>
               <button onClick={() => setStep(3)} disabled={!title || (isPaid && price <= 0)}
                 className="px-8 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 border-b-[3px] border-amber-700 text-white font-bold text-sm disabled:opacity-40 transition-all active:translate-y-[1px]">
                 Continue →
@@ -287,7 +287,7 @@ export default function AutoCADUploadPage() {
         {step === 3 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-2xl border border-amber-200 p-8 space-y-5 shadow-sm">
-            <h2 className="text-lg font-black text-gray-900">Review & publish</h2>
+            <h2 className="text-lg font-black text-white">Review & publish</h2>
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 space-y-3">
               {[
                 { label: "Title",   value: title },
@@ -298,7 +298,7 @@ export default function AutoCADUploadPage() {
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between text-sm">
                   <span className="text-amber-600 font-medium">{label}</span>
-                  <span className="font-bold text-gray-900 text-right max-w-[60%] truncate">{value}</span>
+                  <span className="font-bold text-white text-right max-w-[60%] truncate">{value}</span>
                 </div>
               ))}
             </div>
@@ -318,7 +318,7 @@ export default function AutoCADUploadPage() {
             )}
 
             <div className="flex gap-3 justify-between pt-2">
-              <button onClick={() => setStep(2)} disabled={uploading} className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition disabled:opacity-40">← Back</button>
+              <button onClick={() => setStep(2)} disabled={uploading} className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition disabled:opacity-40">← Back</button>
               <button onClick={handlePublish} disabled={uploading}
                 className="px-10 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 border-b-[3px] border-amber-700 text-white font-bold text-sm disabled:opacity-50 transition-all active:translate-y-[1px]">
                 {uploading ? "Publishing..." : "Publish to AutoCAD Hub"}

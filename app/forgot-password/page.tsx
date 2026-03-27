@@ -32,7 +32,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F7F6F3] flex items-center justify-center px-4 py-16 font-sans">
+    <main className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4 py-16 font-sans">
       <div className="w-full max-w-md">
 
         {/* Logo */}
@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/>
               </svg>
             </div>
-            <span className="font-black text-2xl text-gray-900">SYNTHÉ</span>
+            <span className="font-black text-2xl text-white">SYNTHÉ</span>
           </Link>
         </div>
 
@@ -59,7 +59,7 @@ export default function ForgotPasswordPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
               </motion.div>
-              <h2 className="text-2xl font-black text-gray-900 mb-2">Check your email</h2>
+              <h2 className="text-2xl font-black text-white mb-2">Check your email</h2>
               <p className="text-gray-500 text-sm leading-relaxed mb-2">
                 We sent a password reset link to
               </p>
@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
               </p>
               <div className="space-y-3">
                 <button onClick={() => { setSent(false); setEmail(""); }}
-                  className="w-full py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition">
+                  className="w-full py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition">
                   Try a different email
                 </button>
                 <Link href="/login">
@@ -85,7 +85,7 @@ export default function ForgotPasswordPage() {
             /* ── Form state ── */
             <motion.div key="form" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
               <div className="text-center mb-8">
-                <h1 className="text-3xl font-black text-gray-900 mb-2">Forgot password?</h1>
+                <h1 className="text-3xl font-black text-white mb-2">Forgot password?</h1>
                 <p className="text-gray-500 text-sm">Enter your email and we'll send you a reset link.</p>
               </div>
 
@@ -112,7 +112,7 @@ export default function ForgotPasswordPage() {
                       </svg>
                       <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
                         placeholder="you@example.com" autoFocus
-                        className="w-full bg-gray-50 border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all" />
+                        className="w-full bg-[#0A0A0F] border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-400 outline-none transition-all" />
                     </div>
                   </div>
 
@@ -122,7 +122,7 @@ export default function ForgotPasswordPage() {
                   </button>
 
                   <Link href="/login">
-                    <button type="button" className="w-full py-3 rounded-xl border border-gray-200 text-gray-500 font-bold text-sm hover:bg-gray-50 transition flex items-center justify-center gap-2">
+                    <button type="button" className="w-full py-3 rounded-xl border border-gray-200 text-gray-500 font-bold text-sm hover:bg-[#0A0A0F] transition flex items-center justify-center gap-2">
                       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                       </svg>

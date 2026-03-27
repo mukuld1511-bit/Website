@@ -145,7 +145,7 @@ function SignupContent() {
   );
 
   return (
-    <main className="min-h-screen bg-[#F7F6F3] flex items-center justify-center px-4 py-16 font-sans">
+    <main className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4 py-16 font-sans">
       <div className="w-full max-w-5xl">
 
         {/* Logo */}
@@ -156,7 +156,7 @@ function SignupContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/>
               </svg>
             </div>
-            <span className="font-black text-2xl text-gray-900">SYNTHÉ</span>
+            <span className="font-black text-2xl text-white">SYNTHÉ</span>
           </Link>
         </div>
 
@@ -166,7 +166,7 @@ function SignupContent() {
           {step === "role" && (
             <motion.div key="role" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
               <div className="text-center mb-10">
-                <h1 className="text-4xl font-black text-gray-900 mb-3">Join SYNTHÉ</h1>
+                <h1 className="text-4xl font-black text-white mb-3">Join SYNTHÉ</h1>
                 <p className="text-gray-500 text-base">Pick your role — you can upgrade anytime after joining.</p>
               </div>
 
@@ -189,7 +189,7 @@ function SignupContent() {
                     )}
 
                     <div className="text-4xl mb-4">{role.icon}</div>
-                    <p className="font-black text-gray-900 text-base mb-1">{role.label}</p>
+                    <p className="font-black text-white text-base mb-1">{role.label}</p>
                     <p className="text-xs text-gray-500 leading-relaxed mb-3">{role.desc}</p>
 
                     {/* Approval note */}
@@ -208,7 +208,7 @@ function SignupContent() {
 
               {/* Role comparison table */}
               <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden mb-8">
-                <div className="grid grid-cols-5 text-xs font-bold text-gray-400 uppercase tracking-wide px-6 py-3 border-b border-gray-100 bg-gray-50">
+                <div className="grid grid-cols-5 text-xs font-bold text-gray-400 uppercase tracking-wide px-6 py-3 border-b border-gray-100 bg-[#0A0A0F]">
                   <div>Feature</div>
                   <div className="text-center">User</div>
                   <div className="text-center text-blue-600">Learner</div>
@@ -226,7 +226,7 @@ function SignupContent() {
                   ["Set your own rates",      false, false, true,  true ],
                   ["Verified role badge",     false, true,  true,  true ],
                 ].map(([label, u, l, d, m]) => (
-                  <div key={label as string} className="grid grid-cols-5 px-6 py-3 border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                  <div key={label as string} className="grid grid-cols-5 px-6 py-3 border-b border-gray-50 hover:bg-[#0A0A0F] transition-colors">
                     <div className="text-sm text-gray-700 font-medium">{label as string}</div>
                     {[u, l, d, m].map((v, i) => (
                       <div key={i} className="flex justify-center">
@@ -282,7 +282,7 @@ function SignupContent() {
                 <span className="text-2xl">{roleInfo.icon}</span>
                 <div className="flex-1">
                   <p className="text-xs font-bold uppercase tracking-wide" style={{ color: roleInfo.color }}>Joining as</p>
-                  <p className="font-black text-gray-900">{roleInfo.label}</p>
+                  <p className="font-black text-white">{roleInfo.label}</p>
                   {roleInfo.approvalNote && (
                     <p className={`text-[10px] font-bold mt-0.5 ${roleInfo.approvalNote.startsWith("🔍") ? "text-amber-600" : "text-green-600"}`}>
                       {roleInfo.approvalNote}
@@ -301,7 +301,7 @@ function SignupContent() {
                 </div>
               )}
 
-              <h1 className="text-3xl font-black text-gray-900 mb-8">Create your account</h1>
+              <h1 className="text-3xl font-black text-white mb-8">Create your account</h1>
 
               <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
                 <form onSubmit={handleSignup} className="space-y-5">
@@ -326,7 +326,7 @@ function SignupContent() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                       </svg>
                       <input type="text" placeholder="Your name" value={name} onChange={e => setName(e.target.value)} required
-                        className="w-full bg-gray-50 border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all" />
+                        className="w-full bg-[#0A0A0F] border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-400 outline-none transition-all" />
                     </div>
                   </div>
 
@@ -338,7 +338,7 @@ function SignupContent() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                       </svg>
                       <input type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required
-                        className="w-full bg-gray-50 border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all" />
+                        className="w-full bg-[#0A0A0F] border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-400 outline-none transition-all" />
                     </div>
                   </div>
 
@@ -350,7 +350,7 @@ function SignupContent() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                       </svg>
                       <input type={showPass ? "text" : "password"} placeholder="Min 6 characters" value={password} onChange={e => setPassword(e.target.value)} required
-                        className="w-full bg-gray-50 border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-10 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all" />
+                        className="w-full bg-[#0A0A0F] border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-gray-400 outline-none transition-all" />
                       <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700">
                         <EyeIcon open={showPass} />
                       </button>
@@ -377,7 +377,7 @@ function SignupContent() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                       </svg>
                       <input type={showConf ? "text" : "password"} placeholder="Repeat password" value={confirm} onChange={e => setConfirm(e.target.value)} required
-                        className={`w-full bg-gray-50 border focus:bg-white rounded-xl pl-10 pr-10 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all ${
+                        className={`w-full bg-[#0A0A0F] border focus:bg-white rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-gray-400 outline-none transition-all ${
                           confirm && confirm !== password ? "border-red-300 bg-red-50" :
                           confirm && confirm === password ? "border-green-300 bg-green-50" :
                           "border-gray-200 focus:border-[#5B4BDB]"
@@ -411,7 +411,7 @@ function SignupContent() {
 
 export default function Signup() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center"><div className="w-10 h-10 border-4 border-gray-200 border-t-[#5B4BDB] rounded-full animate-spin" /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center"><div className="w-10 h-10 border-4 border-gray-200 border-t-[#5B4BDB] rounded-full animate-spin" /></div>}>
       <SignupContent />
     </Suspense>
   );

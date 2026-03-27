@@ -89,10 +89,10 @@ export default function CollaboratorsPage() {
     }
   }
 
-  const inputCls = "w-full bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition duration-200";
+  const inputCls = "w-full bg-[#0A0A0F] border border-gray-200 text-white placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition duration-200";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 flex flex-col font-sans relative">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans relative">
       <div className="flex-grow relative z-10 pt-28 pb-24 px-4 overflow-x-hidden">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-[-1]" />
@@ -106,7 +106,7 @@ export default function CollaboratorsPage() {
               <span className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />
               <span className="text-blue-800 text-xs font-black uppercase tracking-widest">Academic Partnership</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight text-gray-900 leading-tight mb-6 drop-shadow-sm">
+            <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white leading-tight mb-6 drop-shadow-sm">
               PIET Panipat <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Collaboration</span>
             </h1>
             <p className="text-gray-600 text-lg md:text-2xl font-bold leading-relaxed mb-8">
@@ -126,7 +126,7 @@ export default function CollaboratorsPage() {
             <div className="grid md:grid-cols-2 gap-10 items-center">
               <div>
                 <p className="text-indigo-400 text-xs font-black uppercase tracking-[0.2em] mb-3">About the Partnership</p>
-                <h2 className="text-4xl font-black text-gray-900 tracking-tight mb-4 leading-tight">
+                <h2 className="text-4xl font-black text-white tracking-tight mb-4 leading-tight">
                   Bridging Academia & <span className="text-blue-600">Industry</span>
                 </h2>
                 <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-6 font-bold">
@@ -158,7 +158,7 @@ export default function CollaboratorsPage() {
           <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }} className="mb-20">
             <div className="text-center mb-10">
               <p className="text-pink-400 text-xs font-black uppercase tracking-[0.2em] mb-2">Leadership</p>
-              <h2 className="text-4xl font-black text-gray-900 tracking-tight">
+              <h2 className="text-4xl font-black text-white tracking-tight">
                 Head of Department
               </h2>
             </div>
@@ -166,7 +166,7 @@ export default function CollaboratorsPage() {
               className="group mx-auto max-w-sm p-10 rounded-[3rem] border-4 border-blue-50 bg-white/80 backdrop-blur-md shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-300">
               <Avatar initial={HOD.initial} color={HOD.color} size="lg" />
               <div className="mt-6 text-center">
-                <p className="text-gray-900 font-black text-2xl mb-2">{HOD.name}</p>
+                <p className="text-white font-black text-2xl mb-2">{HOD.name}</p>
                 <p className={`text-[11px] font-black uppercase tracking-widest mb-2 text-${HOD.color}-500`}>{HOD.role}</p>
                 <p className="text-gray-600 text-sm font-bold">{HOD.dept}</p>
               </div>
@@ -177,7 +177,7 @@ export default function CollaboratorsPage() {
           <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }} className="mb-20">
             <div className="text-center mb-10">
               <p className="text-emerald-500 text-xs font-black uppercase tracking-[0.2em] mb-2">Faculty</p>
-              <h2 className="text-4xl font-black text-gray-900 tracking-tight">
+              <h2 className="text-4xl font-black text-white tracking-tight">
                 Our Mentors
               </h2>
             </div>
@@ -190,7 +190,7 @@ export default function CollaboratorsPage() {
                   <div className="mb-6">
                     <Avatar initial={m.initial} color={m.color} size="md" />
                   </div>
-                  <p className="text-gray-900 font-black text-lg mb-1.5">{m.name}</p>
+                  <p className="text-white font-black text-lg mb-1.5">{m.name}</p>
                   <p className={`text-[11px] font-black uppercase tracking-widest mb-2 text-${m.color}-500`}>{m.role}</p>
                   <p className="text-gray-500 text-xs font-bold">{m.dept}</p>
                 </motion.div>
@@ -202,7 +202,7 @@ export default function CollaboratorsPage() {
           <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }} className="mb-24">
             <div className="text-center mb-12">
               <p className="text-amber-500 text-xs font-black uppercase tracking-[0.2em] mb-2">Student Team</p>
-              <h2 className="text-4xl font-black text-gray-900 tracking-tight mb-4">
+              <h2 className="text-4xl font-black text-white tracking-tight mb-4">
                 Our Team from PIET
               </h2>
               <p className="text-gray-600 font-bold text-base max-w-md mx-auto">Students building SYNTHÉ from PIET Panipat campus.</p>
@@ -216,7 +216,7 @@ export default function CollaboratorsPage() {
                   <div className="mb-5">
                     <Avatar initial={t.initial} color={t.color} size="sm" />
                   </div>
-                  <p className="text-gray-900 text-sm font-black line-clamp-1 mb-1">{t.name}</p>
+                  <p className="text-white text-sm font-black line-clamp-1 mb-1">{t.name}</p>
                   <p className={`text-[10px] font-black uppercase tracking-widest mb-1.5 text-${t.color}-500`}>{t.role}</p>
                   <p className="text-gray-500 text-[10px] font-bold line-clamp-1">{t.dept}</p>
                 </motion.div>
@@ -237,7 +237,7 @@ export default function CollaboratorsPage() {
                 <div className="inline-flex items-center gap-2 px-5 py-2 rounded-2xl border-4 border-white bg-blue-50 mb-6 shadow-md">
                   <span className="text-blue-800 text-xs font-black uppercase tracking-widest">Want to Partner?</span>
                 </div>
-                <h2 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-6 leading-tight">
+                <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-6 leading-tight">
                   Collaborate with <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">SYNTHÉ</span>
                 </h2>
                 <p className="text-gray-600 text-lg leading-relaxed mb-10 font-bold">
@@ -259,7 +259,7 @@ export default function CollaboratorsPage() {
                         {item.icon}
                       </div>
                       <div className="pt-1.5">
-                        <p className="text-gray-900 font-black text-base">{item.label}</p>
+                        <p className="text-white font-black text-base">{item.label}</p>
                         <p className="text-gray-600 text-sm mt-1 font-bold">{item.desc}</p>
                       </div>
                     </motion.div>
@@ -282,7 +282,7 @@ export default function CollaboratorsPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
                       </motion.div>
-                      <h3 className="text-3xl font-black text-gray-900 mb-3">Message Sent!</h3>
+                      <h3 className="text-3xl font-black text-white mb-3">Message Sent!</h3>
                       <p className="text-emerald-700 text-base mb-10 font-bold">We'll get back to you within 48 hours.</p>
                       <button onClick={() => setFormStatus("idle")}
                         className="text-white text-base font-black transition-all duration-200 bg-emerald-500 hover:bg-emerald-400 border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1 px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl">
@@ -291,7 +291,7 @@ export default function CollaboratorsPage() {
                     </motion.div>
                   ) : (
                     <motion.form key="form" onSubmit={handleContact} className="flex flex-col gap-6">
-                      <h3 className="text-2xl font-black text-gray-900 mb-2">Send a Message</h3>
+                      <h3 className="text-2xl font-black text-white mb-2">Send a Message</h3>
                       <AnimatePresence>
                         {formError && (
                           <motion.div initial={{ opacity:0, height:0 }} animate={{ opacity:1, height:"auto" }} exit={{ opacity:0, height:0 }}
@@ -310,7 +310,7 @@ export default function CollaboratorsPage() {
                         </label>
                         <input value={name} onChange={e=>setName(e.target.value)}
                           placeholder="Dr. / Prof. / Your full name"
-                          className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-base rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
+                          className="w-full bg-white border-2 border-indigo-100 text-white font-bold placeholder-gray-400 text-base rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
                       </div>
 
                       <div>
@@ -319,7 +319,7 @@ export default function CollaboratorsPage() {
                         </label>
                         <input type="email" value={email} onChange={e=>setEmail(e.target.value)}
                           placeholder="you@institution.ac.in"
-                          className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-base rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
+                          className="w-full bg-white border-2 border-indigo-100 text-white font-bold placeholder-gray-400 text-base rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
                       </div>
 
                       <div>
@@ -328,7 +328,7 @@ export default function CollaboratorsPage() {
                         </label>
                         <input value={org} onChange={e=>setOrg(e.target.value)}
                           placeholder="e.g. PIET Panipat, IIT Delhi…"
-                          className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-base rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
+                          className="w-full bg-white border-2 border-indigo-100 text-white font-bold placeholder-gray-400 text-base rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
                       </div>
 
                       <div>
@@ -337,7 +337,7 @@ export default function CollaboratorsPage() {
                         </label>
                         <textarea value={message} onChange={e=>setMessage(e.target.value)} rows={4}
                           placeholder="Tell us about your collaboration idea, what you need, and how we can work together…"
-                          className="w-full bg-white border-2 border-pink-100 text-gray-900 font-bold placeholder-gray-400 text-base rounded-2xl px-5 py-4 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100 transition shadow-sm resize-none" />
+                          className="w-full bg-white border-2 border-pink-100 text-white font-bold placeholder-gray-400 text-base rounded-2xl px-5 py-4 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100 transition shadow-sm resize-none" />
                       </div>
 
                       <motion.button type="submit" disabled={formStatus === "loading"}

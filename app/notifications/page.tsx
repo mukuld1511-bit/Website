@@ -142,7 +142,7 @@ export default function NotificationsPage() {
   const unreadCount = notes.filter(n => !n.read).length;
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] font-sans">
       <div className="relative pt-28 pb-24 px-4 overflow-x-hidden">
 
         <div className="relative z-10 max-w-2xl mx-auto">
@@ -155,7 +155,7 @@ export default function NotificationsPage() {
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
                 <span className="text-blue-700 text-[10px] font-bold uppercase tracking-widest">Inbox</span>
               </div>
-              <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
+              <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
                 Notifications
                 {unreadCount > 0 && (
                   <motion.span
@@ -171,7 +171,7 @@ export default function NotificationsPage() {
 
             {unreadCount > 0 && (
               <motion.button onClick={markAllRead} disabled={marking}
-                className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 text-xs font-bold hover:bg-gray-50 shadow-sm transition duration-200 disabled:opacity-50 flex items-center gap-2">
+                className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 text-xs font-bold hover:bg-[#0A0A0F] shadow-sm transition duration-200 disabled:opacity-50 flex items-center gap-2">
                 {marking ? (
                   <svg className="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -200,7 +200,7 @@ export default function NotificationsPage() {
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition duration-200 border shadow-sm ${
                     filter === f.id
                       ? "border-blue-200 bg-blue-50 text-blue-700"
-                      : "border-gray-200 bg-white text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                      : "border-gray-200 bg-white text-gray-500 hover:text-white hover:bg-[#0A0A0F]"
                   }`}>
                   {f.label}
                   {count > 0 && (
@@ -218,13 +218,13 @@ export default function NotificationsPage() {
           {/* Not logged in */}
           {!user && !loading && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-              className="rounded-3xl border border-gray-200 bg-white shadow-sm p-12 text-center text-gray-900">
-              <div className="w-16 h-16 rounded-3xl border border-gray-200 bg-gray-50 flex items-center justify-center mx-auto mb-5 shadow-sm">
+              className="rounded-3xl border border-gray-200 bg-white shadow-sm p-12 text-center text-white">
+              <div className="w-16 h-16 rounded-3xl border border-gray-200 bg-[#0A0A0F] flex items-center justify-center mx-auto mb-5 shadow-sm">
                 <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
               </div>
-              <h3 className="text-gray-900 font-extrabold text-xl mb-2">Sign in to see notifications</h3>
+              <h3 className="text-white font-extrabold text-xl mb-2">Sign in to see notifications</h3>
               <p className="text-gray-500 text-sm mb-6">Stay updated on purchases, bids, and access requests.</p>
               <Link href="/login">
                 <button className="px-8 py-3.5 rounded-2xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition">
@@ -247,12 +247,12 @@ export default function NotificationsPage() {
           {!loading && user && filtered.length === 0 && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
               className="rounded-3xl border border-gray-200 bg-white shadow-sm p-16 text-center">
-              <div className="w-16 h-16 rounded-3xl border border-gray-200 bg-gray-50 flex items-center justify-center mx-auto mb-5 shadow-sm">
+              <div className="w-16 h-16 rounded-3xl border border-gray-200 bg-[#0A0A0F] flex items-center justify-center mx-auto mb-5 shadow-sm">
                 <svg className="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
               </div>
-              <h3 className="text-gray-900 font-extrabold text-xl mb-2">
+              <h3 className="text-white font-extrabold text-xl mb-2">
                 {filter === "unread" ? "All caught up!" : "No notifications yet"}
               </h3>
               <p className="text-gray-500 text-sm">
@@ -315,7 +315,7 @@ export default function NotificationsPage() {
                                 <span className="w-2 h-2 rounded-full flex-shrink-0 bg-blue-600 shadow-sm" />
                               )}
                             </div>
-                            <p className={`text-sm leading-relaxed mt-1 font-medium ${n.read ? "text-gray-600" : "text-gray-900"}`}>
+                            <p className={`text-sm leading-relaxed mt-1 font-medium ${n.read ? "text-gray-600" : "text-white"}`}>
                               {n.message}
                             </p>
                             <p className="text-gray-400 font-semibold text-[10px] mt-1.5 uppercase tracking-widest">

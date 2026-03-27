@@ -159,7 +159,7 @@ export default function AutoCADPage() {
         </div>
 
         <div className="p-6 flex flex-col flex-1 relative bg-white z-0">
-          <h3 className="text-gray-900 font-black text-xl mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">{m.title}</h3>
+          <h3 className="text-white font-black text-xl mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">{m.title}</h3>
           {m.description && <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-5 font-semibold">{m.description}</p>}
 
           <div className="flex items-center justify-between mb-6 mt-auto">
@@ -193,7 +193,7 @@ export default function AutoCADPage() {
           <Link href={`/gallery/${m.id}`}>
             <button className={`w-full py-4 rounded-2xl font-black text-sm text-center transition-all shadow-md active:translate-y-1 ${
               m.isPaid 
-                ? 'bg-white text-gray-900 border-2 border-indigo-100 hover:bg-indigo-50 border-b-4' 
+                ? 'bg-white text-white border-2 border-indigo-100 hover:bg-indigo-50 border-b-4' 
                 : 'bg-blue-600 text-white border-b-4 border-blue-800 hover:bg-blue-500'
             }`}>
               <span className="flex items-center justify-center gap-2 uppercase tracking-wide">
@@ -210,7 +210,7 @@ export default function AutoCADPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 font-sans flex flex-col relative">
+    <div className="min-h-screen bg-[#0A0A0F] font-sans flex flex-col relative">
       <div className="flex-grow pt-[100px] pb-24 px-4 overflow-x-hidden relative z-10">
         {/* Decorative elements */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-[-1]" />
@@ -227,7 +227,7 @@ export default function AutoCADPage() {
             </motion.div>
 
             <motion.h1 initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.1 }}
-              className="text-5xl md:text-7xl font-black tracking-tight text-gray-900 mb-6 drop-shadow-sm">
+              className="text-5xl md:text-7xl font-black tracking-tight text-white mb-6 drop-shadow-sm">
               AutoCAD <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500">Drawings</span>
             </motion.h1>
 
@@ -266,7 +266,7 @@ export default function AutoCADPage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-gray-900 font-black text-xl mb-2">{f.title}</p>
+                  <p className="text-white font-black text-xl mb-2">{f.title}</p>
                   <p className="text-gray-600 text-sm leading-relaxed font-bold">{f.desc}</p>
                 </div>
               </div>
@@ -287,7 +287,7 @@ export default function AutoCADPage() {
                 </div>
                 <input value={search} onChange={e=>setSearch(e.target.value)}
                   placeholder="Search drawings, categories, tags…"
-                  className="w-full bg-white border-2 border-indigo-100 text-gray-900 placeholder-indigo-300 font-bold text-base md:text-lg rounded-3xl pl-16 pr-6 py-5 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-300 transition shadow-sm" />
+                  className="w-full bg-white border-2 border-indigo-100 text-white placeholder-indigo-300 font-bold text-base md:text-lg rounded-3xl pl-16 pr-6 py-5 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-300 transition shadow-sm" />
               </div>
               <div className="relative">
                 <select value={sortBy} onChange={e=>setSortBy(e.target.value)}
@@ -311,7 +311,7 @@ export default function AutoCADPage() {
                 {(["all","dwg","dxf"] as const).map(t => (
                   <button key={t} onClick={()=>setFileType(t)}
                     className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                      fileType===t ? "bg-amber-100 text-amber-700 shadow-sm border-2 border-amber-200" : "bg-gray-50 text-gray-500 hover:bg-gray-100 border-2 border-transparent"
+                      fileType===t ? "bg-amber-100 text-amber-700 shadow-sm border-2 border-amber-200" : "bg-[#0A0A0F] text-gray-500 hover:bg-gray-100 border-2 border-transparent"
                     }`}>
                     {t === "all" ? "All Formats" : `.${t.toUpperCase()}`}
                   </button>
@@ -324,7 +324,7 @@ export default function AutoCADPage() {
                 {(["all","free","paid"] as const).map(p => (
                   <button key={p} onClick={()=>setPriceFilter(p)}
                     className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                      priceFilter===p ? "bg-emerald-100 text-emerald-700 shadow-sm border-2 border-emerald-200" : "bg-gray-50 text-gray-500 hover:bg-gray-100 border-2 border-transparent"
+                      priceFilter===p ? "bg-emerald-100 text-emerald-700 shadow-sm border-2 border-emerald-200" : "bg-[#0A0A0F] text-gray-500 hover:bg-gray-100 border-2 border-transparent"
                     }`}>
                     {p==="all"?"All Pricing":p==="free"?"Free Only":"Paid Only"}
                   </button>
@@ -365,7 +365,7 @@ export default function AutoCADPage() {
                 <div className="w-24 h-24 rounded-full bg-indigo-50 border-4 border-indigo-100 flex items-center justify-center mb-6">
                   <span className="text-5xl">🧐</span>
                 </div>
-                <h3 className="text-gray-900 font-black text-2xl mb-2">No CAD drawings found</h3>
+                <h3 className="text-white font-black text-2xl mb-2">No CAD drawings found</h3>
                 <p className="text-gray-500 text-lg font-bold mb-8 max-w-md">Try adjusting your filters or be the first to upload a drawing.</p>
                 <div className="flex gap-4">
                   <button onClick={()=>{ setSearch(""); setCategory("All"); setFileType("all"); setPriceFilter("all"); }}

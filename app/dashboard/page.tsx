@@ -47,7 +47,7 @@ export default function DashboardRouter() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 border-2 border-[#5B4BDB]/30 border-t-[#5B4BDB] rounded-full animate-spin" />
         <p className="text-gray-400 text-sm font-medium">Loading your dashboard...</p>

@@ -94,16 +94,16 @@ export default function MentorDashboard() {
   const pendingEarnings = sessions.filter(s=>s.status==="accepted").reduce((a,s)=>a+(s.mentorEarns||0),0);
 
   if (!user) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
       <div className="text-center bg-white p-10 rounded-2xl border border-gray-200">
-        <h1 className="text-xl font-black text-gray-900 mb-4">Sign in required</h1>
+        <h1 className="text-xl font-black text-white mb-4">Sign in required</h1>
         <Link href="/login"><button className="px-8 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold">Sign in</button></Link>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      <AnimatePresence>
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">      <AnimatePresence>
         {toast && (
           <motion.div initial={{opacity:0,y:-16}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-16}}
             className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-5 py-3 bg-gray-900 text-white text-sm font-bold rounded-xl shadow-xl">
@@ -115,7 +115,7 @@ export default function MentorDashboard() {
       <div className="max-w-5xl mx-auto px-4 py-14 flex-grow w-full">
         <div className="mb-8">
           <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-2">Mentor Dashboard</p>
-          <h1 className="text-3xl font-black text-gray-900 mb-1">Welcome, {user.displayName?.split(" ")[0]}</h1>
+          <h1 className="text-3xl font-black text-white mb-1">Welcome, {user.displayName?.split(" ")[0]}</h1>
           <p className="text-gray-500 text-sm">Manage your sessions, workshops and earnings.</p>
         </div>
 
@@ -128,7 +128,7 @@ export default function MentorDashboard() {
             {label:"Upcoming earnings", value:`₹${pendingEarnings.toLocaleString()}`},
           ].map(s=>(
             <div key={s.label} className="bg-white border border-gray-200 rounded-2xl p-5 text-center shadow-sm">
-              <p className="text-2xl font-black text-gray-900 mb-1">{s.value}</p>
+              <p className="text-2xl font-black text-white mb-1">{s.value}</p>
               <p className="text-xs text-gray-400">{s.label}</p>
             </div>
           ))}
@@ -148,7 +148,7 @@ export default function MentorDashboard() {
         {tab==="bookings" && (
           <div className="space-y-4">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-lg font-black text-gray-900">Session Requests</h2>
+              <h2 className="text-lg font-black text-white">Session Requests</h2>
               <Link href="/learn/workshops/create">
                 <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold hover:bg-[#4c3ec7] transition-colors">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>
@@ -162,7 +162,7 @@ export default function MentorDashboard() {
             ) : sessions.length===0 ? (
               <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
                 <p className="text-4xl mb-3">📋</p>
-                <p className="font-bold text-gray-900 mb-1">No session requests yet</p>
+                <p className="font-bold text-white mb-1">No session requests yet</p>
                 <p className="text-gray-400 text-sm">Learners will appear here when they book you</p>
               </div>
             ) : (
@@ -176,7 +176,7 @@ export default function MentorDashboard() {
                           {s.learnerPhoto ? <img src={s.learnerPhoto} className="w-full h-full object-cover" alt=""/> : <div className="w-full h-full flex items-center justify-center font-black text-gray-400 text-sm">{s.learnerName?.[0]}</div>}
                         </div>
                         <div>
-                          <p className="font-black text-gray-900 text-sm">{s.learnerName}</p>
+                          <p className="font-black text-white text-sm">{s.learnerName}</p>
                           <p className="text-xs text-gray-400">{formatDate(s.scheduledDate)} · {s.duration} min</p>
                         </div>
                       </div>
@@ -184,17 +184,17 @@ export default function MentorDashboard() {
                         <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${STATUS_STYLES[s.status]}`}>
                           {s.status.charAt(0).toUpperCase()+s.status.slice(1)}
                         </span>
-                        <span className="text-sm font-black text-gray-900">₹{(s.mentorEarns||0).toLocaleString()}</span>
+                        <span className="text-sm font-black text-white">₹{(s.mentorEarns||0).toLocaleString()}</span>
                       </div>
                     </div>
                     <div className="mt-3">
-                      <p className="text-sm font-bold text-gray-900">{s.topic}</p>
+                      <p className="text-sm font-bold text-white">{s.topic}</p>
                       {s.message && <p className="text-xs text-gray-500 mt-1 leading-relaxed">{s.message}</p>}
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="px-5 py-4 bg-gray-50">
+                  <div className="px-5 py-4 bg-[#0A0A0F]">
                     {s.status==="pending" && (
                       <div className="space-y-3">
                         <div>
@@ -203,7 +203,7 @@ export default function MentorDashboard() {
                             value={meetInput[s.id]||""}
                             onChange={e=>setMeetInput(prev=>({...prev,[s.id]:e.target.value}))}
                             placeholder="https://meet.google.com/xxx-xxxx-xxx or Jitsi room link"
-                            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-[#5B4BDB] transition-colors bg-white"/>
+                            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#5B4BDB] transition-colors bg-white"/>
                         </div>
                         <div className="flex gap-2">
                           <button onClick={()=>handleAccept(s)}
@@ -253,7 +253,7 @@ export default function MentorDashboard() {
         {tab==="workshops" && (
           <div>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-black text-gray-900">Your Workshops</h2>
+              <h2 className="text-lg font-black text-white">Your Workshops</h2>
               <Link href="/learn/workshops/create">
                 <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold hover:bg-[#4c3ec7] transition-colors border-b-[2px] border-[#4438b8]">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>
@@ -264,7 +264,7 @@ export default function MentorDashboard() {
             {workshops.length===0 ? (
               <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
                 <p className="text-4xl mb-3">🎓</p>
-                <p className="font-bold text-gray-900 mb-1">No workshops yet</p>
+                <p className="font-bold text-white mb-1">No workshops yet</p>
                 <p className="text-gray-400 text-sm mb-5">Create your first live session</p>
                 <Link href="/learn/workshops/create">
                   <button className="px-6 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm hover:bg-[#4c3ec7] transition-colors">Create Workshop</button>
@@ -282,11 +282,11 @@ export default function MentorDashboard() {
                           </span>
                           {w.price===0 ? <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Free</span> : <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">₹{w.price}</span>}
                         </div>
-                        <p className="font-black text-gray-900 text-sm">{w.title}</p>
+                        <p className="font-black text-white text-sm">{w.title}</p>
                         <p className="text-xs text-gray-400 mt-1">{w.registeredUsers?.length||0}/{w.maxSeats} seats · {w.duration} min</p>
                       </div>
                       <Link href={`/learn/workshops/${w.id}`}>
-                        <button className="px-4 py-2 rounded-xl border border-gray-200 text-gray-600 text-xs font-bold hover:bg-gray-50 transition-colors">Manage</button>
+                        <button className="px-4 py-2 rounded-xl border border-gray-200 text-gray-600 text-xs font-bold hover:bg-[#0A0A0F] transition-colors">Manage</button>
                       </Link>
                     </div>
                   </div>
@@ -307,18 +307,18 @@ export default function MentorDashboard() {
               ].map(s=>(
                 <div key={s.label} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
                   <p className={`text-3xl font-black mb-1 ${s.color}`}>{s.value}</p>
-                  <p className="text-sm font-bold text-gray-900">{s.label}</p>
+                  <p className="text-sm font-bold text-white">{s.label}</p>
                   <p className="text-xs text-gray-400">{s.desc}</p>
                 </div>
               ))}
             </div>
             <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-              <h3 className="font-black text-gray-900 mb-4">Session History</h3>
+              <h3 className="font-black text-white mb-4">Session History</h3>
               <div className="space-y-3">
                 {sessions.filter(s=>s.status==="completed"||s.status==="accepted").map(s=>(
                   <div key={s.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                     <div>
-                      <p className="text-sm font-bold text-gray-900">{s.topic}</p>
+                      <p className="text-sm font-bold text-white">{s.topic}</p>
                       <p className="text-xs text-gray-400">{s.learnerName} · {formatDate(s.scheduledDate)}</p>
                     </div>
                     <div className="text-right">

@@ -82,7 +82,7 @@ export default function XRUploadPage() {
     <div className="min-h-screen bg-gray-950 flex items-center justify-center font-sans">
       <div className="text-center bg-white/5 border border-white/10 p-10 rounded-2xl">
         <h1 className="text-2xl font-black text-white mb-4">Sign in required</h1>
-        <Link href="/login"><button className="px-8 py-3.5 rounded-xl bg-white text-gray-900 font-bold">Sign in</button></Link>
+        <Link href="/login"><button className="px-8 py-3.5 rounded-xl bg-white text-white font-bold">Sign in</button></Link>
       </div>
     </div>
   );
@@ -174,7 +174,7 @@ export default function XRUploadPage() {
         <div className="flex items-center gap-2 mb-8">
           {["Files", "Details", "Specs", "Publish"].map((s, i) => (
             <div key={s} className="flex items-center gap-2">
-              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${step > i + 1 ? "bg-green-500 text-white" : step === i + 1 ? "bg-white text-gray-900" : "bg-white/10 text-gray-500"}`}>
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${step > i + 1 ? "bg-green-500 text-white" : step === i + 1 ? "bg-white text-white" : "bg-white/10 text-gray-500"}`}>
                 {step > i + 1 ? "✓" : i + 1}
               </div>
               <span className={`text-sm font-semibold ${step === i + 1 ? "text-white" : "text-gray-600"}`}>{s}</span>
@@ -263,7 +263,7 @@ export default function XRUploadPage() {
               <div className="flex flex-wrap gap-2">
                 {PLATFORMS.map(p => (
                   <button key={p} onClick={() => setPlatforms(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p])}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${platforms.includes(p) ? "bg-white text-gray-900 border-white" : "bg-white/5 border-white/10 text-gray-400 hover:border-white/30 hover:text-white"}`}>
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${platforms.includes(p) ? "bg-white text-white border-white" : "bg-white/5 border-white/10 text-gray-400 hover:border-white/30 hover:text-white"}`}>
                     {p}
                   </button>
                 ))}

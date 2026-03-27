@@ -104,7 +104,7 @@ export default function ChallengesPage() {
   const canSubmit = ["learner","developer","mentor","admin"].includes(userRole);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">      <div className="max-w-4xl mx-auto px-4 py-14 flex-grow w-full">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white">      <div className="max-w-4xl mx-auto px-4 py-14 flex-grow w-full">
 
         <div className="mb-10">
           <Link href="/learn" className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-700 text-sm font-semibold mb-5 transition">
@@ -112,7 +112,7 @@ export default function ChallengesPage() {
             Back to Learn
           </Link>
           <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-2">Community</p>
-          <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-3">XR Challenges</h1>
+          <h1 className="text-4xl font-black tracking-tight text-white mb-3">XR Challenges</h1>
           <p className="text-gray-500 text-lg max-w-xl">
             Build something real. Win recognition. Get featured.
           </p>
@@ -129,7 +129,7 @@ export default function ChallengesPage() {
               <div className="w-8 h-8 rounded-xl bg-[#5B4BDB] text-white flex items-center justify-center text-sm font-black mb-3">
                 {step}
               </div>
-              <p className="font-black text-gray-900 mb-1">{title}</p>
+              <p className="font-black text-white mb-1">{title}</p>
               <p className="text-gray-500 text-xs leading-relaxed">{desc}</p>
             </div>
           ))}
@@ -160,7 +160,7 @@ export default function ChallengesPage() {
                         <span key={t} className="px-2 py-0.5 rounded-full bg-[#5B4BDB]/10 text-[#5B4BDB] text-xs font-semibold">{t}</span>
                       ))}
                     </div>
-                    <h3 className="font-black text-gray-900 text-lg mb-1">{c.title}</h3>
+                    <h3 className="font-black text-white text-lg mb-1">{c.title}</h3>
                     <p className="text-gray-500 text-sm leading-relaxed">{c.description}</p>
                     <div className="flex items-center gap-4 mt-3 text-xs text-gray-400">
                       <span>🏆 {c.prize}</span>
@@ -206,7 +206,7 @@ export default function ChallengesPage() {
                         </Link>
                       )}
                       <Link href="/learn/tools">
-                        <button className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-all">
+                        <button className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition-all">
                           Browse tools
                         </button>
                       </Link>

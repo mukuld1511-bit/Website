@@ -38,7 +38,7 @@ function ModelCard({ model, index }: { model: Model; index: number }) {
       <Link href={`/gallery/${model.id}`}>
         <div className="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer">
           {/* Thumbnail */}
-          <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden">
+          <div className="relative aspect-[4/3] bg-[#0A0A0F] overflow-hidden">
             {model.thumbnailUrl ? (
               <img src={model.thumbnailUrl} alt={model.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -74,7 +74,7 @@ function ModelCard({ model, index }: { model: Model; index: number }) {
 
           {/* Info */}
           <div className="p-4">
-            <h3 className="font-bold text-gray-900 text-sm mb-1 line-clamp-1 group-hover:text-[#5B4BDB] transition-colors">
+            <h3 className="font-bold text-white text-sm mb-1 line-clamp-1 group-hover:text-[#5B4BDB] transition-colors">
               {model.title}
             </h3>
             <p className="text-gray-400 text-xs truncate">{model.authorName ?? model.uploaderName ?? "—"}</p>
@@ -103,7 +103,7 @@ function EmptyState({ mode }: { mode: Mode }) {
       <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mb-4 text-3xl">
         {mode === "AR" ? "📱" : "🥽"}
       </div>
-      <p className="font-bold text-gray-900 mb-1">No {mode} projects yet</p>
+      <p className="font-bold text-white mb-1">No {mode} projects yet</p>
       <p className="text-gray-400 text-sm mb-5">Be the first to upload an {mode} build</p>
       <Link href={`/xr-zone/${mode.toLowerCase()}/upload`}>
         <button className="px-5 py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all">
@@ -173,7 +173,7 @@ export default function XRZonePage() {
   const canUpload = ["developer", "mentor", "admin"].includes(userRole);
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">
       <div className="max-w-7xl mx-auto px-4 pt-10 pb-20 w-full flex-grow">
 
         {/* ── HEADER ── */}
@@ -191,7 +191,7 @@ export default function XRZonePage() {
                 <span className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB] animate-pulse" />
                 <span className="text-[#5B4BDB] text-[11px] font-bold uppercase tracking-widest">XR Zone</span>
               </div>
-              <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-2">
+              <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2">
                 AR & VR Marketplace
               </h1>
               <p className="text-gray-500 text-base max-w-lg">
@@ -249,7 +249,7 @@ export default function XRZonePage() {
                 </svg>
               </div>
               <div>
-                <p className="text-base font-black text-gray-900">{s.value}</p>
+                <p className="text-base font-black text-white">{s.value}</p>
                 <p className="text-[11px] text-gray-400">{s.label}</p>
               </div>
             </motion.div>
@@ -284,7 +284,7 @@ export default function XRZonePage() {
             <button key={m} onClick={() => setMode(m)}
               className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
                 mode === m
-                  ? "bg-white text-gray-900 shadow-sm"
+                  ? "bg-white text-white shadow-sm"
                   : "text-gray-500 hover:text-gray-700"
               }`}>
               <span className="text-base">{m === "AR" ? "📱" : "🥽"}</span>
@@ -323,7 +323,7 @@ export default function XRZonePage() {
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all ${
                 category === cat
                   ? "bg-[#5B4BDB] text-white border-[#4438b8]"
-                  : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50 hover:text-gray-700"
+                  : "bg-white text-gray-500 border-gray-200 hover:bg-[#0A0A0F] hover:text-gray-700"
               }`}>
               {cat}
             </button>

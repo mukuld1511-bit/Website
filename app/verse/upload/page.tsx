@@ -67,9 +67,9 @@ export default function VerseUploadPage() {
   }, []);
 
   if (!user) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center font-sans">
       <div className="text-center bg-white p-10 rounded-2xl shadow-sm border border-gray-200">
-        <h1 className="text-2xl font-black text-gray-900 mb-4">Sign in required</h1>
+        <h1 className="text-2xl font-black text-white mb-4">Sign in required</h1>
         <Link href="/login"><button className="px-8 py-3.5 rounded-xl bg-gray-900 text-white font-bold">Sign in</button></Link>
       </div>
     </div>
@@ -122,10 +122,10 @@ export default function VerseUploadPage() {
     } catch (e) { setError((e as Error).message); setUploading(false); setUploadStage(""); }
   };
 
-  const inputCls = "w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 transition-colors";
+  const inputCls = "w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-gray-900 transition-colors";
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      <div className="max-w-2xl mx-auto px-4 py-14 flex-grow w-full">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">      <div className="max-w-2xl mx-auto px-4 py-14 flex-grow w-full">
 
         <AnimatePresence>
           {success && (
@@ -137,7 +137,7 @@ export default function VerseUploadPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
                   </svg>
                 </div>
-                <h2 className="text-2xl font-black text-gray-900 mb-2">Published!</h2>
+                <h2 className="text-2xl font-black text-white mb-2">Published!</h2>
                 <p className="text-gray-500 text-sm">Redirecting to 3D Verse...</p>
               </div>
             </motion.div>
@@ -153,7 +153,7 @@ export default function VerseUploadPage() {
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs font-bold uppercase tracking-widest text-violet-600 bg-violet-50 border border-violet-200 px-3 py-1 rounded-full">3D Verse</span>
           </div>
-          <h1 className="text-3xl font-black text-gray-900 mb-1">Upload 3D Model</h1>
+          <h1 className="text-3xl font-black text-white mb-1">Upload 3D Model</h1>
           <p className="text-gray-500 text-sm">GLB, GLTF, OBJ or FBX — no file size limit via Cloudflare R2</p>
         </div>
 
@@ -164,7 +164,7 @@ export default function VerseUploadPage() {
               <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${step > i + 1 ? "bg-green-500 text-white" : step === i + 1 ? "bg-gray-900 text-white" : "bg-gray-200 text-gray-500"}`}>
                 {step > i + 1 ? "✓" : i + 1}
               </div>
-              <span className={`text-sm font-semibold ${step === i + 1 ? "text-gray-900" : "text-gray-400"}`}>{s}</span>
+              <span className={`text-sm font-semibold ${step === i + 1 ? "text-white" : "text-gray-400"}`}>{s}</span>
               {i < 2 && <div className="flex-1 h-px bg-gray-200 w-8" />}
             </div>
           ))}
@@ -174,11 +174,11 @@ export default function VerseUploadPage() {
         {step === 1 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-2xl border border-gray-200 p-8 space-y-5 shadow-sm">
-            <h2 className="text-lg font-black text-gray-900">Upload files</h2>
+            <h2 className="text-lg font-black text-white">Upload files</h2>
 
             {/* Model file */}
             <div onClick={() => fileRef.current?.click()}
-              className="border-2 border-dashed border-gray-200 rounded-xl p-8 cursor-pointer hover:border-gray-900 hover:bg-gray-50 transition-all text-center group">
+              className="border-2 border-dashed border-gray-200 rounded-xl p-8 cursor-pointer hover:border-gray-900 hover:bg-[#0A0A0F] transition-all text-center group">
               <input ref={fileRef} type="file" onChange={handleFile} className="hidden"
                 accept={MODEL_EXTENSIONS.map(e => `.${e}`).join(",")} />
               <div className="w-12 h-12 rounded-xl bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center mx-auto mb-3 transition-colors">
@@ -188,12 +188,12 @@ export default function VerseUploadPage() {
               </div>
               {file ? (
                 <div>
-                  <p className="font-bold text-gray-900 text-sm">{file.name}</p>
+                  <p className="font-bold text-white text-sm">{file.name}</p>
                   <p className="text-xs text-gray-400 mt-1">{(file.size / (1024 * 1024)).toFixed(2)} MB · Cloudflare R2</p>
                 </div>
               ) : (
                 <div>
-                  <p className="font-bold text-gray-900 text-sm mb-1">Click to upload 3D model</p>
+                  <p className="font-bold text-white text-sm mb-1">Click to upload 3D model</p>
                   <p className="text-xs text-gray-400">GLB · GLTF · OBJ · FBX · No size limit</p>
                 </div>
               )}
@@ -201,13 +201,13 @@ export default function VerseUploadPage() {
 
             {/* Thumbnail */}
             <div onClick={() => thumbRef.current?.click()}
-              className="border-2 border-dashed border-gray-200 rounded-xl p-6 cursor-pointer hover:border-gray-900 hover:bg-gray-50 transition-all text-center group relative overflow-hidden">
+              className="border-2 border-dashed border-gray-200 rounded-xl p-6 cursor-pointer hover:border-gray-900 hover:bg-[#0A0A0F] transition-all text-center group relative overflow-hidden">
               <input ref={thumbRef} type="file" onChange={handleThumb} className="hidden" accept="image/*" />
               {thumbnailPreview && (
                 <img src={thumbnailPreview} alt="thumb" className="absolute inset-0 w-full h-full object-cover opacity-20" />
               )}
               <div className="relative">
-                <p className="font-bold text-gray-900 text-sm mb-1">{thumbnail ? thumbnail.name : "Upload thumbnail (optional)"}</p>
+                <p className="font-bold text-white text-sm mb-1">{thumbnail ? thumbnail.name : "Upload thumbnail (optional)"}</p>
                 <p className="text-xs text-gray-400">PNG, JPG · Max 5MB</p>
               </div>
             </div>
@@ -227,7 +227,7 @@ export default function VerseUploadPage() {
         {step === 2 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-2xl border border-gray-200 p-8 space-y-5 shadow-sm">
-            <h2 className="text-lg font-black text-gray-900">Model details</h2>
+            <h2 className="text-lg font-black text-white">Model details</h2>
 
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Title *</label>
@@ -270,9 +270,9 @@ export default function VerseUploadPage() {
 
             {/* Pricing */}
             <div className="pt-2 border-t border-gray-100">
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 cursor-pointer hover:border-gray-300 transition" onClick={() => setIsPaid(!isPaid)}>
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-[#0A0A0F] border border-gray-200 cursor-pointer hover:border-gray-300 transition" onClick={() => setIsPaid(!isPaid)}>
                 <input type="checkbox" checked={isPaid} onChange={e => setIsPaid(e.target.checked)} onClick={e => e.stopPropagation()} className="w-4 h-4" />
-                <p className="font-bold text-gray-900 text-sm">Sell this model (paid listing)</p>
+                <p className="font-bold text-white text-sm">Sell this model (paid listing)</p>
               </div>
               {isPaid && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="pt-3">
@@ -288,7 +288,7 @@ export default function VerseUploadPage() {
             </div>
 
             <div className="flex gap-3 justify-between pt-2">
-              <button onClick={() => setStep(1)} className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition">← Back</button>
+              <button onClick={() => setStep(1)} className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition">← Back</button>
               <button onClick={() => setStep(3)} disabled={!title || (isPaid && price <= 0)}
                 className="px-8 py-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-sm disabled:opacity-40 transition-colors">
                 Continue →
@@ -301,9 +301,9 @@ export default function VerseUploadPage() {
         {step === 3 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-2xl border border-gray-200 p-8 space-y-5 shadow-sm">
-            <h2 className="text-lg font-black text-gray-900">Review & publish</h2>
+            <h2 className="text-lg font-black text-white">Review & publish</h2>
 
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 space-y-3">
+            <div className="bg-[#0A0A0F] border border-gray-200 rounded-xl p-5 space-y-3">
               {[
                 { label: "Title",    value: title },
                 { label: "File",     value: `${file?.name} · ${(file!.size / (1024 * 1024)).toFixed(2)} MB` },
@@ -313,7 +313,7 @@ export default function VerseUploadPage() {
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between text-sm">
                   <span className="text-gray-400 font-medium">{label}</span>
-                  <span className="font-bold text-gray-900 text-right max-w-[60%] truncate">{value}</span>
+                  <span className="font-bold text-white text-right max-w-[60%] truncate">{value}</span>
                 </div>
               ))}
             </div>
@@ -333,7 +333,7 @@ export default function VerseUploadPage() {
             )}
 
             <div className="flex gap-3 justify-between pt-2">
-              <button onClick={() => setStep(2)} disabled={uploading} className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition disabled:opacity-40">← Back</button>
+              <button onClick={() => setStep(2)} disabled={uploading} className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition disabled:opacity-40">← Back</button>
               <button onClick={handlePublish} disabled={uploading}
                 className="px-10 py-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-sm disabled:opacity-50 transition-colors">
                 {uploading ? "Publishing..." : "Publish to 3D Verse"}

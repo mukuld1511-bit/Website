@@ -144,14 +144,14 @@ function GeminiChat({ userRole }: { userRole: string }) {
 
   return (
     <div className="flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm" style={{ height: 480 }}>
-      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100 bg-gray-50 shrink-0">
+      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100 bg-[#0A0A0F] shrink-0">
         <div className="w-8 h-8 rounded-xl bg-[#5B4BDB] flex items-center justify-center">
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
           </svg>
         </div>
         <div className="flex-1">
-          <p className="text-sm font-bold text-gray-900">Ask anything about XR</p>
+          <p className="text-sm font-bold text-white">Ask anything about XR</p>
           <p className="text-xs text-gray-400">Gemini AI · instant answers</p>
         </div>
         <span className="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full font-semibold">
@@ -167,7 +167,7 @@ function GeminiChat({ userRole }: { userRole: string }) {
             <div className="grid grid-cols-2 gap-2">
               {QUICK_QUESTIONS.map(q => (
                 <button key={q} onClick={() => send(q)}
-                  className="text-left text-xs bg-gray-50 hover:bg-[#5B4BDB]/5 border border-gray-200 hover:border-[#5B4BDB]/30 rounded-xl px-3 py-2.5 text-gray-600 hover:text-[#5B4BDB] transition-all leading-snug">
+                  className="text-left text-xs bg-[#0A0A0F] hover:bg-[#5B4BDB]/5 border border-gray-200 hover:border-[#5B4BDB]/30 rounded-xl px-3 py-2.5 text-gray-600 hover:text-[#5B4BDB] transition-all leading-snug">
                   {q}
                 </button>
               ))}
@@ -212,7 +212,7 @@ function GeminiChat({ userRole }: { userRole: string }) {
         <div ref={bottomRef} />
       </div>
 
-      <div className="px-4 py-3 border-t border-gray-100 bg-gray-50 shrink-0">
+      <div className="px-4 py-3 border-t border-gray-100 bg-[#0A0A0F] shrink-0">
         <form onSubmit={e => { e.preventDefault(); send(input); }} className="flex gap-2">
           <input value={input} onChange={e => setInput(e.target.value)}
             placeholder="What is spatial computing?"
@@ -373,7 +373,7 @@ function BookingModal({ mentor, user, onClose, onSuccess }: BookingModalProps) {
                 }
               </div>
               <div>
-                <p className="font-bold text-gray-900 text-sm">{mentor.displayName}</p>
+                <p className="font-bold text-white text-sm">{mentor.displayName}</p>
                 <p className="text-xs text-gray-400">₹{rate}/hr · {mentor.totalSessions ?? 0} sessions</p>
               </div>
             </div>
@@ -403,7 +403,7 @@ function BookingModal({ mentor, user, onClose, onSuccess }: BookingModalProps) {
                 {DURATIONS.map(d => (
                   <button key={d.value} onClick={() => setDuration(d.value)}
                     className={`py-2 rounded-xl text-sm font-bold border transition-all ${
-                      duration === d.value ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                      duration === d.value ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-600 border-gray-200 hover:bg-[#0A0A0F]"
                     }`}>
                     {d.label}
                   </button>
@@ -431,7 +431,7 @@ function BookingModal({ mentor, user, onClose, onSuccess }: BookingModalProps) {
             </div>
 
             {/* Price summary */}
-            <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-1.5 text-sm">
+            <div className="bg-[#0A0A0F] border border-gray-100 rounded-xl p-4 space-y-1.5 text-sm">
               <div className="flex justify-between text-gray-600">
                 <span>Session ({duration} min)</span>
                 <span className="font-semibold">₹{price}</span>
@@ -445,7 +445,7 @@ function BookingModal({ mentor, user, onClose, onSuccess }: BookingModalProps) {
                 <span>₹{mentorEarns}</span>
               </div>
               <div className="h-px bg-gray-200 my-1" />
-              <div className="flex justify-between font-black text-gray-900">
+              <div className="flex justify-between font-black text-white">
                 <span>You pay</span>
                 <span className="text-[#5B4BDB]">₹{price}</span>
               </div>
@@ -455,7 +455,7 @@ function BookingModal({ mentor, user, onClose, onSuccess }: BookingModalProps) {
           {/* Footer */}
           <div className="px-6 pb-6 flex gap-3">
             <button onClick={onClose}
-              className="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-all">
+              className="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition-all">
               Cancel
             </button>
             <button
@@ -521,7 +521,7 @@ function WorkshopCard({ w, user, userRole, onRegister }: {
           <span key={t} className="px-2 py-0.5 rounded-full bg-[#5B4BDB]/10 text-[#5B4BDB] text-xs font-semibold">{t}</span>
         ))}
       </div>
-      <h3 className="font-black text-gray-900 text-base mb-1 leading-snug">{w.title}</h3>
+      <h3 className="font-black text-white text-base mb-1 leading-snug">{w.title}</h3>
       <p className="text-gray-500 text-xs leading-relaxed mb-3 line-clamp-2">{w.description}</p>
       <div className="flex items-center gap-2 mb-3">
         <div className="w-7 h-7 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center overflow-hidden flex-shrink-0">
@@ -531,7 +531,7 @@ function WorkshopCard({ w, user, userRole, onRegister }: {
           }
         </div>
         <div>
-          <p className="text-xs font-semibold text-gray-900">{w.hostName}</p>
+          <p className="text-xs font-semibold text-white">{w.hostName}</p>
           <p className="text-xs text-gray-400">{w.duration} min · {w.price === 0 ? "Free" : `₹${w.price}`}</p>
         </div>
       </div>
@@ -717,7 +717,7 @@ export default function LearnPage() {
   const myRegistered = workshops.filter(w => user && w.registeredUsers?.includes(user.uid));
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white">
       {/* ── Toast ── */}
       <AnimatePresence>
         {toast && (
@@ -743,7 +743,7 @@ export default function LearnPage() {
         {/* ── HERO ── */}
         <div className="mb-10">
           <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">SYNTHÉ Learning Hub</p>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-4 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-4 leading-tight">
             Learn AR & VR<br />from real developers
           </h1>
           <p className="text-gray-500 text-lg max-w-xl">
@@ -753,7 +753,7 @@ export default function LearnPage() {
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
               className="mt-6 flex items-center justify-between gap-4 p-4 rounded-2xl border border-[#5B4BDB]/30 bg-[#5B4BDB]/5">
               <div>
-                <p className="text-sm font-bold text-gray-900">Unlock learning features</p>
+                <p className="text-sm font-bold text-white">Unlock learning features</p>
                 <p className="text-xs text-gray-500 mt-0.5">Apply as a Learner to register for sessions and book mentors</p>
               </div>
               <Link href="/join">
@@ -777,7 +777,7 @@ export default function LearnPage() {
                     </svg>
                   </div>
                   <div className="flex items-center gap-1.5 mb-1">
-                    <p className="text-sm font-black text-gray-900 group-hover:text-[#5B4BDB] transition-colors leading-tight">{card.label}</p>
+                    <p className="text-sm font-black text-white group-hover:text-[#5B4BDB] transition-colors leading-tight">{card.label}</p>
                     {card.badge && (
                       <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${card.badgeStyle}`}>{card.badge}</span>
                     )}
@@ -798,7 +798,7 @@ export default function LearnPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
               </div>
-              <p className="text-sm font-bold text-gray-900">XR Concept Chat</p>
+              <p className="text-sm font-bold text-white">XR Concept Chat</p>
               <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full font-semibold">Gemini AI</span>
             </div>
             <GeminiChat userRole={userRole} />
@@ -812,7 +812,7 @@ export default function LearnPage() {
                 { label: "Joined",    value: myRegistered.length },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-white border border-gray-100 rounded-2xl p-4 text-center shadow-sm">
-                  <p className="text-2xl font-black text-gray-900">{value}</p>
+                  <p className="text-2xl font-black text-white">{value}</p>
                   <p className="text-xs text-gray-500 mt-0.5">{label}</p>
                 </div>
               ))}
@@ -829,7 +829,7 @@ export default function LearnPage() {
                   { label: "Join a challenge",           href: "/learn/challenges",         badge: null },
                 ].map(item => (
                   <Link key={item.href} href={item.href}>
-                    <div className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors group cursor-pointer">
+                    <div className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-[#0A0A0F] transition-colors group cursor-pointer">
                       <p className="text-sm font-semibold text-gray-700 group-hover:text-[#5B4BDB] transition-colors">{item.label}</p>
                       <div className="flex items-center gap-2">
                         {item.badge && <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full font-semibold">{item.badge}</span>}
@@ -851,7 +851,7 @@ export default function LearnPage() {
             {(["upcoming", "registered"] as const).map(t => (
               <button key={t} onClick={() => setTab(t)}
                 className={`px-5 py-2 rounded-xl text-sm font-bold transition-all capitalize ${
-                  tab === t ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                  tab === t ? "bg-white text-white shadow-sm" : "text-gray-500 hover:text-gray-700"
                 }`}>
                 {t === "registered" ? "My sessions" : "Upcoming"}
               </button>
@@ -861,7 +861,7 @@ export default function LearnPage() {
             {TAGS.map(tag => (
               <button key={tag} onClick={() => setActiveTag(tag)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
-                  activeTag === tag ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
+                  activeTag === tag ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-500 border-gray-200 hover:bg-[#0A0A0F]"
                 }`}>
                 {tag}
               </button>
@@ -886,7 +886,7 @@ export default function LearnPage() {
             <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center text-3xl mx-auto mb-4">
               {tab === "registered" ? "📋" : "📅"}
             </div>
-            <p className="font-bold text-gray-900 mb-2">
+            <p className="font-bold text-white mb-2">
               {tab === "registered" ? "No sessions registered yet" : "No sessions available"}
             </p>
             <p className="text-gray-500 text-sm">
@@ -906,7 +906,7 @@ export default function LearnPage() {
           <div className="grid md:grid-cols-2 gap-0">
             <div className="p-8 md:p-10">
               <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">1-on-1 Sessions</p>
-              <h2 className="text-2xl font-black text-gray-900 mb-3 leading-tight">Need personal guidance?</h2>
+              <h2 className="text-2xl font-black text-white mb-3 leading-tight">Need personal guidance?</h2>
               <p className="text-gray-500 text-sm leading-relaxed mb-6">
                 Browse verified mentors and book a private session. You choose the topic, they bring the expertise.
               </p>
@@ -940,7 +940,7 @@ export default function LearnPage() {
                           }
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-gray-900">{m.displayName}</p>
+                          <p className="text-sm font-bold text-white">{m.displayName}</p>
                           <p className="text-xs text-gray-400">₹{m.hourlyRate ?? 500}/hr</p>
                         </div>
                       </div>
@@ -971,7 +971,7 @@ export default function LearnPage() {
             <div className="hidden md:flex items-center justify-center p-10 bg-gradient-to-br from-[#5B4BDB]/5 to-blue-50">
               <div className="text-center">
                 <div className="text-7xl mb-4">🧑‍🏫</div>
-                <p className="font-black text-gray-900 text-lg">Verified mentors</p>
+                <p className="font-black text-white text-lg">Verified mentors</p>
                 <p className="text-gray-500 text-sm mt-1">Real XR developers, teaching live</p>
               </div>
             </div>
@@ -982,7 +982,7 @@ export default function LearnPage() {
         {user && !["mentor", "admin"].includes(userRole) && (
           <div className="mt-8 p-6 rounded-2xl border border-gray-100 bg-white shadow-sm flex items-center justify-between gap-4 flex-wrap">
             <div>
-              <p className="font-black text-gray-900 mb-1">Want to teach?</p>
+              <p className="font-black text-white mb-1">Want to teach?</p>
               <p className="text-gray-500 text-sm">Apply as a Mentor and host your own sessions on SYNTHÉ.</p>
             </div>
             <Link href="/join">

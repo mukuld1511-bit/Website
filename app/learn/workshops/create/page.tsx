@@ -158,23 +158,23 @@ export default function CreateSessionPage() {
     setSubmitting(false);
   };
 
-  const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#5B4BDB] transition-colors bg-white";
+  const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-[#5B4BDB] transition-colors bg-white";
 
   if (success) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
       <div className="text-center bg-white p-10 rounded-2xl border border-gray-200 shadow-xl max-w-sm w-full mx-4">
         <div className="text-5xl mb-4">✅</div>
-        <h2 className="text-2xl font-black text-gray-900 mb-2">Session Created!</h2>
+        <h2 className="text-2xl font-black text-white mb-2">Session Created!</h2>
         <p className="text-gray-500 text-sm">Redirecting to Learn page...</p>
       </div>
     </div>
   );
 
   if (user && !["mentor", "admin"].includes(userRole)) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
       <div className="text-center bg-white p-10 rounded-2xl border border-gray-200">
         <p className="text-4xl mb-4">🔒</p>
-        <p className="font-black text-gray-900 mb-2">Mentors only</p>
+        <p className="font-black text-white mb-2">Mentors only</p>
         <p className="text-gray-500 text-sm mb-5">Apply as a Mentor to create sessions</p>
         <Link href="/join"><button className="px-6 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm">Apply as Mentor</button></Link>
       </div>
@@ -184,7 +184,7 @@ export default function CreateSessionPage() {
   const activeCat = SESSION_CATEGORIES.find(c => c.type === category)!;
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      <div className="max-w-2xl mx-auto px-4 py-14 flex-grow w-full">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">      <div className="max-w-2xl mx-auto px-4 py-14 flex-grow w-full">
 
         {/* Back */}
         <Link href="/learn" className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-700 text-sm font-semibold mb-6 transition">
@@ -194,7 +194,7 @@ export default function CreateSessionPage() {
 
         <div className="mb-8">
           <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-2">Mentor Dashboard</p>
-          <h1 className="text-3xl font-black text-gray-900 mb-1">Create a Session</h1>
+          <h1 className="text-3xl font-black text-white mb-1">Create a Session</h1>
           <p className="text-gray-500 text-sm">Your hourly rate: <span className="font-bold text-gray-700">₹{hourlyRate}/hr</span></p>
         </div>
 
@@ -266,9 +266,9 @@ export default function CreateSessionPage() {
                 <input type="number" value={maxSeats} onChange={e => setMaxSeats(Number(e.target.value))} min={1} max={500} className={inputCls} />
               </div>
               <div className="pt-2 border-t border-gray-100">
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 cursor-pointer" onClick={() => setIsPaid(!isPaid)}>
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-[#0A0A0F] border border-gray-200 cursor-pointer" onClick={() => setIsPaid(!isPaid)}>
                   <input type="checkbox" checked={isPaid} onChange={e => setIsPaid(e.target.checked)} onClick={e => e.stopPropagation()} className="w-4 h-4" />
-                  <p className="font-bold text-gray-900 text-sm">Paid workshop (charge per seat)</p>
+                  <p className="font-bold text-white text-sm">Paid workshop (charge per seat)</p>
                 </div>
                 {isPaid && (
                   <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="pt-3 space-y-1">
@@ -297,7 +297,7 @@ export default function CreateSessionPage() {
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Max Group Size *</label>
                 <div className="flex items-center gap-4">
                   <input type="number" value={groupMaxSeats} onChange={e => setGroupMaxSeats(Math.max(2, Number(e.target.value)))}
-                    min={2} max={20} className="w-24 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0F6E56] transition bg-white" />
+                    min={2} max={20} className="w-24 border border-gray-200 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#0F6E56] transition bg-white" />
                   <div className="flex gap-2">
                     {[3, 5, 8, 10].map(n => (
                       <button key={n} type="button" onClick={() => setGroupMaxSeats(n)}
@@ -315,7 +315,7 @@ export default function CreateSessionPage() {
                 <div className="grid grid-cols-2 gap-2 text-xs text-gray-700">
                   <div className="bg-white rounded-lg p-2.5">
                     <p className="text-gray-400 mb-0.5">Your hourly rate × duration</p>
-                    <p className="font-bold text-gray-900">₹{Math.round(hourlyRate * duration / 60)} total</p>
+                    <p className="font-bold text-white">₹{Math.round(hourlyRate * duration / 60)} total</p>
                   </div>
                   <div className="bg-white rounded-lg p-2.5">
                     <p className="text-gray-400 mb-0.5">÷ {groupMaxSeats} learners</p>
@@ -323,11 +323,11 @@ export default function CreateSessionPage() {
                   </div>
                   <div className="bg-white rounded-lg p-2.5">
                     <p className="text-gray-400 mb-0.5">If {groupMaxSeats} join</p>
-                    <p className="font-bold text-gray-900">₹{groupPricePerHead * groupMaxSeats} revenue</p>
+                    <p className="font-bold text-white">₹{groupPricePerHead * groupMaxSeats} revenue</p>
                   </div>
                   <div className="bg-white rounded-lg p-2.5">
                     <p className="text-gray-400 mb-0.5">You earn (85%)</p>
-                    <p className="font-bold text-gray-900">₹{groupMentorEarns}</p>
+                    <p className="font-bold text-white">₹{groupMentorEarns}</p>
                   </div>
                 </div>
                 <p className="text-xs text-[#0F6E56]">Price per head adjusts automatically based on seats filled.</p>

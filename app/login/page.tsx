@@ -36,10 +36,10 @@ export default function Login() {
     setLoading(false);
   };
 
-  const inputClass = "w-full bg-white border border-gray-300 text-gray-900 placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition duration-200 shadow-sm";
+  const inputClass = "w-full bg-white border border-gray-300 text-white placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition duration-200 shadow-sm";
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 flex items-center justify-center px-4 py-24 relative overflow-hidden font-sans">
+    <main className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4 py-24 relative overflow-hidden font-sans">
       {/* Decorative blobs */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-[0]" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-pink-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-[0]" />
@@ -59,7 +59,7 @@ export default function Login() {
                   <path d="M4 5h16l-6 7 6 7H4l6-7-6-7z" />
                 </svg>
               </div>
-              <span className="font-black text-3xl text-gray-900 tracking-tight">
+              <span className="font-black text-3xl text-white tracking-tight">
                 Synthé
               </span>
             </div>
@@ -103,7 +103,7 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full bg-white border-2 border-indigo-100 text-gray-900 placeholder-gray-400 font-bold text-base rounded-2xl pl-12 pr-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm"
+                  className="w-full bg-white border-2 border-indigo-100 text-white placeholder-gray-400 font-bold text-base rounded-2xl pl-12 pr-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm"
                 />
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full bg-white border-2 border-indigo-100 text-gray-900 placeholder-gray-400 font-bold text-base rounded-2xl pl-12 pr-12 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm"
+                  className="w-full bg-white border-2 border-indigo-100 text-white placeholder-gray-400 font-bold text-base rounded-2xl pl-12 pr-12 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm"
                 />
                 <button
                   type="button"

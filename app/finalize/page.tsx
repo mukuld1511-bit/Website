@@ -93,7 +93,7 @@ export default function FinalizePage() {
     : [];
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">
       <div className="max-w-4xl mx-auto px-4 py-12 flex-grow w-full pt-24">
         {/* Header */}
         <div className="mb-8">
@@ -113,7 +113,7 @@ export default function FinalizePage() {
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-black text-gray-900">Finalize Your Plan</h1>
+              <h1 className="text-2xl font-black text-white">Finalize Your Plan</h1>
               <p className="text-gray-500 text-sm">AI Execution Pipeline — structured, priority-ranked action plans</p>
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function FinalizePage() {
                 rows={10}
                 className="w-full px-6 py-5 text-sm text-gray-800 placeholder-gray-400 resize-none focus:outline-none leading-relaxed"
               />
-              <div className="flex items-center justify-between px-6 py-3 border-t border-gray-100 bg-gray-50">
+              <div className="flex items-center justify-between px-6 py-3 border-t border-gray-100 bg-[#0A0A0F]">
                 <p className="text-xs text-gray-400">{input.length} characters</p>
                 <button
                   onClick={handleFinalize}
@@ -201,7 +201,7 @@ export default function FinalizePage() {
             <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
-                  <h2 className="text-xl font-black text-gray-900 mb-1">{plan.title}</h2>
+                  <h2 className="text-xl font-black text-white mb-1">{plan.title}</h2>
                   <p className="text-gray-500 text-sm leading-relaxed">{plan.summary}</p>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
@@ -235,10 +235,10 @@ export default function FinalizePage() {
 
               <div className="flex gap-4 mt-4 flex-wrap">
                 <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                  <span className="font-bold text-gray-900">{plan.totalSteps}</span> steps
+                  <span className="font-bold text-white">{plan.totalSteps}</span> steps
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                  <span className="font-bold text-gray-900">{plan.estimatedDuration}</span> estimated
+                  <span className="font-bold text-white">{plan.estimatedDuration}</span> estimated
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-gray-500">
                   <span className="font-bold text-[#5B4BDB]">{completedItems}/{totalChecklistItems}</span> tasks done
@@ -282,14 +282,14 @@ export default function FinalizePage() {
                     {/* Step header */}
                     <button
                       onClick={() => setExpandedStep(isExpanded ? null : idx)}
-                      className="w-full flex items-center gap-4 px-6 py-4 text-left hover:bg-gray-50 transition-colors"
+                      className="w-full flex items-center gap-4 px-6 py-4 text-left hover:bg-[#0A0A0F] transition-colors"
                     >
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-sm font-black ${stepComplete ? "bg-green-100 text-green-600" : "bg-[#5B4BDB]/10 text-[#5B4BDB]"}`}>
                         {stepComplete ? "✓" : step.order}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
-                          <p className={`font-bold text-sm ${stepComplete ? "text-green-700 line-through" : "text-gray-900"}`}>{step.title}</p>
+                          <p className={`font-bold text-sm ${stepComplete ? "text-green-700 line-through" : "text-white"}`}>{step.title}</p>
                           <span className={`text-[10px] px-1.5 py-0.5 rounded-full border font-bold ${badge.bg} ${badge.color}`}>{step.priority}</span>
                         </div>
                         <p className="text-xs text-gray-400 mt-0.5">
@@ -349,7 +349,7 @@ export default function FinalizePage() {
                                       href={r.url}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-600 hover:border-[#5B4BDB] hover:text-[#5B4BDB] transition-colors"
+                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0A0A0F] border border-gray-200 text-xs font-semibold text-gray-600 hover:border-[#5B4BDB] hover:text-[#5B4BDB] transition-colors"
                                     >
                                       {r.type === "tool" ? "🔧" : r.type === "tutorial" ? "📺" : "📄"} {r.name}
                                     </a>

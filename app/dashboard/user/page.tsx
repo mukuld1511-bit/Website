@@ -50,7 +50,7 @@ const [roleAppStatus, setRoleAppStatus] = useState<string | null>(null);
   }, []);
 
   if (loading) return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
+    <main className="min-h-screen bg-[#0A0A0F] flex items-center justify-center font-sans">
       <div className="flex flex-col items-center gap-4">
         <div className="w-10 h-10 rounded-full border-4 border-gray-200 border-t-cyan-500 animate-spin" />
         <p className="text-gray-500 text-sm font-bold tracking-widest uppercase">Loading dashboard...</p>
@@ -72,13 +72,13 @@ const [roleAppStatus, setRoleAppStatus] = useState<string | null>(null);
   ];
 
   return (
-    <main className="min-h-screen bg-gray-50 px-4 py-28 relative overflow-hidden font-sans">
+    <main className="min-h-screen bg-[#0A0A0F] px-4 py-28 relative overflow-hidden font-sans">
       <div className="relative z-10 max-w-5xl mx-auto">
 
         {/* PAGE HEADER */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-10">
           <p className="text-cyan-600 text-xs uppercase tracking-widest font-bold mb-2">My Space</p>
-          <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">User Dashboard</h1>
+          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">User Dashboard</h1>
           <p className="text-gray-500 text-sm mt-3 font-medium">Track your requests, saved projects and activity.</p>
         </motion.div>
         {roleAppStatus === "payment_pending" && (
@@ -161,7 +161,7 @@ const [roleAppStatus, setRoleAppStatus] = useState<string | null>(null);
               {requests.map((r, index) => (
                 <div key={index} className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-indigo-100 rounded-3xl p-6 shadow-sm hover:shadow-md hover:border-pink-300 transition-all duration-300">
                   <div>
-                    <p className="text-gray-900 font-black text-base mb-1 group-hover:text-pink-600 transition-colors">{r.topic}</p>
+                    <p className="text-white font-black text-base mb-1 group-hover:text-pink-600 transition-colors">{r.topic}</p>
                     <p className="text-gray-500 text-sm font-medium">Level: <span className="text-gray-700 font-bold">{r.level}</span></p>
                   </div>
                   <span className={`self-start sm:self-auto text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border shadow-sm ${
@@ -203,7 +203,7 @@ const [roleAppStatus, setRoleAppStatus] = useState<string | null>(null);
                       </div>
                   }
                   <div className="flex-1 min-w-0">
-                    <p className="text-gray-900 font-black text-base truncate mb-1 group-hover:text-violet-600 transition-colors">{c.requestTitle || "Project Chat"}</p>
+                    <p className="text-white font-black text-base truncate mb-1 group-hover:text-violet-600 transition-colors">{c.requestTitle || "Project Chat"}</p>
                     <p className="text-gray-500 font-semibold text-sm">with <span className="text-gray-700">{c.developerName}</span></p>
                   </div>
                   {c.funded && (
@@ -211,7 +211,7 @@ const [roleAppStatus, setRoleAppStatus] = useState<string | null>(null);
                       Funded ₹{c.fundedAmount?.toLocaleString("en-IN")}
                     </span>
                   )}
-                  <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover:bg-violet-50 group-hover:text-violet-600 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-[#0A0A0F] flex items-center justify-center group-hover:bg-violet-50 group-hover:text-violet-600 transition-colors">
                     <svg className="w-5 h-5 text-gray-400 group-hover:text-violet-600 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                     </svg>
@@ -234,7 +234,7 @@ const [roleAppStatus, setRoleAppStatus] = useState<string | null>(null);
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                       </svg>
                     </div>
-                    <h3 className="text-gray-900 font-bold text-sm mb-2">{p.title || "Untitled Project"}</h3>
+                    <h3 className="text-white font-bold text-sm mb-2">{p.title || "Untitled Project"}</h3>
                     {p.shortDescription && <p className="text-gray-500 text-xs font-medium line-clamp-2 leading-relaxed">{p.shortDescription}</p>}
                     <div className="mt-5 h-[2px] w-0 group-hover:w-full bg-blue-500 transition-all duration-300 rounded-full opacity-60" />
                   </div>
@@ -246,7 +246,7 @@ const [roleAppStatus, setRoleAppStatus] = useState<string | null>(null);
         {/* RECENT ACTIVITY */}
         <UserSection title="Recent Activity" subtitle="Notifications and platform updates" delay={0.6} accent="bg-emerald-500">
           <div className="bg-white border border-gray-200 shadow-sm rounded-3xl p-10 flex flex-col items-center justify-center text-center gap-3">
-            <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-2">
+            <div className="w-16 h-16 rounded-2xl bg-[#0A0A0F] border border-gray-100 flex items-center justify-center mb-2">
               <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
@@ -271,7 +271,7 @@ function UserSection({ title, subtitle, delay, children, accent = "bg-cyan-500" 
       <div className="flex items-center gap-3 mb-6">
         <div className={`w-1.5 h-7 ${accent} rounded-sm`} />
         <div>
-          <h2 className="text-xl font-bold text-gray-900 tracking-tight">{title}</h2>
+          <h2 className="text-xl font-bold text-white tracking-tight">{title}</h2>
           <p className="text-gray-500 text-xs font-medium mt-0.5">{subtitle}</p>
         </div>
       </div>

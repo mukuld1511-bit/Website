@@ -60,7 +60,7 @@ function ModelCard({ m }: { m: Model }) {
         <div className={`group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 cursor-pointer ${aura(m.engagementScore ?? 0)}`}>
 
           {/* Thumbnail */}
-          <div className="relative aspect-square overflow-hidden bg-gray-50 flex items-center justify-center">
+          <div className="relative aspect-square overflow-hidden bg-[#0A0A0F] flex items-center justify-center">
             {hasRealThumbnail ? (
               <img src={m.thumbnailUrl} alt={m.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
@@ -104,7 +104,7 @@ function ModelCard({ m }: { m: Model }) {
 
           {/* Info */}
           <div className="p-4">
-            <p className="font-bold text-gray-900 text-sm truncate mb-1">{m.title}</p>
+            <p className="font-bold text-white text-sm truncate mb-1">{m.title}</p>
             <p className="text-xs text-gray-400 truncate">{m.authorName}</p>
             <div className="flex items-center gap-3 mt-3 text-xs text-gray-400">
               <span className="flex items-center gap-1">
@@ -189,7 +189,7 @@ export default function VersePage() {
     : models;
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">      <div className="max-w-7xl mx-auto px-4 py-14 flex-grow w-full">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">      <div className="max-w-7xl mx-auto px-4 py-14 flex-grow w-full">
 
         {/* Header */}
         <div className="mb-10">
@@ -198,7 +198,7 @@ export default function VersePage() {
           </div>
           <div className="flex items-end justify-between flex-wrap gap-4">
             <div>
-              <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-2">3D Model Marketplace</h1>
+              <h1 className="text-4xl font-black tracking-tight text-white mb-2">3D Model Marketplace</h1>
               <p className="text-gray-500">Browse, buy and sell GLB, GLTF, OBJ and FBX models.</p>
             </div>
             <Link href="/verse/upload">
@@ -286,7 +286,7 @@ export default function VersePage() {
         ) : filtered.length === 0 ? (
           <div className="text-center py-24">
             <div className="text-5xl mb-4">🧊</div>
-            <p className="font-bold text-gray-900 mb-2">No models found</p>
+            <p className="font-bold text-white mb-2">No models found</p>
             <p className="text-gray-400 text-sm">Try a different filter or upload the first one</p>
           </div>
         ) : (
@@ -297,7 +297,7 @@ export default function VersePage() {
             {hasMore && !search && (
               <div className="flex justify-center mt-10">
                 <button onClick={() => fetchModels(false)} disabled={loading}
-                  className="px-8 py-3 rounded-xl bg-white border border-gray-200 text-gray-700 font-bold text-sm hover:bg-gray-50 transition-colors disabled:opacity-50">
+                  className="px-8 py-3 rounded-xl bg-white border border-gray-200 text-gray-700 font-bold text-sm hover:bg-[#0A0A0F] transition-colors disabled:opacity-50">
                   {loading ? "Loading..." : "Load more"}
                 </button>
               </div>

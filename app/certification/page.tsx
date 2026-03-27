@@ -108,17 +108,17 @@ export default function CertificationPage() {
   }
 
   const inp = (key: string) =>
-    `w-full bg-white border ${errors[key] ? "border-red-300" : "border-gray-200"} text-gray-900 placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm transition duration-200`;
+    `w-full bg-white border ${errors[key] ? "border-red-300" : "border-gray-200"} text-white placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm transition duration-200`;
   const lbl = "block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-2";
 
   if (authLoading) return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
       <div className="w-10 h-10 rounded-full border-2 border-blue-200 border-t-blue-600 animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 font-sans flex flex-col relative">
+    <div className="min-h-screen bg-[#0A0A0F] font-sans flex flex-col relative">
       <div className="relative flex-grow pt-32 pb-24 px-4 overflow-x-hidden z-10">
         {/* Decorative elements */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-[-1]" />
@@ -133,7 +133,7 @@ export default function CertificationPage() {
               <span className="w-3 h-3 rounded-full bg-blue-600 animate-pulse" />
               <span className="text-blue-700 text-xs font-black uppercase tracking-widest">Synthé Certification</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight text-gray-900 leading-tight mb-6 drop-shadow-sm">
+            <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white leading-tight mb-6 drop-shadow-sm">
               Get{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500">
                 Certified
@@ -156,7 +156,7 @@ export default function CertificationPage() {
               ].map((b, i) => (
                 <div key={i} className="flex flex-col items-center">
                   <div className="text-3xl mb-4 w-14 h-14 rounded-2xl bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center shadow-sm">{b.icon}</div>
-                  <p className="text-gray-900 font-black text-sm mb-2">{b.label}</p>
+                  <p className="text-white font-black text-sm mb-2">{b.label}</p>
                   <p className="text-gray-600 text-xs font-bold leading-relaxed">{b.desc}</p>
                 </div>
               ))}
@@ -200,7 +200,7 @@ export default function CertificationPage() {
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
               <div className="relative rounded-[2.5rem] border-4 border-indigo-50 bg-white/80 backdrop-blur overflow-hidden p-8 md:p-12 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] mb-10">
                 
-                <h2 className="text-3xl font-black text-gray-900 mb-4">Apply for Certification</h2>
+                <h2 className="text-3xl font-black text-white mb-4">Apply for Certification</h2>
                 <p className="text-gray-500 font-bold text-base mb-10">
                   Fill in the form below. Our team reviews every application manually.
                 </p>
@@ -221,13 +221,13 @@ export default function CertificationPage() {
                     <div>
                       <label className="block text-[11px] font-black uppercase tracking-widest text-indigo-400 mb-2">Full Name *</label>
                       <input value={form.name} onChange={e => set("name", e.target.value)}
-                        placeholder="Your full name" className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
+                        placeholder="Your full name" className="w-full bg-white border-2 border-indigo-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
                       {errors.name && <p className="text-red-500 font-black text-xs mt-2">{errors.name}</p>}
                     </div>
                     <div>
                       <label className="block text-[11px] font-black uppercase tracking-widest text-indigo-400 mb-2">Email</label>
                       <input value={form.email} onChange={e => set("email", e.target.value)}
-                        placeholder="your@email.com" className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
+                        placeholder="your@email.com" className="w-full bg-white border-2 border-indigo-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
                     </div>
                   </div>
 
@@ -236,7 +236,7 @@ export default function CertificationPage() {
                     <div className="relative">
                       <span className="absolute left-5 top-1/2 -translate-y-1/2 text-pink-300 font-black text-base">www.</span>
                       <input value={form.portfolio} onChange={e => set("portfolio", e.target.value)}
-                        placeholder="yourportfolio.com" className="w-full bg-white border-2 border-pink-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl pl-16 pr-5 py-4 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100 transition shadow-sm" />
+                        placeholder="yourportfolio.com" className="w-full bg-white border-2 border-pink-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl pl-16 pr-5 py-4 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100 transition shadow-sm" />
                     </div>
                     {errors.portfolio && <p className="text-red-500 font-black text-xs mt-2">{errors.portfolio}</p>}
                   </div>
@@ -247,7 +247,7 @@ export default function CertificationPage() {
                       <div className="relative">
                         <span className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-300 font-black text-base">in/</span>
                         <input value={form.linkedin} onChange={e => set("linkedin", e.target.value)}
-                          placeholder="linkedin.com/in/name" className="w-full bg-white border-2 border-blue-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl pl-12 pr-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
+                          placeholder="linkedin.com/in/name" className="w-full bg-white border-2 border-blue-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl pl-12 pr-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
                       </div>
                     </div>
                     <div>
@@ -255,7 +255,7 @@ export default function CertificationPage() {
                       <div className="relative">
                         <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-black text-base">@</span>
                         <input value={form.github} onChange={e => set("github", e.target.value)}
-                          placeholder="username" className="w-full bg-white border-2 border-gray-200 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl pl-10 pr-5 py-4 focus:outline-none focus:border-gray-400 focus:ring-4 focus:ring-gray-100 transition shadow-sm" />
+                          placeholder="username" className="w-full bg-white border-2 border-gray-200 text-white font-bold placeholder-gray-400 text-lg rounded-2xl pl-10 pr-5 py-4 focus:outline-none focus:border-gray-400 focus:ring-4 focus:ring-gray-100 transition shadow-sm" />
                       </div>
                     </div>
                   </div>
@@ -263,7 +263,7 @@ export default function CertificationPage() {
                   <div>
                     <label className="block text-[11px] font-black uppercase tracking-widest text-emerald-400 mb-2">Experience in AR/VR/3D *</label>
                     <input value={form.experience} onChange={e => set("experience", e.target.value)}
-                      placeholder="e.g. 2 years in Blender, Unity, and WebXR" className="w-full bg-white border-2 border-emerald-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl p-5 focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition shadow-sm" />
+                      placeholder="e.g. 2 years in Blender, Unity, and WebXR" className="w-full bg-white border-2 border-emerald-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl p-5 focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition shadow-sm" />
                     {errors.experience && <p className="text-red-500 font-black text-xs mt-2">{errors.experience}</p>}
                   </div>
 
@@ -271,14 +271,14 @@ export default function CertificationPage() {
                     <label className="block text-[11px] font-black uppercase tracking-widest text-indigo-400 mb-2">Project Links</label>
                     <textarea value={form.projectLinks} onChange={e => set("projectLinks", e.target.value)} rows={2}
                       placeholder="Links to your best work (one per line)…"
-                      className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl p-5 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm resize-none" />
+                      className="w-full bg-white border-2 border-indigo-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl p-5 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm resize-none" />
                   </div>
 
                   <div>
                     <label className="block text-[11px] font-black uppercase tracking-widest text-amber-400 mb-2">Why should you be certified? *</label>
                     <textarea value={form.reason} onChange={e => set("reason", e.target.value)} rows={4}
                       placeholder="Tell us about your work, skills, and what makes you stand out on Synthé…"
-                      className="w-full bg-white border-2 border-amber-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl p-5 focus:outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-100 transition shadow-sm resize-none" />
+                      className="w-full bg-white border-2 border-amber-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl p-5 focus:outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-100 transition shadow-sm resize-none" />
                     {errors.reason && <p className="text-red-500 font-black text-xs mt-2">{errors.reason}</p>}
                   </div>
 
@@ -307,7 +307,7 @@ export default function CertificationPage() {
                 <div className="w-24 h-24 rounded-3xl flex items-center justify-center mb-6 shadow-sm border-4 border-emerald-200 bg-emerald-100">
                   <span className="text-5xl text-emerald-600">✓</span>
                 </div>
-                <h2 className="text-3xl font-black text-gray-900 mb-4">Application Submitted!</h2>
+                <h2 className="text-3xl font-black text-white mb-4">Application Submitted!</h2>
                 <p className="text-emerald-700 font-bold text-base max-w-sm mx-auto leading-relaxed mb-10">
                   Your certification application is under review. We'll notify you within 48 hours once a decision is made.
                 </p>

@@ -74,17 +74,17 @@ export default function JoinLearnerPage() {
   };
 
   if (authLoading) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
       <div className="w-8 h-8 rounded-full border-2 border-[#185FA5]/30 border-t-[#185FA5] animate-spin" />
     </div>
   );
 
   if (alreadyActive) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col">      <div className="flex-grow flex items-center justify-center px-4 py-24">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col">      <div className="flex-grow flex items-center justify-center px-4 py-24">
         <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
           className="bg-white rounded-3xl border border-blue-200 shadow-2xl p-12 max-w-md w-full text-center">
           <div className="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center text-4xl mx-auto mb-6">🎓</div>
-          <h2 className="text-2xl font-black text-gray-900 mb-3">You're already a Learner!</h2>
+          <h2 className="text-2xl font-black text-white mb-3">You're already a Learner!</h2>
           <p className="text-gray-500 text-sm mb-8">Your learner role is active. Head to your dashboard to continue learning.</p>
           <Link href="/dashboard">
             <button className="w-full py-3.5 rounded-xl font-black text-white text-sm bg-[#185FA5] hover:opacity-90 transition">Go to Dashboard →</button>
@@ -96,12 +96,12 @@ export default function JoinLearnerPage() {
   );
 
   if (submitted) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col">      <div className="flex-grow flex items-center justify-center px-4 py-24">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col">      <div className="flex-grow flex items-center justify-center px-4 py-24">
         <motion.div initial={{ opacity: 0, scale: 0.96, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }}
           className="bg-white rounded-3xl border border-gray-200 shadow-2xl p-12 max-w-md w-full text-center">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}
             className="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center text-4xl mx-auto mb-6">🎓</motion.div>
-          <h2 className="text-3xl font-black text-gray-900 mb-2">Role Activated! 🎉</h2>
+          <h2 className="text-3xl font-black text-white mb-2">Role Activated! 🎉</h2>
           <p className="text-gray-600 text-sm leading-relaxed mb-3">
             You're now a <span className="font-black text-[#185FA5]">Learner</span> on SYNTHÉ. Your XR journey starts now.
           </p>
@@ -120,7 +120,7 @@ export default function JoinLearnerPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans text-gray-900">      <div className="max-w-2xl mx-auto px-4 py-20 flex-grow w-full">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white">      <div className="max-w-2xl mx-auto px-4 py-20 flex-grow w-full">
 
         <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#185FA5]/10 border border-[#185FA5]/20 mb-4">
@@ -128,7 +128,7 @@ export default function JoinLearnerPage() {
             <span className="text-xs font-bold text-[#185FA5] uppercase tracking-widest">⚡ Instant Activation</span>
           </div>
           <div className="text-5xl mb-4">🎓</div>
-          <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-3">Join as Learner</h1>
+          <h1 className="text-4xl font-black tracking-tight text-white mb-3">Join as Learner</h1>
           <p className="text-gray-500 text-sm max-w-md mx-auto leading-relaxed">
             Learn XR from scratch — AI-powered roadmaps, live workshops, and verified mentors. Role activates instantly.
           </p>
@@ -156,7 +156,7 @@ export default function JoinLearnerPage() {
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">What do you want to learn? *</label>
               <textarea value={why} onChange={e => setWhy(e.target.value)} required rows={3}
                 placeholder="e.g. I want to build AR apps for architecture. I'm a designer looking to add XR to my skills..."
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#185FA5] text-sm text-gray-900 outline-none transition resize-none" />
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#185FA5] text-sm text-white outline-none transition resize-none" />
             </div>
 
             <div>
@@ -167,7 +167,7 @@ export default function JoinLearnerPage() {
                     className={`px-3 py-2 rounded-xl text-xs font-bold border transition duration-200 ${
                       selectedGoals.includes(g)
                         ? "bg-[#185FA5]/10 border-[#185FA5]/40 text-[#185FA5]"
-                        : "bg-gray-50 border-gray-200 text-gray-500 hover:border-gray-300"
+                        : "bg-[#0A0A0F] border-gray-200 text-gray-500 hover:border-gray-300"
                     }`}>{g}</button>
                 ))}
               </div>
@@ -176,7 +176,7 @@ export default function JoinLearnerPage() {
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Prior experience with XR / 3D?</label>
               <select value={experience} onChange={e => setExperience(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#185FA5] transition bg-white">
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#185FA5] transition bg-white">
                 <option value="">Select…</option>
                 <option value="none">None — complete beginner</option>
                 <option value="some">Some — tried Unity/Blender briefly</option>
@@ -196,7 +196,7 @@ export default function JoinLearnerPage() {
             {error && <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm font-semibold">{error}</div>}
 
             <div className="flex gap-3">
-              <Link href="/join" className="px-6 py-3.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition flex items-center">← Back</Link>
+              <Link href="/join" className="px-6 py-3.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition flex items-center">← Back</Link>
               <button type="submit" disabled={submitting}
                 className="flex-1 py-3.5 rounded-xl text-white font-black text-sm bg-[#185FA5] hover:opacity-90 transition disabled:opacity-50">
                 {submitting ? "Activating…" : "Activate Learner Role →"}

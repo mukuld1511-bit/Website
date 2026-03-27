@@ -76,13 +76,13 @@ export default function PostRequestPage() {
     }
   };
 
-  const inp = "w-full bg-white border border-gray-300 text-gray-900 placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition duration-200 shadow-sm";
+  const inp = "w-full bg-white border border-gray-300 text-white placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition duration-200 shadow-sm";
 
   if (authChecked && !user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center font-sans">
         <div className="text-center p-10 bg-white rounded-3xl border border-gray-200 shadow-sm max-w-sm w-full mx-4">
-          <h1 className="text-gray-900 text-3xl font-extrabold mb-3">Sign in required</h1>
+          <h1 className="text-white text-3xl font-extrabold mb-3">Sign in required</h1>
           <p className="text-gray-500 mb-8 font-medium">You need to log in to post a project request.</p>
           <Link href="/login">
             <button className="w-full px-6 py-3.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition shadow-sm">
@@ -95,7 +95,7 @@ export default function PostRequestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 font-sans flex flex-col">
+    <div className="min-h-screen bg-[#0A0A0F] font-sans flex flex-col">
       <main className="relative z-10 pt-32 pb-24 px-4 max-w-3xl mx-auto w-full flex-grow">
         <AnimatePresence>
           {success && (
@@ -118,7 +118,7 @@ export default function PostRequestPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                   </motion.svg>
                 </div>
-                <h2 className="text-gray-900 text-2xl font-black mb-2">Request Posted!</h2>
+                <h2 className="text-white text-2xl font-black mb-2">Request Posted!</h2>
                 <p className="text-gray-500 font-medium text-sm">Redirecting to public feed...</p>
               </div>
             </motion.div>
@@ -133,7 +133,7 @@ export default function PostRequestPage() {
                 Back to Projects
               </p>
             </Link>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight text-gray-900 mb-4">
+            <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white mb-4">
               Post a <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-500">Project</span>
             </h1>
             <p className="text-gray-600 text-lg md:text-xl font-bold max-w-xl mx-auto">
@@ -154,21 +154,21 @@ export default function PostRequestPage() {
                 <div>
                   <label className="block text-[11px] font-black uppercase tracking-widest text-indigo-400 mb-2">Project Title *</label>
                   <input value={title} onChange={e => setTitle(e.target.value)} required
-                    placeholder="e.g. Need a 3D architecture model for training" className="w-full bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
+                    placeholder="e.g. Need a 3D architecture model for training" className="w-full bg-white border-2 border-indigo-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-black uppercase tracking-widest text-pink-400 mb-2">Description *</label>
                   <textarea value={description} onChange={e => setDescription(e.target.value)} required rows={4}
-                    placeholder="Describe exactly what you need built, references, requirements…" className="w-full bg-white border-2 border-pink-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100 transition shadow-sm resize-none" />
+                    placeholder="Describe exactly what you need built, references, requirements…" className="w-full bg-white border-2 border-pink-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100 transition shadow-sm resize-none" />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-[11px] font-black uppercase tracking-widest text-blue-400 mb-2">Category</label>
                     <div className="relative">
-                      <select value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-white border-2 border-blue-100 text-gray-900 font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm">
-                        {CATEGORIES.map(c => <option key={c} value={c} className="bg-white text-gray-900 font-bold">{c}</option>)}
+                      <select value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-white border-2 border-blue-100 text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm">
+                        {CATEGORIES.map(c => <option key={c} value={c} className="bg-white text-white font-bold">{c}</option>)}
                       </select>
                       <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
@@ -179,8 +179,8 @@ export default function PostRequestPage() {
                   <div>
                     <label className="block text-[11px] font-black uppercase tracking-widest text-emerald-400 mb-2">Budget</label>
                     <div className="relative">
-                      <select value={budget} onChange={e => setBudget(e.target.value)} className="w-full bg-white border-2 border-emerald-100 text-gray-900 font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition shadow-sm">
-                        {BUDGET_RANGES.map(b => <option key={b} value={b} className="bg-white text-gray-900 font-bold">{b}</option>)}
+                      <select value={budget} onChange={e => setBudget(e.target.value)} className="w-full bg-white border-2 border-emerald-100 text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition shadow-sm">
+                        {BUDGET_RANGES.map(b => <option key={b} value={b} className="bg-white text-white font-bold">{b}</option>)}
                       </select>
                       <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
@@ -192,8 +192,8 @@ export default function PostRequestPage() {
                 <div>
                   <label className="block text-[11px] font-black uppercase tracking-widest text-amber-400 mb-2">Timeline</label>
                   <div className="relative">
-                    <select value={timeline} onChange={e => setTimeline(e.target.value)} className="w-full bg-white border-2 border-amber-100 text-gray-900 font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-100 transition shadow-sm">
-                      {TIMELINES.map(t => <option key={t} value={t} className="bg-white text-gray-900 font-bold">{t}</option>)}
+                    <select value={timeline} onChange={e => setTimeline(e.target.value)} className="w-full bg-white border-2 border-amber-100 text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-100 transition shadow-sm">
+                      {TIMELINES.map(t => <option key={t} value={t} className="bg-white text-white font-bold">{t}</option>)}
                     </select>
                     <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
@@ -214,7 +214,7 @@ export default function PostRequestPage() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <input value={skillInput} onChange={e => setSkillInput(e.target.value)}
                       onKeyDown={e => e.key === "Enter" && (e.preventDefault(), handleAddSkill())}
-                      placeholder="e.g. Unity, Blender, WebXR…" className="flex-1 bg-white border-2 border-indigo-100 text-gray-900 font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 transition shadow-sm" />
+                      placeholder="e.g. Unity, Blender, WebXR…" className="flex-1 bg-white border-2 border-indigo-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 transition shadow-sm" />
                     <button type="button" onClick={handleAddSkill}
                       className="px-8 py-4 rounded-2xl bg-indigo-100 text-indigo-700 font-black text-lg hover:bg-indigo-200 transition shadow-sm whitespace-nowrap">
                       Add Skill

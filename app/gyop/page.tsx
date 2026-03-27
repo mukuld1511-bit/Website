@@ -33,7 +33,7 @@ const OPTIONS = [
 
 export default function RequestsPage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">
       <main className="flex-1 relative z-10 pt-32 pb-24 px-4 overflow-hidden">
         <div className="max-w-4xl mx-auto">
 
@@ -43,7 +43,7 @@ export default function RequestsPage() {
               <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
               <span className="text-blue-700 text-xs font-bold uppercase tracking-widest">Get Your Own Project</span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight mb-4">
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight mb-4">
               Build Your{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
                 Vision
@@ -72,7 +72,7 @@ export default function RequestsPage() {
                       </svg>
                     </div>
 
-                    <h3 className="text-gray-900 font-extrabold text-2xl tracking-tight mb-3">{opt.title}</h3>
+                    <h3 className="text-white font-extrabold text-2xl tracking-tight mb-3">{opt.title}</h3>
                     <p className="text-gray-500 font-medium text-sm leading-relaxed flex-grow mb-6">{opt.desc}</p>
 
                     <div className="flex flex-wrap gap-2 mb-8">
@@ -105,7 +105,7 @@ export default function RequestsPage() {
               ].map((item, i) => (
                 <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.05 }}>
                   <div className="text-3xl mb-3">{item.icon}</div>
-                  <p className="text-gray-900 font-extrabold text-sm mb-1">{item.label}</p>
+                  <p className="text-white font-extrabold text-sm mb-1">{item.label}</p>
                   <p className="text-gray-500 font-medium text-xs">{item.desc}</p>
                 </motion.div>
               ))}

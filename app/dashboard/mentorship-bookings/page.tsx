@@ -56,16 +56,16 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] font-sans">
       <div className="relative z-10 pt-32 pb-24 px-4 max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
           <Link href="/dashboard/developer">
-            <p className="text-gray-500 text-sm font-bold mb-3 hover:text-gray-900 transition flex items-center gap-1">
+            <p className="text-gray-500 text-sm font-bold mb-3 hover:text-white transition flex items-center gap-1">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Developer Dashboard
             </p>
           </Link>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900 mb-2">
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-2">
             Mentorship <span className="text-blue-600">Bookings</span>
           </h1>
           <p className="text-gray-500 text-base font-medium">
@@ -79,10 +79,10 @@ export default function BookingsPage() {
           </div>
         ) : bookings.length === 0 ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20 bg-white border border-gray-200 shadow-sm rounded-3xl">
-            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-50 border border-gray-200 mx-auto text-3xl mb-5 shadow-sm">
+            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0A0A0F] border border-gray-200 mx-auto text-3xl mb-5 shadow-sm">
               📅
             </div>
-            <h3 className="text-xl font-extrabold text-gray-900 mb-2">No Bookings Yet</h3>
+            <h3 className="text-xl font-extrabold text-white mb-2">No Bookings Yet</h3>
             <p className="text-gray-500 font-medium text-sm max-w-sm mx-auto">
               When clients book a session with you from the Connect page, they will appear here.
             </p>
@@ -97,29 +97,29 @@ export default function BookingsPage() {
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         {b.status === "booked" && <span className="px-2.5 py-1 rounded-md border border-green-200 bg-green-50 text-green-700 text-[9px] font-black uppercase tracking-widest shadow-sm">Action Required</span>}
-                        {b.status === "completed" && <span className="px-2.5 py-1 rounded-md border border-gray-200 bg-gray-50 text-gray-500 text-[9px] font-black uppercase tracking-widest shadow-sm">Completed</span>}
+                        {b.status === "completed" && <span className="px-2.5 py-1 rounded-md border border-gray-200 bg-[#0A0A0F] text-gray-500 text-[9px] font-black uppercase tracking-widest shadow-sm">Completed</span>}
                         <span className="text-gray-400 font-bold text-xs">
                           {b.bookedAt?.seconds ? new Date(b.bookedAt.seconds*1000).toLocaleDateString() : ""}
                         </span>
                       </div>
-                      <h3 className="text-gray-900 font-extrabold text-lg">{b.clientName}</h3>
+                      <h3 className="text-white font-extrabold text-lg">{b.clientName}</h3>
                       <p className="text-gray-500 text-sm font-medium">{b.clientEmail}</p>
                     </div>
                     <div className="text-right flex flex-col items-end">
-                      <p className="text-2xl font-black text-gray-900">{b.currency === "INR" ? "₹" : "$"}{b.amount}</p>
+                      <p className="text-2xl font-black text-white">{b.currency === "INR" ? "₹" : "$"}{b.amount}</p>
                       <span className="px-2 py-0.5 mt-1 rounded bg-blue-50 text-blue-700 text-[9px] font-black uppercase tracking-widest border border-blue-100">Paid via Razorpay</span>
                     </div>
                   </div>
 
                   {b.message && (
-                    <div className="p-4 rounded-xl border border-gray-100 bg-gray-50 mb-5 shadow-sm">
+                    <div className="p-4 rounded-xl border border-gray-100 bg-[#0A0A0F] mb-5 shadow-sm">
                       <p className="text-gray-400 text-[10px] uppercase font-black tracking-widest mb-1.5">What they want to learn/build:</p>
                       <p className="text-gray-700 text-sm font-medium leading-relaxed">{b.message}</p>
                     </div>
                   )}
 
                   <div className="flex gap-3">
-                    <a href={`mailto:${b.clientEmail}`} className="flex-1 py-3 rounded-xl bg-gray-50 border border-gray-200 text-center text-sm font-bold text-gray-700 hover:bg-gray-100 hover:text-gray-900 shadow-sm transition">
+                    <a href={`mailto:${b.clientEmail}`} className="flex-1 py-3 rounded-xl bg-[#0A0A0F] border border-gray-200 text-center text-sm font-bold text-gray-700 hover:bg-gray-100 hover:text-white shadow-sm transition">
                       ✉️ Email Client
                     </a>
                     {b.status === "booked" && (

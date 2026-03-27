@@ -68,7 +68,7 @@ function CertUploader({ userId, certs, setCerts }: {
         <input ref={inputRef} type="file" multiple accept=".pdf,.jpg,.jpeg,.png" onChange={e => addFiles(e.target.files)} className="hidden" />
       </div>
       {certs.map((cert, idx) => (
-        <div key={idx} className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50">
+        <div key={idx} className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-[#0A0A0F]">
           <span className="text-lg">{cert.url ? "✅" : cert.uploading ? "⏳" : cert.error ? "❌" : "📄"}</span>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-gray-800 truncate">{cert.name}</p>
@@ -205,7 +205,7 @@ export default function JoinMentorPage() {
     }
   };
 
-  const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0F6E56] transition bg-white";
+  const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-[#0F6E56] transition bg-white";
 
   const completeness = [
     { label: "Expertise & experience", done: !!form.expertise && !!form.experience },
@@ -217,18 +217,18 @@ export default function JoinMentorPage() {
   ];
 
   if (authLoading) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center">
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
       <div className="w-8 h-8 rounded-full border-2 border-[#0F6E56]/30 border-t-[#0F6E56] animate-spin" />
     </div>
   );
 
   // Already a mentor
   if (alreadyMentor) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col">      <div className="flex-grow flex items-center justify-center px-4 py-24">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col">      <div className="flex-grow flex items-center justify-center px-4 py-24">
         <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
           className="bg-white rounded-3xl border border-green-200 shadow-2xl p-12 max-w-md w-full text-center">
           <div className="w-20 h-20 rounded-2xl bg-[#E1F5EE] flex items-center justify-center text-4xl mx-auto mb-6">🧑‍🏫</div>
-          <h2 className="text-2xl font-black text-gray-900 mb-3">You're already a Mentor!</h2>
+          <h2 className="text-2xl font-black text-white mb-3">You're already a Mentor!</h2>
           <p className="text-gray-500 text-sm mb-8">Your mentor role is active. Head to your dashboard to manage sessions.</p>
           <Link href="/dashboard">
             <button className="w-full py-3.5 rounded-xl font-black text-white text-sm bg-[#0F6E56] hover:opacity-90 transition">Go to Dashboard →</button>
@@ -241,11 +241,11 @@ export default function JoinMentorPage() {
 
   // Already pending
   if (alreadyPending && !submitted) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col">      <div className="flex-grow flex items-center justify-center px-4 py-24">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col">      <div className="flex-grow flex items-center justify-center px-4 py-24">
         <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
           className="bg-white rounded-3xl border border-amber-200 shadow-2xl p-12 max-w-md w-full text-center">
           <div className="w-20 h-20 rounded-2xl bg-amber-50 flex items-center justify-center text-4xl mx-auto mb-6">⏳</div>
-          <h2 className="text-2xl font-black text-gray-900 mb-3">Application Under Review</h2>
+          <h2 className="text-2xl font-black text-white mb-3">Application Under Review</h2>
           <p className="text-gray-500 text-sm leading-relaxed mb-6">
             Your mentor application is being reviewed by our admin team. You'll be notified once approved — typically within <span className="font-bold text-amber-700">24–48 hours</span>.
           </p>
@@ -266,12 +266,12 @@ export default function JoinMentorPage() {
 
   // Submitted success
   if (submitted) return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col">      <div className="flex-grow flex items-center justify-center px-4 py-24">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col">      <div className="flex-grow flex items-center justify-center px-4 py-24">
         <motion.div initial={{ opacity: 0, scale: 0.96, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }}
           className="bg-white rounded-3xl border border-gray-200 shadow-2xl p-12 max-w-md w-full text-center">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}
             className="w-20 h-20 rounded-2xl bg-[#E1F5EE] flex items-center justify-center text-4xl mx-auto mb-6">🧑‍🏫</motion.div>
-          <h2 className="text-3xl font-black text-gray-900 mb-2">Application Submitted! ⏳</h2>
+          <h2 className="text-3xl font-black text-white mb-2">Application Submitted! ⏳</h2>
           <p className="text-gray-600 text-sm leading-relaxed mb-4">
             Your application is pending admin review. Your role will <span className="font-black text-red-600">NOT</span> be active until an admin approves it (24–48 hrs).
           </p>
@@ -292,7 +292,7 @@ export default function JoinMentorPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans text-gray-900">      <div className="max-w-2xl mx-auto px-4 py-20 flex-grow w-full">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white">      <div className="max-w-2xl mx-auto px-4 py-20 flex-grow w-full">
 
         <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 mb-4">
@@ -300,7 +300,7 @@ export default function JoinMentorPage() {
             <span className="text-xs font-bold text-amber-700 uppercase tracking-widest">🔍 Manual Review Required</span>
           </div>
           <div className="text-5xl mb-4">🧑‍🏫</div>
-          <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-3">Join as Mentor</h1>
+          <h1 className="text-4xl font-black tracking-tight text-white mb-3">Join as Mentor</h1>
           <p className="text-gray-500 text-sm max-w-md mx-auto leading-relaxed">
             Host workshops, run 1-on-1 & group sessions. Set your own rates. Earn 85% per session.
             <span className="block mt-1 font-bold text-amber-700">Requires admin approval — role is locked until reviewed.</span>
@@ -336,7 +336,7 @@ export default function JoinMentorPage() {
               {step === 1 && (
                 <div className="space-y-5">
                   <div>
-                    <h2 className="text-xl font-black text-gray-900 mb-1">Your Mentor Profile</h2>
+                    <h2 className="text-xl font-black text-white mb-1">Your Mentor Profile</h2>
                     <p className="text-gray-400 text-sm">This is what learners see. Be thorough — incomplete profiles are rejected.</p>
                   </div>
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
@@ -391,7 +391,7 @@ export default function JoinMentorPage() {
               {step === 2 && (
                 <div className="space-y-5">
                   <div>
-                    <h2 className="text-xl font-black text-gray-900 mb-1">Upload Certificates</h2>
+                    <h2 className="text-xl font-black text-white mb-1">Upload Certificates</h2>
                     <p className="text-gray-400 text-sm">Admin will verify these. Min 2 required — no exceptions.</p>
                   </div>
                   {user && <CertUploader userId={user.uid} certs={certs} setCerts={setCerts} />}
@@ -406,7 +406,7 @@ export default function JoinMentorPage() {
               {step === 3 && (
                 <div className="space-y-5">
                   <div>
-                    <h2 className="text-xl font-black text-gray-900 mb-1">Review & Submit</h2>
+                    <h2 className="text-xl font-black text-white mb-1">Review & Submit</h2>
                     <p className="text-gray-400 text-sm">Check everything before submitting for admin review.</p>
                   </div>
                   <div className="space-y-2">
@@ -418,14 +418,14 @@ export default function JoinMentorPage() {
                       { label: "Skills",       val: form.skills || "—" },
                       { label: "Certificates", val: `${certs.filter(c => c.url).length} uploaded` },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50">
+                      <div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 bg-[#0A0A0F]">
                         <p className="text-gray-400 text-xs w-24 flex-shrink-0">{item.label}</p>
                         <p className="text-gray-700 text-xs font-semibold break-all">{item.val}</p>
                       </div>
                     ))}
                   </div>
                   {/* Completeness */}
-                  <div className="bg-gray-50 rounded-xl p-4 space-y-1.5">
+                  <div className="bg-[#0A0A0F] rounded-xl p-4 space-y-1.5">
                     <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Completeness</p>
                     {completeness.map(item => (
                       <div key={item.label} className="flex items-center gap-2">
@@ -450,9 +450,9 @@ export default function JoinMentorPage() {
               <div className="flex gap-3 mt-7">
                 {step > 1 ? (
                   <button onClick={() => { setStep(s => s - 1); setError(""); }}
-                    className="px-6 py-3.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition">← Back</button>
+                    className="px-6 py-3.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition">← Back</button>
                 ) : (
-                  <Link href="/join" className="px-6 py-3.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition flex items-center">← Back</Link>
+                  <Link href="/join" className="px-6 py-3.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition flex items-center">← Back</Link>
                 )}
                 {step < 3 ? (
                   <button onClick={nextStep}

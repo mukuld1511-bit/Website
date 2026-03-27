@@ -196,8 +196,8 @@ export default function Navbar() {
         ref={navRef}
         className={`fixed top-0 left-0 right-0 z-50 h-14 md:h-16 flex items-center transition-all duration-300 ${
           scrolled
-            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200"
-            : "bg-white border-b border-gray-100"
+            ? "bg-[#07060B]/80 backdrop-blur-xl shadow-sm border-b border-[#2A2A3E]"
+            : "bg-transparent border-b border-white/5"
         }`}
       >
         <div className="w-full max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between">
@@ -226,7 +226,7 @@ export default function Navbar() {
 
             {/* AutoCAD — direct link, no dropdown */}
             <Link href="/autocad">
-              <button className="px-3 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+              <button className="px-3 py-2 rounded-lg text-sm font-semibold text-[#9494AD] hover:text-white hover:bg-white/5 transition-colors">
                 AutoCAD
               </button>
             </Link>
@@ -242,15 +242,15 @@ export default function Navbar() {
 
             {/* Learn — direct link, no dropdown */}
             <Link href="/learn">
-              <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+              <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#9494AD] hover:text-white hover:bg-white/5 transition-colors">
                 Learn
-                <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB]" />
               </button>
             </Link>
 
             {/* Freelance — direct link, no dropdown */}
             <Link href="/freelance">
-              <button className="px-3 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+              <button className="px-3 py-2 rounded-lg text-sm font-semibold text-[#9494AD] hover:text-white hover:bg-white/5 transition-colors">
                 Freelance
               </button>
             </Link>
@@ -266,7 +266,7 @@ export default function Navbar() {
 
             {/* PIET — direct link, no dropdown */}
             <Link href="/collaborators">
-              <button className="px-3 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+              <button className="px-3 py-2 rounded-lg text-sm font-semibold text-[#9494AD] hover:text-white hover:bg-white/5 transition-colors">
                 PIET
               </button>
             </Link>
@@ -274,7 +274,7 @@ export default function Navbar() {
             {/* Theme toggle */}
             <button
               onClick={toggleTheme}
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all"
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-[#9494AD] hover:text-white hover:bg-white/5 transition-all"
               title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {isDark ? (
@@ -295,18 +295,18 @@ export default function Navbar() {
               <div ref={profileRef} className="relative hidden lg:block">
                 <button
                   onClick={() => setProfileOpen((v) => !v)}
-                  className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-full border border-transparent hover:border-gray-200 hover:bg-gray-50 transition-all"
+                  className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-full border border-transparent hover:border-[#2A2A3E] hover:bg-white/5 transition-all"
                 >
-                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-pink-400 flex-shrink-0 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-[#5B4BDB] to-[#A594FF] flex-shrink-0 flex items-center justify-center border border-[#7C6EF6]/30">
                     {user.photoURL
                       ? <img src={user.photoURL} className="w-full h-full object-cover" alt="" />
                       : <span className="text-white text-xs font-bold">{user.displayName?.[0] ?? "U"}</span>
                     }
                   </div>
-                  <span className="text-gray-800 text-sm font-bold max-w-[90px] truncate">
+                  <span className="text-white text-sm font-bold max-w-[90px] truncate">
                     {user.displayName?.split(" ")[0] ?? "User"}
                   </span>
-                  <svg className={`w-3 h-3 text-gray-400 transition-transform ${profileOpen ? "rotate-180" : ""}`}
+                  <svg className={`w-3 h-3 text-[#6B6B85] transition-transform ${profileOpen ? "rotate-180" : ""}`}
                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -319,7 +319,7 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 5, scale: 0.96 }}
                       transition={{ duration: 0.14 }}
-                      className="absolute top-full mt-3 right-0 w-52 rounded-2xl border border-gray-100 bg-white shadow-xl z-50 p-2"
+                      className="absolute top-full mt-3 right-0 w-52 rounded-2xl border border-[#2A2A3E] bg-[#141420] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)] z-50 p-2 backdrop-blur-xl"
                     >
                       {[
                         { label: "Dashboard",   href: "/dashboard",         icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
@@ -328,21 +328,21 @@ export default function Navbar() {
                         { label: "My sessions", href: "/dashboard/learner", icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
                       ].map((item) => (
                         <Link key={item.href} href={item.href} onClick={() => setProfileOpen(false)}>
-                          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group">
-                            <svg className="w-4 h-4 text-gray-400 group-hover:text-[#5B4BDB] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+                            <svg className="w-4 h-4 text-[#6B6B85] group-hover:text-[#7C6EF6] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
                             </svg>
-                            <span className="text-sm font-semibold text-gray-700">{item.label}</span>
+                            <span className="text-sm font-semibold text-white">{item.label}</span>
                           </div>
                         </Link>
                       ))}
-                      <div className="h-px bg-gray-100 my-1.5 mx-2" />
+                      <div className="h-px bg-[#2A2A3E] my-1.5 mx-2" />
                       <button onClick={logout}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 transition-colors group">
-                        <svg className="w-4 h-4 text-gray-400 group-hover:text-red-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-500/10 transition-colors group">
+                        <svg className="w-4 h-4 text-[#6B6B85] group-hover:text-red-400 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
-                        <span className="text-sm font-semibold text-gray-700 group-hover:text-red-600">Sign out</span>
+                        <span className="text-sm font-semibold text-white group-hover:text-red-400">Sign out</span>
                       </button>
                     </motion.div>
                   )}
@@ -351,12 +351,12 @@ export default function Navbar() {
             ) : (
               <div className="hidden lg:flex items-center gap-2">
                 <Link href="/login">
-                  <button className="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all">
+                  <button className="px-4 py-2 rounded-lg text-sm font-bold text-[#9494AD] hover:text-white hover:bg-white/5 transition-all">
                     Sign in
                   </button>
                 </Link>
                 <Link href="/signup">
-                  <button className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] transition-all active:translate-y-[1px]">
+                  <button className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] shadow-[0_0_20px_rgba(91,75,219,0.3)] hover:shadow-[0_0_30px_rgba(91,75,219,0.5)] transition-all active:translate-y-[1px]">
                     Get started
                   </button>
                 </Link>
@@ -365,7 +365,7 @@ export default function Navbar() {
 
             {/* Mobile hamburger */}
             <button onClick={() => setMobileOpen((v) => !v)}
-              className="lg:hidden w-10 h-10 flex items-center justify-center text-gray-700">
+              className="lg:hidden w-10 h-10 flex items-center justify-center text-white">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileOpen
                   ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -385,23 +385,23 @@ export default function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-40 bg-white flex flex-col pt-16 h-[100dvh] overflow-y-auto"
+            className="fixed inset-0 z-40 bg-[#0A0A0F] flex flex-col pt-16 h-[100dvh] overflow-y-auto"
           >
             <div className="p-6 space-y-8 flex-1">
 
               {/* AutoCAD direct */}
               <div>
-                <p className="text-[10px] font-black tracking-[0.18em] text-[#5B4BDB] uppercase mb-3">AutoCAD</p>
+                <p className="text-[10px] font-black tracking-[0.18em] text-[#7C6EF6] uppercase mb-3">AutoCAD</p>
                 <Link href="/autocad" onClick={() => setMobileOpen(false)}>
-                  <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
-                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:text-[#5B4BDB] group-hover:bg-[#5B4BDB]/10 transition-colors">
+                  <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-[#2A2A3E] transition-colors group">
+                    <div className="w-9 h-9 rounded-xl bg-[#141420] border border-[#2A2A3E] flex items-center justify-center text-[#6B6B85] group-hover:text-[#7C6EF6] group-hover:bg-[#5B4BDB]/10 transition-colors">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-gray-900">AutoCAD Files</p>
-                      <p className="text-xs text-gray-400">Browse DWG and DXF blueprints</p>
+                      <p className="text-sm font-bold text-white">AutoCAD Files</p>
+                      <p className="text-xs text-[#6B6B85]">Browse DWG and DXF blueprints</p>
                     </div>
                   </div>
                 </Link>
@@ -409,20 +409,20 @@ export default function Navbar() {
 
               {/* Learn direct */}
               <div>
-                <p className="text-[10px] font-black tracking-[0.18em] text-[#5B4BDB] uppercase mb-3">Learn</p>
+                <p className="text-[10px] font-black tracking-[0.18em] text-[#7C6EF6] uppercase mb-3">Learn</p>
                 <Link href="/learn" onClick={() => setMobileOpen(false)}>
-                  <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
-                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:text-[#5B4BDB] group-hover:bg-[#5B4BDB]/10 transition-colors">
+                  <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-[#2A2A3E] transition-colors group">
+                    <div className="w-9 h-9 rounded-xl bg-[#141420] border border-[#2A2A3E] flex items-center justify-center text-[#6B6B85] group-hover:text-[#7C6EF6] group-hover:bg-[#5B4BDB]/10 transition-colors">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                       </svg>
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-bold text-gray-900">Learning Hub</p>
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-violet-100 text-violet-700 border border-violet-200">AI</span>
+                        <p className="text-sm font-bold text-white">Learning Hub</p>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-violet-500/15 text-violet-400 border border-violet-500/20">AI</span>
                       </div>
-                      <p className="text-xs text-gray-400">Sessions, roadmap, tools & more</p>
+                      <p className="text-xs text-[#6B6B85]">Sessions, roadmap, tools & more</p>
                     </div>
                   </div>
                 </Link>
@@ -430,17 +430,17 @@ export default function Navbar() {
 
               {/* PIET direct */}
               <div>
-                <p className="text-[10px] font-black tracking-[0.18em] text-[#5B4BDB] uppercase mb-3">PIET</p>
+                <p className="text-[10px] font-black tracking-[0.18em] text-[#7C6EF6] uppercase mb-3">PIET</p>
                 <Link href="/collaborators" onClick={() => setMobileOpen(false)}>
-                  <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
-                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:text-[#5B4BDB] group-hover:bg-[#5B4BDB]/10 transition-colors">
+                  <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-[#2A2A3E] transition-colors group">
+                    <div className="w-9 h-9 rounded-xl bg-[#141420] border border-[#2A2A3E] flex items-center justify-center text-[#6B6B85] group-hover:text-[#7C6EF6] group-hover:bg-[#5B4BDB]/10 transition-colors">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5" />
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-gray-900">PIET Collaborators</p>
-                      <p className="text-xs text-gray-400">Academic collaboration</p>
+                      <p className="text-sm font-bold text-white">PIET Collaborators</p>
+                      <p className="text-xs text-[#6B6B85]">Academic collaboration</p>
                     </div>
                   </div>
                 </Link>
@@ -449,26 +449,26 @@ export default function Navbar() {
               {/* Other sections */}
               {ALL_MOBILE_SECTIONS.map(({ section, links }) => (
                 <div key={section}>
-                  <p className="text-[10px] font-black tracking-[0.18em] text-[#5B4BDB] uppercase mb-3">{section}</p>
+                  <p className="text-[10px] font-black tracking-[0.18em] text-[#7C6EF6] uppercase mb-3">{section}</p>
                   <div className="space-y-0.5">
                     {links.map((item) => (
                       <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
-                        <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
-                          <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 text-gray-400 group-hover:text-[#5B4BDB] group-hover:bg-[#5B4BDB]/10 transition-colors">
+                        <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-[#2A2A3E] transition-colors group">
+                          <div className="w-9 h-9 rounded-xl bg-[#141420] border border-[#2A2A3E] flex items-center justify-center flex-shrink-0 text-[#6B6B85] group-hover:text-[#7C6EF6] group-hover:bg-[#5B4BDB]/10 transition-colors">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} />
                             </svg>
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <p className="text-sm font-bold text-gray-900">{item.label}</p>
+                              <p className="text-sm font-bold text-white">{item.label}</p>
                               {item.badge && (
                                 <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${BADGE_STYLES[item.badge] ?? ""}`}>
                                   {item.badge}
-                                </span>
+                               </span>
                               )}
                             </div>
-                            <p className="text-xs text-gray-400">{item.desc}</p>
+                            <p className="text-xs text-[#6B6B85]">{item.desc}</p>
                           </div>
                         </div>
                       </Link>
@@ -478,13 +478,13 @@ export default function Navbar() {
               ))}
             </div>
 
-            <div className="p-6 border-t border-gray-100 pb-10">
+            <div className="p-6 border-t border-[#2A2A3E] pb-10 bg-[#07060B]">
               {/* Theme toggle in mobile */}
               <button
                 onClick={toggleTheme}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-50 transition-colors group mb-4"
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 border border-[#2A2A3E] transition-colors group mb-4"
               >
-                <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:text-[#5B4BDB] group-hover:bg-[#5B4BDB]/10 transition-colors">
+                <div className="w-9 h-9 rounded-xl bg-[#141420] flex items-center justify-center text-[#6B6B85] group-hover:text-[#7C6EF6] transition-colors">
                   {isDark ? (
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -496,36 +496,36 @@ export default function Navbar() {
                   )}
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-gray-900">Theme</p>
-                  <p className="text-xs text-gray-400">{isDark ? 'Switch to light mode' : 'Switch to dark mode'}</p>
+                  <p className="text-sm font-bold text-white text-left">Theme</p>
+                  <p className="text-xs text-[#6B6B85]">{isDark ? 'Switch to light mode' : 'Switch to dark mode'}</p>
                 </div>
               </button>
               {user ? (
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-pink-400 flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#5B4BDB] to-[#A594FF] flex-shrink-0 border border-[#7C6EF6]/30">
                       {user.photoURL
                         ? <img src={user.photoURL} className="w-full h-full object-cover" alt="" />
                         : <div className="w-full h-full flex items-center justify-center text-white text-sm font-bold">{user.displayName?.[0] ?? "U"}</div>
                       }
                     </div>
                     <div>
-                      <p className="font-bold text-gray-900 text-sm">{user.displayName}</p>
-                      <p className="text-xs text-gray-400">{user.email}</p>
+                      <p className="font-bold text-white text-sm">{user.displayName}</p>
+                      <p className="text-xs text-[#6B6B85]">{user.email}</p>
                     </div>
                   </div>
                   <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
-                    <button className="w-full py-3 rounded-xl font-bold text-sm bg-[#5B4BDB] text-white border-b-[3px] border-[#4438b8] mb-2">Dashboard</button>
+                    <button className="w-full py-3 rounded-xl font-bold text-sm bg-[#5B4BDB] text-white border-b-[3px] border-[#4438b8] mb-2 shadow-[0_0_20px_rgba(91,75,219,0.2)]">Dashboard</button>
                   </Link>
-                  <button onClick={logout} className="w-full py-3 rounded-xl font-bold text-sm bg-white border border-red-200 text-red-600">Sign out</button>
+                  <button onClick={logout} className="w-full py-3 rounded-xl font-bold text-sm bg-[#141420] border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors">Sign out</button>
                 </div>
               ) : (
                 <div className="space-y-3">
                   <Link href="/join" onClick={() => setMobileOpen(false)}>
-                    <button className="w-full py-3.5 rounded-xl font-bold text-sm bg-[#5B4BDB] text-white border-b-[3px] border-[#4438b8]">Get started</button>
+                    <button className="w-full py-3.5 rounded-xl font-bold text-sm bg-[#5B4BDB] text-white border-b-[3px] border-[#4438b8] shadow-[0_0_20px_rgba(91,75,219,0.2)]">Get started</button>
                   </Link>
                   <Link href="/login" onClick={() => setMobileOpen(false)}>
-                    <button className="w-full py-3.5 rounded-xl font-bold text-sm bg-white border border-gray-200 text-gray-700">Sign in</button>
+                    <button className="w-full py-3.5 rounded-xl font-bold text-sm bg-[#141420] border border-[#2A2A3E] text-[#9494AD] hover:text-white hover:border-[#5B4BDB]/40 transition-colors">Sign in</button>
                   </Link>
                 </div>
               )}

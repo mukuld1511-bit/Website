@@ -15,32 +15,30 @@ export default function HeroComponent({ user, stats, statsLoading }: HeroProps) 
   const dlCount = statsLoading ? "—" : `${stats.downloads}+`;
 
   return (
-    <section className="relative w-full bg-[#07060B] overflow-hidden min-h-[92vh] flex items-center pt-24 pb-16">
+    <section className="relative w-full overflow-hidden min-h-[92vh] flex items-center pt-24 pb-16">
+
+      {/* ── Aurora Background ── */}
+      <div className="aurora-bg" />
 
       {/* ── Animated gradient mesh ── */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none mix-blend-screen opacity-70">
         <motion.div
           animate={{ y: [0, -40, 0], x: [0, 30, 0], scale: [1, 1.15, 1] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#5B4BDB]/15 rounded-full blur-[150px]"
+          className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#5B4BDB]/20 rounded-full blur-[150px]"
         />
         <motion.div
           animate={{ y: [0, 50, 0], x: [0, -30, 0], scale: [1, 1.2, 1] }}
           transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute top-[30%] left-[-5%] w-[400px] h-[400px] bg-[#7C6EF6]/10 rounded-full blur-[120px]"
+          className="absolute top-[30%] left-[-5%] w-[400px] h-[400px] bg-[#7C6EF6]/15 rounded-full blur-[120px]"
         />
         <motion.div
           animate={{ y: [0, -30, 0], x: [0, 20, 0] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 4 }}
-          className="absolute bottom-[10%] right-[20%] w-[300px] h-[300px] bg-rose-500/6 rounded-full blur-[100px]"
+          className="absolute bottom-[10%] right-[20%] w-[300px] h-[300px] bg-rose-500/10 rounded-full blur-[100px]"
         />
-        {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-[0.025]" style={{
-          backgroundImage: "linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)",
-          backgroundSize: "48px 48px"
-        }} />
         {/* Radial vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#07060B_80%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#07060B_90%)]" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 w-full relative z-10">

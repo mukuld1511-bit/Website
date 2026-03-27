@@ -36,42 +36,78 @@ export default function Login() {
     setLoading(false);
   };
 
-  const inputClass = "w-full bg-white border border-gray-300 text-white placeholder-gray-400 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition duration-200 shadow-sm";
-
   return (
-    <main className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-4 py-24 relative overflow-hidden font-sans">
-      {/* Decorative blobs */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-[0]" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-pink-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-[0]" />
+    <main className="min-h-screen bg-[#07060B] flex items-center justify-center px-4 py-24 relative overflow-hidden font-sans">
+
+      {/* ── Animated gradient mesh background ── */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Primary orb — large, slow drift */}
+        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#5B4BDB]/20 blur-[150px] animate-pulse" />
+        {/* Secondary orb */}
+        <div className="absolute bottom-[-15%] left-[-5%] w-[500px] h-[500px] rounded-full bg-[#7C6EF6]/12 blur-[120px]" style={{ animationDelay: '2s', animationDuration: '6s' }} />
+        {/* Accent orb — warm */}
+        <div className="absolute top-[40%] left-[60%] w-[300px] h-[300px] rounded-full bg-rose-500/6 blur-[100px]" />
+        {/* Grid lines */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+          backgroundSize: "60px 60px"
+        }} />
+        {/* Diagonal accent line */}
+        <div className="absolute top-0 left-1/2 w-px h-full bg-gradient-to-b from-transparent via-[#5B4BDB]/20 to-transparent rotate-12 origin-top" />
+      </div>
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="relative z-10 w-full max-w-md"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-10 w-full max-w-[440px]"
       >
-        {/* Logo */}
+        {/* Logo + heading */}
         <div className="text-center mb-10">
           <Link href="/">
-            <div className="inline-flex items-center gap-3 mb-6 cursor-pointer">
-              <div className="w-12 h-12 rounded-[1rem] flex items-center justify-center bg-[#5B4BDB] shadow-lg shadow-[#5B4BDB]/30 border-2 border-[#5B4BDB]/50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="inline-flex items-center gap-3 mb-8 cursor-pointer group"
+            >
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[#5B4BDB] shadow-[0_0_30px_rgba(91,75,219,0.4)] border border-[#7C6EF6]/30 group-hover:shadow-[0_0_50px_rgba(91,75,219,0.5)] transition-shadow duration-500">
                 <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M4 5h16l-6 7 6 7H4l6-7-6-7z" />
                 </svg>
               </div>
-              <span className="font-black text-3xl text-white tracking-tight">
+              <span className="font-display font-extrabold text-3xl text-white tracking-tight">
                 Synthé
               </span>
-            </div>
+            </motion.div>
           </Link>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 leading-tight mb-3">
-            Welcome back
-          </h1>
-          <p className="text-gray-500 font-bold text-base">Sign in to your SYNTHÉ account</p>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-[1.1] mb-3"
+          >
+            Welcome<br />
+            <span className="bg-gradient-to-r from-[#5B4BDB] via-[#7C6EF6] to-[#A594FF] bg-clip-text text-transparent">back.</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.35 }}
+            className="text-[#6B6B85] font-medium text-base"
+          >
+            Sign in to your SYNTHÉ account
+          </motion.p>
         </div>
 
-        {/* Card */}
-        <div className="rounded-[2.5rem] border-4 border-indigo-50 bg-white/80 backdrop-blur-md shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)]">
+        {/* ── Glassmorphism card ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="rounded-3xl border border-[#2A2A3E] bg-[#141420]/80 backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]"
+        >
           <form onSubmit={handleLogin} className="p-8 md:p-10 flex flex-col gap-6">
 
             {/* Error */}
@@ -79,7 +115,7 @@ export default function Login() {
               <motion.div
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl border border-red-200 bg-red-50 text-red-700 font-semibold"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl border border-red-500/20 bg-red-500/10 text-red-400 font-semibold"
               >
                 <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -90,11 +126,11 @@ export default function Login() {
 
             {/* Email */}
             <div>
-              <label className="block text-[11px] font-black text-indigo-400 uppercase tracking-widest mb-2">Email</label>
+              <label className="block text-[11px] font-bold text-[#7C6EF6] uppercase tracking-[0.15em] mb-2.5">Email Address</label>
               <div className="relative group">
-                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition duration-200">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B85] group-focus-within:text-[#7C6EF6] transition duration-300">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                   </svg>
                 </div>
                 <input
@@ -103,23 +139,23 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full bg-white border-2 border-indigo-100 text-white placeholder-gray-400 font-bold text-base rounded-2xl pl-12 pr-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm"
+                  className="w-full bg-[#1A1A2E] border border-[#2A2A3E] text-white placeholder-[#4A4A60] font-medium text-sm rounded-xl pl-12 pr-5 py-4 focus:outline-none focus:border-[#5B4BDB] focus:ring-2 focus:ring-[#5B4BDB]/20 transition duration-300 hover:border-[#3A3A52]"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-[11px] font-black text-indigo-400 uppercase tracking-widest">Password</label>
+              <div className="flex items-center justify-between mb-2.5">
+                <label className="block text-[11px] font-bold text-[#7C6EF6] uppercase tracking-[0.15em]">Password</label>
                 <Link href="/forgot-password">
-                  <span className="text-[11px] text-blue-600 font-black tracking-wider uppercase hover:text-blue-700 transition duration-200 cursor-pointer">Forgot password?</span>
+                  <span className="text-[11px] text-[#6B6B85] font-bold tracking-wider uppercase hover:text-[#A594FF] transition duration-300 cursor-pointer">Forgot?</span>
                 </Link>
               </div>
               <div className="relative group">
-                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition duration-200">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B85] group-focus-within:text-[#7C6EF6] transition duration-300">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                 </div>
                 <input
@@ -128,12 +164,12 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full bg-white border-2 border-indigo-100 text-white placeholder-gray-400 font-bold text-base rounded-2xl pl-12 pr-12 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm"
+                  className="w-full bg-[#1A1A2E] border border-[#2A2A3E] text-white placeholder-[#4A4A60] font-medium text-sm rounded-xl pl-12 pr-12 py-4 focus:outline-none focus:border-[#5B4BDB] focus:ring-2 focus:ring-[#5B4BDB]/20 transition duration-300 hover:border-[#3A3A52]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass((v) => !v)}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition duration-200"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B6B85] hover:text-[#A594FF] transition duration-200"
                 >
                   {showPass ? (
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,35 +189,58 @@ export default function Login() {
             <motion.button
               type="submit"
               disabled={loading}
-              className="w-full py-5 rounded-3xl bg-blue-600 hover:bg-blue-500 text-white font-black text-lg border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-4"
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full py-4 rounded-xl bg-[#5B4BDB] hover:bg-[#4c3ec7] text-white font-bold text-base border-b-[3px] border-[#4438b8] shadow-[0_0_30px_rgba(91,75,219,0.25)] hover:shadow-[0_0_50px_rgba(91,75,219,0.35)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 mt-2"
             >
               <span className="flex items-center justify-center gap-2">
                 {loading ? (
                   <>
-                    <svg className="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
                     Signing in...
                   </>
                 ) : (
                   <>
-                    Sign In 🚀
+                    Sign In
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
                   </>
                 )}
               </span>
             </motion.button>
 
-            <p className="text-center text-gray-600 font-medium text-sm mt-4">
+            {/* Separator */}
+            <div className="flex items-center gap-4 my-1">
+              <div className="flex-1 h-px bg-[#2A2A3E]" />
+              <span className="text-[10px] font-bold tracking-widest text-[#4A4A60] uppercase">or</span>
+              <div className="flex-1 h-px bg-[#2A2A3E]" />
+            </div>
+
+            <p className="text-center text-[#6B6B85] font-medium text-sm">
               Don't have an account?{" "}
               <Link href="/join">
-                <span className="font-black cursor-pointer text-indigo-500 hover:text-pink-500 transition-colors duration-200">
-                  Join SYNTHÉ
+                <span className="font-bold cursor-pointer text-[#7C6EF6] hover:text-[#A594FF] transition-colors duration-300">
+                  Join SYNTHÉ →
                 </span>
               </Link>
             </p>
 
           </form>
-        </div>
+        </motion.div>
+
+        {/* Bottom subtle branding */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="text-center mt-8 text-[11px] text-[#3A3A52] font-medium tracking-wider"
+        >
+          SYNTHÉ — The AR/VR Creator Platform
+        </motion.p>
       </motion.div>
     </main>
   );

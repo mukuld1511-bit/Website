@@ -49,11 +49,11 @@ const CONNECT_LINKS: NavLink[] = [
 ];
 
 const BADGE_STYLES: Record<string, string> = {
-  "AI":   "bg-violet-100 text-violet-700 border border-violet-200",
-  "New":  "bg-amber-100 text-amber-700 border border-amber-200",
-  "Free": "bg-green-100 text-green-700 border border-green-200",
-  "AR":   "bg-teal-100 text-teal-700 border border-teal-200",
-  "VR":   "bg-violet-100 text-violet-700 border border-violet-200",
+  "AI":   "bg-violet-500/15 text-violet-400 border border-violet-500/20",
+  "New":  "bg-amber-500/15 text-amber-400 border border-amber-500/20",
+  "Free": "bg-green-500/15 text-green-400 border border-green-500/20",
+  "AR":   "bg-teal-500/15 text-teal-400 border border-teal-500/20",
+  "VR":   "bg-violet-500/15 text-violet-400 border border-violet-500/20",
 };
 
 interface DropdownProps {
@@ -71,7 +71,7 @@ function Dropdown({ title, links, isOpen, onToggle, onClose, showGeminiBadge }: 
       <button
         onClick={onToggle}
         className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
-          isOpen ? "text-[#5B4BDB]" : "text-gray-600 hover:text-gray-900"
+          isOpen ? "text-[#7C6EF6]" : "text-[#9494AD] hover:text-white"
         }`}
       >
         {title}
@@ -89,19 +89,19 @@ function Dropdown({ title, links, isOpen, onToggle, onClose, showGeminiBadge }: 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 5, scale: 0.98 }}
             transition={{ duration: 0.14 }}
-            className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-72 rounded-xl bg-white border border-gray-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.12)] z-50 p-2"
+            className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-72 rounded-xl bg-[#141420] border border-[#2A2A3E] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] z-50 p-2 backdrop-blur-xl"
           >
             {links.map((item) => (
               <Link key={item.href} href={item.href} onClick={onClose}>
-                <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group">
-                  <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0 text-gray-400 group-hover:bg-[#5B4BDB]/10 group-hover:text-[#5B4BDB] transition-colors">
+                <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group">
+                  <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-[#6B6B85] group-hover:bg-[#5B4BDB]/15 group-hover:text-[#7C6EF6] group-hover:border-[#5B4BDB]/30 transition-colors">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} />
                     </svg>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <p className="text-gray-900 text-sm font-bold group-hover:text-[#5B4BDB] transition-colors">
+                      <p className="text-white text-sm font-bold group-hover:text-[#7C6EF6] transition-colors">
                         {item.label}
                       </p>
                       {item.badge && (
@@ -110,23 +110,23 @@ function Dropdown({ title, links, isOpen, onToggle, onClose, showGeminiBadge }: 
                         </span>
                       )}
                     </div>
-                    <p className="text-gray-400 text-xs mt-0.5">{item.desc}</p>
+                    <p className="text-[#6B6B85] text-xs mt-0.5">{item.desc}</p>
                   </div>
                 </div>
               </Link>
             ))}
 
             {showGeminiBadge && (
-              <div className="mx-2 mb-1 mt-1 p-3 rounded-lg bg-violet-50 border border-violet-100">
+              <div className="mx-2 mb-1 mt-1 p-3 rounded-lg bg-[#5B4BDB]/10 border border-[#5B4BDB]/20">
                 <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-md bg-violet-600 flex items-center justify-center flex-shrink-0">
+                  <div className="w-5 h-5 rounded-md bg-[#5B4BDB] flex items-center justify-center flex-shrink-0">
                     <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
-                  <p className="text-xs font-bold text-violet-700">Gemini AI is built into Learn</p>
+                  <p className="text-xs font-bold text-[#A594FF]">Gemini AI is built into Learn</p>
                 </div>
-                <p className="text-xs text-violet-500 mt-1 ml-7">Roadmaps, tool chat, and XR Q&A</p>
+                <p className="text-xs text-[#7C6EF6]/70 mt-1 ml-7">Roadmaps, tool chat, and XR Q&A</p>
               </div>
             )}
           </motion.div>

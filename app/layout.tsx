@@ -1,4 +1,5 @@
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import { ToastProvider } from "./components/ui/Toast";
 import Navbar from "./components/Navbar";
 import FloatingInbox from "./components/FloatingInbox";
@@ -27,20 +28,36 @@ export const metadata: Metadata = {
   },
 };
 
+// Inline script to set dark class before React hydration (prevents flash)
+const themeScript = `
+  (function() {
+    try {
+      var t = localStorage.getItem('synthe-theme');
+      if (!t) t = 'dark';
+      if (t === 'dark') document.documentElement.classList.add('dark');
+    } catch(e) {}
+  })();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
-          <ToastProvider>
-            <Navbar />
-            {children}
-            <FloatingInbox />
-          </ToastProvider>
+          <ThemeProvider>
+            <ToastProvider>
+              <Navbar />
+              {children}
+              <FloatingInbox />
+            </ToastProvider>
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>

@@ -1,0 +1,181 @@
+# SYNTHÉ — Project Overview
+
+## What is SYNTHÉ?
+
+SYNTHÉ is an AI-powered AR/VR creator platform built
+with Next.js 16, Firebase, and Google Gemini AI.
+
+It is designed for XR developers, 3D artists, students,
+and professionals who want to build, share, learn, and
+monetize immersive experiences.
+
+---
+
+## Core Modules
+
+### 1. 3D Verse (Marketplace)
+- Browse, upload, buy, and sell 3D models (GLB, GLTF, OBJ, FBX)
+- Live WebGL preview with hover-to-spin interaction
+- AR viewer — place any 3D model in your room via WebXR
+- Commission custom 3D models through post requests
+- Cloudflare R2 storage for binary asset hosting
+
+### 2. XR Zone
+- AR/VR project showcase from verified developers
+- Upload and share AR and VR applications
+- WebXR-native — no app install required
+
+### 3. AutoCAD Hub
+- Browse and share DWG/DXF engineering blueprints
+- Professional preview and file management
+
+### 4. Learn Hub (AI-Powered)
+- Free live AR/VR workshops by verified mentors
+- AI-personalised XR learning roadmaps (Gemini 2.0 Flash)
+- 48 curated XR tools, rated and filtered
+- XR challenges with community badges
+- Student showcase gallery
+- Book 1-on-1 mentors (Razorpay payments)
+
+### 5. Finalize (Execution Pipeline)
+- Paste any AI output → get structured execution plan
+- 4-layer pipeline: Prompt Controller → Gemini → Finalizer → Output
+- Priority scoring (P0/P1/P2), dependency ordering
+- Adaptive Intelligence — session-based learning from user behaviour
+
+### 6. Freelance
+- Post XR project requests and receive developer bids
+- Browse open requests from clients
+- Hire verified XR specialists
+
+### 7. Connect
+- Real-time chat between creators, students, and mentors
+- AI-powered smart replies and message drafting
+- Community networking and collaborations
+
+### 8. Certification
+- Developer verification and badge system
+- Professional profile validation
+
+### 9. PIET Collaborators
+- Academic collaboration hub
+- Institution-linked developer profiles
+
+---
+
+## Technology Stack
+
+| Layer       | Technology                         |
+|-------------|-------------------------------------|
+| Framework   | Next.js 16 (App Router, Turbopack) |
+| Language    | TypeScript                          |
+| Styling     | Tailwind CSS + CSS Custom Properties |
+| Auth        | Firebase Authentication             |
+| Database    | Firebase Firestore                  |
+| Storage     | Cloudflare R2 (3D assets)           |
+| AI          | Google Gemini 2.0 Flash             |
+| Payments    | Razorpay                            |
+| Hosting     | Vercel                              |
+
+---
+
+## AI Execution Pipeline
+
+The platform implements a patent-oriented 4-layer AI
+execution system:
+
+```
+User Input
+  → Layer 1: Prompt Controller (sanitise, structure, inject adaptive context)
+  → Layer 2: Gemini Service (API call, JSON validation, error recovery)
+  → Layer 3: Utility Finalizer (priority scoring, dependency sort, checklist)
+  → Layer 4: Adaptive Engine (session memory, skill detection, pattern learning)
+  → Structured Output → UI
+```
+
+Key differentiators:
+- Gemini is NEVER called with raw user input
+- Output is priority-ranked (P0/P1/P2) and dependency-ordered
+- Session-based adaptation personalises future outputs
+- Deterministic post-processing via TypeScript (no extra AI call)
+
+---
+
+## Project Structure
+
+```
+/app                    — Next.js App Router pages (49 pages)
+  /api                  — API routes (ai, payment, tutor, R2)
+  /components           — Shared React components
+    /ui                 — Reusable UI library (7 components)
+    /gallery            — Gallery-specific components
+    /payment            — Payment modals
+  /contexts             — AuthContext, ThemeContext
+  /finalize             — AI execution pipeline UI
+  /learn                — Learning hub (roadmap, tools, workshops)
+  /gallery              — 3D model marketplace
+  /xr-zone              — AR/VR project showcase
+  /connect              — Chat and networking
+  /freelance            — Project requests and hiring
+  /dashboard            — User dashboards (admin, developer, learner, mentor)
+
+/lib                    — Shared utilities
+  /services             — AI execution pipeline modules
+    types.ts            — Pipeline type definitions
+    promptBuilder.ts    — Layer 1: Prompt Controller
+    geminiService.ts    — Layer 2: Gemini Service
+    finalizer.ts        — Layer 3: Utility Finalizer
+    adaptiveEngine.ts   — Layer 4: Adaptive Engine
+    pipeline.ts         — Pipeline orchestrator
+  ai.ts                 — Low-level Gemini API wrapper
+  firebase.ts           — Firebase config
+  logger.ts             — Structured logging
+  r2.ts                 — Cloudflare R2 client
+  razorpay.ts           — Razorpay payment helpers
+  supabase.ts           — Supabase client
+
+/types                  — Global TypeScript types
+/public                 — Static assets
+/hooks                  — Custom React hooks
+/scripts                — Build/deploy scripts
+```
+
+---
+
+## Environment Variables
+
+Required in `.env.local`:
+- NEXT_PUBLIC_GEMINI_API_KEY — Google AI Studio API key
+- NEXT_PUBLIC_FIREBASE_* — Firebase project credentials
+- NEXT_PUBLIC_SUPABASE_URL/ANON_KEY — Supabase
+- CLOUDFLARE_R2_* — R2 storage credentials
+- RAZORPAY_KEY_ID/KEY_SECRET — Payment gateway
+- NEXT_PUBLIC_CLOUDINARY_* — Image CDN
+
+---
+
+## Design System
+
+- Primary: #5B4BDB (Synthé Violet)
+- Background: #0A0A0F (dark) / #F7F6F3 (light)
+- Surface: #141420 (dark) / #FFFFFF (light)
+- Radius: 8px–24px (rounded, modern)
+- Font: Geist Sans (system fallback)
+- Theme: Dark mode default with toggle
+- Animations: Framer Motion, CSS transitions
+- Glassmorphism on elevated surfaces
+
+---
+
+## Key Features Summary
+
+1. Real 3D WebGL previews (not screenshots)
+2. AR viewer — place models in your room
+3. AI roadmap generator (Gemini-powered)
+4. 4-layer AI execution pipeline
+5. Session-adaptive AI personalisation
+6. Live workshop booking with Razorpay
+7. Real-time chat with AI smart replies
+8. Developer certification system
+9. Commission marketplace for custom 3D work
+10. Dark/light theme with glassmorphism UI

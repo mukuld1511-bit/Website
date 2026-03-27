@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../lib/firebase";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface NavLink {
   label: string;
@@ -141,6 +142,7 @@ export default function Navbar() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileOpen,     setMobileOpen]     = useState(false);
   const [profileOpen,    setProfileOpen]    = useState(false);
+  const { theme, toggleTheme, isDark }      = useTheme();
 
   const pathname   = usePathname();
   const router     = useRouter();
@@ -268,6 +270,23 @@ export default function Navbar() {
                 PIET
               </button>
             </Link>
+
+            {/* Theme toggle */}
+            <button
+              onClick={toggleTheme}
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all"
+              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDark ? (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
           </div>
 
           {/* Auth */}
@@ -459,7 +478,28 @@ export default function Navbar() {
               ))}
             </div>
 
-            <div className="p-6 border-t border-gray-100 bg-gray-50 pb-10">
+            <div className="p-6 border-t border-gray-100 pb-10">
+              {/* Theme toggle in mobile */}
+              <button
+                onClick={toggleTheme}
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-50 transition-colors group mb-4"
+              >
+                <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:text-[#5B4BDB] group-hover:bg-[#5B4BDB]/10 transition-colors">
+                  {isDark ? (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-gray-900">Theme</p>
+                  <p className="text-xs text-gray-400">{isDark ? 'Switch to light mode' : 'Switch to dark mode'}</p>
+                </div>
+              </button>
               {user ? (
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 mb-4">

@@ -16,7 +16,8 @@ export async function POST(req: NextRequest) {
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
       return NextResponse.json({ success: false, error: "Missing payment fields" }, { status: 400 });
-    }
+    } //hi
+    
 
     const secret = process.env.RAZORPAY_KEY_SECRET;
     if (!secret) {

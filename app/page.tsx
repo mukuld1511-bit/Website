@@ -234,24 +234,27 @@ function SectionCard({ s, i }: { s: typeof PLATFORM_SECTIONS[0]; i: number }) {
       initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.06 }}>
       <Link href={s.href}>
-        <div className="group h-full bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer overflow-hidden relative">
-          {/* Top accent line on hover */}
-          <div className="absolute top-0 left-0 right-0 h-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-2xl"
+        <div className="group h-full rounded-2xl p-6 cursor-pointer overflow-hidden relative transition-all duration-300
+          bg-[#141420] border border-[#2A2A3E] hover:border-[#5B4BDB]/60 hover:shadow-[0_0_30px_rgba(91,75,219,0.15)] hover:-translate-y-1">
+          {/* Animated gradient line on top */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#5B4BDB] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          {/* Glow orb behind icon */}
+          <div className="absolute -top-10 -left-10 w-32 h-32 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-3xl"
             style={{ background: s.accent }} />
 
           <div className="flex items-start justify-between mb-4">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: s.accentBg }}>
-              <svg className="w-5 h-5" fill="none" stroke={s.accent} viewBox="0 0 24 24" strokeWidth={2}>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-white/5 border border-white/10 group-hover:border-[#5B4BDB]/40 group-hover:bg-[#5B4BDB]/10 transition-all duration-300">
+              <svg className="w-5 h-5 transition-colors duration-300" fill="none" stroke={s.accent} viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d={s.icon} />
               </svg>
             </div>
-            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border ${s.tagColor}`}>{s.tag}</span>
+            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/10 bg-white/5 text-gray-400`}>{s.tag}</span>
           </div>
 
-          <h3 className="text-gray-900 font-black text-lg mb-2 tracking-tight group-hover:text-[#5B4BDB] transition-colors">{s.title}</h3>
-          <p className="text-gray-500 text-sm leading-relaxed mb-5">{s.desc}</p>
+          <h3 className="text-white font-black text-lg mb-2 tracking-tight group-hover:text-[#7C6EF6] transition-colors">{s.title}</h3>
+          <p className="text-[#9494AD] text-sm leading-relaxed mb-5">{s.desc}</p>
 
-          <div className="flex items-center gap-1.5 text-sm font-bold transition-transform duration-200 group-hover:translate-x-1" style={{ color: s.accent }}>
+          <div className="flex items-center gap-1.5 text-sm font-bold transition-all duration-200 group-hover:translate-x-1 group-hover:gap-2.5" style={{ color: s.accent }}>
             {s.cta}
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -363,22 +366,28 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">
       <div className="relative z-10 flex-grow pt-24">
 
         {/* HERO */}
         <HeroComponent user={user} stats={stats} statsLoading={statsLoading} />
 
         {/* ── PLATFORM SECTIONS ── */}
-        <section className="py-20 px-4 bg-white border-b border-gray-100">
-          <div className="max-w-7xl mx-auto">
+        <section className="py-20 px-4 bg-[#0A0A0F] relative overflow-hidden">
+          {/* Floating gradient orbs */}
+          <div className="absolute top-20 left-10 w-72 h-72 bg-[#5B4BDB]/10 rounded-full blur-[100px] animate-pulse" />
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple-500/8 rounded-full blur-[120px]" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-40 right-1/4 w-4 h-4 bg-[#5B4BDB]/30 rounded-full animate-float" />
+          <div className="absolute bottom-32 left-1/3 w-3 h-3 bg-violet-400/20 rounded-full animate-float" style={{ animationDelay: '1.5s' }} />
+
+          <div className="max-w-7xl mx-auto relative">
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-2">Everything in one place</p>
-                <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">The AR/VR Ecosystem</h2>
+                <p className="text-xs font-bold uppercase tracking-widest text-[#7C6EF6] mb-2">Everything in one place</p>
+                <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight">The AR/VR Ecosystem</h2>
               </div>
-              <p className="text-gray-500 text-sm max-w-xs">One unified platform for creators, developers, engineers and learners.</p>
+              <p className="text-[#9494AD] text-sm max-w-xs">One unified platform for creators, developers, engineers and learners.</p>
             </motion.div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -391,7 +400,7 @@ export default function HomePage() {
         <DemoStrip />
 
         {/* ── SCROLLING GALLERY ── */}
-        <div className="bg-white border-b border-gray-200 py-16">
+        <div className="bg-[#0E0E18] border-b border-[#2A2A3E] py-16">
           <ScrollingGallery />
         </div>
 
@@ -443,23 +452,25 @@ export default function HomePage() {
         </section>
 
         {/* ── LIVE ACTIVITY ── */}
-        <section className="py-24 px-4 bg-[#F7F6F3]">
-          <div className="max-w-7xl mx-auto">
+        <section className="py-24 px-4 bg-[#0A0A0F] relative">
+          {/* Subtle gradient mesh */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0E0E18] via-transparent to-[#0E0E18] pointer-events-none" />
+          <div className="max-w-7xl mx-auto relative">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               className="flex items-center gap-3 mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-green-200 bg-green-50 shadow-sm">
-                <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-green-800 text-xs font-bold uppercase tracking-widest">Live Activity</span>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-green-500/30 bg-green-500/10">
+                <span className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-green-400 text-xs font-bold uppercase tracking-widest">Live Activity</span>
               </div>
-              <div className="h-px flex-1 bg-gray-200" />
+              <div className="h-px flex-1 bg-[#2A2A3E]" />
             </motion.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Recent uploads */}
-              <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-gray-200 shadow-sm">
+              <div className="lg:col-span-2 bg-[#141420] rounded-3xl p-8 border border-[#2A2A3E] shadow-lg">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-gray-900 text-lg font-bold">Recent Uploads</h3>
-                  <Link href="/verse"><span className="text-[#5B4BDB] text-sm font-bold hover:text-[#4c3ec7] transition">View 3D Verse →</span></Link>
+                  <h3 className="text-white text-lg font-bold">Recent Uploads</h3>
+                  <Link href="/verse"><span className="text-[#7C6EF6] text-sm font-bold hover:text-[#A594FF] transition">View 3D Verse →</span></Link>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {recentModels.slice(0, 6).length > 0
@@ -469,21 +480,21 @@ export default function HomePage() {
                           <motion.div key={m.id} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
                             <Link href={`/gallery/${m.id}`}>
-                              <div className="group flex items-center gap-4 p-3 rounded-2xl border border-gray-100 hover:border-gray-300 hover:shadow-sm bg-gray-50 hover:bg-white transition duration-200 cursor-pointer">
-                                <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-gray-200 bg-white">
+                              <div className="group flex items-center gap-4 p-3 rounded-2xl border border-[#2A2A3E] hover:border-[#5B4BDB]/40 bg-white/5 hover:bg-white/8 transition duration-200 cursor-pointer">
+                                <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-[#2A2A3E] bg-[#1A1A2E]">
                                   {m.thumbnailUrl
                                     ? <img src={m.thumbnailUrl} className="w-full h-full object-cover group-hover:scale-105 transition" alt="" />
-                                    : <div className="w-full h-full flex items-center justify-center text-[10px] font-bold text-gray-400 bg-gray-100">{ext.toUpperCase()}</div>
+                                    : <div className="w-full h-full flex items-center justify-center text-[10px] font-bold text-[#6B6B85] bg-[#1A1A2E]">{ext.toUpperCase()}</div>
                                   }
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-gray-900 text-sm font-bold truncate group-hover:text-[#5B4BDB] transition">{m.title}</p>
-                                  <p className="text-gray-500 text-xs mt-0.5 truncate">{m.authorName}</p>
+                                  <p className="text-white text-sm font-bold truncate group-hover:text-[#7C6EF6] transition">{m.title}</p>
+                                  <p className="text-[#6B6B85] text-xs mt-0.5 truncate">{m.authorName}</p>
                                 </div>
                                 <div className="flex-shrink-0">
                                   {m.isPaid
-                                    ? <span className="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs font-bold">₹{m.price}</span>
-                                    : <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-lg text-xs font-bold">Free</span>
+                                    ? <span className="bg-green-500/15 text-green-400 px-2 py-1 rounded-lg text-xs font-bold border border-green-500/20">₹{m.price}</span>
+                                    : <span className="bg-white/10 text-[#9494AD] px-2 py-1 rounded-lg text-xs font-bold border border-white/10">Free</span>
                                   }
                                 </div>
                               </div>
@@ -492,29 +503,29 @@ export default function HomePage() {
                         );
                       })
                     : Array.from({ length: 6 }).map((_, i) => (
-                        <div key={i} className="h-20 rounded-2xl bg-gray-100 animate-pulse" />
+                        <div key={i} className="h-20 rounded-2xl bg-[#1A1A2E] animate-pulse" />
                       ))
                   }
                 </div>
               </div>
 
               {/* Collaborators */}
-              <div className="bg-white rounded-3xl p-8 border border-gray-200 shadow-sm flex flex-col">
+              <div className="bg-[#141420] rounded-3xl p-8 border border-[#2A2A3E] shadow-lg flex flex-col">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-gray-900 text-lg font-bold">Available Mentors</h3>
-                  <Link href="/hire"><span className="text-[#5B4BDB] text-sm font-bold hover:text-[#4c3ec7] transition">View all →</span></Link>
+                  <h3 className="text-white text-lg font-bold">Available Mentors</h3>
+                  <Link href="/hire"><span className="text-[#7C6EF6] text-sm font-bold hover:text-[#A594FF] transition">View all →</span></Link>
                 </div>
                 <div className="space-y-3 flex-grow">
                   {tutors.length > 0
                     ? tutors.map((t, i) => <TutorCard key={t.id} t={t} i={i} />)
                     : Array.from({ length: 4 }).map((_, i) => (
-                        <div key={i} className="h-16 rounded-xl bg-gray-100 animate-pulse" />
+                        <div key={i} className="h-16 rounded-xl bg-[#1A1A2E] animate-pulse" />
                       ))
                   }
                 </div>
-                <div className="mt-6 border-t border-gray-100 pt-6">
+                <div className="mt-6 border-t border-[#2A2A3E] pt-6">
                   <Link href="/connect">
-                    <div className="w-full py-3 rounded-xl border-2 border-dashed border-gray-300 hover:border-[#5B4BDB]/50 hover:bg-[#5B4BDB]/5 transition duration-200 cursor-pointer text-center text-gray-500 hover:text-[#5B4BDB] font-bold text-sm">
+                    <div className="w-full py-3 rounded-xl border-2 border-dashed border-[#2A2A3E] hover:border-[#5B4BDB]/50 hover:bg-[#5B4BDB]/5 transition duration-200 cursor-pointer text-center text-[#6B6B85] hover:text-[#7C6EF6] font-bold text-sm">
                       + Become a Collaborator
                     </div>
                   </Link>
@@ -526,13 +537,13 @@ export default function HomePage() {
 
         {/* ── FEATURED MODELS ── */}
         {recentModels.length > 0 && (
-          <section className="py-24 px-4 bg-white border-y border-gray-100">
+          <section className="py-24 px-4 bg-[#0E0E18] border-y border-[#2A2A3E]">
             <div className="max-w-7xl mx-auto">
               <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                className="flex items-center justify-between mb-10 pb-4 border-b border-gray-100">
-                <h2 className="text-2xl md:text-3xl font-black tracking-tight text-gray-900">Featured Models</h2>
+                className="flex items-center justify-between mb-10 pb-4 border-b border-[#2A2A3E]">
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">Featured Models</h2>
                 <Link href="/verse">
-                  <button className="px-5 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-700 font-bold shadow-sm hover:bg-gray-50 transition text-sm">
+                  <button className="px-5 py-2.5 rounded-xl bg-[#141420] border border-[#2A2A3E] text-[#9494AD] font-bold hover:bg-[#1A1A2E] hover:border-[#5B4BDB]/40 hover:text-white transition text-sm">
                     Browse 3D Verse →
                   </button>
                 </Link>
@@ -545,8 +556,13 @@ export default function HomePage() {
         )}
 
         {/* ── STATS ── */}
-        <section className="w-full bg-[#5B4BDB] py-20 px-4">
-          <div className="max-w-7xl mx-auto">
+        <section className="w-full py-20 px-4 relative overflow-hidden">
+          {/* Animated gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#4c3ec7] via-[#5B4BDB] to-[#7C6EF6] animate-gradient" />
+          {/* Floating highlight orbs */}
+          <div className="absolute top-1/2 left-1/4 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-1/3 right-1/3 w-32 h-32 bg-white/5 rounded-full blur-2xl" style={{ animationDelay: '1s' }} />
+          <div className="max-w-7xl mx-auto relative">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 md:gap-y-0">
               {[
                 { label: "3D Models Uploaded",  val: stats.models,         suffix: "+" },
@@ -558,7 +574,7 @@ export default function HomePage() {
                   initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
                   className={`flex flex-col items-center text-center px-4 ${i > 0 ? "md:border-l border-white/20" : ""}`}>
-                  <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight">
+                  <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight drop-shadow-lg">
                     {statsLoading ? "—" : <Counter target={s.val} suffix={s.suffix} />}
                   </div>
                   <div className="text-white/70 text-sm md:text-base font-medium">{s.label}</div>
@@ -570,27 +586,29 @@ export default function HomePage() {
 
         {/* ── COLLABORATORS ── */}
         {collaborators.length > 0 && (
-          <section className="py-24 px-4 bg-[#F7F6F3]">
-            <div className="max-w-7xl mx-auto">
+          <section className="py-24 px-4 bg-[#0A0A0F] relative overflow-hidden">
+            {/* Subtle corner glow */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#5B4BDB]/8 rounded-full blur-[100px]" />
+            <div className="max-w-7xl mx-auto relative">
               <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                 className="text-center mb-12">
-                <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Academic Partners</p>
-                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900">Our Collaborators</h2>
+                <p className="text-[#7C6EF6] text-xs font-bold uppercase tracking-widest mb-2">Academic Partners</p>
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white">Our Collaborators</h2>
               </motion.div>
               <div className="flex flex-wrap justify-center gap-6">
                 {collaborators.map((c, i) => (
                   <motion.div key={c.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.06 }}>
                     <Link href="/collaborators">
-                      <div className="w-40 p-6 rounded-2xl bg-white border border-gray-200 hover:shadow-md transition duration-300 cursor-pointer text-center group">
-                        <div className="w-16 h-16 rounded-full overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition shadow-sm text-xl font-bold text-gray-400">
+                      <div className="w-40 p-6 rounded-2xl bg-[#141420] border border-[#2A2A3E] hover:border-[#5B4BDB]/40 hover:shadow-[0_0_25px_rgba(91,75,219,0.1)] transition duration-300 cursor-pointer text-center group">
+                        <div className="w-16 h-16 rounded-full overflow-hidden border border-[#2A2A3E] bg-[#1A1A2E] flex items-center justify-center mx-auto mb-4 group-hover:scale-105 group-hover:border-[#5B4BDB]/40 transition text-xl font-bold text-[#6B6B85]">
                           {c.avatar
                             ? <img src={c.avatar} className="w-full h-full object-cover" alt="" onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
                             : c.name?.[0]
                           }
                         </div>
-                        <p className="text-gray-900 text-sm font-bold truncate">{c.name}</p>
-                        <p className="text-gray-500 text-xs truncate mt-1">{c.role}</p>
+                        <p className="text-white text-sm font-bold truncate">{c.name}</p>
+                        <p className="text-[#6B6B85] text-xs truncate mt-1">{c.role}</p>
                       </div>
                     </Link>
                   </motion.div>
@@ -601,21 +619,25 @@ export default function HomePage() {
         )}
 
         {/* ── CTA ── */}
-        <section className="py-24 px-4 bg-white border-t border-gray-200">
-          <div className="max-w-4xl mx-auto text-center">
+        <section className="py-24 px-4 bg-[#0E0E18] border-t border-[#2A2A3E] relative overflow-hidden">
+          {/* Large gradient glow behind CTA */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-[500px] h-[500px] bg-[#5B4BDB]/10 rounded-full blur-[150px]" />
+          </div>
+          <div className="max-w-4xl mx-auto text-center relative">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-4">Ready to start?</p>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tight text-gray-900 mb-6">
-                Build the future of XR.
+              <p className="text-xs font-bold uppercase tracking-widest text-[#7C6EF6] mb-4">Ready to start?</p>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tight text-white mb-6">
+                Build the future <span className="bg-gradient-to-r from-[#5B4BDB] via-[#7C6EF6] to-[#A594FF] bg-clip-text text-transparent">of XR.</span>
               </h2>
-              <p className="text-gray-500 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+              <p className="text-[#9494AD] text-lg md:text-xl mb-10 max-w-2xl mx-auto">
                 Join the network. Upload your 3D models, attend live workshops, and collaborate with XR developers on SYNTHÉ.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 {user ? (
                   <>
                     <Link href="/verse/upload">
-                      <button className="px-10 py-4 rounded-xl font-bold text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] shadow-sm transition-all active:translate-y-[1px] flex items-center gap-2">
+                      <button className="px-10 py-4 rounded-xl font-bold text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] shadow-[0_0_30px_rgba(91,75,219,0.2)] hover:shadow-[0_0_50px_rgba(91,75,219,0.3)] transition-all active:translate-y-[1px] flex items-center gap-2">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                         </svg>
@@ -623,7 +645,7 @@ export default function HomePage() {
                       </button>
                     </Link>
                     <Link href="/dashboard">
-                      <button className="px-10 py-4 rounded-xl font-bold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm transition">
+                      <button className="px-10 py-4 rounded-xl font-bold text-[#9494AD] bg-[#141420] border border-[#2A2A3E] hover:bg-[#1A1A2E] hover:text-white hover:border-[#5B4BDB]/40 transition">
                         Go to Dashboard →
                       </button>
                     </Link>
@@ -631,12 +653,12 @@ export default function HomePage() {
                 ) : (
                   <>
                     <Link href="/signup">
-                      <button className="px-10 py-4 rounded-xl font-bold text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] shadow-sm transition-all active:translate-y-[1px]">
+                      <button className="px-10 py-4 rounded-xl font-bold text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] shadow-[0_0_30px_rgba(91,75,219,0.2)] hover:shadow-[0_0_50px_rgba(91,75,219,0.3)] transition-all active:translate-y-[1px]">
                         Get Started Free
                       </button>
                     </Link>
                     <Link href="/verse">
-                      <button className="px-10 py-4 rounded-xl font-bold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm transition">
+                      <button className="px-10 py-4 rounded-xl font-bold text-[#9494AD] bg-[#141420] border border-[#2A2A3E] hover:bg-[#1A1A2E] hover:text-white hover:border-[#5B4BDB]/40 transition">
                         Explore 3D Verse →
                       </button>
                     </Link>

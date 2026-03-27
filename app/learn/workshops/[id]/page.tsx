@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { doc, getDoc, updateDoc, arrayUnion, serverTimestamp, addDoc, collection } from "firebase/firestore";
 import { db, auth } from "../../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../../../components/Navbar";
+
 import Footer from "../../../components/Footer";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -107,7 +107,7 @@ export default function WorkshopDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
-      <Navbar/>
+
       {toast && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-5 py-3 bg-gray-900 text-white text-sm font-bold rounded-xl shadow-xl">
           {toast}

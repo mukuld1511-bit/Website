@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { doc, getDoc, updateDoc, increment, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Navbar from "../../components/Navbar";
+
 import Footer from "../../components/Footer";
 import dynamic from "next/dynamic";
 import ARViewer from "../../components/ARViewer";
@@ -113,7 +113,7 @@ export default function ModelDetailPage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-[#F7F6F3]"><Navbar/>
+    <div className="min-h-screen bg-[#F7F6F3]">
       <div className="max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-5 gap-8">
         <div className="md:col-span-3"><div className="aspect-video rounded-2xl bg-gray-200 animate-pulse"/></div>
         <div className="md:col-span-2 space-y-4"><div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"/><div className="h-4 bg-gray-100 rounded animate-pulse w-1/2"/></div>
@@ -131,7 +131,7 @@ export default function ModelDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F6F3] flex flex-col">
-      <Navbar/>
+
       <div className="max-w-6xl mx-auto px-4 py-10 flex-grow w-full">
 
         {/* Back */}

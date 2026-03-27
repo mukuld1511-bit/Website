@@ -6,7 +6,7 @@ import { db } from "../../../lib/firebase";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import Navbar from "../../components/Navbar";
+
 import Footer from "../../components/Footer";
 
 interface Developer {
@@ -81,7 +81,7 @@ export default function DeveloperProfilePage() {
 
   if (!dev) return (
     <div className="min-h-screen bg-[#050008]">
-      <Navbar />
+
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h2 className="text-2xl font-black text-white mb-3">Developer not found</h2>
@@ -100,7 +100,7 @@ export default function DeveloperProfilePage() {
 
   return (
     <div className="min-h-screen bg-[#050008]">
-      <Navbar />
+
 
       <div className="relative pt-24 pb-20 px-4 overflow-x-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full pointer-events-none"

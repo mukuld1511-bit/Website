@@ -6,7 +6,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import Navbar from "../../../components/Navbar";
+
 
 interface ChatSession {
   id:string; tutorId:string; tutorUserId:string; tutorName:string;
@@ -184,7 +184,7 @@ function ChatContent() {
 
   return (
     <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
-      <Navbar/>
+
       <div className="max-w-3xl mx-auto w-full px-4 pt-20 pb-6 flex flex-col flex-1" style={{height:"100vh"}}>
 
         {/* Chat container */}

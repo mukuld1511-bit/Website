@@ -10,7 +10,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
+
 import { initiatePayment } from "../../../lib/razorpay";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -288,7 +288,7 @@ function ProjectChatContent() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-      <Navbar />
+
 
       <AnimatePresence>
         {showPay && (

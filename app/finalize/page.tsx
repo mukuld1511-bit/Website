@@ -1,51 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { finalizeOutput } from "@/lib/ai";
+import { loadContext, clearContext } from "@/lib/services/adaptiveEngine";
+import type { FinalizedOutput, FinalizedStep, AdaptiveContext } from "@/lib/services/types";
 import Footer from "../components/Footer";
 import Link from "next/link";
 
-interface FinalStep {
-  order: number;
-  title: string;
-  description: string;
-  duration: string;
-  checklist: string[];
-  resources: { name: string; url: string; type: string }[];
-  tips: string;
-}
-
-interface FinalPlan {
-  title: string;
-  summary: string;
-  totalSteps: number;
-  estimatedDuration: string;
-  steps: FinalStep[];
-  quickWins: string[];
-  longTermGoals: string[];
-}
+const PRIORITY_BADGES: Record<string, { label: string; color: string; bg: string }> = {
+  P0: { label: "Must Do", color: "text-red-700", bg: "bg-red-50 border-red-200" },
+  P1: { label: "Important", color: "text-amber-700", bg: "bg-amber-50 border-amber-200" },
+  P2: { label: "Nice to Have", color: "text-blue-700", bg: "bg-blue-50 border-blue-200" },
+};
 
 export default function FinalizePage() {
   const [input, setInput] = useState("");
-  const [plan, setPlan] = useState<FinalPlan | null>(null);
+  const [plan, setPlan] = useState<FinalizedOutput | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
+  const [adaptive, setAdaptive] = useState<AdaptiveContext | null>(null);
+  const [latency, setLatency] = useState<Record<string, number>>({});
 
-  // Check for pre-filled roadmap data from URL params
-  // Usage: /finalize?data=<base64 encoded roadmap>
+  useEffect(() => {
+    setAdaptive(loadContext());
+  }, []);
 
   const handleFinalize = async () => {
     if (!input.trim()) return;
     setLoading(true);
     setError("");
     setPlan(null);
+
     try {
-      const raw = await finalizeOutput(input);
-      const parsed: FinalPlan = JSON.parse(raw);
-      setPlan(parsed);
+      const ctx = loadContext();
+      const res = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "finalize",
+          raw: input,
+          context: ctx,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (!result.success) {
+        setError(result.error || "Pipeline failed. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      setPlan(result.output as FinalizedOutput);
+      setAdaptive(result.adaptive);
+      setLatency(result.metadata?.layers ?? {});
       setExpandedStep(0);
     } catch (e) {
       setError("Failed to generate action plan. Please try again.");
@@ -70,10 +80,17 @@ export default function FinalizePage() {
   const copyPlan = () => {
     if (!plan) return;
     const text = plan.steps
-      .map((s) => `## Step ${s.order}: ${s.title}\n${s.description}\n\nChecklist:\n${s.checklist.map((c) => `- [ ] ${c}`).join("\n")}`)
+      .map((s) => `## Step ${s.order} [${s.priority}]: ${s.title}\n${s.description}\n\nChecklist:\n${s.checklist.map((c) => `- [ ] ${c}`).join("\n")}`)
       .join("\n\n");
     navigator.clipboard.writeText(`# ${plan.title}\n\n${plan.summary}\n\n${text}`);
   };
+
+  // Reorder steps by execution order if available
+  const orderedSteps: FinalizedStep[] = plan
+    ? (plan.executionOrder ?? plan.steps.map(s => s.order))
+        .map(order => plan.steps.find(s => s.order === order))
+        .filter(Boolean) as FinalizedStep[]
+    : [];
 
   return (
     <div className="min-h-screen bg-[#F7F6F3] flex flex-col font-sans">
@@ -97,9 +114,30 @@ export default function FinalizePage() {
             </div>
             <div>
               <h1 className="text-2xl font-black text-gray-900">Finalize Your Plan</h1>
-              <p className="text-gray-500 text-sm">Convert any AI output into an actionable, step-by-step execution plan</p>
+              <p className="text-gray-500 text-sm">AI Execution Pipeline — structured, priority-ranked action plans</p>
             </div>
           </div>
+
+          {/* Adaptive context indicator */}
+          {adaptive && adaptive.queryCount > 1 && (
+            <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-xl bg-violet-50 border border-violet-200 text-xs text-violet-700">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span className="font-semibold">Adaptive mode</span>
+              <span className="text-violet-500">·</span>
+              <span>Level: {adaptive.skillLevel}</span>
+              <span className="text-violet-500">·</span>
+              <span>{adaptive.queryCount} queries tracked</span>
+              {adaptive.patterns.length > 0 && (
+                <>
+                  <span className="text-violet-500">·</span>
+                  <span>{adaptive.patterns.length} patterns detected</span>
+                </>
+              )}
+              <button onClick={() => { clearContext(); setAdaptive(loadContext()); }} className="ml-auto text-violet-400 hover:text-violet-600 transition">Reset</button>
+            </div>
+          )}
         </div>
 
         {/* Input area */}
@@ -109,7 +147,7 @@ export default function FinalizePage() {
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Paste your roadmap, AI recommendation, or any plan here...&#10;&#10;Example: Paste the roadmap generated from the Roadmap Generator, or any text you want to convert into actionable steps."
+                placeholder={"Paste your roadmap, AI recommendation, or any plan here...\n\nThe pipeline will:\n1. Sanitize & structure your input\n2. Generate execution steps via Gemini AI\n3. Assign priorities (P0/P1/P2) and dependencies\n4. Adapt based on your learning history"}
                 rows={10}
                 className="w-full px-6 py-5 text-sm text-gray-800 placeholder-gray-400 resize-none focus:outline-none leading-relaxed"
               />
@@ -126,10 +164,10 @@ export default function FinalizePage() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
-                      Generating plan...
+                      Running pipeline...
                     </span>
                   ) : (
-                    "✨ Finalize into Action Plan"
+                    "✨ Execute Pipeline"
                   )}
                 </button>
               </div>
@@ -138,6 +176,21 @@ export default function FinalizePage() {
             {error && (
               <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">{error}</div>
             )}
+
+            {/* Pipeline diagram */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-5">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Data Flow</p>
+              <div className="flex items-center gap-2 text-xs flex-wrap">
+                {["Your Input", "Prompt Controller", "Gemini AI", "Finalizer", "Priority Ranking", "Structured Output"].map((label, i) => (
+                  <span key={i} className="flex items-center gap-2">
+                    <span className={`px-3 py-1.5 rounded-lg font-semibold ${i === 0 ? "bg-gray-900 text-white" : i === 2 ? "bg-[#5B4BDB] text-white" : "bg-gray-100 text-gray-700"}`}>
+                      {label}
+                    </span>
+                    {i < 5 && <span className="text-gray-300">→</span>}
+                  </span>
+                ))}
+              </div>
+            </div>
           </motion.div>
         )}
 
@@ -159,7 +212,7 @@ export default function FinalizePage() {
                     📋 Copy
                   </button>
                   <button
-                    onClick={() => { setPlan(null); setCheckedItems(new Set()); }}
+                    onClick={() => { setPlan(null); setCheckedItems(new Set()); setAdaptive(loadContext()); }}
                     className="px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
                   >
                     ↺ New
@@ -180,7 +233,7 @@ export default function FinalizePage() {
                 <span className="text-xs font-bold text-gray-500 flex-shrink-0">{progressPercent}%</span>
               </div>
 
-              <div className="flex gap-4 mt-4">
+              <div className="flex gap-4 mt-4 flex-wrap">
                 <div className="flex items-center gap-1.5 text-xs text-gray-500">
                   <span className="font-bold text-gray-900">{plan.totalSteps}</span> steps
                 </div>
@@ -190,15 +243,33 @@ export default function FinalizePage() {
                 <div className="flex items-center gap-1.5 text-xs text-gray-500">
                   <span className="font-bold text-[#5B4BDB]">{completedItems}/{totalChecklistItems}</span> tasks done
                 </div>
+                {/* Priority summary */}
+                {plan.priorities && (
+                  <div className="flex items-center gap-2 text-xs">
+                    {plan.priorities.p0.length > 0 && <span className="px-2 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200 font-bold">{plan.priorities.p0.length} P0</span>}
+                    {plan.priorities.p1.length > 0 && <span className="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-bold">{plan.priorities.p1.length} P1</span>}
+                    {plan.priorities.p2.length > 0 && <span className="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-bold">{plan.priorities.p2.length} P2</span>}
+                  </div>
+                )}
               </div>
+
+              {/* Pipeline latency */}
+              {Object.keys(latency).length > 0 && (
+                <div className="flex gap-3 mt-3 pt-3 border-t border-gray-100 text-xs text-gray-400">
+                  {Object.entries(latency).map(([layer, ms]) => (
+                    <span key={layer}>{layer}: {ms}ms</span>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Steps */}
+            {/* Steps — ordered by execution order */}
             <div className="space-y-3">
-              {plan.steps.map((step, idx) => {
+              {orderedSteps.map((step, idx) => {
                 const isExpanded = expandedStep === idx;
                 const stepChecked = step.checklist.filter((_, ci) => checkedItems.has(`${idx}-${ci}`)).length;
                 const stepComplete = stepChecked === step.checklist.length;
+                const badge = PRIORITY_BADGES[step.priority] ?? PRIORITY_BADGES.P1;
 
                 return (
                   <motion.div
@@ -217,8 +288,14 @@ export default function FinalizePage() {
                         {stepComplete ? "✓" : step.order}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className={`font-bold text-sm ${stepComplete ? "text-green-700 line-through" : "text-gray-900"}`}>{step.title}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">{step.duration} · {stepChecked}/{step.checklist.length} tasks</p>
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <p className={`font-bold text-sm ${stepComplete ? "text-green-700 line-through" : "text-gray-900"}`}>{step.title}</p>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full border font-bold ${badge.bg} ${badge.color}`}>{step.priority}</span>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          {step.duration} · {stepChecked}/{step.checklist.length} tasks
+                          {step.dependsOn.length > 0 && ` · depends on step ${step.dependsOn.join(", ")}`}
+                        </p>
                       </div>
                       <svg className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -327,7 +404,10 @@ export default function FinalizePage() {
 
             {/* Powered by */}
             <div className="text-center text-xs text-gray-400 py-4">
-              Powered by <span className="font-bold text-[#5B4BDB]">Gemini AI</span> · Synthé Finalization Engine
+              Powered by <span className="font-bold text-[#5B4BDB]">Gemini AI</span> · Synthé Execution Pipeline
+              {adaptive && adaptive.queryCount > 1 && (
+                <span> · Adapted for your <span className="font-semibold text-violet-500">{adaptive.skillLevel}</span> level</span>
+              )}
             </div>
           </motion.div>
         )}

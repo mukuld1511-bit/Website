@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { generateRoadmap as generateRoadmapAI } from "@/lib/ai";
+import { loadContext } from "@/lib/services/adaptiveEngine";
+import type { AdaptiveContext } from "@/lib/services/types";
 import Link from "next/link";
 
 interface RoadmapPhase {
@@ -69,6 +70,9 @@ export default function RoadmapPage() {
   const [error,         setError]         = useState("");
   const [loadingText,   setLoadingText]   = useState("Analysing your profile...");
   const [expandedPhase, setExpandedPhase] = useState<number | null>(0);
+  const [adaptive,      setAdaptive]      = useState<AdaptiveContext | null>(null);
+
+  useEffect(() => { setAdaptive(loadContext()); }, []);
 
   const canGenerate = ageGroup && goal && level && style;
   const progress    = [ageGroup, goal, level, style].filter(Boolean).length;
@@ -91,16 +95,47 @@ export default function RoadmapPage() {
     }, 1200);
 
     try {
-      // generateRoadmap from lib/ai.ts returns JSON string — parse it
-      const raw = await generateRoadmapAI({
-        age:        ageGroup,
-        goal:       `${goal}${interests ? ` — interests: ${interests}` : ""}`,
-        experience: level,
-        style,
+      // Use the AI execution pipeline — strict 4-layer flow
+      const ctx = loadContext();
+      const res = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "roadmap",
+          raw: `${goal}${interests ? ` — interests: ${interests}` : ""}`,
+          params: { age: ageGroup, goal: `${goal}${interests ? ` — interests: ${interests}` : ""}`, experience: level, style },
+          context: ctx,
+        }),
       });
       clearInterval(interval);
-      const result: GeneratedRoadmap = typeof raw === "string" ? JSON.parse(raw) : raw;
+
+      const pipelineResult = await res.json();
+      if (!pipelineResult.success) {
+        setError(pipelineResult.error || "Pipeline failed. Please try again.");
+        setStep("form");
+        return;
+      }
+
+      // Extract roadmap structure from finalized output
+      const out = pipelineResult.output;
+      const result: GeneratedRoadmap = {
+        title:         out.title ?? "Your XR Roadmap",
+        summary:       out.summary ?? "",
+        totalDuration: out.estimatedDuration ?? "TBD",
+        phases:        (out.steps ?? []).map((s: any, i: number) => ({
+          phase:       s.order ?? i + 1,
+          title:       s.title ?? `Phase ${i + 1}`,
+          duration:    s.duration ?? "TBD",
+          description: s.description ?? "",
+          topics:      s.checklist ?? [],
+          tools:       (s.resources ?? []).map((r: any) => r.name),
+          milestone:   s.tips ?? "",
+        })),
+        nextStep:      out.quickWins?.[0] ?? "Start exploring!",
+      };
+
       setRoadmap(result);
+      setAdaptive(pipelineResult.adaptive);
       setStep("result");
       setExpandedPhase(0);
     } catch {

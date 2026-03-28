@@ -16,8 +16,8 @@ const ROLES = [
     label: "Just browsing",
     icon: "👤",
     desc: "Explore the platform, browse 3D models, attend free workshops.",
-    color: "#5F5E5A",
-    bg: "#F1EFE8",
+    color: "#6B6B85",
+    bg: "#141420", // or rgba(255,255,255,0.05)
     approvalNote: null,
   },
   {
@@ -25,8 +25,8 @@ const ROLES = [
     label: "Learner",
     icon: "🎓",
     desc: "Learn AR/VR with AI roadmaps, live sessions, and 1-on-1 mentors.",
-    color: "#185FA5",
-    bg: "#E6F1FB",
+    color: "#3B82F6",
+    bg: "rgba(59, 130, 246, 0.08)",
     approvalNote: "⚡ Instant activation after signup",
   },
   {
@@ -35,7 +35,7 @@ const ROLES = [
     icon: "⚡",
     desc: "Sell 3D models and AR/VR builds. Earn 85% commission on every sale.",
     color: "#5B4BDB",
-    bg: "#EEEDFE",
+    bg: "rgba(91, 75, 219, 0.08)",
     approvalNote: "⚡ Instant activation — complete profile after signup",
   },
   {
@@ -43,8 +43,8 @@ const ROLES = [
     label: "Mentor",
     icon: "🧑‍🏫",
     desc: "Host free live workshops and paid 1-on-1 sessions. Set your own rates.",
-    color: "#0F6E56",
-    bg: "#E1F5EE",
+    color: "#10B981",
+    bg: "rgba(16, 185, 129, 0.08)",
     approvalNote: "🔍 Requires admin review — role locked until approved",
   },
 ];
@@ -175,8 +175,8 @@ function SignupContent() {
                   <button key={role.id} onClick={() => setSelectedRole(role.id)}
                     className={`relative p-6 rounded-2xl border-2 text-left transition-all duration-200 hover:-translate-y-0.5 ${
                       selectedRole === role.id
-                        ? "shadow-lg scale-[1.02]"
-                        : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-md"
+                        ? "shadow-[0_4px_30px_rgba(0,0,0,0.5)] scale-[1.02]"
+                        : "bg-[#141420] border-[#2A2A3E] hover:border-[#5B4BDB]/40 hover:shadow-[0_8px_30px_rgba(91,75,219,0.15)]"
                     }`}
                     style={selectedRole === role.id ? { borderColor: role.color, background: role.bg } : {}}>
 
@@ -190,14 +190,14 @@ function SignupContent() {
 
                     <div className="text-4xl mb-4">{role.icon}</div>
                     <p className="font-black text-white text-base mb-1">{role.label}</p>
-                    <p className="text-xs text-gray-500 leading-relaxed mb-3">{role.desc}</p>
+                    <p className="text-xs text-[#9494AD] leading-relaxed mb-3">{role.desc}</p>
 
                     {/* Approval note */}
                     {role.approvalNote && (
                       <div className={`text-[10px] font-bold px-2 py-1 rounded-full inline-flex items-center gap-1 ${
                         role.approvalNote.startsWith("🔍")
-                          ? "bg-amber-50 text-amber-700 border border-amber-200"
-                          : "bg-green-50 text-green-700 border border-green-200"
+                          ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+                          : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                       }`}>
                         {role.approvalNote}
                       </div>
@@ -207,13 +207,13 @@ function SignupContent() {
               </div>
 
               {/* Role comparison table */}
-              <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden mb-8">
-                <div className="grid grid-cols-5 text-xs font-bold text-gray-400 uppercase tracking-wide px-6 py-3 border-b border-gray-100 bg-[#0A0A0F]">
+              <div className="bg-[#141420] border border-[#2A2A3E] rounded-2xl overflow-hidden mb-8 shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
+                <div className="grid grid-cols-5 text-xs font-bold text-[#6B6B85] uppercase tracking-wide px-6 py-3 border-b border-[#2A2A3E] bg-[#0A0A0F]/80">
                   <div>Feature</div>
-                  <div className="text-center">User</div>
-                  <div className="text-center text-blue-600">Learner</div>
-                  <div className="text-center text-violet-600">Developer</div>
-                  <div className="text-center text-teal-600">Mentor</div>
+                  <div className="text-center text-white">User</div>
+                  <div className="text-center text-blue-400">Learner</div>
+                  <div className="text-center text-[#7C6EF6]">Developer</div>
+                  <div className="text-center text-teal-400">Mentor</div>
                 </div>
                 {[
                   ["Browse gallery",          true,  true,  true,  true ],
@@ -226,11 +226,11 @@ function SignupContent() {
                   ["Set your own rates",      false, false, true,  true ],
                   ["Verified role badge",     false, true,  true,  true ],
                 ].map(([label, u, l, d, m]) => (
-                  <div key={label as string} className="grid grid-cols-5 px-6 py-3 border-b border-gray-50 hover:bg-[#0A0A0F] transition-colors">
-                    <div className="text-sm text-gray-700 font-medium">{label as string}</div>
+                  <div key={label as string} className="grid grid-cols-5 px-6 py-3 border-b border-[#2A2A3E]/50 hover:bg-[#2A2A3E]/30 transition-colors">
+                    <div className="text-sm text-[#9494AD] font-medium">{label as string}</div>
                     {[u, l, d, m].map((v, i) => (
                       <div key={i} className="flex justify-center">
-                        {v ? <span className="text-green-500 font-black">✓</span> : <span className="text-gray-300">—</span>}
+                        {v ? <span className="text-emerald-400 font-black tracking-widest text-[#7C6EF6]">✓</span> : <span className="text-[#3A3A52]">—</span>}
                       </div>
                     ))}
                   </div>
@@ -240,13 +240,13 @@ function SignupContent() {
               {/* Mentor warning banner */}
               {selectedRole === "mentor" && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                  className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
+                  className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-4 mb-4 flex items-start gap-3 glass-synthe">
                   <span className="text-amber-500 text-lg mt-0.5">🔍</span>
                   <div>
-                    <p className="text-sm font-black text-amber-800 mb-1">Mentor role requires admin approval</p>
-                    <p className="text-xs text-amber-700 leading-relaxed">
+                    <p className="text-sm font-black text-amber-500 mb-1">Mentor role requires admin approval</p>
+                    <p className="text-xs text-amber-500/80 leading-relaxed">
                       After creating your account, you'll complete a mentor application (min 2 certificates, bio, LinkedIn).
-                      Your account will be created as a regular user — <span className="font-bold">mentor access only activates after an admin reviews and approves your application</span>.
+                      Your account will be created as a regular user — <span className="font-bold text-amber-400">mentor access only activates after an admin reviews and approves your application</span>.
                     </p>
                   </div>
                 </motion.div>
@@ -296,14 +296,14 @@ function SignupContent() {
 
               {/* Mentor notice in details step */}
               {selectedRole === "mentor" && (
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-6 text-xs text-amber-700 leading-relaxed">
-                  <span className="font-bold">Note:</span> Account will be created as a regular user. After signup you'll fill out the mentor application — role activates only after admin approval.
+                <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-3 mb-6 text-xs text-amber-500/80 leading-relaxed">
+                  <span className="font-bold text-amber-500">Note:</span> Account will be created as a regular user. After signup you'll fill out the mentor application — role activates only after admin approval.
                 </div>
               )}
 
               <h1 className="text-3xl font-black text-white mb-8">Create your account</h1>
 
-              <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+              <div className="bg-[#141420] rounded-2xl border border-[#2A2A3E] p-8 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
                 <form onSubmit={handleSignup} className="space-y-5">
 
                   <AnimatePresence>
@@ -320,38 +320,38 @@ function SignupContent() {
 
                   {/* Name */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Full name</label>
+                    <label className="block text-xs font-bold text-[#6B6B85] uppercase tracking-wide mb-2">Full name</label>
                     <div className="relative">
-                      <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6B85]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                       </svg>
                       <input type="text" placeholder="Your name" value={name} onChange={e => setName(e.target.value)} required
-                        className="w-full bg-[#0A0A0F] border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-400 outline-none transition-all" />
+                        className="w-full bg-[#0A0A0F] border border-[#2A2A3E] focus:border-[#5B4BDB] focus:bg-[#0A0A0F] rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-[#4A4A60] outline-none transition-all shadow-inner" />
                     </div>
                   </div>
 
                   {/* Email */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Email</label>
+                    <label className="block text-xs font-bold text-[#6B6B85] uppercase tracking-wide mb-2">Email</label>
                     <div className="relative">
-                      <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6B85]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                       </svg>
                       <input type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required
-                        className="w-full bg-[#0A0A0F] border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-400 outline-none transition-all" />
+                        className="w-full bg-[#0A0A0F] border border-[#2A2A3E] focus:border-[#5B4BDB] focus:bg-[#0A0A0F] rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-[#4A4A60] outline-none transition-all shadow-inner" />
                     </div>
                   </div>
 
                   {/* Password */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Password</label>
+                    <label className="block text-xs font-bold text-[#6B6B85] uppercase tracking-wide mb-2">Password</label>
                     <div className="relative">
-                      <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6B85]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                       </svg>
                       <input type={showPass ? "text" : "password"} placeholder="Min 6 characters" value={password} onChange={e => setPassword(e.target.value)} required
-                        className="w-full bg-[#0A0A0F] border border-gray-200 focus:border-[#5B4BDB] focus:bg-white rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-gray-400 outline-none transition-all" />
-                      <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700">
+                        className="w-full bg-[#0A0A0F] border border-[#2A2A3E] focus:border-[#5B4BDB] focus:bg-[#0A0A0F] rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-[#4A4A60] outline-none transition-all shadow-inner" />
+                      <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B6B85] hover:text-[#7C6EF6]">
                         <EyeIcon open={showPass} />
                       </button>
                     </div>
@@ -359,7 +359,7 @@ function SignupContent() {
                       <div className="mt-2">
                         <div className="flex gap-1 mb-1">
                           {[1,2,3,4].map(i => (
-                            <div key={i} className="flex-1 h-1.5 rounded-full bg-gray-200 overflow-hidden">
+                            <div key={i} className="flex-1 h-1.5 rounded-full bg-[#2A2A3E] overflow-hidden">
                               <div className="h-full transition-all" style={{ width: i <= strength ? "100%" : "0%", background: strengthColor }} />
                             </div>
                           ))}
@@ -371,18 +371,18 @@ function SignupContent() {
 
                   {/* Confirm password */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Confirm password</label>
+                    <label className="block text-xs font-bold text-[#6B6B85] uppercase tracking-wide mb-2">Confirm password</label>
                     <div className="relative">
-                      <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6B85]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                       </svg>
                       <input type={showConf ? "text" : "password"} placeholder="Repeat password" value={confirm} onChange={e => setConfirm(e.target.value)} required
-                        className={`w-full bg-[#0A0A0F] border focus:bg-white rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-gray-400 outline-none transition-all ${
-                          confirm && confirm !== password ? "border-red-300 bg-red-50" :
-                          confirm && confirm === password ? "border-green-300 bg-green-50" :
-                          "border-gray-200 focus:border-[#5B4BDB]"
+                        className={`w-full bg-[#0A0A0F] border focus:bg-[#0A0A0F] shadow-inner rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-[#4A4A60] outline-none transition-all ${
+                          confirm && confirm !== password ? "border-red-500/50 bg-red-500/10" :
+                          confirm && confirm === password ? "border-emerald-500/50 bg-emerald-500/10" :
+                          "border-[#2A2A3E] focus:border-[#5B4BDB]"
                         }`} />
-                      <button type="button" onClick={() => setShowConf(!showConf)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700">
+                      <button type="button" onClick={() => setShowConf(!showConf)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B6B85] hover:text-[#7C6EF6]">
                         <EyeIcon open={showConf} />
                       </button>
                     </div>

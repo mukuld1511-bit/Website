@@ -40,37 +40,37 @@ const HUB_CARDS = [
     desc: "AI-personalised learning path",
     href: "/learn/roadmap",
     icon: "M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7",
-    badge: "AI", badgeStyle: "bg-violet-100 text-violet-700 border border-violet-200",
-    color: "#5B4BDB", bg: "#EEEDFE",
+    badge: "AI", badgeStyle: "bg-[#5B4BDB]/15 text-[#7C6EF6] border border-[#5B4BDB]/30",
+    color: "#7C6EF6", bg: "rgba(91,75,219,0.15)",
   },
   {
     label: "Tools Directory",
     desc: "48 tools incl. WebXR, Unity, Blender",
     href: "/learn/tools",
     icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z",
-    badge: "New", badgeStyle: "bg-amber-100 text-amber-700 border border-amber-200",
-    color: "#B45309", bg: "#FAEEDA",
+    badge: "New", badgeStyle: "bg-amber-500/15 text-amber-400 border border-amber-500/30",
+    color: "#FBBF24", bg: "rgba(245,158,11,0.1)",
   },
   {
     label: "1-on-1 Mentors",
     desc: "Book private paid sessions",
     href: "/hire",
     icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
-    badge: null, badgeStyle: "", color: "#185FA5", bg: "#E6F1FB",
+    badge: null, badgeStyle: "", color: "#60A5FA", bg: "rgba(59,130,246,0.1)",
   },
   {
     label: "XR Challenges",
     desc: "Build projects, earn badges",
     href: "/learn/challenges",
     icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z",
-    badge: null, badgeStyle: "", color: "#0F6E56", bg: "#E1F5EE",
+    badge: null, badgeStyle: "", color: "#34D399", bg: "rgba(16,185,129,0.1)",
   },
   {
     label: "Student Showcase",
     desc: "See community work",
     href: "/learn/showcase",
     icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
-    badge: null, badgeStyle: "", color: "#9D174D", bg: "#FBEAF0",
+    badge: null, badgeStyle: "", color: "#F472B6", bg: "rgba(236,72,153,0.1)",
   },
 ];
 
@@ -143,18 +143,18 @@ function GeminiChat({ userRole }: { userRole: string }) {
   }, [loading, userRole]);
 
   return (
-    <div className="flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm" style={{ height: 480 }}>
-      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100 bg-[#0A0A0F] shrink-0">
-        <div className="w-8 h-8 rounded-xl bg-[#5B4BDB] flex items-center justify-center">
-          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
+    <div className="flex flex-col bg-[#141420] border border-[#2A2A3E] rounded-2xl overflow-hidden shadow-lg" style={{ height: 480 }}>
+      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[#2A2A3E] bg-[#0A0A0F] shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-[#5B4BDB]/20 border border-[#5B4BDB]/30 flex items-center justify-center">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#7C6EF6" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
           </svg>
         </div>
         <div className="flex-1">
           <p className="text-sm font-bold text-white">Ask anything about XR</p>
-          <p className="text-xs text-gray-400">Gemini AI · instant answers</p>
+          <p className="text-xs text-[#9494AD]">Gemini AI · instant answers</p>
         </div>
-        <span className="flex items-center gap-1.5 text-xs text-green-600 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full font-semibold">
+        <span className="flex items-center gap-1.5 text-[10px] text-green-400 bg-green-500/10 border border-green-500/20 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
           Live
         </span>
@@ -163,11 +163,11 @@ function GeminiChat({ userRole }: { userRole: string }) {
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {messages.length === 0 && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-            <p className="text-xs text-gray-400 text-center">Ask me anything about AR, VR, or XR development</p>
+            <p className="text-xs text-[#6B6B85] text-center">Ask me anything about AR, VR, or XR development</p>
             <div className="grid grid-cols-2 gap-2">
               {QUICK_QUESTIONS.map(q => (
                 <button key={q} onClick={() => send(q)}
-                  className="text-left text-xs bg-[#0A0A0F] hover:bg-[#5B4BDB]/5 border border-gray-200 hover:border-[#5B4BDB]/30 rounded-xl px-3 py-2.5 text-gray-600 hover:text-[#5B4BDB] transition-all leading-snug">
+                  className="text-left text-xs bg-[#0A0A0F] hover:bg-[#5B4BDB]/10 border border-[#2A2A3E] hover:border-[#5B4BDB]/40 rounded-xl px-3 py-2.5 text-[#9494AD] hover:text-[#7C6EF6] transition-all leading-snug">
                   {q}
                 </button>
               ))}
@@ -179,14 +179,14 @@ function GeminiChat({ userRole }: { userRole: string }) {
             <motion.div key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
               className={`flex ${m.role === "user" ? "justify-end" : "justify-start"} gap-2`}>
               {m.role === "ai" && (
-                <div className="w-6 h-6 rounded-lg bg-[#5B4BDB] flex items-center justify-center shrink-0 mt-0.5">
-                  <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
+                <div className="w-6 h-6 rounded-lg bg-[#5B4BDB]/20 border border-[#5B4BDB]/40 flex items-center justify-center shrink-0 mt-0.5">
+                  <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="#7C6EF6" strokeWidth="2.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                   </svg>
                 </div>
               )}
               <div className={`max-w-[82%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-                m.role === "user" ? "bg-[#5B4BDB] text-white rounded-br-sm" : "bg-gray-100 text-gray-800 rounded-bl-sm"
+                m.role === "user" ? "bg-[#5B4BDB] text-white rounded-br-sm" : "bg-[#0A0A0F] border border-[#2A2A3E] text-white rounded-bl-sm"
               }`}>
                 {m.text}
               </div>
@@ -195,12 +195,12 @@ function GeminiChat({ userRole }: { userRole: string }) {
         </AnimatePresence>
         {loading && (
           <div className="flex gap-2">
-            <div className="w-6 h-6 rounded-lg bg-[#5B4BDB] flex items-center justify-center shrink-0">
-              <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
+            <div className="w-6 h-6 rounded-lg bg-[#5B4BDB]/20 border border-[#5B4BDB]/40 flex items-center justify-center shrink-0 mt-0.5">
+              <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="#7C6EF6" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
               </svg>
             </div>
-            <div className="bg-gray-100 rounded-2xl rounded-bl-sm px-4 py-2.5">
+            <div className="bg-[#0A0A0F] border border-[#2A2A3E] rounded-2xl rounded-bl-sm px-4 py-3">
               <div className="flex gap-1">
                 {[0,1,2].map(i => (
                   <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB] animate-bounce" style={{ animationDelay: `${i * 0.12}s` }} />
@@ -212,11 +212,11 @@ function GeminiChat({ userRole }: { userRole: string }) {
         <div ref={bottomRef} />
       </div>
 
-      <div className="px-4 py-3 border-t border-gray-100 bg-[#0A0A0F] shrink-0">
+      <div className="px-4 py-3 border-t border-[#2A2A3E] bg-[#0A0A0F] shrink-0">
         <form onSubmit={e => { e.preventDefault(); send(input); }} className="flex gap-2">
           <input value={input} onChange={e => setInput(e.target.value)}
             placeholder="What is spatial computing?"
-            className="flex-1 bg-white border border-gray-200 focus:border-[#5B4BDB] rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors" />
+            className="flex-1 bg-[#141420] border border-[#2A2A3E] focus:border-[#5B4BDB]/60 rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#6B6B85] outline-none transition-colors" />
           <button type="submit" disabled={!input.trim() || loading}
             className="px-4 py-2.5 bg-[#5B4BDB] hover:bg-[#4c3ec7] disabled:opacity-40 rounded-xl text-white text-sm font-bold transition-colors">
             Ask
@@ -356,15 +356,15 @@ function BookingModal({ mentor, user, onClose, onSuccess }: BookingModalProps) {
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4"
         onClick={e => { if (e.target === e.currentTarget) onClose(); }}
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 16 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+          className="bg-[#141420] border border-[#2A2A3E] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[#2A2A3E]">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center overflow-hidden">
                 {mentor.photoURL
@@ -374,10 +374,10 @@ function BookingModal({ mentor, user, onClose, onSuccess }: BookingModalProps) {
               </div>
               <div>
                 <p className="font-bold text-white text-sm">{mentor.displayName}</p>
-                <p className="text-xs text-gray-400">₹{rate}/hr · {mentor.totalSessions ?? 0} sessions</p>
+                <p className="text-xs text-[#9494AD]">₹{rate}/hr · {mentor.totalSessions ?? 0} sessions</p>
               </div>
             </div>
-            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors text-gray-400">
+            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#2A2A3E] transition-colors text-[#6B6B85]">
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
               </svg>
@@ -388,22 +388,22 @@ function BookingModal({ mentor, user, onClose, onSuccess }: BookingModalProps) {
           <div className="px-6 py-5 space-y-4">
             {/* Topic */}
             <div>
-              <label className="text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5 block">Topic *</label>
+              <label className="text-xs font-bold text-[#6B6B85] uppercase tracking-wide mb-1.5 block">Topic *</label>
               <input
                 value={topic} onChange={e => setTopic(e.target.value)}
                 placeholder="e.g. Unity AR Foundation basics"
-                className="w-full border border-gray-200 focus:border-[#5B4BDB] rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors"
+                className="w-full bg-[#0A0A0F] border border-[#2A2A3E] focus:border-[#5B4BDB]/60 rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#6B6B85] outline-none transition-colors"
               />
             </div>
 
             {/* Duration */}
             <div>
-              <label className="text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5 block">Duration</label>
+              <label className="text-xs font-bold text-[#6B6B85] uppercase tracking-wide mb-1.5 block">Duration</label>
               <div className="grid grid-cols-4 gap-2">
                 {DURATIONS.map(d => (
                   <button key={d.value} onClick={() => setDuration(d.value)}
                     className={`py-2 rounded-xl text-sm font-bold border transition-all ${
-                      duration === d.value ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-600 border-gray-200 hover:bg-[#0A0A0F]"
+                      duration === d.value ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-[#0A0A0F] text-[#9494AD] border-[#2A2A3E] hover:border-[#5B4BDB]/40 hover:text-white"
                     }`}>
                     {d.label}
                   </button>
@@ -413,38 +413,38 @@ function BookingModal({ mentor, user, onClose, onSuccess }: BookingModalProps) {
 
             {/* Date */}
             <div>
-              <label className="text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5 block">Preferred date & time *</label>
+              <label className="text-xs font-bold text-[#6B6B85] uppercase tracking-wide mb-1.5 block">Preferred date & time *</label>
               <input
                 type="datetime-local" value={date} onChange={e => setDate(e.target.value)} min={minDate}
-                className="w-full border border-gray-200 focus:border-[#5B4BDB] rounded-xl px-4 py-2.5 text-sm text-gray-800 outline-none transition-colors"
+                className="w-full bg-[#0A0A0F] border border-[#2A2A3E] focus:border-[#5B4BDB]/60 rounded-xl px-4 py-2.5 text-sm text-white outline-none transition-colors"
               />
             </div>
 
             {/* Message */}
             <div>
-              <label className="text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5 block">Message (optional)</label>
+              <label className="text-xs font-bold text-[#6B6B85] uppercase tracking-wide mb-1.5 block">Message (optional)</label>
               <textarea
                 value={message} onChange={e => setMessage(e.target.value)} rows={2}
                 placeholder="Share your background or specific goals..."
-                className="w-full border border-gray-200 focus:border-[#5B4BDB] rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors resize-none"
+                className="w-full bg-[#0A0A0F] border border-[#2A2A3E] focus:border-[#5B4BDB]/60 rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#6B6B85] outline-none transition-colors resize-none"
               />
             </div>
 
             {/* Price summary */}
-            <div className="bg-[#0A0A0F] border border-gray-100 rounded-xl p-4 space-y-1.5 text-sm">
-              <div className="flex justify-between text-gray-600">
+            <div className="bg-[#0A0A0F] border border-[#2A2A3E] rounded-xl p-4 space-y-1.5 text-sm">
+              <div className="flex justify-between text-[#9494AD]">
                 <span>Session ({duration} min)</span>
-                <span className="font-semibold">₹{price}</span>
+                <span className="font-semibold text-white">₹{price}</span>
               </div>
-              <div className="flex justify-between text-gray-400 text-xs">
+              <div className="flex justify-between text-[#6B6B85] text-xs">
                 <span>Platform fee (15%)</span>
                 <span>₹{fee}</span>
               </div>
-              <div className="flex justify-between text-gray-400 text-xs">
+              <div className="flex justify-between text-[#6B6B85] text-xs">
                 <span>Mentor earns</span>
                 <span>₹{mentorEarns}</span>
               </div>
-              <div className="h-px bg-gray-200 my-1" />
+              <div className="h-px bg-[#2A2A3E] my-1" />
               <div className="flex justify-between font-black text-white">
                 <span>You pay</span>
                 <span className="text-[#5B4BDB]">₹{price}</span>
@@ -455,7 +455,7 @@ function BookingModal({ mentor, user, onClose, onSuccess }: BookingModalProps) {
           {/* Footer */}
           <div className="px-6 pb-6 flex gap-3">
             <button onClick={onClose}
-              className="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition-all">
+              className="flex-1 py-3 rounded-xl border-2 border-[#2A2A3E] text-[#9494AD] font-bold text-sm hover:border-[#5B4BDB]/40 hover:text-white transition-all">
               Cancel
             </button>
             <button
@@ -489,9 +489,9 @@ function SeatsBar({ registered, max }: { registered: number; max: number }) {
     <div className="mt-3">
       <div className="flex justify-between text-xs mb-1">
         <span style={{ color }} className="font-semibold">{left === 0 ? "Full" : `${left} seats left`}</span>
-        <span className="text-gray-400">{registered}/{max}</span>
+        <span className="text-[#6B6B85]">{registered}/{max}</span>
       </div>
-      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-1.5 bg-[#141420] border border-[#2A2A3E] rounded-full overflow-hidden">
         <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: color }} />
       </div>
     </div>
@@ -510,19 +510,19 @@ function WorkshopCard({ w, user, userRole, onRegister }: {
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col">
+      className="bg-[#141420] rounded-2xl border border-[#2A2A3E] shadow-sm p-5 hover:shadow-[0_8px_30px_rgba(91,75,219,0.1)] hover:border-[#5B4BDB]/40 hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
       <div className="flex flex-wrap gap-1.5 mb-3">
         {isLive && (
-          <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-bold">
+          <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-bold">
             <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />Live now
           </span>
         )}
         {w.tags?.slice(0, 3).map(t => (
-          <span key={t} className="px-2 py-0.5 rounded-full bg-[#5B4BDB]/10 text-[#5B4BDB] text-xs font-semibold">{t}</span>
+          <span key={t} className="px-2 py-0.5 rounded-full bg-[#5B4BDB]/15 border border-[#5B4BDB]/30 text-[#7C6EF6] text-xs font-bold">{t}</span>
         ))}
       </div>
       <h3 className="font-black text-white text-base mb-1 leading-snug">{w.title}</h3>
-      <p className="text-gray-500 text-xs leading-relaxed mb-3 line-clamp-2">{w.description}</p>
+      <p className="text-[#9494AD] text-xs leading-relaxed mb-3 line-clamp-2">{w.description}</p>
       <div className="flex items-center gap-2 mb-3">
         <div className="w-7 h-7 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center overflow-hidden flex-shrink-0">
           {w.hostPhoto
@@ -531,11 +531,11 @@ function WorkshopCard({ w, user, userRole, onRegister }: {
           }
         </div>
         <div>
-          <p className="text-xs font-semibold text-white">{w.hostName}</p>
-          <p className="text-xs text-gray-400">{w.duration} min · {w.price === 0 ? "Free" : `₹${w.price}`}</p>
+          <p className="text-xs font-bold text-white">{w.hostName}</p>
+          <p className="text-xs text-[#6B6B85]">{w.duration} min · {w.price === 0 ? "Free" : `₹${w.price}`}</p>
         </div>
       </div>
-      <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-3">
+      <div className="flex items-center gap-1.5 text-xs text-[#6B6B85] mb-3">
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
@@ -552,11 +552,11 @@ function WorkshopCard({ w, user, userRole, onRegister }: {
         </a>
       )}
 
-      <div className="mt-4">
+      <div className="mt-4 mt-auto pt-4 border-t border-[#2A2A3E]">
         {isPast ? (
-          <div className="text-center text-xs text-gray-400 py-2">Session ended</div>
+          <div className="text-center text-xs text-[#6B6B85] py-2">Session ended</div>
         ) : isRegistered ? (
-          <div className="w-full py-2.5 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-bold text-center">
+          <div className="w-full py-2.5 rounded-xl bg-green-500/15 border border-green-500/30 text-green-400 text-sm font-bold text-center">
             {isLive && w.meetLink ? null : "Registered ✓"}
           </div>
         ) : !user ? (
@@ -567,12 +567,12 @@ function WorkshopCard({ w, user, userRole, onRegister }: {
           </Link>
         ) : !canRegister ? (
           <Link href="/join">
-            <button className="w-full py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-bold border-b-[3px] border-gray-200 hover:bg-gray-200 transition-all active:translate-y-[1px]">
+            <button className="w-full py-2.5 rounded-xl bg-[#0A0A0F] text-[#9494AD] text-sm font-bold border border-[#2A2A3E] hover:border-[#5B4BDB]/40 hover:text-white transition-all">
               Apply as Learner to register
             </button>
           </Link>
         ) : isFull ? (
-          <button disabled className="w-full py-2.5 rounded-xl bg-gray-100 text-gray-400 text-sm font-bold cursor-not-allowed">Session full</button>
+          <button disabled className="w-full py-2.5 rounded-xl bg-[#0A0A0F] text-[#6B6B85] border border-[#2A2A3E] text-sm font-bold cursor-not-allowed">Session full</button>
         ) : (
           <button onClick={() => onRegister(w.id)}
             className="w-full py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">

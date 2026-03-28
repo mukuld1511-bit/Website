@@ -178,8 +178,8 @@ export default function XRZonePage() {
     <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">
 
       {/* ═══ PORTAL HERO ═══ */}
-      <section className="relative py-24 px-4 overflow-hidden">
-        <VideoBackground variant="grid" color="#5B4BDB" intensity={0.4} />
+      <section className="relative pt-32 pb-24 px-4 overflow-hidden">
+        <VideoBackground variant="aurora" color="#5B4BDB" intensity={0.65} />
 
         {/* Iris reveal animation */}
         <motion.div

@@ -481,7 +481,8 @@ export default function HirePage() {
       <AnimatePresence>
         {toast && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-xl max-w-sm text-center">
+            className="fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-[#141420] border-2 border-[#5B4BDB]/30 text-white text-sm font-black px-6 py-4 rounded-2xl shadow-[0_0_30px_rgba(91,75,219,0.3)] max-w-md text-center">
+            <span className="mr-2 filter hue-rotate-15">✨</span>
             {toast}
           </motion.div>
         )}
@@ -494,52 +495,62 @@ export default function HirePage() {
       )}
 
       {/* Hero */}
-      <section className="pt-28 pb-12 px-4 text-center">
-        <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}>
-          <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">Verified Mentors</p>
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
+      <section className="pt-36 pb-16 px-4 text-center relative overflow-hidden">
+        {/* Abstract background elements */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#5B4BDB]/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+        
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <span className="inline-block px-4 py-1.5 rounded-full border border-[#5B4BDB]/30 bg-[#5B4BDB]/5 text-[#7C6EF6] text-[10px] font-black uppercase tracking-[0.2em] mb-6">
+            Verified Mentors
+          </span>
+          <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight">
             Book a Session
           </h1>
-          <p className="text-gray-500 text-lg max-w-lg mx-auto mb-8">
-            1-on-1 private coaching, group sessions (shared cost), or instant doubt sessions — all with verified XR experts.
+          <p className="text-[#9494AD] text-lg max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
+            1-on-1 private coaching, group sessions (shared cost), or instant doubt resolution — all with verified XR industry professionals.
           </p>
 
           {/* Session type explainer */}
-          <div className="flex flex-wrap justify-center gap-4 max-w-2xl mx-auto mb-6">
+          <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
             {[
               { icon: "👤", type: "1-on-1 Private", desc: "Full attention, your pace" },
               { icon: "👥", type: "Group Session", desc: "Learn together, split cost" },
               { icon: "⚡", type: "Doubt Session", desc: "Quick help, on-demand" },
-            ].map(item => (
-              <div key={item.type} className="bg-white border border-gray-200 rounded-2xl px-5 py-3 flex items-center gap-3 shadow-sm">
-                <span className="text-2xl">{item.icon}</span>
-                <div className="text-left">
-                  <p className="text-sm font-black text-white">{item.type}</p>
-                  <p className="text-xs text-gray-500">{item.desc}</p>
+            ].map((item, i) => (
+              <motion.div key={item.type} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.1 }}
+                className="bg-[#141420] border-2 border-[#2A2A3E] rounded-3xl px-6 py-4 flex items-center gap-4 shadow-sm hover:border-[#5B4BDB]/30 transition-colors group">
+                <div className="w-12 h-12 rounded-2xl bg-[#0A0A0F] border border-[#2A2A3E] flex items-center justify-center text-2xl filter hue-rotate-15 group-hover:scale-110 transition-transform">
+                  {item.icon}
                 </div>
-              </div>
+                <div className="text-left">
+                  <p className="text-sm font-black text-white mb-0.5">{item.type}</p>
+                  <p className="text-[10px] font-bold text-[#6B6B85] uppercase tracking-wide">{item.desc}</p>
+                </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
       </section>
 
-      <div className="max-w-6xl mx-auto px-4 pb-16 flex-grow w-full">
+      <div className="max-w-7xl mx-auto px-4 pb-24 flex-grow w-full relative z-10">
 
         {/* Search + filter */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <div className="relative flex-1">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        <div className="flex flex-col lg:flex-row gap-4 mb-10 items-center justify-between bg-[#141420] p-4 rounded-3xl border-2 border-[#2A2A3E] shadow-xl">
+          <div className="relative w-full lg:max-w-md">
+            <svg className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#6B6B85]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
             <input value={search} onChange={e => setSearch(e.target.value)}
               placeholder="Search by name, skill, or expertise..."
-              className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-[#5B4BDB] transition-colors" />
+              className="w-full bg-[#0A0A0F] border-2 border-[#2A2A3E] rounded-2xl pl-12 pr-5 py-3.5 text-sm text-white font-medium placeholder-[#6B6B85] outline-none focus:border-[#5B4BDB] transition-all shadow-inner" />
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2.5 flex-wrap justify-end w-full lg:w-auto">
             {ALL_SKILLS.map(s => (
               <button key={s} onClick={() => setSkillFilter(s)}
-                className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
-                  skillFilter === s ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-500 border-gray-200 hover:bg-[#0A0A0F]"
+                className={`px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border-2 transition-all active:scale-[0.95] ${
+                  skillFilter === s 
+                    ? "bg-[#5B4BDB] text-white border-[#5B4BDB] shadow-[0_0_15px_rgba(91,75,219,0.3)]" 
+                    : "bg-[#0A0A0F] text-[#9494AD] border-[#2A2A3E] hover:border-[#5B4BDB]/50 hover:text-white"
                 }`}>{s}</button>
             ))}
           </div>
@@ -547,17 +558,19 @@ export default function HirePage() {
 
         {/* Grid */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[1,2,3].map(i => <div key={i} className="h-64 bg-white rounded-2xl animate-pulse border border-gray-100" />)}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[1,2,3,4,5,6].map(i => <div key={i} className="h-72 bg-[#141420] border-2 border-[#2A2A3E] rounded-3xl animate-pulse" />)}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-5xl mb-3">🧑‍🏫</p>
-            <p className="font-black text-white mb-2">{mentors.length === 0 ? "No mentors yet" : "No mentors match"}</p>
-            <p className="text-gray-500 text-sm">Check back soon — we're onboarding verified XR mentors.</p>
+          <div className="text-center py-32 bg-[#141420] rounded-[3rem] border-2 border-[#2A2A3E] border-dashed">
+            <div className="w-24 h-24 mx-auto rounded-3xl bg-[#0A0A0F] border-2 border-[#2A2A3E] flex items-center justify-center mb-6 shadow-inner">
+              <span className="text-5xl filter hue-rotate-15">🧑‍🏫</span>
+            </div>
+            <p className="text-2xl font-black text-white mb-2">{search || skillFilter!=="All" ? "No mentors match" : "No mentors yet"}</p>
+            <p className="text-[#9494AD] font-medium max-w-md mx-auto">Check back soon or try adjusting your filters — we're constantly onboarding verified XR mentors.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filtered.map(m => (
               <MentorCard key={m.id} mentor={m} canBook={canBook}
                 onBook={() => { setBookingMentor(m); }} />
@@ -566,16 +579,31 @@ export default function HirePage() {
         )}
 
         {/* Become a mentor CTA */}
-        <div className="mt-16 bg-[#0F6E56] rounded-3xl p-8 md:p-12 text-white text-center">
-          <div className="text-5xl mb-4">🧑‍🏫</div>
-          <h2 className="text-2xl font-black mb-2">Are you an XR expert?</h2>
-          <p className="text-[#E1F5EE] mb-6 max-w-md mx-auto text-sm">Join SYNTHÉ as a verified mentor. Set your own rates, host 1-on-1 and group sessions, and earn 85% on every booking.</p>
-          <Link href="/join">
-            <button className="px-8 py-3.5 bg-white text-[#0F6E56] font-black rounded-xl hover:bg-[#0A0A0F] transition-all">
-              Apply as Mentor →
-            </button>
-          </Link>
-        </div>
+        <motion.div initial={{opacity:0, y:20}} whileInView={{opacity:1, y:0}} viewport={{once:true}}
+          className="mt-24 relative rounded-[3rem] overflow-hidden bg-[#141420] border-2 border-[#2A2A3E] group">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#5B4BDB]/20 to-cyan-500/10 opacity-50"/>
+          
+          <div className="relative px-8 py-16 md:py-24 text-center z-10 flex flex-col items-center">
+            <div className="w-20 h-20 rounded-3xl bg-[#0A0A0F] border-2 border-[#2A2A3E] flex items-center justify-center text-4xl shadow-inner mb-6 filter hue-rotate-15 group-hover:scale-110 transition-transform duration-500">
+              🧑‍🏫
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Are you an XR expert?</h2>
+            <p className="text-[#9494AD] mb-10 max-w-xl mx-auto text-lg font-medium leading-relaxed">
+              Join SYNTHÉ as a verified mentor. Set your own rates, host 1-on-1 and group sessions, and keep <span className="text-white font-black">85%</span> of every booking.
+            </p>
+            <Link href="/join">
+              <button className="px-10 py-5 bg-[#5B4BDB] text-white font-black text-lg rounded-2xl hover:bg-[#4c3ec7] shadow-[0_0_30px_rgba(91,75,219,0.3)] hover:shadow-[0_0_50px_rgba(91,75,219,0.5)] hover:-translate-y-1 transition-all active:scale-95 flex items-center gap-3">
+                Apply as Mentor
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </button>
+            </Link>
+          </div>
+          
+          {/* Decorative gradients */}
+          <div className="absolute -bottom-1/2 -left-1/4 w-[500px] h-[500px] bg-[#5B4BDB]/20 blur-[100px] rounded-full pointer-events-none" />
+          <div className="absolute -top-1/2 -right-1/4 w-[500px] h-[500px] bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none" />
+        </motion.div>
+
       </div>
       <Footer />
     </div>

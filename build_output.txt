@@ -1,0 +1,84 @@
+﻿
+> zenith@0.1.0 build
+> next build
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 5.3s
+  Running TypeScript ...
+  Collecting page data using 27 workers ...
+  Generating static pages using 27 workers (0/55) ...
+  Generating static pages using 27 workers (13/55) 
+  Generating static pages using 27 workers (27/55) 
+  Generating static pages using 27 workers (41/55) 
+Γ£ô Generating static pages using 27 workers (55/55) in 457.9ms
+  Finalizing page optimization ...
+
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ ╞Æ /api/ai
+Γö£ ╞Æ /api/create-order
+Γö£ ╞Æ /api/r2-presign
+Γö£ ╞Æ /api/verify-payment
+Γö£ Γùï /asset-library
+Γö£ Γùï /autocad
+Γö£ Γùï /autocad/upload
+Γö£ Γùï /certification
+Γö£ Γùï /collaborators
+Γö£ Γùï /connect
+Γö£ ╞Æ /connect/chat/[sessionId]
+Γö£ Γùï /create-profile
+Γö£ Γùï /dashboard
+Γö£ Γùï /dashboard/access-requests
+Γö£ Γùï /dashboard/admin
+Γö£ Γùï /dashboard/developer
+Γö£ Γùï /dashboard/learner
+Γö£ Γùï /dashboard/mentor
+Γö£ Γùï /dashboard/mentorship-bookings
+Γö£ Γùï /dashboard/user
+Γö£ ╞Æ /developer/[id]
+Γö£ Γùï /developer/certification
+Γö£ Γùï /finalize
+Γö£ Γùï /forgot-password
+Γö£ Γùï /freelance
+Γö£ Γùï /freelance/hire
+Γö£ Γùï /gallery
+Γö£ ╞Æ /gallery/[modelId]
+Γö£ Γùï /gyop
+Γö£ ╞Æ /gyop/developer/[id]
+Γö£ Γùï /gyop/developers
+Γö£ Γùï /hire
+Γö£ Γùï /join
+Γö£ Γùï /join/developer
+Γö£ Γùï /join/learner
+Γö£ Γùï /join/mentor
+Γö£ Γùï /join/pay
+Γö£ Γùï /learn
+Γö£ Γùï /learn/challenges
+Γö£ Γùï /learn/roadmap
+Γö£ Γùï /learn/showcase
+Γö£ Γùï /learn/tools
+Γö£ ╞Æ /learn/workshops/[id]
+Γö£ Γùï /learn/workshops/create
+Γö£ Γùï /login
+Γö£ Γùï /notifications
+Γö£ Γùï /profile
+Γö£ ╞Æ /project-chat/[chatId]
+Γö£ ╞Æ /project/[id]
+Γö£ Γùï /requests/open
+Γö£ Γùï /requests/post
+Γö£ Γùï /signup
+Γö£ Γùï /upload
+Γö£ Γùï /verse
+Γö£ Γùï /verse/upload
+Γö£ Γùï /xr-zone
+Γö£ Γùï /xr-zone/ar/upload
+Γöö Γùï /xr-zone/vr/upload
+
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+

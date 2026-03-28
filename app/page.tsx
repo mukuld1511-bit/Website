@@ -418,7 +418,7 @@ export default function HomePage() {
 
         {/* ═══ HERO ═══ */}
         <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-          <VideoBackground variant="particles" color="#5B4BDB" intensity={0.6} scrollAccelerate />
+          <VideoBackground variant="aurora" color="#5B4BDB" intensity={0.85} scrollAccelerate />
 
           <motion.div
             className="relative z-10 text-center px-4 pt-24"

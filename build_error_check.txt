@@ -1,0 +1,84 @@
+
+> zenith@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 5.4s
+  Running TypeScript ...
+  Collecting page data using 27 workers ...
+  Generating static pages using 27 workers (0/55) ...
+  Generating static pages using 27 workers (13/55) 
+  Generating static pages using 27 workers (27/55) 
+  Generating static pages using 27 workers (41/55) 
+✓ Generating static pages using 27 workers (55/55) in 488.4ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/ai
+├ ƒ /api/create-order
+├ ƒ /api/r2-presign
+├ ƒ /api/verify-payment
+├ ○ /asset-library
+├ ○ /autocad
+├ ○ /autocad/upload
+├ ○ /certification
+├ ○ /collaborators
+├ ○ /connect
+├ ƒ /connect/chat/[sessionId]
+├ ○ /create-profile
+├ ○ /dashboard
+├ ○ /dashboard/access-requests
+├ ○ /dashboard/admin
+├ ○ /dashboard/developer
+├ ○ /dashboard/learner
+├ ○ /dashboard/mentor
+├ ○ /dashboard/mentorship-bookings
+├ ○ /dashboard/user
+├ ƒ /developer/[id]
+├ ○ /developer/certification
+├ ○ /finalize
+├ ○ /forgot-password
+├ ○ /freelance
+├ ○ /freelance/hire
+├ ○ /gallery
+├ ƒ /gallery/[modelId]
+├ ○ /gyop
+├ ƒ /gyop/developer/[id]
+├ ○ /gyop/developers
+├ ○ /hire
+├ ○ /join
+├ ○ /join/developer
+├ ○ /join/learner
+├ ○ /join/mentor
+├ ○ /join/pay
+├ ○ /learn
+├ ○ /learn/challenges
+├ ○ /learn/roadmap
+├ ○ /learn/showcase
+├ ○ /learn/tools
+├ ƒ /learn/workshops/[id]
+├ ○ /learn/workshops/create
+├ ○ /login
+├ ○ /notifications
+├ ○ /profile
+├ ƒ /project-chat/[chatId]
+├ ƒ /project/[id]
+├ ○ /requests/open
+├ ○ /requests/post
+├ ○ /signup
+├ ○ /upload
+├ ○ /verse
+├ ○ /verse/upload
+├ ○ /xr-zone
+├ ○ /xr-zone/ar/upload
+└ ○ /xr-zone/vr/upload
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

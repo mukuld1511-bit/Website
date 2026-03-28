@@ -133,7 +133,7 @@ export default function DeveloperDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0A0A0F] px-4 sm:px-6 lg:px-8 py-28 relative overflow-hidden font-sans">
+    <main className="min-h-screen bg-[#0A0A0F] px-4 sm:px-6 lg:px-8 py-28 relative overflow-hidden font-sans text-white">
 
       <div className="relative z-10 max-w-5xl mx-auto">
 
@@ -144,19 +144,22 @@ export default function DeveloperDashboard() {
           transition={{ duration: 0.55 }}
           className="mb-10"
         >
-          <p className="text-blue-600 text-xs uppercase tracking-[0.2em] font-bold mb-2">Developer Portal</p>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#5B4BDB]/15 border border-[#5B4BDB]/25 mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB] animate-pulse" />
+            <span className="text-xs font-bold text-[#7C6EF6] uppercase tracking-widest">Developer Portal</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-3">
             Your Dashboard
           </h1>
-          <p className="text-gray-500 text-sm font-medium">Track your uploads, earnings, bids, and connect sessions.</p>
+          <p className="text-[#9494AD] text-sm font-medium">Track your uploads, earnings, bids, and connect sessions.</p>
         </motion.div>
 
         {/* Payout Information */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="mb-10 bg-white p-6 rounded-[2rem] border border-gray-200 shadow-sm flex flex-col md:flex-row gap-6 items-center">
+          className="mb-10 bg-[#141420] p-6 rounded-[2rem] border border-[#2A2A3E] shadow-sm flex flex-col md:flex-row gap-6 items-center">
           <div className="flex-1">
             <h2 className="text-xl font-black text-white mb-1">Payout Details</h2>
-            <p className="text-sm font-medium text-gray-500">Enter your UPI ID or Bank Details to receive payments for your models.</p>
+            <p className="text-sm font-medium text-[#9494AD]">Enter your UPI ID or Bank Details to receive payments for your models.</p>
           </div>
           <div className="flex-1 w-full flex gap-3">
             <input 
@@ -164,12 +167,12 @@ export default function DeveloperDashboard() {
               placeholder="UPI ID or Account Number & IFSC..." 
               value={paymentInfo}
               onChange={(e) => setPaymentInfo(e.target.value)}
-              className="flex-1 bg-[#0A0A0F] border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition"
+              className="flex-1 bg-[#0A0A0F] border border-[#2A2A3E] rounded-xl px-4 py-3 text-sm font-medium text-white focus:outline-none focus:border-[#5B4BDB] transition"
             />
             <button 
               onClick={savePaymentInfo}
               disabled={savingPayment || !paymentInfo.trim()}
-              className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition focus:ring-4 focus:ring-blue-600/20 disabled:opacity-50 whitespace-nowrap"
+              className="px-6 py-3 rounded-xl bg-[#5B4BDB] hover:bg-[#4c3ec7] text-white font-bold text-sm transition shadow-[0_0_15px_rgba(91,75,219,0.3)] disabled:opacity-50 whitespace-nowrap"
             >
               {savingPayment ? "Saving..." : "Save Details"}
             </button>
@@ -184,18 +187,18 @@ export default function DeveloperDashboard() {
           className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10"
         >
           {[
-            { label: "Uploads",          val: uploads.length,               color: "blue" },
-            { label: "Net Earnings",     val: `₹${netEarnings.toFixed(0)}`, color: "emerald" },
-            { label: "Connect Sessions", val: activeSessions,               color: "cyan", highlight: activeSessions > 0 },
+            { label: "Uploads",          val: uploads.length,               color: "#7C6EF6" },
+            { label: "Net Earnings",     val: `₹${netEarnings.toFixed(0)}`, color: "#10B981" },
+            { label: "Connect Sessions", val: activeSessions,               color: "#06B6D4", highlight: activeSessions > 0 },
           ].map((s, i) => (
             <div
               key={i}
-              className={`rounded-3xl p-6 border-2 shadow-sm transition duration-300 ${
-                s.highlight ? "border-amber-200 bg-amber-50" : "border-indigo-50 bg-white"
+              className={`rounded-3xl p-6 border-2 transition duration-300 bg-[#141420] ${
+                s.highlight ? "border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.1)]" : "border-[#2A2A3E]"
               }`}
             >
-              <p className={`text-4xl font-black mb-1 text-${s.color}-600`}>{s.val}</p>
-              <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">{s.label}</p>
+              <p className="text-4xl font-black mb-1" style={{ color: s.color }}>{s.val}</p>
+              <p className="text-[#9494AD] text-[10px] font-bold uppercase tracking-widest">{s.label}</p>
             </div>
           ))}
         </motion.div>
@@ -208,10 +211,10 @@ export default function DeveloperDashboard() {
           className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10"
         >
           {[
-            { label: "Upload Model",    icon: "⬆", href: "/upload",        border: "border-blue-200", bg: "bg-blue-50 text-blue-700 hover:bg-blue-100" },
-            { label: "Public Requests", icon: "📋", href: "/requests/open", border: "border-indigo-200", bg: "bg-indigo-50 text-indigo-700 hover:bg-indigo-100" },
-            { label: "Connect Page",    icon: "🔗", href: "/connect",       border: "border-cyan-200", bg: "bg-cyan-50 text-cyan-700 hover:bg-cyan-100" },
-            { label: "Get Certified",   icon: "🎓", href: "/certification", border: "border-amber-200", bg: "bg-amber-50 text-amber-700 hover:bg-amber-100" },
+            { label: "Upload Model",    icon: "⬆", href: "/upload",        border: "border-blue-500/30", bg: "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20" },
+            { label: "Public Requests", icon: "📋", href: "/requests/open", border: "border-indigo-500/30", bg: "bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20" },
+            { label: "Connect Page",    icon: "🔗", href: "/connect",       border: "border-cyan-500/30", bg: "bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20" },
+            { label: "Get Certified",   icon: "🎓", href: "/certification", border: "border-amber-500/30", bg: "bg-amber-500/10 text-amber-400 hover:bg-amber-500/20" },
           ].map((q, i) => (
             <motion.button
               key={i}
@@ -219,7 +222,7 @@ export default function DeveloperDashboard() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              className={`rounded-xl px-4 py-3.5 text-sm font-bold text-left flex items-center gap-2.5 border shadow-sm transition duration-200 ${q.border} ${q.bg}`}
+              className={`rounded-xl px-4 py-3.5 text-sm font-bold text-left flex items-center gap-2.5 border transition duration-200 ${q.border} ${q.bg}`}
             >
               <span className="text-base">{q.icon}</span>
               {q.label}
@@ -231,14 +234,14 @@ export default function DeveloperDashboard() {
         <DashSection title="Earnings Summary" subtitle="Revenue from model purchases (after platform & payment fees)" delay={0.16} accent="bg-emerald-500">
           <div className="grid sm:grid-cols-3 gap-4 mb-4">
             {[
-              { label: "Gross Revenue",      val: `₹${grossRevenue.toFixed(2)}`,                   sub: "Total paid by buyers",  color: "cyan" },
-              { label: "Platform Fee (15%)", val: `−₹${(grossRevenue * PLATFORM_FEE).toFixed(2)}`, sub: "Synthe commission",     color: "rose" },
-              { label: "Net Earnings",       val: `₹${netEarnings.toFixed(2)}`,                    sub: "You receive",           color: "emerald" },
+              { label: "Gross Revenue",      val: `₹${grossRevenue.toFixed(2)}`,                   sub: "Total paid by buyers",  color: "#06B6D4" },
+              { label: "Platform Fee (15%)", val: `−₹${(grossRevenue * PLATFORM_FEE).toFixed(2)}`, sub: "Synthe commission",     color: "#F43F5E" },
+              { label: "Net Earnings",       val: `₹${netEarnings.toFixed(2)}`,                    sub: "You receive",           color: "#10B981" },
             ].map((e, i) => (
-              <div key={i} className="rounded-2xl border border-gray-200 bg-white shadow-sm p-5">
-                <p className={`text-2xl font-black mb-1 text-${e.color}-600`}>{e.val}</p>
+              <div key={i} className="rounded-2xl border border-[#2A2A3E] bg-[#141420] p-5">
+                <p className="text-2xl font-black mb-1" style={{ color: e.color }}>{e.val}</p>
                 <p className="text-white font-bold text-sm">{e.label}</p>
-                <p className="text-gray-500 text-xs mt-0.5 font-medium">{e.sub}</p>
+                <p className="text-[#9494AD] text-[10px] mt-0.5 font-bold uppercase">{e.sub}</p>
               </div>
             ))}
           </div>
@@ -246,7 +249,7 @@ export default function DeveloperDashboard() {
         </DashSection>
 
         {/* My Uploads */}
-        <DashSection title="My Uploads" subtitle="Models you've published to the gallery" delay={0.2} accent="bg-violet-500">
+        <DashSection title="My Uploads" subtitle="Models you've published to the gallery" delay={0.2} accent="bg-[#7C6EF6]">
           {uploads.length === 0 ? (
             <Empty icon="🚀" text="No models uploaded yet." />
           ) : (
@@ -255,30 +258,30 @@ export default function DeveloperDashboard() {
                 <div
                   key={m.id}
                   onClick={() => router.push(`/gallery/${m.id}`)}
-                  className="group cursor-pointer bg-white border-2 border-indigo-50 shadow-sm rounded-3xl p-6 hover:border-violet-300 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
+                  className="group cursor-pointer bg-[#141420] border-2 border-[#2A2A3E] shadow-sm rounded-3xl p-6 hover:border-[#7C6EF6]/50 hover:shadow-[0_0_20px_rgba(124,110,246,0.15)] transition-all duration-300 hover:-translate-y-0.5"
                 >
                   <div className="flex items-start gap-4">
                     {m.thumbnailUrl ? (
-                      <img src={m.thumbnailUrl} alt={m.title} className="w-16 h-16 rounded-2xl object-cover flex-shrink-0 border-2 border-indigo-50 shadow-sm" />
+                      <img src={m.thumbnailUrl} alt={m.title} className="w-16 h-16 rounded-2xl object-cover flex-shrink-0 border-2 border-[#2A2A3E] shadow-sm bg-[#0A0A0F]" />
                     ) : (
-                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 bg-indigo-50 border-2 border-indigo-100 shadow-sm">
-                        <svg className="w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 bg-[#0A0A0F] border-2 border-[#2A2A3E] shadow-sm">
+                        <svg className="w-6 h-6 text-[#5B4BDB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                         </svg>
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-white font-bold text-sm truncate group-hover:text-violet-600 transition">{m.title}</h3>
+                      <h3 className="text-white font-bold text-sm truncate group-hover:text-[#7C6EF6] transition-colors">{m.title}</h3>
                       <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                        <span className="text-[9px] font-bold uppercase py-0.5 px-2 rounded bg-violet-50 text-violet-700 border border-violet-200">
+                        <span className="text-[9px] font-bold uppercase py-0.5 px-2 rounded-full bg-[#5B4BDB]/15 text-[#7C6EF6] border border-[#5B4BDB]/30">
                           {m.category ?? "3D"}
                         </span>
                         {m.price > 0
-                          ? <span className="text-[9px] font-bold py-0.5 px-2 rounded bg-amber-50 text-amber-700 border border-amber-200">₹{m.price}</span>
-                          : <span className="text-[9px] font-bold py-0.5 px-2 rounded bg-green-50 text-green-700 border border-green-200">Free</span>
+                          ? <span className="text-[9px] font-bold py-0.5 px-2 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30">₹{m.price}</span>
+                          : <span className="text-[9px] font-bold py-0.5 px-2 rounded-full bg-green-500/15 text-green-400 border border-green-500/30">Free</span>
                         }
                       </div>
-                      <p className="text-gray-500 font-medium text-xs mt-1.5 line-clamp-1">{m.description}</p>
+                      <p className="text-[#9494AD] font-medium text-xs mt-1.5 line-clamp-1">{m.description}</p>
                     </div>
                   </div>
                 </div>
@@ -297,12 +300,12 @@ export default function DeveloperDashboard() {
                 <div
                   key={s.id}
                   onClick={() => router.push(`/connect/${s.id}`)}
-                  className="group cursor-pointer rounded-3xl border-2 border-indigo-50 bg-white shadow-sm hover:border-cyan-300 hover:shadow-md p-6 flex items-center gap-5 transition-all duration-300 hover:-translate-y-0.5"
+                  className="group cursor-pointer rounded-3xl border-2 border-[#2A2A3E] bg-[#141420] shadow-sm hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] p-6 flex items-center gap-5 transition-all duration-300 hover:-translate-y-0.5"
                 >
                   {s.studentAvatar
-                    ? <img src={s.studentAvatar} alt={s.studentName} className="w-14 h-14 rounded-2xl object-cover flex-shrink-0 border-2 border-indigo-50 shadow-sm" />
+                    ? <img src={s.studentAvatar} alt={s.studentName} className="w-14 h-14 rounded-2xl object-cover flex-shrink-0 border-2 border-[#2A2A3E] shadow-sm bg-[#0A0A0F]" />
                     : (
-                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 text-lg font-black text-cyan-700 bg-cyan-50 border-2 border-cyan-100 shadow-sm">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 text-lg font-black text-cyan-400 bg-cyan-500/10 border-2 border-cyan-500/20 shadow-sm">
                         {s.studentName?.[0]?.toUpperCase() ?? "S"}
                       </div>
                     )
@@ -310,13 +313,17 @@ export default function DeveloperDashboard() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                       <span className="text-white font-bold text-sm">{s.studentName}</span>
-                      <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${statusBadge(s.status)}`}>
+                      <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${
+                        s.status === "pending" ? "text-amber-400 bg-amber-500/15 border-amber-500/30" :
+                        s.status === "rejected" ? "text-red-400 bg-red-500/15 border-red-500/30" :
+                        "text-green-400 bg-green-500/15 border-green-500/30"
+                      }`}>
                         {s.status}
                       </span>
                     </div>
-                    <p className="text-gray-500 font-medium text-xs truncate">Subject: {s.subject}</p>
+                    <p className="text-[#9494AD] font-medium text-xs truncate">Subject: {s.subject}</p>
                   </div>
-                  <svg className="w-4 h-4 text-gray-300 group-hover:text-cyan-500 flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-[#6B6B85] group-hover:text-cyan-400 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
@@ -335,26 +342,26 @@ export default function DeveloperDashboard() {
                 <div
                   key={c.id}
                   onClick={() => router.push(`/project-chat/${c.id}`)}
-                  className="group cursor-pointer rounded-3xl border-2 border-indigo-50 bg-white shadow-sm hover:border-pink-300 hover:shadow-md p-5 flex items-center gap-5 transition-all duration-300 hover:-translate-y-0.5"
+                  className="group cursor-pointer rounded-3xl border-2 border-[#2A2A3E] bg-[#141420] shadow-sm hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.15)] p-5 flex items-center gap-5 transition-all duration-300 hover:-translate-y-0.5"
                 >
                   {c.clientPhoto
-                    ? <img src={c.clientPhoto} alt={c.clientName} className="w-14 h-14 rounded-2xl object-cover flex-shrink-0 border-2 border-indigo-50 shadow-sm" />
+                    ? <img src={c.clientPhoto} alt={c.clientName} className="w-14 h-14 rounded-2xl object-cover flex-shrink-0 border-2 border-[#2A2A3E] shadow-sm bg-[#0A0A0F]" />
                     : (
-                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 text-lg font-black text-pink-700 bg-pink-50 border-2 border-pink-100 shadow-sm">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 text-lg font-black text-pink-400 bg-pink-500/10 border-2 border-pink-500/20 shadow-sm">
                         {c.clientName?.[0]?.toUpperCase() ?? "C"}
                       </div>
                     )
                   }
                   <div className="flex-1 min-w-0">
                     <p className="text-white font-bold text-sm truncate">{c.requestTitle || "Project Chat"}</p>
-                    <p className="text-gray-500 font-medium text-xs truncate">with {c.clientName}</p>
+                    <p className="text-[#9494AD] font-medium text-xs truncate">with {c.clientName}</p>
                   </div>
                   {c.funded && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded border text-green-700 bg-green-50 border-green-200">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border text-green-400 bg-green-500/15 border-green-500/30">
                       Funded ₹{c.fundedAmount?.toLocaleString("en-IN")}
                     </span>
                   )}
-                  <svg className="w-4 h-4 text-gray-300 group-hover:text-pink-500 flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-[#6B6B85] group-hover:text-pink-400 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
@@ -364,19 +371,23 @@ export default function DeveloperDashboard() {
         </DashSection>
 
         {/* Certification */}
-
-        <DashSection title="Certification" subtitle="Your developer certification status on Synthe" delay={0.32} accent="bg-indigo-500">
-          <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-6 flex flex-col sm:flex-row sm:items-center gap-6">
+        <DashSection title="Certification" subtitle="Your developer certification status on Synthe" delay={0.32} accent="bg-[#7C6EF6]">
+          <div className="rounded-2xl border border-[#2A2A3E] bg-[#141420] p-6 flex flex-col sm:flex-row sm:items-center gap-6 shadow-sm">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-2xl">🎓</span>
                 <div>
                   <p className="text-white font-bold text-sm">Certification Status</p>
-                  <p className="text-gray-500 font-medium text-xs">Certified developers appear first on the Connect page</p>
+                  <p className="text-[#9494AD] font-medium text-xs">Certified developers appear first on the Connect page</p>
                 </div>
               </div>
-              <span className={`inline-block text-xs font-bold uppercase px-3 py-1 rounded border mt-2 ${certBadge().color}`}>
-                {certBadge().label}
+              <span className={`inline-block text-[10px] font-bold uppercase px-3 py-1 rounded-full border mt-2 ${
+                !certStatus ? "text-[#9494AD] bg-[#2A2A3E]/50 border-[#2A2A3E]" :
+                certStatus === "approved" ? "text-green-400 bg-green-500/15 border-green-500/30" :
+                certStatus === "pending" ? "text-amber-400 bg-amber-500/15 border-amber-500/30" :
+                "text-red-400 bg-red-500/15 border-red-500/30"
+              }`}>
+                {!certStatus ? "Not Applied" : certStatus === "approved" ? "✓ Certified" : certStatus === "pending" ? "⏳ Pending Review" : "✕ Rejected"}
               </span>
             </div>
             {certStatus !== "approved" && (
@@ -384,7 +395,7 @@ export default function DeveloperDashboard() {
                 onClick={() => router.push("/certification")}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-sm transition"
+                className="px-6 py-3 rounded-xl bg-[#5B4BDB] hover:bg-[#4c3ec7] text-white text-sm font-bold shadow-[0_0_15px_rgba(91,75,219,0.3)] transition"
               >
                 {certStatus === "pending" ? "View Application" : "Apply Now"}
               </motion.button>
@@ -397,7 +408,7 @@ export default function DeveloperDashboard() {
   );
 }
 
-function DashSection({ title, subtitle, delay, children, accent = "bg-blue-500" }: {
+function DashSection({ title, subtitle, delay, children, accent = "bg-[#7C6EF6]" }: {
   title: string; subtitle: string; delay: number; children: React.ReactNode; accent?: string;
 }) {
   return (
@@ -408,10 +419,10 @@ function DashSection({ title, subtitle, delay, children, accent = "bg-blue-500" 
       className="mb-10"
     >
       <div className="flex items-center gap-3 mb-5">
-        <div className={`w-1.5 h-7 rounded-sm ${accent}`} />
+        <div className={`w-1.5 h-7 rounded-sm ${accent} shadow-[0_0_10px_currentColor]`} />
         <div>
           <h2 className="text-xl font-bold text-white tracking-tight">{title}</h2>
-          <p className="text-gray-500 font-medium text-xs mt-0.5">{subtitle}</p>
+          <p className="text-[#9494AD] font-medium text-xs mt-0.5">{subtitle}</p>
         </div>
       </div>
       {children}
@@ -421,11 +432,11 @@ function DashSection({ title, subtitle, delay, children, accent = "bg-blue-500" 
 
 function Empty({ icon, text }: { icon: string; text: string }) {
   return (
-    <div className="w-full py-16 text-center border-2 border-indigo-100 border-dashed rounded-[2.5rem] bg-white flex flex-col items-center gap-4 shadow-sm">
-      <div className="w-20 h-20 rounded-[1.5rem] bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center mb-2 shadow-sm">
+    <div className="w-full py-16 text-center border-2 border-[#2A2A3E] border-dashed rounded-[2.5rem] bg-[#141420] flex flex-col items-center gap-4">
+      <div className="w-20 h-20 rounded-[1.5rem] bg-[#0A0A0F] border-2 border-[#2A2A3E] flex items-center justify-center mb-2 shadow-sm">
         <span className="text-4xl filter hue-rotate-15">{icon}</span>
       </div>
-      <p className="text-gray-600 font-bold text-base tracking-wide max-w-xs">{text}</p>
+      <p className="text-[#9494AD] font-bold text-sm max-w-xs">{text}</p>
     </div>
   );
 }

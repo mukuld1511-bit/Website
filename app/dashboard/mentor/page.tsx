@@ -20,10 +20,10 @@ interface Workshop {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  pending:  "bg-amber-50 text-amber-700 border-amber-200",
-  accepted: "bg-green-50 text-green-700 border-green-200",
-  rejected: "bg-red-50 text-red-600 border-red-200",
-  completed:"bg-gray-100 text-gray-600 border-gray-200",
+  pending:  "bg-amber-500/15 text-amber-400 border-amber-500/30",
+  accepted: "bg-green-500/15 text-green-400 border-green-500/30",
+  rejected: "bg-red-500/15 text-red-400 border-red-500/30",
+  completed:"bg-[#2A2A3E]/50 text-[#9494AD] border-[#2A2A3E]",
 };
 
 function formatDate(d: string) {
@@ -94,63 +94,67 @@ export default function MentorDashboard() {
   const pendingEarnings = sessions.filter(s=>s.status==="accepted").reduce((a,s)=>a+(s.mentorEarns||0),0);
 
   if (!user) return (
-    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
-      <div className="text-center bg-white p-10 rounded-2xl border border-gray-200">
+    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center font-sans text-white">
+      <div className="text-center bg-[#141420] p-10 rounded-[2rem] border border-[#2A2A3E] shadow-xl">
         <h1 className="text-xl font-black text-white mb-4">Sign in required</h1>
-        <Link href="/login"><button className="px-8 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold">Sign in</button></Link>
+        <Link href="/login"><button className="px-8 py-3 rounded-xl bg-[#5B4BDB] hover:bg-[#4c3ec7] transition-all shadow-[0_0_15px_rgba(91,75,219,0.3)] text-white font-bold">Sign in</button></Link>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">      <AnimatePresence>
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white">
+      <AnimatePresence>
         {toast && (
           <motion.div initial={{opacity:0,y:-16}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-16}}
-            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-5 py-3 bg-gray-900 text-white text-sm font-bold rounded-xl shadow-xl">
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-5 py-3 bg-[#5B4BDB] text-white text-sm font-bold rounded-xl shadow-[0_0_20px_rgba(91,75,219,0.4)]">
             {toast}
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="max-w-5xl mx-auto px-4 py-14 flex-grow w-full">
-        <div className="mb-8">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-2">Mentor Dashboard</p>
-          <h1 className="text-3xl font-black text-white mb-1">Welcome, {user.displayName?.split(" ")[0]}</h1>
-          <p className="text-gray-500 text-sm">Manage your sessions, workshops and earnings.</p>
-        </div>
+      <div className="max-w-5xl mx-auto px-4 py-28 flex-grow w-full relative z-10">
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }} className="mb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#5B4BDB]/15 border border-[#5B4BDB]/25 mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB] animate-pulse" />
+            <span className="text-xs font-bold text-[#7C6EF6] uppercase tracking-widest">Mentor Dashboard</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black text-white mb-3">Welcome, {user.displayName?.split(" ")[0]}</h1>
+          <p className="text-[#9494AD] text-sm font-medium">Manage your sessions, workshops and earnings.</p>
+        </motion.div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {[
-            {label:"Total sessions",   value:sessions.length},
-            {label:"Pending requests", value:sessions.filter(s=>s.status==="pending").length},
-            {label:"Earned (completed)",value:`₹${totalEarnings.toLocaleString()}`},
-            {label:"Upcoming earnings", value:`₹${pendingEarnings.toLocaleString()}`},
+            {label:"Total sessions",   value:sessions.length, color:"#7C6EF6"},
+            {label:"Pending requests", value:sessions.filter(s=>s.status==="pending").length, color:"#F59E0B"},
+            {label:"Earned (completed)",value:`₹${totalEarnings.toLocaleString()}`, color:"#10B981"},
+            {label:"Upcoming earnings", value:`₹${pendingEarnings.toLocaleString()}`, color:"#06B6D4"},
           ].map(s=>(
-            <div key={s.label} className="bg-white border border-gray-200 rounded-2xl p-5 text-center shadow-sm">
-              <p className="text-2xl font-black text-white mb-1">{s.value}</p>
-              <p className="text-xs text-gray-400">{s.label}</p>
+            <div key={s.label} className="bg-[#141420] border-2 border-[#2A2A3E] rounded-3xl p-6 text-center shadow-sm">
+              <p className="text-3xl font-black mb-1" style={{color:s.color}}>{s.value}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[#9494AD]">{s.label}</p>
             </div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Tabs */}
-        <div className="flex gap-1 p-1 bg-white border border-gray-200 rounded-xl w-fit mb-8">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }} className="flex gap-1 p-1.5 bg-[#141420] border border-[#2A2A3E] rounded-2xl w-fit mb-8 shadow-sm">
           {(["bookings","workshops","earnings"] as const).map(t=>(
             <button key={t} onClick={()=>setTab(t)}
-              className={`px-5 py-2 rounded-lg text-sm font-bold transition-all capitalize ${tab===t?"bg-gray-900 text-white":"text-gray-500 hover:text-gray-800"}`}>
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all capitalize ${tab===t?"bg-[#5B4BDB] text-white shadow-[0_0_15px_rgba(91,75,219,0.3)]":"text-[#9494AD] hover:text-white hover:bg-[#2A2A3E]/50"}`}>
               {t}
             </button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Bookings tab */}
         {tab==="bookings" && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-lg font-black text-white">Session Requests</h2>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-black text-white">Session Requests</h2>
               <Link href="/learn/workshops/create">
-                <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold hover:bg-[#4c3ec7] transition-colors">
+                <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#5B4BDB] hover:bg-[#4c3ec7] transition-all shadow-[0_0_15px_rgba(91,75,219,0.3)] text-white text-sm font-bold">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>
                   Create Workshop
                 </button>
@@ -158,181 +162,202 @@ export default function MentorDashboard() {
             </div>
 
             {loading ? (
-              <div className="space-y-3">{[...Array(3)].map((_,i)=><div key={i} className="bg-white rounded-2xl border border-gray-200 p-6 animate-pulse h-32"/>)}</div>
+              <div className="space-y-3">{[...Array(3)].map((_,i)=><div key={i} className="bg-[#141420] rounded-[2rem] border-2 border-[#2A2A3E] p-6 animate-pulse h-32"/>)}</div>
             ) : sessions.length===0 ? (
-              <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
-                <p className="text-4xl mb-3">📋</p>
-                <p className="font-bold text-white mb-1">No session requests yet</p>
-                <p className="text-gray-400 text-sm">Learners will appear here when they book you</p>
+              <div className="text-center py-16 bg-[#141420] rounded-[2.5rem] border-2 border-[#2A2A3E] border-dashed">
+                <div className="w-20 h-20 mx-auto rounded-3xl bg-[#0A0A0F] border-2 border-[#2A2A3E] flex items-center justify-center mb-4">
+                  <span className="text-4xl">📋</span>
+                </div>
+                <p className="font-bold text-white text-lg mb-1">No session requests yet</p>
+                <p className="text-[#9494AD] text-sm">Learners will appear here when they book you</p>
               </div>
             ) : (
               sessions.map(s=>(
                 <motion.div key={s.id} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}}
-                  className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-                  <div className="p-5 border-b border-gray-100">
+                  className="bg-[#141420] border-2 border-[#2A2A3E] rounded-[2rem] overflow-hidden shadow-sm hover:border-[#5B4BDB]/30 transition-colors">
+                  <div className="p-6 border-b border-[#2A2A3E]">
                     <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
-                          {s.learnerPhoto ? <img src={s.learnerPhoto} className="w-full h-full object-cover" alt=""/> : <div className="w-full h-full flex items-center justify-center font-black text-gray-400 text-sm">{s.learnerName?.[0]}</div>}
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl overflow-hidden bg-[#0A0A0F] border border-[#2A2A3E] flex-shrink-0">
+                          {s.learnerPhoto ? <img src={s.learnerPhoto} className="w-full h-full object-cover" alt=""/> : <div className="w-full h-full flex items-center justify-center font-black text-[#5B4BDB] text-lg">{s.learnerName?.[0]}</div>}
                         </div>
                         <div>
-                          <p className="font-black text-white text-sm">{s.learnerName}</p>
-                          <p className="text-xs text-gray-400">{formatDate(s.scheduledDate)} · {s.duration} min</p>
+                          <p className="font-black text-white text-base">{s.learnerName}</p>
+                          <p className="text-xs text-[#9494AD] font-medium mt-0.5">{formatDate(s.scheduledDate)} · {s.duration} min</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${STATUS_STYLES[s.status]}`}>
-                          {s.status.charAt(0).toUpperCase()+s.status.slice(1)}
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        <span className={`text-[10px] uppercase tracking-wide font-bold px-3 py-1 rounded-full border ${STATUS_STYLES[s.status]}`}>
+                          {s.status}
                         </span>
-                        <span className="text-sm font-black text-white">₹{(s.mentorEarns||0).toLocaleString()}</span>
+                        <span className="text-lg font-black text-[#10B981]">₹{(s.mentorEarns||0).toLocaleString()}</span>
                       </div>
                     </div>
-                    <div className="mt-3">
+                    <div className="mt-5 bg-[#0A0A0F]/50 p-4 rounded-xl border border-[#2A2A3E]">
                       <p className="text-sm font-bold text-white">{s.topic}</p>
-                      {s.message && <p className="text-xs text-gray-500 mt-1 leading-relaxed">{s.message}</p>}
+                      {s.message && <p className="text-xs text-[#9494AD] mt-1.5 leading-relaxed">{s.message}</p>}
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="px-5 py-4 bg-[#0A0A0F]">
+                  <div className="px-6 py-5 bg-[#0A0A0F]">
                     {s.status==="pending" && (
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         <div>
-                          <label className="block text-xs font-bold text-gray-500 mb-1.5">Meet link (required to accept)</label>
+                          <label className="block text-xs font-bold text-[#6B6B85] mb-2 uppercase tracking-wide">Meet link (required to accept)</label>
                           <input
                             value={meetInput[s.id]||""}
                             onChange={e=>setMeetInput(prev=>({...prev,[s.id]:e.target.value}))}
                             placeholder="https://meet.google.com/xxx-xxxx-xxx or Jitsi room link"
-                            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#5B4BDB] transition-colors bg-white"/>
+                            className="w-full border border-[#2A2A3E] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#5B4BDB] bg-[#141420] transition-colors"/>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-3">
                           <button onClick={()=>handleAccept(s)}
-                            className="flex-1 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-bold transition-colors">
+                            className="flex-1 py-3 rounded-xl bg-[#10B981] hover:bg-[#059669] shadow-[0_0_15px_rgba(16,185,129,0.3)] text-white text-sm font-bold transition-all">
                             Accept & Share Link
                           </button>
                           <button onClick={()=>handleReject(s)}
-                            className="px-4 py-2.5 rounded-xl border border-red-200 text-red-600 text-sm font-bold hover:bg-red-50 transition-colors">
+                            className="px-6 py-3 rounded-xl border border-[#F43F5E]/30 text-[#F43F5E] text-sm font-bold hover:bg-[#F43F5E]/10 transition-colors">
                             Decline
                           </button>
                         </div>
                       </div>
                     )}
                     {s.status==="accepted" && (
-                      <div className="flex items-center justify-between flex-wrap gap-3">
+                      <div className="flex items-center justify-between flex-wrap gap-4">
                         <div>
-                          <p className="text-xs font-bold text-gray-500 mb-1">Meet link shared</p>
-                          <p className="text-xs text-[#5B4BDB] font-medium truncate max-w-xs">{s.meetLink}</p>
+                          <p className="text-xs font-bold text-[#6B6B85] mb-1.5 uppercase tracking-wide">Meet link shared</p>
+                          <p className="text-xs text-[#5B4BDB] font-medium truncate max-w-sm bg-[#5B4BDB]/10 px-3 py-1.5 rounded-lg border border-[#5B4BDB]/20">{s.meetLink}</p>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-3">
                           <a href={s.meetLink} target="_blank" rel="noopener noreferrer">
-                            <button className="px-4 py-2 rounded-xl bg-[#5B4BDB] text-white text-xs font-bold hover:bg-[#4c3ec7] transition-colors">
+                            <button className="px-5 py-2.5 rounded-xl bg-[#5B4BDB] hover:bg-[#4c3ec7] shadow-[0_0_15px_rgba(91,75,219,0.3)] text-white text-xs font-bold transition-all">
                               Join Session →
                             </button>
                           </a>
                           <button onClick={()=>handleComplete(s)}
-                            className="px-4 py-2 rounded-xl border border-gray-200 text-gray-600 text-xs font-bold hover:bg-gray-100 transition-colors">
+                            className="px-5 py-2.5 rounded-xl border-2 border-[#2A2A3E] text-[#9494AD] text-xs font-bold hover:bg-[#2A2A3E]/50 transition-colors">
                             Mark Complete
                           </button>
                         </div>
                       </div>
                     )}
                     {s.status==="completed" && (
-                      <p className="text-xs text-green-600 font-bold">✓ Session completed · ₹{(s.mentorEarns||0).toLocaleString()} earned</p>
+                      <div className="flex items-center gap-2 text-xs text-[#10B981] font-bold">
+                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#10B981]/20 border border-[#10B981]/30">✓</span>
+                        Session completed · ₹{(s.mentorEarns||0).toLocaleString()} earned
+                      </div>
                     )}
                     {s.status==="rejected" && (
-                      <p className="text-xs text-gray-400 font-medium">Session declined</p>
+                      <p className="text-xs text-[#F43F5E] font-medium flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#F43F5E]"></span> Session declined
+                      </p>
                     )}
                   </div>
                 </motion.div>
               ))
             )}
-          </div>
+          </motion.div>
         )}
 
         {/* Workshops tab */}
         {tab==="workshops" && (
-          <div>
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-black text-white">Your Workshops</h2>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-black text-white">Your Workshops</h2>
               <Link href="/learn/workshops/create">
-                <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold hover:bg-[#4c3ec7] transition-colors border-b-[2px] border-[#4438b8]">
+                <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#5B4BDB] hover:bg-[#4c3ec7] shadow-[0_0_15px_rgba(91,75,219,0.3)] transition-all text-white text-sm font-bold">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>
                   New Workshop
                 </button>
               </Link>
             </div>
-            {workshops.length===0 ? (
-              <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
-                <p className="text-4xl mb-3">🎓</p>
-                <p className="font-bold text-white mb-1">No workshops yet</p>
-                <p className="text-gray-400 text-sm mb-5">Create your first live session</p>
-                <Link href="/learn/workshops/create">
-                  <button className="px-6 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm hover:bg-[#4c3ec7] transition-colors">Create Workshop</button>
-                </Link>
+
+            {loading ? (
+              <div className="space-y-3">{[...Array(2)].map((_,i)=><div key={i} className="bg-[#141420] rounded-[2rem] border-2 border-[#2A2A3E] p-6 animate-pulse h-32"/>)}</div>
+            ) : workshops.length===0 ? (
+              <div className="text-center py-16 bg-[#141420] rounded-[2.5rem] border-2 border-[#2A2A3E] border-dashed">
+                <div className="w-20 h-20 mx-auto rounded-3xl bg-[#0A0A0F] border-2 border-[#2A2A3E] flex items-center justify-center mb-4">
+                  <span className="text-4xl">🎓</span>
+                </div>
+                <p className="font-bold text-white text-lg mb-1">No workshops hosted yet</p>
+                <p className="text-[#9494AD] text-sm">Create a workshop to teach multiple learners at once</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {workshops.map(w=>(
-                  <div key={w.id} className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${w.status==="live"?"bg-red-50 text-red-600 border-red-200":w.status==="upcoming"?"bg-green-50 text-green-700 border-green-200":"bg-gray-100 text-gray-500 border-gray-200"}`}>
-                            {w.status==="live"?"🔴 Live":w.status==="upcoming"?"Upcoming":"Ended"}
-                          </span>
-                          {w.price===0 ? <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Free</span> : <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">₹{w.price}</span>}
-                        </div>
-                        <p className="font-black text-white text-sm">{w.title}</p>
-                        <p className="text-xs text-gray-400 mt-1">{w.registeredUsers?.length||0}/{w.maxSeats} seats · {w.duration} min</p>
+              workshops.map(w=>(
+                <motion.div key={w.id} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}}
+                  className="bg-[#141420] border-2 border-[#2A2A3E] rounded-[2rem] p-6 shadow-sm hover:border-[#5B4BDB]/30 transition-colors">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        {w.status==="live" && <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-red-400 bg-red-500/15 border border-red-500/30 px-3 py-1 rounded-full"><span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"/>Live</span>}
+                        {w.status==="ended" && <span className="text-[10px] uppercase font-bold px-3 py-1 rounded-full bg-[#2A2A3E]/50 text-[#9494AD] border border-[#2A2A3E]">Ended</span>}
+                        {w.status==="upcoming" && <span className="text-[10px] uppercase font-bold px-3 py-1 rounded-full bg-[#5B4BDB]/15 text-[#7C6EF6] border border-[#5B4BDB]/30">Upcoming</span>}
                       </div>
-                      <Link href={`/learn/workshops/${w.id}`}>
-                        <button className="px-4 py-2 rounded-xl border border-gray-200 text-gray-600 text-xs font-bold hover:bg-[#0A0A0F] transition-colors">Manage</button>
-                      </Link>
+                      <p className="font-black text-white text-base leading-tight">{w.title}</p>
+                      <p className="text-sm text-[#9494AD] font-medium mt-1.5 flex flex-wrap gap-x-4 gap-y-1">
+                        <span>{formatDate(w.date)}</span>
+                        <span>·</span>
+                        <span>{w.duration} min</span>
+                        <span>·</span>
+                        <span>{w.registeredUsers?.length||0} / {w.maxSeats} registered</span>
+                      </p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <p className="text-xl font-black text-[#10B981]">₹{w.price===0?"Free":w.price.toLocaleString()}</p>
+                      <p className="text-[10px] tracking-wide uppercase font-bold text-[#6B6B85] mt-1">Earnings: ₹{((w.price*0.8)*(w.registeredUsers?.length||0)).toLocaleString()}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))
+            )}
+          </motion.div>
+        )}
+
+        {/* Earnings tab */}
+        {tab==="earnings" && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            <div className="bg-[#141420] rounded-[2.5rem] p-8 border-2 border-[#2A2A3E] shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+              <div>
+                <p className="text-sm font-bold text-[#9494AD] uppercase tracking-wide">Available for withdrawal</p>
+                <div className="flex items-baseline gap-2 mt-2">
+                  <h2 className="text-5xl font-black text-white">₹{totalEarnings.toLocaleString()}</h2>
+                  <span className="text-sm font-bold text-[#10B981]">+₹{pendingEarnings.toLocaleString()} pending</span>
+                </div>
+              </div>
+              <button disabled={totalEarnings===0} className="w-full md:w-auto px-8 py-3.5 rounded-xl bg-[#5B4BDB] disabled:bg-[#2A2A3E] disabled:text-[#6B6B85] hover:bg-[#4c3ec7] shadow-[0_0_15px_rgba(91,75,219,0.3)] disabled:shadow-none transition-all text-white font-bold text-sm">
+                Withdraw Funds
+              </button>
+            </div>
+
+            <h3 className="text-lg font-black text-white mt-10 mb-4">Recent Transactions</h3>
+            {totalEarnings===0 ? (
+              <div className="text-center py-16 bg-[#141420] border-2 border-[#2A2A3E] border-dashed rounded-[2.5rem]">
+                <div className="w-16 h-16 mx-auto rounded-3xl bg-[#0A0A0F] border-2 border-[#2A2A3E] flex items-center justify-center mb-4">
+                  <span className="text-2xl">💸</span>
+                </div>
+                <p className="text-[#9494AD] font-medium text-sm">No completed sessions yet to show earnings.</p>
+              </div>
+            ) : (
+              <div className="bg-[#141420] rounded-[2rem] border-2 border-[#2A2A3E] shadow-sm divide-y divide-[#2A2A3E]">
+                {sessions.filter(s=>s.status==="completed").map(s=>(
+                  <div key={s.id} className="p-5 flex items-center justify-between hover:bg-[#2A2A3E]/30 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-[#0A0A0F] border border-[#2A2A3E] flex items-center justify-center text-xl">🤝</div>
+                      <div>
+                        <p className="text-sm font-bold text-white leading-tight">1-on-1 Session: {s.learnerName}</p>
+                        <p className="text-xs text-[#9494AD] font-medium mt-1">{formatDate(s.scheduledDate)}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-black text-[#10B981]">+₹{(s.mentorEarns||0).toLocaleString()}</p>
+                      <p className="text-[10px] uppercase tracking-wide font-bold text-[#6B6B85] mt-1">Completed</p>
                     </div>
                   </div>
                 ))}
               </div>
             )}
-          </div>
-        )}
-
-        {/* Earnings tab */}
-        {tab==="earnings" && (
-          <div className="space-y-5">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[
-                {label:"Total earned",value:`₹${totalEarnings.toLocaleString()}`,desc:"From completed sessions",color:"text-green-600"},
-                {label:"Pending",value:`₹${pendingEarnings.toLocaleString()}`,desc:"From accepted sessions",color:"text-amber-600"},
-                {label:"Platform fee (15%)",value:`₹${Math.round(totalEarnings/0.85*0.15).toLocaleString()}`,desc:"SYNTHÉ's cut",color:"text-gray-600"},
-              ].map(s=>(
-                <div key={s.label} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                  <p className={`text-3xl font-black mb-1 ${s.color}`}>{s.value}</p>
-                  <p className="text-sm font-bold text-white">{s.label}</p>
-                  <p className="text-xs text-gray-400">{s.desc}</p>
-                </div>
-              ))}
-            </div>
-            <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-              <h3 className="font-black text-white mb-4">Session History</h3>
-              <div className="space-y-3">
-                {sessions.filter(s=>s.status==="completed"||s.status==="accepted").map(s=>(
-                  <div key={s.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                    <div>
-                      <p className="text-sm font-bold text-white">{s.topic}</p>
-                      <p className="text-xs text-gray-400">{s.learnerName} · {formatDate(s.scheduledDate)}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-black text-green-600">+₹{(s.mentorEarns||0).toLocaleString()}</p>
-                      <p className="text-xs text-gray-400">{s.status}</p>
-                    </div>
-                  </div>
-                ))}
-                {sessions.filter(s=>s.status==="completed"||s.status==="accepted").length===0 && (
-                  <p className="text-sm text-gray-400 text-center py-4">No completed sessions yet</p>
-                )}
-              </div>
-            </div>
-          </div>
+          </motion.div>
         )}
       </div>
       <Footer/>

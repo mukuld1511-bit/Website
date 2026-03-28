@@ -161,44 +161,44 @@ function BookingModal({ mentor, user, onClose, onSuccess }: {
         className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
         onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
         <motion.div initial={{ opacity: 0, scale: 0.95, y: 16 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[92vh] overflow-y-auto">
+          className="bg-[#141420] border-2 border-[#2A2A3E] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.5)] w-full max-w-lg overflow-hidden max-h-[92vh] overflow-y-auto custom-scrollbar">
 
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-5 border-b-2 border-[#2A2A3E] sticky top-0 bg-[#141420]/95 backdrop-blur-sm z-10">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#0A0A0F] border border-[#2A2A3E] flex items-center justify-center overflow-hidden">
                 {mentor.photoURL
                   ? <img src={mentor.photoURL} className="w-full h-full object-cover" alt="" />
-                  : <span className="text-[#5B4BDB] font-bold text-sm">{mentor.displayName?.charAt(0)}</span>}
+                  : <span className="text-[#7C6EF6] font-black">{mentor.displayName?.charAt(0)}</span>}
               </div>
               <div>
-                <p className="font-bold text-white text-sm">{mentor.displayName}</p>
-                <p className="text-xs text-gray-400">₹{rate}/hr · {mentor.experience}</p>
+                <p className="font-black text-white text-base leading-tight">{mentor.displayName}</p>
+                <p className="text-xs text-[#9494AD] font-bold mt-0.5">₹{rate}/hr · {mentor.experience}</p>
               </div>
             </div>
-            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-xl bg-[#0A0A0F] border border-[#2A2A3E] hover:border-[#5B4BDB]/50 hover:text-white text-[#9494AD] transition-colors">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>
           </div>
 
-          <div className="px-6 py-5 space-y-5">
+          <div className="px-6 py-6 space-y-6">
 
             {/* Session type selector */}
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 block">Session Type</label>
-              <div className="grid grid-cols-3 gap-2">
+              <label className="text-[10px] font-black text-[#6B6B85] uppercase tracking-widest mb-3 block">Session Type</label>
+              <div className="grid grid-cols-3 gap-3">
                 {SESSION_TYPES.map(st => (
                   <button key={st.type} type="button" onClick={() => setSessionType(st.type)}
-                    className={`p-3 rounded-xl border-2 text-center transition-all ${
+                    className={`p-3 rounded-2xl border-2 text-center transition-all ${
                       sessionType === st.type
-                        ? "border-[#5B4BDB] bg-[#5B4BDB]/5"
-                        : "border-gray-200 hover:border-gray-300"
+                        ? "border-[#5B4BDB] bg-[#5B4BDB]/10 shadow-[0_0_15px_rgba(91,75,219,0.15)]"
+                        : "border-[#2A2A3E] bg-[#0A0A0F] hover:border-[#5B4BDB]/50"
                     }`}>
-                    <div className="text-xl mb-1">{st.icon}</div>
-                    <p className={`text-xs font-bold ${sessionType === st.type ? "text-[#5B4BDB]" : "text-gray-700"}`}>{st.label}</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5 leading-tight">{st.desc}</p>
+                    <div className="text-2xl mb-2 filter hue-rotate-15">{st.icon}</div>
+                    <p className={`text-xs font-black ${sessionType === st.type ? "text-white" : "text-[#9494AD]"}`}>{st.label}</p>
+                    <p className="text-[9px] text-[#6B6B85] font-bold mt-1 leading-tight">{st.desc}</p>
                   </button>
                 ))}
               </div>
@@ -206,20 +206,20 @@ function BookingModal({ mentor, user, onClose, onSuccess }: {
 
             {/* Topic */}
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5 block">Topic *</label>
+              <label className="text-[10px] font-black text-[#6B6B85] uppercase tracking-widest mb-2 block">Topic *</label>
               <input value={topic} onChange={e => setTopic(e.target.value)}
                 placeholder={sessionType === "doubt" ? "e.g. AR tracking issue in Unity..." : "e.g. Unity AR Foundation basics"}
-                className="w-full border border-gray-200 focus:border-[#5B4BDB] rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors" />
+                className="w-full bg-[#0A0A0F] border-2 border-[#2A2A3E] focus:border-[#5B4BDB] rounded-xl px-5 py-3 text-sm text-white placeholder-[#6B6B85] outline-none transition-all shadow-inner" />
             </div>
 
             {/* Duration */}
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5 block">Duration</label>
+              <label className="text-[10px] font-black text-[#6B6B85] uppercase tracking-widest mb-2 block">Duration</label>
               <div className="grid grid-cols-4 gap-2">
                 {DURATIONS.map(d => (
                   <button key={d} type="button" onClick={() => setDuration(d)}
-                    className={`py-2 rounded-xl text-sm font-bold border transition-all ${
-                      duration === d ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-600 border-gray-200 hover:bg-[#0A0A0F]"
+                    className={`py-2.5 rounded-xl text-sm font-black border-2 transition-all ${
+                      duration === d ? "bg-[#5B4BDB] text-white border-[#5B4BDB] shadow-[0_0_10px_rgba(91,75,219,0.3)]" : "bg-[#0A0A0F] text-[#9494AD] border-[#2A2A3E] hover:border-[#5B4BDB]/50"
                     }`}>{d}m</button>
                 ))}
               </div>
@@ -228,18 +228,18 @@ function BookingModal({ mentor, user, onClose, onSuccess }: {
             {/* Group specific: max seats */}
             {sessionType === "group" && (
               <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5 block">
+                <label className="text-[10px] font-black text-[#6B6B85] uppercase tracking-widest mb-2 block">
                   Max Seats (you set group size)
                 </label>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   <input type="number" value={maxSeats} onChange={e => setMaxSeats(Math.max(2, Number(e.target.value)))}
                     min={2} max={50}
-                    className="w-24 border border-gray-200 focus:border-[#5B4BDB] rounded-xl px-4 py-2.5 text-sm text-gray-800 outline-none transition-colors" />
-                  <p className="text-xs text-gray-400">Learners can join until seats fill up</p>
+                    className="w-24 bg-[#0A0A0F] border-2 border-[#2A2A3E] focus:border-[#5B4BDB] rounded-xl px-4 py-3 text-sm text-white font-bold outline-none transition-colors" />
+                  <p className="text-xs text-[#9494AD] font-medium">Learners can join until seats fill up</p>
                 </div>
-                <div className="mt-2 bg-teal-50 border border-teal-200 rounded-xl p-3 text-xs text-teal-800">
-                  <p className="font-bold">Price breakdown for {maxSeats} seats:</p>
-                  <p>Mentor total: ₹{calc1on1Price(rate, duration)} → Per head: ₹{calcGroupPerHead(rate, duration, maxSeats)}</p>
+                <div className="mt-3 bg-teal-500/10 border border-teal-500/30 rounded-xl p-3 text-xs text-teal-400">
+                  <p className="font-black mb-0.5">Price breakdown for {maxSeats} seats:</p>
+                  <p className="font-medium">Mentor total: ₹{calc1on1Price(rate, duration)} → Per head: ₹{calcGroupPerHead(rate, duration, maxSeats)}</p>
                 </div>
               </div>
             )}
@@ -247,90 +247,93 @@ function BookingModal({ mentor, user, onClose, onSuccess }: {
             {/* Date & time (not for doubt) */}
             {sessionType !== "doubt" && (
               <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5 block">
+                <label className="text-[10px] font-black text-[#6B6B85] uppercase tracking-widest mb-2 block">
                   {sessionType === "group" ? "Session Date & Time *" : "Preferred Date & Time *"}
                 </label>
                 <input type="datetime-local" value={date} onChange={e => setDate(e.target.value)} min={minDate}
-                  className="w-full border border-gray-200 focus:border-[#5B4BDB] rounded-xl px-4 py-2.5 text-sm text-gray-800 outline-none transition-colors" />
+                  className="w-full bg-[#0A0A0F] border-2 border-[#2A2A3E] focus:border-[#5B4BDB] rounded-xl px-5 py-3 text-sm text-white outline-none transition-all shadow-inner [color-scheme:dark]" />
               </div>
             )}
 
             {sessionType === "doubt" && (
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800">
-                <p className="font-bold">⚡ On-demand doubt session</p>
-                <p className="mt-0.5">Mentor will respond and schedule at their earliest availability. Usually within a few hours.</p>
+              <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-xs text-amber-400 flex items-start gap-3">
+                <span className="text-xl">⚡</span>
+                <div>
+                  <p className="font-black mb-0.5">On-demand doubt session</p>
+                  <p className="font-medium leading-relaxed">Mentor will respond and schedule at their earliest availability. Usually within a few hours.</p>
+                </div>
               </div>
             )}
 
             {/* Meet link for group */}
             {sessionType === "group" && (
               <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5 block">Meet Link (optional)</label>
+                <label className="text-[10px] font-black text-[#6B6B85] uppercase tracking-widest mb-2 block">Meet Link (optional)</label>
                 <input value={meetLink} onChange={e => setMeetLink(e.target.value)}
                   placeholder="Leave blank to auto-generate Jitsi link"
-                  className="w-full border border-gray-200 focus:border-[#5B4BDB] rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors" />
+                  className="w-full bg-[#0A0A0F] border-2 border-[#2A2A3E] focus:border-[#5B4BDB] rounded-xl px-5 py-3 text-sm text-white placeholder-[#6B6B85] outline-none transition-all shadow-inner" />
               </div>
             )}
 
             {/* Message */}
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5 block">Message (optional)</label>
+              <label className="text-[10px] font-black text-[#6B6B85] uppercase tracking-widest mb-2 block">Message (optional)</label>
               <textarea value={message} onChange={e => setMessage(e.target.value)} rows={2}
                 placeholder="Share your background or specific questions..."
-                className="w-full border border-gray-200 focus:border-[#5B4BDB] rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors resize-none" />
+                className="w-full bg-[#0A0A0F] border-2 border-[#2A2A3E] focus:border-[#5B4BDB] rounded-xl px-5 py-3 text-sm text-white placeholder-[#6B6B85] outline-none transition-all shadow-inner resize-none" />
             </div>
 
             {/* Price summary */}
-            <div className="bg-[#0A0A0F] border border-gray-100 rounded-xl p-4 space-y-1.5 text-sm">
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Price breakdown</p>
+            <div className="bg-[#0A0A0F] border-2 border-[#2A2A3E] rounded-2xl p-5 space-y-2 text-sm">
+              <p className="text-[10px] font-black text-[#6B6B85] uppercase tracking-widest mb-3">Price breakdown</p>
               {sessionType === "group" ? (
                 <>
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-[#9494AD] font-medium">
                     <span>Mentor rate ({duration}min)</span>
                     <span>₹{calc1on1Price(rate, duration)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-[#9494AD] font-medium">
                     <span>÷ {maxSeats} learners</span>
-                    <span className="font-bold text-[#5B4BDB]">₹{price} per head</span>
+                    <span className="font-black text-[#7C6EF6]">₹{price} per head</span>
                   </div>
-                  <div className="flex justify-between text-gray-400 text-xs">
+                  <div className="flex justify-between text-[#6B6B85] text-xs font-medium">
                     <span>Platform fee (15%)</span>
                     <span>₹{platformFee}</span>
                   </div>
-                  <div className="flex justify-between text-gray-400 text-xs">
+                  <div className="flex justify-between text-[#6B6B85] text-xs font-medium">
                     <span>Mentor earns (if full)</span>
                     <span>₹{Math.round(mentorEarns * maxSeats)}</span>
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-[#9494AD] font-medium">
                     <span>Session ({duration} min)</span>
                     <span>₹{price}</span>
                   </div>
-                  <div className="flex justify-between text-gray-400 text-xs">
+                  <div className="flex justify-between text-[#6B6B85] text-xs font-medium">
                     <span>Platform fee (15%)</span>
                     <span>₹{platformFee}</span>
                   </div>
-                  <div className="flex justify-between text-gray-400 text-xs">
+                  <div className="flex justify-between text-[#6B6B85] text-xs font-medium">
                     <span>Mentor earns</span>
                     <span>₹{mentorEarns}</span>
                   </div>
                 </>
               )}
-              <div className="h-px bg-gray-200 my-1" />
-              <div className="flex justify-between font-black text-white">
+              <div className="h-px bg-[#2A2A3E] my-3" />
+              <div className="flex justify-between font-black text-white text-base">
                 <span>You pay</span>
-                <span className="text-[#5B4BDB]">₹{price}</span>
+                <span className="text-[#10B981]">₹{price}</span>
               </div>
             </div>
           </div>
 
           {/* Footer */}
           <div className="px-6 pb-6 flex gap-3">
-            <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-sm hover:bg-[#0A0A0F] transition">Cancel</button>
+            <button onClick={onClose} className="flex-1 py-3.5 rounded-xl border-2 border-[#2A2A3E] bg-[#0A0A0F] text-[#9494AD] font-black text-sm hover:text-white transition-colors">Cancel</button>
             <button onClick={handleBook} disabled={loading || !topic.trim() || (sessionType !== "doubt" && !date)}
-              className="flex-1 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] disabled:opacity-40 transition active:translate-y-[1px]">
+              className="flex-[2] py-3.5 rounded-xl bg-[#5B4BDB] text-white font-black text-sm hover:bg-[#4c3ec7] disabled:bg-[#2A2A3E] disabled:text-[#6B6B85] shadow-[0_0_20px_rgba(91,75,219,0.3)] disabled:shadow-none transition-all active:scale-[0.98]">
               {loading ? "Processing…" : `Pay ₹${price}`}
             </button>
           </div>
@@ -346,71 +349,76 @@ function MentorCard({ mentor, onBook, canBook }: {
 }) {
   const [expanded, setExpanded] = useState(false);
   return (
-    <motion.div whileHover={{ y: -2 }}
-      className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col">
-      <div className="flex items-start gap-4 mb-4">
-        <div className="w-14 h-14 rounded-xl bg-[#5B4BDB]/10 overflow-hidden flex-shrink-0 flex items-center justify-center text-2xl">
+    <motion.div whileHover={{ y: -4, borderColor: "rgba(91,75,219,0.5)" }} transition={{ duration: 0.2 }}
+      className="bg-[#141420] rounded-3xl border-2 border-[#2A2A3E] shadow-sm p-6 flex flex-col group relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#5B4BDB]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"/>
+      
+      <div className="flex items-start gap-4 mb-5 relative z-10">
+        <div className="w-16 h-16 rounded-2xl bg-[#0A0A0F] border-2 border-[#2A2A3E] overflow-hidden flex-shrink-0 flex items-center justify-center text-3xl shadow-inner group-hover:border-[#5B4BDB]/30 transition-colors">
           {mentor.photoURL
             ? <img src={mentor.photoURL} alt={mentor.displayName} className="w-full h-full object-cover" />
-            : <span>👤</span>}
+            : <span className="text-[#7C6EF6] font-black text-xl">{mentor.displayName?.charAt(0)}</span>}
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 pt-1">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <p className="font-black text-white">{mentor.displayName}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{mentor.expertise}</p>
+              <p className="font-black text-white text-lg leading-tight truncate">{mentor.displayName}</p>
+              <p className="text-xs font-bold text-[#5B4BDB] uppercase tracking-wide mt-1 truncate">{mentor.expertise}</p>
             </div>
-            <span className="text-sm font-black text-[#5B4BDB] shrink-0">₹{mentor.hourlyRate}/hr</span>
+            <span className="text-sm font-black text-[#10B981] shrink-0 bg-[#10B981]/10 px-2.5 py-1 rounded-lg border border-[#10B981]/20">₹{mentor.hourlyRate}/h</span>
           </div>
-          <div className="flex items-center gap-2 mt-1">
+          <div className="flex items-center gap-2.5 mt-2.5">
             {mentor.rating && (
-              <span className="text-xs text-amber-600 font-bold">⭐ {mentor.rating.toFixed(1)}</span>
+              <span className="text-xs text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">⭐ {mentor.rating.toFixed(1)}</span>
             )}
-            <span className="text-xs text-gray-400">{mentor.totalSessions ?? 0} sessions</span>
+            <span className="text-[10px] uppercase font-bold text-[#6B6B85]">{mentor.totalSessions ?? 0} sessions</span>
             {mentor.experience && (
-              <span className="text-xs text-gray-400">· {mentor.experience}</span>
+              <>
+                <span className="w-1 h-1 rounded-full bg-[#2A2A3E]" />
+                <span className="text-[10px] uppercase font-bold text-[#6B6B85]">{mentor.experience}</span>
+              </>
             )}
           </div>
         </div>
       </div>
 
       {/* Bio */}
-      <p className={`text-xs text-gray-600 leading-relaxed mb-3 ${expanded ? "" : "line-clamp-2"}`}>{mentor.bio}</p>
+      <p className={`text-sm text-[#9494AD] font-medium leading-relaxed mb-4 relative z-10 ${expanded ? "" : "line-clamp-2"}`}>{mentor.bio}</p>
       {mentor.bio && mentor.bio.length > 100 && (
-        <button onClick={() => setExpanded(!expanded)} className="text-xs text-[#5B4BDB] font-semibold mb-3 text-left">
+        <button onClick={() => setExpanded(!expanded)} className="text-xs text-[#7C6EF6] font-black mb-4 text-left hover:underline w-fit relative z-10">
           {expanded ? "Show less" : "Read more"}
         </button>
       )}
 
       {/* Skills */}
-      <div className="flex flex-wrap gap-1 mb-4">
+      <div className="flex flex-wrap gap-1.5 mb-5 relative z-10">
         {mentor.skills?.slice(0, 5).map(s => (
-          <span key={s} className="text-xs bg-[#5B4BDB]/8 text-[#5B4BDB] px-2 py-0.5 rounded-full font-medium border border-[#5B4BDB]/15">{s}</span>
+          <span key={s} className="text-[10px] font-bold uppercase tracking-wide bg-[#2A2A3E]/50 text-white px-2.5 py-1 rounded-lg border border-[#2A2A3E]">{s}</span>
         ))}
       </div>
 
       {/* Session type quick prices */}
-      <div className="bg-[#0A0A0F] rounded-xl p-3 mb-4 grid grid-cols-3 gap-2 text-center">
+      <div className="bg-[#0A0A0F] border border-[#2A2A3E] rounded-2xl p-4 mb-5 grid grid-cols-3 gap-2 text-center relative z-10 group-hover:border-[#5B4BDB]/20 transition-colors">
         {[
-          { label: "1-on-1", price: calc1on1Price(mentor.hourlyRate ?? 500, 60) },
-          { label: "Group/head", price: calcGroupPerHead(mentor.hourlyRate ?? 500, 60, 5) },
-          { label: "Doubt", price: calc1on1Price(mentor.hourlyRate ?? 500, 30) },
+          { label: "1-on-1", price: calc1on1Price(mentor.hourlyRate ?? 500, 60), icon: "👤" },
+          { label: "Group/hd", price: calcGroupPerHead(mentor.hourlyRate ?? 500, 60, 5), icon: "👥" },
+          { label: "Doubt", price: calc1on1Price(mentor.hourlyRate ?? 500, 30), icon: "⚡" },
         ].map(item => (
           <div key={item.label}>
-            <p className="text-xs text-gray-400">{item.label}</p>
-            <p className="text-sm font-bold text-gray-800">₹{item.price}</p>
+            <p className="text-[10px] font-bold text-[#6B6B85] uppercase tracking-wide mb-1 flex items-center justify-center gap-1"><span className="text-xs">{item.icon}</span> {item.label}</p>
+            <p className="text-sm font-black text-white">₹{item.price}</p>
           </div>
         ))}
       </div>
 
       {canBook ? (
         <button onClick={onBook}
-          className="w-full py-2.5 bg-[#5B4BDB] border-b-[3px] border-[#4438b8] text-white text-sm font-bold rounded-xl hover:opacity-90 transition-all">
+          className="w-full mt-auto py-3.5 bg-[#5B4BDB] text-white text-sm font-black rounded-xl hover:bg-[#4c3ec7] shadow-[0_0_15px_rgba(91,75,219,0.3)] transition-all active:scale-[0.98] relative z-10">
           Book a Session
         </button>
       ) : (
-        <Link href="/join">
-          <button className="w-full py-2.5 bg-gray-100 text-gray-500 text-sm font-bold rounded-xl hover:bg-gray-200 transition-all">
+        <Link href="/join" className="w-full mt-auto relative z-10">
+          <button className="w-full py-3.5 bg-[#0A0A0F] border-2 border-[#2A2A3E] text-[#9494AD] text-sm font-black rounded-xl hover:border-[#5B4BDB]/50 hover:text-white transition-all">
             Apply as Learner to book
           </button>
         </Link>

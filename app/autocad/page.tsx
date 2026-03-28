@@ -213,34 +213,34 @@ export default function AutoCADPage() {
     <div className="min-h-screen bg-[#0A0A0F] font-sans flex flex-col relative">
       <div className="flex-grow pt-[100px] pb-24 px-4 overflow-x-hidden relative z-10">
         {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-[-1]" />
-        <div className="absolute top-60 right-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-[-1]" />
+        <div className="absolute top-20 left-10 w-64 h-64 bg-[#5B4BDB] rounded-full filter blur-[100px] opacity-20 z-[-1]" />
+        <div className="absolute top-60 right-10 w-72 h-72 bg-[#5B4BDB] rounded-full filter blur-[100px] opacity-20 z-[-1]" />
 
         <div className="max-w-7xl mx-auto">
 
           {/* Header */}
           <div className="mb-14 text-center mt-12">
             <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-2xl border-4 border-white bg-blue-50 text-blue-800 shadow-md mb-8 shadow-blue-100">
-              <span className="w-3 h-3 rounded-full bg-blue-600 animate-pulse" />
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#5B4BDB]/30 bg-[#5B4BDB]/10 text-[#7C6EF6] shadow-md mb-8 glass-synthe">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#7C6EF6] animate-pulse" />
               <span className="text-xs font-black uppercase tracking-widest">AutoCAD Hub</span>
             </motion.div>
 
             <motion.h1 initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.1 }}
               className="text-5xl md:text-7xl font-black tracking-tight text-white mb-6 drop-shadow-sm">
-              AutoCAD <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500">Drawings</span>
+              AutoCAD <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C6EF6] via-purple-400 to-[#5B4BDB]">Drawings</span>
             </motion.h1>
 
             <motion.p initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.2 }}
-              className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-bold">
+              className="text-[#9494AD] text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-bold">
               Professional DWG and DXF files for Architecture, Mechanical, Structural and more. All verified and ready to use.
             </motion.p>
 
             <div className="flex justify-center items-center gap-4 flex-wrap">
               {user && (
                 <Link href="/upload">
-                  <button className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-black uppercase tracking-wider text-white text-sm bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 shadow-xl transition-all">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <button className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-black uppercase tracking-wider text-white text-sm bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-4 border-[#4438b8] active:border-b-0 active:translate-y-[2px] shadow-[0_0_20px_rgba(91,75,219,0.3)] transition-all">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
                     </svg>
                     Upload CAD File
@@ -248,7 +248,7 @@ export default function AutoCADPage() {
                 </Link>
               )}
               <Link href="/gallery">
-                <button className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-black uppercase tracking-wider text-gray-700 text-sm border-2 border-indigo-100 bg-white hover:bg-indigo-50 shadow-md transition-colors">
+                <button className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-black uppercase tracking-wider text-white text-sm bg-[#141420] border-2 border-[#2A2A3E] hover:border-[#5B4BDB]/40 hover:bg-[#2A2A3E]/50 shadow-md transition-all active:translate-y-[1px]">
                   ← All Models
                 </button>
               </Link>
@@ -259,15 +259,15 @@ export default function AutoCADPage() {
           <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.25 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
             {CAD_FEATURES.map((f,i) => (
-              <div key={i} className="flex items-start gap-4 p-8 rounded-[2rem] border-4 border-indigo-50 bg-white/60 backdrop-blur-md shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 bg-${f.color}-100 border-2 border-${f.color}-200 text-${f.color}-600`}>
+              <div key={i} className="flex items-start gap-4 p-8 rounded-[2rem] border border-[#2A2A3E] bg-[#141420] shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_30px_rgba(91,75,219,0.15)] hover:border-[#5B4BDB]/40 hover:-translate-y-1 transition duration-300">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 bg-[#5B4BDB]/20 border border-[#5B4BDB]/30 text-[#7C6EF6]`}>
                   <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d={f.icon} />
                   </svg>
                 </div>
                 <div>
                   <p className="text-white font-black text-xl mb-2">{f.title}</p>
-                  <p className="text-gray-600 text-sm leading-relaxed font-bold">{f.desc}</p>
+                  <p className="text-[#9494AD] text-sm leading-relaxed font-bold">{f.desc}</p>
                 </div>
               </div>
             ))}
@@ -275,28 +275,28 @@ export default function AutoCADPage() {
 
           {/* Filters */}
           <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.3 }}
-            className="mb-10 p-6 md:p-8 rounded-[2.5rem] border-4 border-indigo-50 bg-white/60 backdrop-blur-md shadow-sm space-y-6">
+            className="mb-10 p-6 md:p-8 rounded-[2.5rem] border border-[#2A2A3E] bg-[#141420] shadow-[0_4px_30px_rgba(0,0,0,0.5)] space-y-6 relative z-20">
 
             {/* Search + Sort */}
             <div className="flex flex-col sm:flex-row gap-5">
               <div className="relative flex-1">
-                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-pink-400">
+                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#7C6EF6]">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
                 <input value={search} onChange={e=>setSearch(e.target.value)}
                   placeholder="Search drawings, categories, tags…"
-                  className="w-full bg-white border-2 border-indigo-100 text-white placeholder-indigo-300 font-bold text-base md:text-lg rounded-3xl pl-16 pr-6 py-5 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-300 transition shadow-sm" />
+                  className="w-full bg-[#0A0A0F] border-2 border-[#2A2A3E] text-white placeholder-[#6B6B85] font-bold text-base md:text-lg rounded-3xl pl-16 pr-6 py-5 focus:outline-none focus:ring-2 focus:ring-[#5B4BDB] focus:border-[#5B4BDB] transition shadow-inner" />
               </div>
               <div className="relative">
                 <select value={sortBy} onChange={e=>setSortBy(e.target.value)}
-                  className="bg-white border-2 border-indigo-100 text-indigo-700 font-black text-sm md:text-base tracking-wide rounded-3xl pl-6 pr-14 py-5 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400 appearance-none cursor-pointer w-full sm:min-w-[200px] shadow-sm uppercase">
+                  className="bg-[#0A0A0F] border-2 border-[#2A2A3E] text-white font-black text-sm md:text-base tracking-wide rounded-3xl pl-6 pr-14 py-5 focus:outline-none focus:ring-2 focus:ring-[#5B4BDB] focus:border-[#5B4BDB] appearance-none cursor-pointer w-full sm:min-w-[200px] shadow-inner uppercase">
                   <option value="newest">Sort by: Newest</option>
                   <option value="popular">Sort by: Most Viewed</option>
                   <option value="downloads">Sort by: Most Downloaded</option>
                 </select>
-                <div className="absolute right-6 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none">
+                <div className="absolute right-6 top-1/2 -translate-y-1/2 text-[#7C6EF6] pointer-events-none">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -305,26 +305,26 @@ export default function AutoCADPage() {
             </div>
 
             {/* File type + Category + Price */}
-            <div className="flex flex-wrap gap-5 items-center bg-white p-3 rounded-3xl border-2 border-indigo-50 shadow-sm">
+            <div className="flex flex-wrap gap-5 items-center bg-[#0A0A0F] p-3 rounded-3xl border-2 border-[#2A2A3E] shadow-inner">
               {/* File type tabs */}
               <div className="flex gap-2 flex-wrap">
                 {(["all","dwg","dxf"] as const).map(t => (
                   <button key={t} onClick={()=>setFileType(t)}
                     className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                      fileType===t ? "bg-amber-100 text-amber-700 shadow-sm border-2 border-amber-200" : "bg-[#0A0A0F] text-gray-500 hover:bg-gray-100 border-2 border-transparent"
+                      fileType===t ? "bg-[#5B4BDB] text-white shadow-sm" : "bg-transparent text-[#6B6B85] hover:text-white hover:bg-[#2A2A3E]/50"
                     }`}>
                     {t === "all" ? "All Formats" : `.${t.toUpperCase()}`}
                   </button>
                 ))}
               </div>
-              <div className="w-px h-8 bg-indigo-100 hidden md:block"></div>
+              <div className="w-px h-8 bg-[#2A2A3E] hidden md:block"></div>
 
               {/* Price */}
               <div className="flex gap-2 flex-wrap">
                 {(["all","free","paid"] as const).map(p => (
                   <button key={p} onClick={()=>setPriceFilter(p)}
                     className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                      priceFilter===p ? "bg-emerald-100 text-emerald-700 shadow-sm border-2 border-emerald-200" : "bg-[#0A0A0F] text-gray-500 hover:bg-gray-100 border-2 border-transparent"
+                      priceFilter===p ? "bg-emerald-500 text-white shadow-sm" : "bg-transparent text-[#6B6B85] hover:text-white hover:bg-[#2A2A3E]/50"
                     }`}>
                     {p==="all"?"All Pricing":p==="free"?"Free Only":"Paid Only"}
                   </button>
@@ -337,19 +337,19 @@ export default function AutoCADPage() {
               {CAD_CATEGORIES.slice(0,8).map(c => (
                 <button key={c} onClick={()=>setCategory(c)}
                   className={`px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wide border-2 transition-all duration-200 shadow-sm ${
-                    category===c ? "bg-blue-600 border-blue-600 text-white" : "bg-white border-indigo-100 text-indigo-500 hover:bg-indigo-50"
+                    category===c ? "bg-[#5B4BDB] border-[#4438b8] text-white" : "bg-[#0A0A0F] border-[#2A2A3E] text-[#6B6B85] hover:text-white hover:border-[#5B4BDB]/50"
                   }`}>
                   {c}
                 </button>
               ))}
             </div>
 
-            <div className="pt-4 border-t-2 border-indigo-50 border-dashed flex justify-between items-center px-2">
-              <p className="text-gray-500 font-bold text-sm tracking-wide">
+            <div className="pt-4 border-t-2 border-[#2A2A3E] border-dashed flex justify-between items-center px-2">
+              <p className="text-[#6B6B85] font-bold text-sm tracking-wide">
                 {loading ? "Loading drawings…" : `${filtered.length} drawing${filtered.length!==1?"s":""} found`}
               </p>
               {(search || category !== "All" || fileType !== "all" || priceFilter !== "all" || sortBy !== "newest") && (
-                <button onClick={()=>{ setSearch(""); setCategory("All"); setFileType("all"); setPriceFilter("all"); setSortBy("newest"); }} className="text-pink-600 text-sm font-black hover:underline uppercase tracking-wide">Reset Filters</button>
+                <button onClick={()=>{ setSearch(""); setCategory("All"); setFileType("all"); setPriceFilter("all"); setSortBy("newest"); }} className="text-[#7C6EF6] text-sm font-black hover:underline uppercase tracking-wide">Reset Filters</button>
               )}
             </div>
           </motion.div>
@@ -361,20 +361,20 @@ export default function AutoCADPage() {
                 {Array.from({length:8}).map((_,i)=><Skeleton key={i} />)}
               </div>
             ) : filtered.length === 0 ? (
-              <motion.div initial={{ opacity:0, y: 20 }} animate={{ opacity:1, y: 0 }} className="flex flex-col items-center justify-center py-24 text-center bg-white/60 backdrop-blur-md rounded-[3rem] border-4 border-dashed border-indigo-100 shadow-sm">
-                <div className="w-24 h-24 rounded-full bg-indigo-50 border-4 border-indigo-100 flex items-center justify-center mb-6">
-                  <span className="text-5xl">🧐</span>
+              <motion.div initial={{ opacity:0, y: 20 }} animate={{ opacity:1, y: 0 }} className="flex flex-col items-center justify-center py-24 text-center bg-[#141420] rounded-[3rem] border-2 border-dashed border-[#2A2A3E] shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
+                <div className="w-24 h-24 rounded-full bg-[#0A0A0F] border-2 border-[#2A2A3E] flex items-center justify-center mb-6">
+                  <span className="text-5xl opacity-80">📐</span>
                 </div>
                 <h3 className="text-white font-black text-2xl mb-2">No CAD drawings found</h3>
-                <p className="text-gray-500 text-lg font-bold mb-8 max-w-md">Try adjusting your filters or be the first to upload a drawing.</p>
+                <p className="text-[#6B6B85] text-lg font-bold mb-8 max-w-md">Try adjusting your filters or be the first to upload a drawing.</p>
                 <div className="flex gap-4">
                   <button onClick={()=>{ setSearch(""); setCategory("All"); setFileType("all"); setPriceFilter("all"); }}
-                    className="px-8 py-4 rounded-2xl bg-pink-100 text-pink-700 font-black tracking-widest uppercase text-xs hover:bg-pink-200 transition shadow-sm border-2 border-pink-200">
+                    className="px-8 py-4 rounded-2xl bg-[#2A2A3E]/50 text-[#9494AD] font-black tracking-widest uppercase text-xs hover:bg-[#2A2A3E] hover:text-white transition shadow-sm border border-[#2A2A3E]">
                     Clear Filters
                   </button>
                   {user && (
                     <Link href="/upload">
-                      <button className="px-8 py-4 rounded-2xl bg-blue-600 text-white font-black tracking-widest uppercase text-xs hover:bg-blue-500 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 transition-all shadow-md">
+                      <button className="px-8 py-4 rounded-2xl bg-[#5B4BDB] text-white font-black tracking-widest uppercase text-xs hover:bg-[#4c3ec7] border-b-4 border-[#4438b8] active:border-b-0 active:translate-y-[2px] transition-all shadow-md">
                         Upload CAD
                       </button>
                     </Link>

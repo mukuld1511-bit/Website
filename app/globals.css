@@ -88,6 +88,36 @@ html.lenis { height: auto; }
   animation: synthe-shimmer 3s linear infinite;
 }
 
+/* ─── X-Factor Playful Gradients & Glows ──────────────────── */
+.text-x-factor {
+  background: linear-gradient(90deg, #5B4BDB, #EC4899, #06B6D4, #5B4BDB);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: x-factor-flow 4s linear infinite;
+}
+@keyframes x-factor-flow {
+  0% { background-position: 0% center; }
+  100% { background-position: 300% center; }
+}
+
+.hover-x-bloom {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.hover-x-bloom:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 40px -10px rgba(236, 72, 153, 0.4), 0 0 20px rgba(6, 182, 212, 0.3);
+  border-color: rgba(236, 72, 153, 0.5) !important;
+}
+
+/* Global ultra-smooth interaction baseline */
+a, button {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease, box-shadow 0.3s ease;
+}
+a:active, button:active {
+  transform: scale(0.97) translateY(1px);
+}
+
 /* ─── Synthe Animation Utilities ──────────────────────────── */
 .animate-synthe-float { animation: synthe-float 3s ease-in-out infinite; }
 .animate-conic-spin   { animation: conic-spin 20s linear infinite; }
@@ -180,7 +210,7 @@ html.lenis { height: auto; }
   color-scheme: dark;
 }
 
-/* ─── Base Styles ─────────────────────────────────────────── */
+/* ─── Base Styles & X-Factor Playful Colours ──────────────── */
 html {
   scroll-behavior: smooth;
 }
@@ -193,6 +223,48 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Instantly add subtle playful neon ambient lighting behind EVERYTHING */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(91, 75, 219, 0.08), transparent 40%),
+    radial-gradient(circle at 90% 40%, rgba(236, 72, 153, 0.06), transparent 40%),
+    radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.05), transparent 40%);
+  mix-blend-mode: screen;
+  animation: x-factor-breathe 15s ease-in-out infinite alternate;
+}
+
+@keyframes x-factor-breathe {
+  0% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.7; transform: scale(0.95); }
+}
+
+/* Playful X-Factor Selection */
+::selection {
+  background: #EC4899;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+/* Playful Neon Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  background: #0A0A0F;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #5B4BDB 0%, #EC4899 50%, #06B6D4 100%);
+  border-radius: 10px;
+  border: 2px solid #0A0A0F;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(0deg, #5B4BDB 0%, #EC4899 50%, #06B6D4 100%);
 }
 
 /* ─── Display Typography ──────────────────────────────────── */

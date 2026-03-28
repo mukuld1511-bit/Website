@@ -93,12 +93,12 @@ export default function AutoCADPage() {
 
   function Skeleton() {
     return (
-      <div className="rounded-3xl border border-gray-200 bg-white overflow-hidden shadow-sm">
-        <div className="aspect-video bg-gray-100 animate-pulse" />
+      <div className="rounded-3xl border border-[#2A2A3E] bg-[#141420] overflow-hidden shadow-sm">
+        <div className="aspect-video bg-[#2A2A3E]/40 animate-pulse" />
         <div className="p-6 space-y-4">
-          <div className="h-4 bg-gray-200 rounded-full animate-pulse w-3/4" />
-          <div className="h-3 bg-gray-100 rounded-full animate-pulse w-1/2" />
-          <div className="h-10 bg-gray-100 rounded-xl animate-pulse mt-4" />
+          <div className="h-4 bg-[#2A2A3E] rounded-full animate-pulse w-3/4" />
+          <div className="h-3 bg-[#2A2A3E]/50 rounded-full animate-pulse w-1/2" />
+          <div className="h-10 bg-[#2A2A3E] rounded-xl animate-pulse mt-4" />
         </div>
       </div>
     );
@@ -115,41 +115,41 @@ export default function AutoCADPage() {
         viewport={{ once:true, margin:"-50px" }}
         transition={{ duration:0.5, delay: i * 0.05 }}
         whileHover={{ y: -4 }}
-        className="group relative rounded-[2rem] border-4 border-indigo-50 bg-white hover:shadow-[0_20px_50px_-12px_rgba(59,130,246,0.3)] hover:border-blue-200 transition duration-300 overflow-hidden flex flex-col h-full"
+        className="group relative rounded-[2rem] border-2 border-[#2A2A3E] bg-[#141420] hover:shadow-[0_8px_30px_rgba(91,75,219,0.15)] hover:border-[#5B4BDB]/40 transition duration-300 overflow-hidden flex flex-col h-full"
       >
-        <div className={`absolute top-0 left-0 right-0 h-1 bg-${badgeColor}-500 opacity-0 group-hover:opacity-100 transition duration-300`} />
+        <div className={`absolute top-0 left-0 right-0 h-1 bg-${badgeColor}-500/50 opacity-0 group-hover:opacity-100 transition duration-300`} />
 
         {/* thumbnail / CAD preview */}
-        <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-indigo-50 to-pink-50 border-b-4 border-indigo-50">
+        <div className="relative aspect-video overflow-hidden bg-[#0A0A0F] border-b border-[#2A2A3E]">
           {m.thumbnailUrl ? (
             <img src={m.thumbnailUrl} alt={m.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90 group-hover:opacity-100" />
           ) : (
-            <div className={`w-full h-full flex flex-col items-center justify-center gap-2 bg-${badgeColor}-50`}>
-              <svg className={`w-12 h-12 text-${badgeColor}-300`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className={`w-full h-full flex flex-col items-center justify-center gap-2 bg-[#141420]`}>
+              <svg className={`w-12 h-12 text-[#2A2A3E]`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
               </svg>
-              <p className={`text-${badgeColor}-600 text-xs font-bold`}>{m.fileType?.toUpperCase()} Drawing</p>
+              <p className={`text-${badgeColor}-400 text-xs font-bold uppercase tracking-wider`}>{m.fileType?.toUpperCase()} Drawing</p>
             </div>
           )}
 
           <div className="absolute top-4 left-4">
-            <div className={`px-3 py-1 rounded-xl bg-white/90 backdrop-blur-md border border-white text-[10px] font-black uppercase text-${badgeColor}-700 shadow-md`}>
+            <div className={`px-3 py-1 rounded-xl bg-[#0A0A0F]/90 backdrop-blur-md border border-[#2A2A3E] text-[10px] font-black uppercase text-${badgeColor}-400 shadow-[0_4px_15px_rgba(0,0,0,0.5)]`}>
               .{m.fileType?.toUpperCase()}
             </div>
           </div>
 
           <div className="absolute top-4 right-4">
             {m.isPaid ? (
-              <div className="px-3 py-1 rounded-xl bg-emerald-50 border-2 border-emerald-100 text-emerald-700 text-[11px] font-black shadow-md">₹{m.price}</div>
+              <div className="px-3 py-1 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[11px] font-black shadow-[0_4px_15px_rgba(0,0,0,0.5)] backdrop-blur-md">₹{m.price}</div>
             ) : (
-              <div className="px-3 py-1 rounded-xl bg-white/90 backdrop-blur-md border border-white text-gray-800 text-[11px] font-black shadow-md">Free</div>
+              <div className="px-3 py-1 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] font-black shadow-[0_4px_15px_rgba(0,0,0,0.5)]">Free</div>
             )}
           </div>
 
-          <div className="absolute inset-0 bg-blue-900/30 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center z-10">
+          <div className="absolute inset-0 bg-[#0A0A0F]/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center z-10">
             <Link href={`/gallery/${m.id}`}>
-              <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white text-blue-600 border-b-4 border-gray-200 active:border-b-0 active:translate-y-1 text-base font-black shadow-xl transition-all">
-                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#5B4BDB] text-white border-b-4 border-[#4438b8] hover:bg-[#4c3ec7] active:border-b-0 active:translate-y-1 text-sm font-black shadow-xl transition-all">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 View & Download
@@ -158,21 +158,21 @@ export default function AutoCADPage() {
           </div>
         </div>
 
-        <div className="p-6 flex flex-col flex-1 relative bg-white z-0">
-          <h3 className="text-white font-black text-xl mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">{m.title}</h3>
-          {m.description && <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-5 font-semibold">{m.description}</p>}
+        <div className="p-6 flex flex-col flex-1 relative bg-[#141420] z-0">
+          <h3 className="text-white font-black text-xl mb-2 line-clamp-1 group-hover:text-[#7C6EF6] transition-colors">{m.title}</h3>
+          {m.description && <p className="text-[#9494AD] text-xs leading-relaxed line-clamp-2 mb-5 font-semibold">{m.description}</p>}
 
           <div className="flex items-center justify-between mb-6 mt-auto">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-indigo-100 bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+              <div className="w-8 h-8 rounded-full overflow-hidden border border-[#5B4BDB]/30 bg-[#141420] flex items-center justify-center flex-shrink-0 shadow-sm">
                 {m.authorPhoto
                   ? <img src={m.authorPhoto} className="w-full h-full object-cover" onError={e=>{(e.target as HTMLImageElement).style.display="none"}} />
-                  : <span className="text-indigo-500 text-[10px] font-black uppercase">{m.authorName?.[0]}</span>
+                  : <span className="text-[#7C6EF6] text-[10px] font-black uppercase">{m.authorName?.[0]}</span>
                 }
               </div>
-              <span className="text-indigo-400 text-xs font-black uppercase tracking-wider max-w-[120px] truncate">{m.authorName}</span>
+              <span className="text-[#9494AD] text-xs font-black uppercase tracking-wider max-w-[120px] truncate">{m.authorName}</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-pink-50 px-2.5 py-1.5 rounded-xl text-pink-600 border border-pink-100 font-black text-xs">
+            <div className="flex items-center gap-1.5 bg-[#5B4BDB]/10 px-2.5 py-1.5 rounded-xl text-[#7C6EF6] border border-[#5B4BDB]/20 font-black text-xs">
               <span className="flex items-center gap-1.5">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -185,16 +185,16 @@ export default function AutoCADPage() {
           {m.tags?.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">
               {m.tags.slice(0,3).map(t=>(
-                <span key={t} className="px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wide border border-indigo-100 bg-white text-indigo-600 shadow-sm">{t}</span>
+                <span key={t} className="px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wide border border-[#2A2A3E] bg-[#0A0A0F] text-[#6B6B85] shadow-sm">{t}</span>
               ))}
             </div>
           )}
 
           <Link href={`/gallery/${m.id}`}>
-            <button className={`w-full py-4 rounded-2xl font-black text-sm text-center transition-all shadow-md active:translate-y-1 ${
+            <button className={`w-full py-4 rounded-2xl font-black text-sm text-center transition-all shadow-[0_0_15px_rgba(91,75,219,0.1)] active:translate-y-[1px] ${
               m.isPaid 
-                ? 'bg-white text-white border-2 border-indigo-100 hover:bg-indigo-50 border-b-4' 
-                : 'bg-blue-600 text-white border-b-4 border-blue-800 hover:bg-blue-500'
+                ? 'bg-[#1A1A2E] text-[#9494AD] border-2 border-[#5B4BDB]/40 hover:bg-[#5B4BDB]/10 border-b-4' 
+                : 'bg-[#5B4BDB] text-white border-b-4 border-[#4438b8] hover:bg-[#4c3ec7]'
             }`}>
               <span className="flex items-center justify-center gap-2 uppercase tracking-wide">
                 {m.isPaid ? `Buy for ₹${m.price}` : "Download Free"}

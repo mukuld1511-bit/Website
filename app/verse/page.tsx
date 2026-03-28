@@ -187,47 +187,55 @@ export default function VersePage() {
     <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">
 
       {/* ═══ PARALLAX HEADER ═══ */}
-      <section className="relative py-24 px-4 overflow-hidden">
-        <VideoBackground variant="mesh" color="#5B4BDB" intensity={0.3} />
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#5B4BDB]/15 border border-[#5B4BDB]/25 mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB] animate-pulse" />
-              <span className="text-[#7C6EF6] text-[11px] font-bold uppercase tracking-widest">3D Verse</span>
-            </span>
-          </motion.div>
+      <section className="relative pt-32 pb-24 px-4 overflow-hidden">
+        <VideoBackground variant="aurora" color="#5B4BDB" intensity={0.6} />
+        
+        <div className="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
+          <div className="max-w-2xl">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#5B4BDB]/10 border border-[#5B4BDB]/30 mb-6 backdrop-blur-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0eebe6] animate-pulse shadow-[0_0_10px_#0eebe6]" />
+                <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">The 3D Verse</span>
+              </span>
+            </motion.div>
 
-          <div className="flex items-end justify-between flex-wrap gap-4">
-            <div>
-              <motion.h1
-                className="text-5xl md:text-7xl font-black tracking-tighter text-white mb-3"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                style={{ WebkitTextStroke: "1px rgba(91,75,219,0.3)" }}
-              >
-                3D VERSE
-              </motion.h1>
-              <motion.p
-                className="text-[#9494AD] text-lg max-w-lg"
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-              >
-                Browse, buy and sell GLB, GLTF, OBJ and FBX models.
-              </motion.p>
-            </div>
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-              <MagneticButton href="/verse/upload" variant="primary">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <motion.h1
+              className="text-6xl md:text-8xl font-black tracking-tighter text-white mb-6 leading-none"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.1, type: "spring", stiffness: 100 }}
+            >
+              Discover <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C6EF6] via-[#0eebe6] to-white drop-shadow-[0_0_30px_rgba(124,110,246,0.3)]">
+                Next-Gen 3D
+              </span>
+            </motion.h1>
+
+            <motion.p
+              className="text-[#9494AD] text-lg font-medium leading-relaxed max-w-xl"
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+            >
+              Browse, buy, and sell pro-grade GLB, GLTF, OBJ, and FBX models. Real-time WebXR previews directly in your browser.
+            </motion.p>
+          </div>
+
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+            <MagneticButton href="/verse/upload" variant="primary">
+              <span className="flex items-center gap-2 px-4 py-1 text-sm">
+                <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                 </svg>
-                Upload model
-              </MagneticButton>
-            </motion.div>
-          </div>
+                Upload Model
+              </span>
+            </MagneticButton>
+          </motion.div>
         </div>
+        
+        {/* Subtle bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0A0A0F] to-transparent pointer-events-none" />
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 pb-14 flex-grow w-full">
+      <div className="max-w-7xl mx-auto px-4 pb-20 flex-grow w-full relative z-10 -mt-6">
 
         {/* Aura legend */}
         <div className="flex gap-4 mb-6">

@@ -1,45 +1,98 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
 
-export default function MagneticButton({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) {
-  const ref = useRef<HTMLButtonElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 200, damping: 18 });
-  const sy = useSpring(y, { stiffness: 200, damping: 18 });
+interface MagneticButtonProps {
+  children: React.ReactNode;
+  href?: string;
+  onClick?: () => void;
+  variant?: "primary" | "secondary" | "outline";
+  className?: string;
+  disabled?: boolean;
+}
 
-  const handleMove = (e: React.MouseEvent) => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    x.set((e.clientX - rect.left - rect.width / 2) * 0.35);
-    y.set((e.clientY - rect.top - rect.height / 2) * 0.35);
+export default function MagneticButton({
+  children,
+  href,
+  onClick,
+  variant = "primary",
+  className = "",
+  disabled = false,
+}: MagneticButtonProps) {
+  const btnRef = useRef<HTMLDivElement>(null);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  function handleMouseMove(e: React.MouseEvent) {
+    if (!btnRef.current || disabled) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    setOffset({
+      x: (e.clientX - cx) * 0.2,
+      y: (e.clientY - cy) * 0.2,
+    });
+  }
+
+  function handleMouseLeave() {
+    setOffset({ x: 0, y: 0 });
+    setIsHovered(false);
+  }
+
+  const baseStyles = {
+    primary:
+      "bg-[#5B4BDB] text-white border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] shadow-[0_0_20px_rgba(91,75,219,0.2)] hover:shadow-[0_0_40px_rgba(91,75,219,0.4)]",
+    secondary:
+      "bg-[#141420] text-[#9494AD] border border-[#2A2A3E] hover:bg-[#1A1A2E] hover:text-white hover:border-[#5B4BDB]/40",
+    outline:
+      "bg-transparent text-white border-2 border-[#5B4BDB]/50 hover:border-[#5B4BDB] hover:bg-[#5B4BDB]/10",
   };
 
-  const handleLeave = () => { x.set(0); y.set(0); };
-
-  return (
-    <motion.button
-      ref={ref}
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
+  const content = (
+    <motion.div
+      ref={btnRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
+      animate={{ x: offset.x, y: offset.y }}
+      transition={{ type: "spring", stiffness: 400, damping: 30 }}
       onClick={onClick}
-      whileTap={{ scale: 0.95 }}
-      style={{ x: sx, y: sy, willChange: "transform", background: "linear-gradient(135deg, #7c3aed, #0891b2)" }}
-      className="relative px-7 py-3.5 rounded-2xl text-white font-black text-sm overflow-hidden group cursor-pointer border-0 outline-none"
+      className={`relative inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-bold text-sm
+        transition-all duration-200 active:translate-y-[1px] cursor-pointer overflow-hidden
+        ${baseStyles[variant]} ${disabled ? "opacity-40 pointer-events-none" : ""} ${className}`}
     >
-      {/* Shimmer */}
-      <motion.div
-        animate={{ x: ["-200%", "200%"] }}
-        transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3.5, ease: "linear" }}
-        style={{ willChange: "transform", position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)", transform: "skewX(-20deg)", pointerEvents: "none" }}
-      />
-      {/* Glow on hover */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none rounded-2xl"
-        style={{ boxShadow: "inset 0 0 20px rgba(255,255,255,0.08)" }}
-      />
-      <span className="relative z-10">{children}</span>
-    </motion.button>
+      {/* Shimmer sweep on hover */}
+      {isHovered && variant === "primary" && (
+        <motion.div
+          className="absolute inset-0 pointer-events-none"
+          initial={{ x: "-100%" }}
+          animate={{ x: "200%" }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+          style={{
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)",
+          }}
+        />
+      )}
+
+      {/* Border draw on hover for outline variant */}
+      {isHovered && variant === "outline" && (
+        <motion.div
+          className="absolute inset-0 rounded-xl border-2 border-[#5B4BDB] pointer-events-none"
+          initial={{ clipPath: "inset(0 100% 0 0)" }}
+          animate={{ clipPath: "inset(0 0% 0 0)" }}
+          transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+        />
+      )}
+
+      <span className="relative z-10 flex items-center gap-2">{children}</span>
+    </motion.div>
   );
+
+  if (href) {
+    return <Link href={href}>{content}</Link>;
+  }
+
+  return content;
 }

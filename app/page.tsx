@@ -137,30 +137,34 @@ const DEMO_STEPS = [
 function AnimatedTitle() {
   const letters = "SYNTHÉ".split("");
   return (
-    <h1 className="text-7xl md:text-9xl font-black tracking-tighter leading-none mb-6">
-      {letters.map((letter, i) => (
-        <motion.span
-          key={i}
-          className="inline-block bg-gradient-to-b from-white via-white to-white/60 bg-clip-text text-transparent"
-          initial={{ y: Math.random() > 0.5 ? -200 : 200, opacity: 0, rotateZ: (Math.random() - 0.5) * 30 }}
-          animate={{ y: 0, opacity: 1, rotateZ: 0 }}
-          transition={{
-            duration: 0.8,
-            delay: 0.3 + i * 0.05,
-            type: "spring",
-            stiffness: 300,
-            damping: 20,
-          }}
-        >
+    <h1 className="text-[5rem] md:text-[8rem] lg:text-[10rem] font-black tracking-tighter leading-none mb-6 flex justify-center">
+      {letters.map((letter, i) => {
+        const startY = i % 2 === 0 ? -100 : 100;
+        const startRot = (i % 3 === 0 ? -15 : 15);
+        return (
           <motion.span
-            className="inline-block"
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 4, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
+            key={i}
+            className="inline-block bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent filter drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+            initial={{ y: startY, opacity: 0, rotateZ: startRot, scale: 0.8 }}
+            animate={{ y: 0, opacity: 1, rotateZ: 0, scale: 1 }}
+            transition={{
+              duration: 1,
+              delay: 0.2 + i * 0.1,
+              type: "spring",
+              stiffness: 120,
+              damping: 14,
+            }}
           >
-            {letter}
+            <motion.span
+              className="inline-block"
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 4, repeat: Infinity, delay: i * 0.2, ease: "easeInOut" }}
+            >
+              {letter}
+            </motion.span>
           </motion.span>
-        </motion.span>
-      ))}
+        );
+      })}
     </h1>
   );
 }

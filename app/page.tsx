@@ -452,6 +452,29 @@ export default function HomePage() {
                 </>
               )}
             </motion.div>
+
+            {/* Live Stats Strip */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.8, duration: 0.6 }}
+              className="flex flex-wrap justify-center items-center gap-4 md:gap-8 mt-12 text-sm md:text-base font-bold bg-[#141420]/60 backdrop-blur-md px-8 py-4 rounded-3xl border border-[#2A2A3E] shadow-[0_4px_30px_rgba(0,0,0,0.5)] mx-auto w-fit"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-white text-lg md:text-xl font-black">{statsLoading ? "—" : `${stats.models}+`}</span>
+                <span className="text-[#6B6B85] uppercase tracking-widest text-[10px]">3D Models</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB]/50" />
+              <div className="flex items-center gap-2">
+                <span className="text-white text-lg md:text-xl font-black">{statsLoading ? "—" : `${stats.developers}+`}</span>
+                <span className="text-[#6B6B85] uppercase tracking-widest text-[10px]">Developers</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB]/50" />
+              <div className="flex items-center gap-2">
+                <span className="text-white text-lg md:text-xl font-black">{statsLoading ? "—" : `${stats.downloads}+`}</span>
+                <span className="text-[#6B6B85] uppercase tracking-widest text-[10px]">Downloads</span>
+              </div>
+            </motion.div>
           </motion.div>
 
           {/* Scroll indicator */}

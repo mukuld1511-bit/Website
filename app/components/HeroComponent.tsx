@@ -2,6 +2,9 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import MagneticButton from "./MagneticButton";
+import TextReveal from "./TextReveal";
+import VideoBackground from "./VideoBackground";
 
 interface HeroProps {
   user: any;
@@ -17,20 +20,20 @@ export default function HeroComponent({ user, stats, statsLoading }: HeroProps) 
   return (
     <section className="relative w-full overflow-hidden min-h-[92vh] flex items-center pt-24 pb-16">
 
-      {/* ── Aurora Background ── */}
-      <div className="aurora-bg" />
+      {/* ── Video Background ── */}
+      <VideoBackground variant="aurora" color="#5B4BDB" intensity={0.7} scrollAccelerate />
 
-      {/* ── Animated gradient mesh ── */}
-      <div className="absolute inset-0 pointer-events-none mix-blend-screen opacity-70">
+      {/* ── Animated gradient mesh overlay ── */}
+      <div className="absolute inset-0 pointer-events-none mix-blend-screen opacity-50">
         <motion.div
           animate={{ y: [0, -40, 0], x: [0, 30, 0], scale: [1, 1.15, 1] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#5B4BDB]/20 rounded-full blur-[150px]"
+          className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#5B4BDB]/10 rounded-full blur-[150px]"
         />
         <motion.div
           animate={{ y: [0, 50, 0], x: [0, -30, 0], scale: [1, 1.2, 1] }}
           transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute top-[30%] left-[-5%] w-[400px] h-[400px] bg-[#7C6EF6]/15 rounded-full blur-[120px]"
+          className="absolute top-[30%] left-[-5%] w-[400px] h-[400px] bg-[#7C6EF6]/10 rounded-full blur-[120px]"
         />
         <motion.div
           animate={{ y: [0, -30, 0], x: [0, 20, 0] }}
@@ -78,21 +81,14 @@ export default function HeroComponent({ user, stats, statsLoading }: HeroProps) 
             {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
-              className="flex flex-col sm:flex-row items-center gap-4 mb-12 w-full sm:w-auto"
+              className="flex flex-col sm:flex-row items-center gap-4 mb-12 w-full sm:w-auto mt-4"
             >
-              <Link href="/gallery" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto px-10 py-4 rounded-xl font-bold text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] shadow-[0_0_30px_rgba(91,75,219,0.25)] hover:shadow-[0_0_50px_rgba(91,75,219,0.35)] transition-all active:translate-y-[1px] text-lg flex items-center justify-center gap-2">
-                  Explore Gallery
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </button>
-              </Link>
-              <Link href="/requests/open" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto px-10 py-4 rounded-xl font-bold text-[#9494AD] bg-[#141420] border border-[#2A2A3E] hover:bg-[#1A1A2E] hover:text-white hover:border-[#5B4BDB]/40 transition-all text-lg">
-                  Post a Project
-                </button>
-              </Link>
+              <MagneticButton href="/gallery" variant="primary">
+                Explore Gallery
+              </MagneticButton>
+              <MagneticButton href="/requests/open" variant="outline">
+                Post a Project
+              </MagneticButton>
             </motion.div>
 
             {/* Live stats strip */}

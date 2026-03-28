@@ -722,7 +722,7 @@ export default function LearnPage() {
       <AnimatePresence>
         {toast && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-xl max-w-sm text-center">
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#5B4BDB] text-white text-sm font-bold px-5 py-3 rounded-xl shadow-[0_4px_20px_rgba(91,75,219,0.3)] max-w-sm text-center">
             {toast}
           </motion.div>
         )}
@@ -741,20 +741,20 @@ export default function LearnPage() {
       <div className="max-w-6xl mx-auto px-4 py-14 flex-grow w-full">
 
         {/* ── HERO ── */}
-        <div className="mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">SYNTHÉ Learning Hub</p>
+        <div className="mb-10 text-center md:text-left relative z-10">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#7C6EF6] mb-3">SYNTHÉ Learning Hub</p>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-4 leading-tight">
             Learn AR & VR<br />from real developers
           </h1>
-          <p className="text-gray-500 text-lg max-w-xl">
+          <p className="text-[#9494AD] text-lg max-w-xl mx-auto md:mx-0">
             Join live sessions hosted by verified mentors, or book a private 1-on-1 session for hands-on guidance.
           </p>
           {user && userRole === "user" && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-              className="mt-6 flex items-center justify-between gap-4 p-4 rounded-2xl border border-[#5B4BDB]/30 bg-[#5B4BDB]/5">
+              className="mt-6 flex items-center justify-between gap-4 p-4 rounded-2xl border border-[#5B4BDB]/30 bg-[#5B4BDB]/10 glass-synthe">
               <div>
                 <p className="text-sm font-bold text-white">Unlock learning features</p>
-                <p className="text-xs text-gray-500 mt-0.5">Apply as a Learner to register for sessions and book mentors</p>
+                <p className="text-xs text-[#9494AD] mt-0.5">Apply as a Learner to register for sessions and book mentors</p>
               </div>
               <Link href="/join">
                 <button className="flex-shrink-0 px-5 py-2.5 rounded-xl bg-[#5B4BDB] text-white text-sm font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] transition-all active:translate-y-[1px]">
@@ -766,23 +766,23 @@ export default function LearnPage() {
         </div>
 
         {/* ── HUB NAV CARDS ── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-10 relative z-10">
           {HUB_CARDS.map((card, i) => (
             <motion.div key={card.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}>
               <Link href={card.href}>
-                <div className="group p-4 rounded-2xl border border-gray-200 bg-white hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer h-full">
+                <div className="group p-4 rounded-2xl border border-[#2A2A3E] bg-[#141420] hover:shadow-[0_8px_30px_rgba(91,75,219,0.15)] hover:border-[#5B4BDB]/40 hover:-translate-y-1 transition-all duration-300 cursor-pointer h-full">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: card.bg }}>
                     <svg className="w-4 h-4" fill="none" stroke={card.color} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={card.icon} />
                     </svg>
                   </div>
                   <div className="flex items-center gap-1.5 mb-1">
-                    <p className="text-sm font-black text-white group-hover:text-[#5B4BDB] transition-colors leading-tight">{card.label}</p>
+                    <p className="text-sm font-black text-white group-hover:text-[#7C6EF6] transition-colors leading-tight">{card.label}</p>
                     {card.badge && (
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${card.badgeStyle}`}>{card.badge}</span>
+                      <span className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-md flex-shrink-0 ${card.badgeStyle}`}>{card.badge}</span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-400 leading-snug">{card.desc}</p>
+                  <p className="text-xs text-[#6B6B85] leading-snug">{card.desc}</p>
                 </div>
               </Link>
             </motion.div>
@@ -790,16 +790,16 @@ export default function LearnPage() {
         </div>
 
         {/* ── GEMINI CHAT + STATS ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-12 relative z-10">
           <div className="lg:col-span-3">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-5 h-5 rounded-md bg-[#5B4BDB] flex items-center justify-center">
+              <div className="w-5 h-5 rounded-md bg-[#5B4BDB] shadow-[0_0_10px_rgba(91,75,219,0.3)] flex items-center justify-center">
                 <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
               </div>
               <p className="text-sm font-bold text-white">XR Concept Chat</p>
-              <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full font-semibold">Gemini AI</span>
+              <span className="text-[10px] bg-[#5B4BDB]/15 text-[#7C6EF6] border border-[#5B4BDB]/30 uppercase tracking-wider px-2 py-0.5 rounded-full font-bold">Gemini AI</span>
             </div>
             <GeminiChat userRole={userRole} />
           </div>
@@ -811,15 +811,15 @@ export default function LearnPage() {
                 { label: "Upcoming",  value: workshops.filter(w => w.status === "upcoming").length },
                 { label: "Joined",    value: myRegistered.length },
               ].map(({ label, value }) => (
-                <div key={label} className="bg-white border border-gray-100 rounded-2xl p-4 text-center shadow-sm">
+                <div key={label} className="bg-[#141420] border border-[#2A2A3E] rounded-2xl p-4 text-center">
                   <p className="text-2xl font-black text-white">{value}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+                  <p className="text-xs text-[#6B6B85] font-semibold mt-0.5">{label}</p>
                 </div>
               ))}
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-2xl p-5 flex-1">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-4">Quick links</p>
+            <div className="bg-[#141420] border border-[#2A2A3E] rounded-2xl p-5 flex-1">
+              <p className="text-xs font-bold text-[#6B6B85] uppercase tracking-wide mb-4">Quick links</p>
               <div className="space-y-2">
                 {[
                   { label: "Generate my XR roadmap",     href: "/learn/roadmap",           badge: "AI" },
@@ -829,11 +829,11 @@ export default function LearnPage() {
                   { label: "Join a challenge",           href: "/learn/challenges",         badge: null },
                 ].map(item => (
                   <Link key={item.href} href={item.href}>
-                    <div className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-[#0A0A0F] transition-colors group cursor-pointer">
-                      <p className="text-sm font-semibold text-gray-700 group-hover:text-[#5B4BDB] transition-colors">{item.label}</p>
+                    <div className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-[#2A2A3E]/50 transition-colors group cursor-pointer">
+                      <p className="text-sm font-semibold text-white group-hover:text-[#7C6EF6] transition-colors">{item.label}</p>
                       <div className="flex items-center gap-2">
-                        {item.badge && <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full font-semibold">{item.badge}</span>}
-                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="text-gray-300 group-hover:text-[#5B4BDB] transition-colors">
+                        {item.badge && <span className="text-[10px] bg-[#5B4BDB]/15 text-[#7C6EF6] border border-[#5B4BDB]/30 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">{item.badge}</span>}
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="text-[#6B6B85] group-hover:text-[#7C6EF6] transition-colors">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
                         </svg>
                       </div>
@@ -847,11 +847,11 @@ export default function LearnPage() {
 
         {/* ── TABS + FILTERS ── */}
         <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-          <div className="flex gap-1 p-1 rounded-2xl bg-gray-100 w-fit">
+          <div className="flex gap-1 p-1 rounded-2xl bg-[#141420] border border-[#2A2A3E] w-fit">
             {(["upcoming", "registered"] as const).map(t => (
               <button key={t} onClick={() => setTab(t)}
                 className={`px-5 py-2 rounded-xl text-sm font-bold transition-all capitalize ${
-                  tab === t ? "bg-white text-white shadow-sm" : "text-gray-500 hover:text-gray-700"
+                  tab === t ? "bg-[#5B4BDB] text-white" : "text-[#6B6B85] hover:text-white hover:bg-[#2A2A3E]/50"
                 }`}>
                 {t === "registered" ? "My sessions" : "Upcoming"}
               </button>
@@ -861,7 +861,7 @@ export default function LearnPage() {
             {TAGS.map(tag => (
               <button key={tag} onClick={() => setActiveTag(tag)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
-                  activeTag === tag ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "bg-white text-gray-500 border-gray-200 hover:bg-[#0A0A0F]"
+                  activeTag === tag ? "bg-[#5B4BDB] text-white border-[#4438b8]" : "glass-synthe text-[#6B6B85] hover:text-white border-[#2A2A3E] hover:border-[#5B4BDB]/40"
                 }`}>
                 {tag}
               </button>
@@ -873,23 +873,23 @@ export default function LearnPage() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="rounded-2xl border border-gray-100 bg-white p-5 animate-pulse">
-                <div className="h-4 bg-gray-200 rounded w-2/3 mb-3" />
-                <div className="h-3 bg-gray-100 rounded mb-1.5" />
-                <div className="h-3 bg-gray-100 rounded w-4/5 mb-4" />
-                <div className="h-8 bg-gray-200 rounded-xl" />
+              <div key={i} className="rounded-2xl border border-[#2A2A3E] bg-[#141420] p-5 animate-pulse">
+                <div className="h-4 bg-[#2A2A3E] rounded w-2/3 mb-3" />
+                <div className="h-3 bg-[#2A2A3E]/50 rounded mb-1.5" />
+                <div className="h-3 bg-[#2A2A3E]/50 rounded w-4/5 mb-4" />
+                <div className="h-8 bg-[#2A2A3E] rounded-xl" />
               </div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-20">
-            <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center text-3xl mx-auto mb-4">
+            <div className="w-16 h-16 rounded-2xl glass-synthe flex items-center justify-center text-3xl mx-auto mb-4">
               {tab === "registered" ? "📋" : "📅"}
             </div>
             <p className="font-bold text-white mb-2">
               {tab === "registered" ? "No sessions registered yet" : "No sessions available"}
             </p>
-            <p className="text-gray-500 text-sm">
+            <p className="text-[#6B6B85] text-sm">
               {tab === "registered" ? "Register for upcoming sessions to see them here" : "Check back soon — mentors post new sessions regularly"}
             </p>
           </div>
@@ -902,12 +902,12 @@ export default function LearnPage() {
         )}
 
         {/* ── 1-ON-1 SECTION ── */}
-        <div className="mt-16 rounded-3xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+        <div className="mt-16 rounded-3xl border border-[#2A2A3E] bg-[#141420] overflow-hidden">
           <div className="grid md:grid-cols-2 gap-0">
             <div className="p-8 md:p-10">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#5B4BDB] mb-3">1-on-1 Sessions</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#7C6EF6] mb-3">1-on-1 Sessions</p>
               <h2 className="text-2xl font-black text-white mb-3 leading-tight">Need personal guidance?</h2>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6">
+              <p className="text-[#9494AD] text-sm leading-relaxed mb-6">
                 Browse verified mentors and book a private session. You choose the topic, they bring the expertise.
               </p>
               <div className="space-y-2 mb-6">
@@ -918,10 +918,10 @@ export default function LearnPage() {
                   "Mentor confirms → Meet link shared",
                 ].map((step, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-[#5B4BDB] text-xs font-bold">{i + 1}</span>
+                    <div className="w-5 h-5 rounded-full bg-[#5B4BDB]/20 border border-[#5B4BDB]/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-[#7C6EF6] text-xs font-bold">{i + 1}</span>
                     </div>
-                    <p className="text-sm text-gray-600">{step}</p>
+                    <p className="text-sm text-white font-medium">{step}</p>
                   </div>
                 ))}
               </div>
@@ -929,19 +929,19 @@ export default function LearnPage() {
               {/* Mentor quick-book cards */}
               {mentors.length > 0 && (
                 <div className="mb-6 space-y-2">
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Book directly</p>
+                  <p className="text-xs font-bold text-[#6B6B85] uppercase tracking-wide mb-3">Book directly</p>
                   {mentors.slice(0, 3).map(m => (
-                    <div key={m.id} className="flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:border-[#5B4BDB]/30 hover:bg-[#5B4BDB]/5 transition-all">
+                    <div key={m.id} className="flex items-center justify-between p-3 rounded-xl border border-[#2A2A3E] hover:border-[#5B4BDB]/40 hover:bg-[#5B4BDB]/5 transition-all">
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-full bg-[#5B4BDB]/10 flex items-center justify-center overflow-hidden flex-shrink-0">
                           {m.photoURL
                             ? <img src={m.photoURL} className="w-full h-full object-cover" alt="" />
-                            : <span className="text-[#5B4BDB] text-xs font-bold">{m.displayName?.charAt(0)}</span>
+                            : <span className="text-[#7C6EF6] text-xs font-bold">{m.displayName?.charAt(0)}</span>
                           }
                         </div>
                         <div>
                           <p className="text-sm font-bold text-white">{m.displayName}</p>
-                          <p className="text-xs text-gray-400">₹{m.hourlyRate ?? 500}/hr</p>
+                          <p className="text-xs text-[#6B6B85]">₹{m.hourlyRate ?? 500}/hr</p>
                         </div>
                       </div>
                       {user && ["learner", "developer", "admin"].includes(userRole) ? (
@@ -952,7 +952,7 @@ export default function LearnPage() {
                         </button>
                       ) : (
                         <Link href="/hire">
-                          <button className="px-3 py-1.5 rounded-lg border border-[#5B4BDB] text-[#5B4BDB] text-xs font-bold hover:bg-[#5B4BDB]/5 transition-colors">
+                          <button className="px-3 py-1.5 rounded-lg border border-[#5B4BDB] text-[#5B4BDB] text-xs font-bold hover:bg-[#5B4BDB]/10 transition-colors">
                             View
                           </button>
                         </Link>
@@ -963,16 +963,16 @@ export default function LearnPage() {
               )}
 
               <Link href="/hire">
-                <button className="px-7 py-3.5 rounded-xl bg-gray-900 text-white font-bold text-sm border-b-[3px] border-black/40 hover:bg-gray-800 transition-all active:translate-y-[1px]">
+                <button className="px-7 py-3.5 rounded-xl bg-[#0A0A0F] text-white font-bold text-sm border-2 border-[#2A2A3E] hover:border-[#5B4BDB]/40 transition-all active:translate-y-[1px]">
                   Browse all mentors
                 </button>
               </Link>
             </div>
-            <div className="hidden md:flex items-center justify-center p-10 bg-gradient-to-br from-[#5B4BDB]/5 to-blue-50">
+            <div className="hidden md:flex flex-col items-center justify-center p-10 bg-gradient-to-br from-[#141420] to-[#0A0A0F]">
               <div className="text-center">
-                <div className="text-7xl mb-4">🧑‍🏫</div>
-                <p className="font-black text-white text-lg">Verified mentors</p>
-                <p className="text-gray-500 text-sm mt-1">Real XR developers, teaching live</p>
+                <div className="text-7xl mb-4 animate-[float_6s_ease-in-out_infinite]">🧑‍🏫</div>
+                <p className="font-black text-white text-xl">Verified mentors</p>
+                <p className="text-[#9494AD] text-sm mt-1">Real XR developers, teaching live</p>
               </div>
             </div>
           </div>
@@ -980,13 +980,13 @@ export default function LearnPage() {
 
         {/* ── TEACH CTA ── */}
         {user && !["mentor", "admin"].includes(userRole) && (
-          <div className="mt-8 p-6 rounded-2xl border border-gray-100 bg-white shadow-sm flex items-center justify-between gap-4 flex-wrap">
+          <div className="mt-8 p-6 rounded-2xl border border-[#2A2A3E] glass-synthe flex items-center justify-between gap-4 flex-wrap">
             <div>
               <p className="font-black text-white mb-1">Want to teach?</p>
-              <p className="text-gray-500 text-sm">Apply as a Mentor and host your own sessions on SYNTHÉ.</p>
+              <p className="text-[#9494AD] text-sm">Apply as a Mentor and host your own sessions on SYNTHÉ.</p>
             </div>
             <Link href="/join">
-              <button className="flex-shrink-0 px-6 py-3 rounded-xl border-2 border-[#5B4BDB] text-[#5B4BDB] font-bold text-sm hover:bg-[#5B4BDB]/5 transition-all">
+              <button className="flex-shrink-0 px-6 py-3 rounded-xl bg-[#5B4BDB] text-white font-bold border-b-[3px] border-[#4438b8] hover:bg-[#4c3ec7] text-sm transition-all">
                 Apply as Mentor
               </button>
             </Link>

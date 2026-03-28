@@ -181,14 +181,7 @@ export default function XRZonePage() {
       <section className="relative pt-32 pb-24 px-4 overflow-hidden">
         <VideoBackground variant="aurora" color="#5B4BDB" intensity={0.65} />
 
-        {/* Iris reveal animation */}
-        <motion.div
-          className="absolute inset-0 bg-[#5B4BDB] z-20 pointer-events-none"
-          initial={{ clipPath: "circle(0% at 50% 50%)" }}
-          animate={{ clipPath: "circle(150% at 50% 50%)" }}
-          transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1] }}
-          style={{ background: "#0A0A0F" }}
-        />
+
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">

@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Footer from "../components/Footer";
+import VideoBackground from "../components/VideoBackground";
 
 interface Developer {
   id: string; name: string; bio: string; skills: string[];
@@ -197,7 +198,7 @@ function DevCard({ dev, user, onRequest, onChat }: { dev:Developer; user:any; on
   const avail = dev.availability ?? "available";
   return (
     <motion.div initial={{opacity:0,y:12}} animate={{opacity:1,y:0}}
-      className={`bg-white border rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex flex-col ${dev.certified ? "border-[#5B4BDB]/30 shadow-[0_0_0_1px_#5B4BDB20]" : "border-gray-200"}`}>
+      className={`bg-[#141420]/80 backdrop-blur-md border rounded-2xl overflow-hidden hover:shadow-[0_8px_30px_rgba(91,75,219,0.15)] hover:border-[#5B4BDB]/40 hover:-translate-y-1 transition-all duration-300 flex flex-col ${dev.certified ? "border-[#5B4BDB]/40" : "border-[#2A2A3E]"}`}>
       {dev.certified && <div className="h-1 bg-gradient-to-r from-[#5B4BDB] to-violet-400"/>}
 
       <div className="p-6 flex-1">
@@ -397,8 +398,9 @@ export default function ConnectPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">
-      <div className="max-w-7xl mx-auto px-4 py-14 flex-grow w-full">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans relative">
+      <VideoBackground variant="aurora" color="#5B4BDB" intensity={0.4} />
+      <div className="max-w-7xl mx-auto px-4 py-14 flex-grow w-full relative z-10">
 
         {/* Header */}
         <div className="mb-10">

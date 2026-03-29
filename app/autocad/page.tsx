@@ -7,6 +7,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Footer from "../components/Footer";
+import VideoBackground from "../components/VideoBackground";
 
 interface Model {
   id: string;
@@ -211,11 +212,8 @@ export default function AutoCADPage() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0F] font-sans flex flex-col relative">
+      <VideoBackground variant="aurora" color="#5B4BDB" intensity={0.4} />
       <div className="flex-grow pt-[100px] pb-24 px-4 overflow-x-hidden relative z-10">
-        {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-[#5B4BDB] rounded-full filter blur-[100px] opacity-20 z-[-1]" />
-        <div className="absolute top-60 right-10 w-72 h-72 bg-[#5B4BDB] rounded-full filter blur-[100px] opacity-20 z-[-1]" />
-
         <div className="max-w-7xl mx-auto">
 
           {/* Header */}

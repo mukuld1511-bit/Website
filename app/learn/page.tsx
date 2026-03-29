@@ -7,8 +7,9 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Footer from "../components/Footer";
 import Link from "next/link";
+import Footer from "../components/Footer";
+import VideoBackground from "../components/VideoBackground";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Workshop, UserRole } from "../../types/gallery";
 
@@ -717,7 +718,9 @@ export default function LearnPage() {
   const myRegistered = workshops.filter(w => user && w.registeredUsers?.includes(user.uid));
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white relative">
+      <VideoBackground variant="aurora" color="#5B4BDB" intensity={0.4} />
+      
       {/* ── Toast ── */}
       <AnimatePresence>
         {toast && (

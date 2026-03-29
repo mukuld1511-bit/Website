@@ -306,9 +306,11 @@ export default function HomePage() {
         <section className="py-32 px-4 bg-[#05050A] relative overflow-hidden">
           <div className="max-w-[1400px] mx-auto relative px-4 md:px-8">
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16">
-              <TextReveal as="h2" className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-4">
+              <motion.h2 
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+                className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-4">
                 The ecosystem,<br/><span className="text-[#6B6B85]">unlocked.</span>
-              </TextReveal>
+              </motion.h2>
               <p className="text-[#9494AD] font-semibold text-lg max-w-xl border-l-2 border-[#5B4BDB] pl-4">
                 Everything you need to build, learn, and collaborate in the spatial internet, housed seamlessly under one roof.
               </p>
@@ -345,9 +347,11 @@ export default function HomePage() {
                   </svg>
                   <span className="text-[#A594FF] text-xs font-black uppercase tracking-[0.1em]">Engineered with Gemini 2.0</span>
                 </div>
-                <TextReveal as="h2" className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-[1.1]">
+                <motion.h2 
+                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+                  className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-[1.1]">
                   AI woven into<br/>every pixel.
-                </TextReveal>
+                </motion.h2>
               </div>
               <MagneticButton href="/learn/roadmap" variant="primary" className="shrink-0 bg-white text-black hover:bg-gray-200 shadow-[0_0_30px_rgba(255,255,255,0.2)]">
                 Try AI Architect →

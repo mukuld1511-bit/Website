@@ -4,6 +4,7 @@ import { ToastProvider } from "./components/ui/Toast";
 import Navbar from "./components/Navbar";
 import FloatingInbox from "./components/FloatingInbox";
 import SmoothScroll from "./components/SmoothScroll";
+import ParticleCursor from "./components/ParticleCursor";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Syne } from "next/font/google";
 import "./globals.css";
@@ -64,6 +65,7 @@ export default function RootLayout({
                 <Navbar />
                 {children}
                 <FloatingInbox />
+                <ParticleCursor />
               </SmoothScroll>
             </ToastProvider>
           </ThemeProvider>

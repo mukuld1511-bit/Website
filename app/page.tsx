@@ -16,6 +16,7 @@ import CountUp from "./components/CountUp";
 import GlowCard from "./components/GlowCard";
 import TextReveal from "./components/TextReveal";
 import MagneticButton from "./components/MagneticButton";
+import HeroComponent from "./components/HeroComponent";
 
 const ScrollingGallery = dynamic(() => import("./components/ScrollingGallery"), { ssr: false });
 
@@ -132,69 +133,6 @@ const DEMO_STEPS = [
   { step: "03", text: "Open cinematic mode", sub: "Studio lighting, bloom, auto-orbit" },
   { step: "04", text: "Tap AR on phone", sub: "Model appears in your real room" },
 ];
-
-// ─── Hero Title with per-letter animation ─────────────────────────────────────
-function AnimatedTitle() {
-  const letters = "SYNTHÉ".split("");
-  return (
-    <h1 className="text-[5rem] md:text-[8rem] lg:text-[10rem] font-black tracking-tighter leading-none mb-6 flex justify-center">
-      {letters.map((letter, i) => {
-        const startY = i % 2 === 0 ? -100 : 100;
-        const startRot = (i % 3 === 0 ? -15 : 15);
-        return (
-          <motion.span
-            key={i}
-            className="inline-block bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent filter drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
-            initial={{ y: startY, opacity: 0, rotateZ: startRot, scale: 0.8 }}
-            animate={{ y: 0, opacity: 1, rotateZ: 0, scale: 1 }}
-            transition={{
-              duration: 1,
-              delay: 0.2 + i * 0.1,
-              type: "spring",
-              stiffness: 120,
-              damping: 14,
-            }}
-          >
-            <motion.span
-              className="inline-block"
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 4, repeat: Infinity, delay: i * 0.2, ease: "easeInOut" }}
-            >
-              {letter}
-            </motion.span>
-          </motion.span>
-        );
-      })}
-    </h1>
-  );
-}
-
-// ─── Typewriter subtitle ──────────────────────────────────────────────────────
-function TypewriterText({ text }: { text: string }) {
-  const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    let i = 0;
-    const timer = setInterval(() => {
-      if (i < text.length) {
-        setDisplayed(text.slice(0, i + 1));
-        i++;
-      } else {
-        setDone(true);
-        clearInterval(timer);
-      }
-    }, 40);
-    return () => clearInterval(timer);
-  }, [text]);
-
-  return (
-    <p className="text-lg md:text-xl text-[#9494AD] max-w-xl mx-auto leading-relaxed">
-      {displayed}
-      {!done && <span className="inline-block w-0.5 h-5 bg-[#5B4BDB] ml-1 animate-pulse" />}
-    </p>
-  );
-}
 
 // ─── Model card ───────────────────────────────────────────────────────────────
 function ModelCard({ m, i }: { m: RecentModel; i: number }) {
@@ -317,34 +255,44 @@ function SectionCard({ s, i }: { s: typeof PLATFORM_SECTIONS[0]; i: number }) {
 
 // ─── Demo Strip ───────────────────────────────────────────────────────────────
 function DemoStrip() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 0.9, 1], [0, 1, 1, 0]);
+
   return (
-    <div className="w-full bg-[#07060B] py-14 px-4 border-y border-[#2A2A3E] relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.02]" style={{
-        backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-        backgroundSize: "40px 40px"
-      }} />
-      <div className="max-w-6xl mx-auto relative">
-        <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-          className="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-[#6B6B85] mb-10">
-          The 30-second demo
-        </motion.p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#2A2A3E] rounded-2xl overflow-hidden border border-[#2A2A3E]">
-          {DEMO_STEPS.map((s, i) => (
-            <motion.div key={s.step} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.07 }}
-              className="bg-[#0A0A0F] px-6 py-7 flex flex-col gap-3 hover:bg-[#141420] transition-colors duration-200">
-              <span className="text-[11px] font-black tracking-widest text-[#7C6EF6]">{s.step}</span>
-              <p className="text-white text-sm font-bold leading-snug">{s.text}</p>
-              <p className="text-[#6B6B85] text-xs leading-relaxed">{s.sub}</p>
-            </motion.div>
-          ))}
-        </div>
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}
-          className="flex justify-center mt-8">
-          <MagneticButton href="/verse" variant="primary">
-            <span className="w-2 h-2 rounded-full bg-white/60 animate-pulse" />
-            Try it live
-          </MagneticButton>
+    <div ref={containerRef} className="w-full relative h-[250vh] bg-[#0A0A0F]">
+      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden border-y border-[#2A2A3E]">
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
+          backgroundSize: "60px 60px"
+        }} />
+        <motion.div 
+          style={{ scale, opacity }}
+          className="max-w-7xl mx-auto px-6 w-full flex flex-col md:flex-row items-center gap-12 relative z-10"
+        >
+          <div className="w-full md:w-1/2 flex flex-col gap-6">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#A594FF] mb-2">The Workflow</p>
+            <TextReveal as="h2" className="text-4xl md:text-5xl lg:text-7xl font-black text-white leading-[1.05] tracking-tight drop-shadow-2xl">
+              Upload. Visualize. Deploy.
+            </TextReveal>
+          </div>
+          <div className="w-full md:w-1/2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {DEMO_STEPS.map((s, i) => (
+              <motion.div 
+                key={s.step} 
+                initial={{ opacity: 0, y: 30 }} 
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }} 
+                transition={{ delay: i * 0.15, duration: 0.6 }}
+                className="glass-synthe p-6 flex flex-col gap-3 hover:border-[#5B4BDB]/50 transition-colors duration-300 rounded-2xl"
+              >
+                <span className="text-sm font-black tracking-widest text-[#7C6EF6]">{s.step}</span>
+                <p className="text-white text-base font-bold leading-snug">{s.text}</p>
+                <p className="text-[#9494AD] text-xs leading-relaxed">{s.sub}</p>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
       </div>
     </div>
@@ -359,17 +307,6 @@ export default function HomePage() {
   const [tutors,        setTutors]        = useState<TutorProfile[]>([]);
   const [stats,         setStats]         = useState({ models: 0, developers: 0, downloads: 0, certifications: 0 });
   const [statsLoading,  setStatsLoading]  = useState(true);
-
-  // Scroll-driven hero parallax
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const smoothScale = useSpring(heroScale, { stiffness: 150, damping: 25 });
-  const smoothOpacity = useSpring(heroOpacity, { stiffness: 150, damping: 25 });
-
-  // Scroll indicator fade
-  const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, u => setUser(u ?? null));
@@ -421,82 +358,7 @@ export default function HomePage() {
       <div className="relative z-10 flex-grow">
 
         {/* ═══ HERO ═══ */}
-        <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-          <VideoBackground variant="aurora" color="#5B4BDB" intensity={0.85} scrollAccelerate />
-
-          <motion.div
-            className="relative z-10 text-center px-4 pt-24"
-            style={{ scale: smoothScale, opacity: smoothOpacity }}
-          >
-            <AnimatedTitle />
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-            >
-              <TypewriterText text="The unified platform for AR/VR creators, developers, and learners." />
-            </motion.div>
-
-            <motion.div
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5, duration: 0.6 }}
-            >
-              {user ? (
-                <>
-                  <MagneticButton href="/verse" variant="primary">Browse 3D Verse</MagneticButton>
-                  <MagneticButton href="/dashboard" variant="outline">Dashboard →</MagneticButton>
-                </>
-              ) : (
-                <>
-                  <MagneticButton href="/signup" variant="primary">Get Started Free</MagneticButton>
-                  <MagneticButton href="/verse" variant="outline">Explore 3D Verse →</MagneticButton>
-                </>
-              )}
-            </motion.div>
-
-            {/* Live Stats Strip */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.8, duration: 0.6 }}
-              className="flex flex-wrap justify-center items-center gap-4 md:gap-8 mt-12 text-sm md:text-base font-bold bg-[#141420]/60 backdrop-blur-md px-8 py-4 rounded-3xl border border-[#2A2A3E] shadow-[0_4px_30px_rgba(0,0,0,0.5)] mx-auto w-fit"
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-white text-lg md:text-xl font-black">{statsLoading ? "—" : `${stats.models}+`}</span>
-                <span className="text-[#6B6B85] uppercase tracking-widest text-[10px]">3D Models</span>
-              </div>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB]/50" />
-              <div className="flex items-center gap-2">
-                <span className="text-white text-lg md:text-xl font-black">{statsLoading ? "—" : `${stats.developers}+`}</span>
-                <span className="text-[#6B6B85] uppercase tracking-widest text-[10px]">Developers</span>
-              </div>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#5B4BDB]/50" />
-              <div className="flex items-center gap-2">
-                <span className="text-white text-lg md:text-xl font-black">{statsLoading ? "—" : `${stats.downloads}+`}</span>
-                <span className="text-[#6B6B85] uppercase tracking-widest text-[10px]">Downloads</span>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* Scroll indicator */}
-          <motion.div
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-            style={{ opacity: scrollIndicatorOpacity }}
-          >
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#6B6B85]">Scroll to explore</span>
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              <svg className="w-5 h-5 text-[#6B6B85]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            </motion.div>
-          </motion.div>
-        </section>
+        <HeroComponent user={user} stats={stats} statsLoading={statsLoading} />
 
         {/* ═══ PLATFORM SECTIONS ═══ */}
         <section className="py-20 px-4 bg-[#0A0A0F] relative overflow-hidden">
@@ -515,8 +377,22 @@ export default function HomePage() {
               <p className="text-[#9494AD] text-sm max-w-xs">One unified platform for creators, developers, engineers and learners.</p>
             </motion.div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {PLATFORM_SECTIONS.map((s, i) => <SectionCard key={s.title} s={s} i={i} />)}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:auto-rows-[250px] lg:auto-rows-[300px]">
+              {PLATFORM_SECTIONS.map((s, i) => {
+                const spans = [
+                  "md:col-span-2 lg:col-span-2 md:row-span-2", // 3D Verse
+                  "md:col-span-1 lg:col-span-1 md:row-span-2", // XR Zone
+                  "md:col-span-1 lg:col-span-1 md:row-span-1", // AutoCAD Hub
+                  "md:col-span-2 lg:col-span-2 md:row-span-1", // Learn
+                  "md:col-span-1 lg:col-span-1 md:row-span-1", // Freelance
+                  "md:col-span-2 lg:col-span-2 md:row-span-1", // Connect
+                ];
+                return (
+                  <div key={s.title} className={spans[i]}>
+                    <SectionCard s={s} i={i} />
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>

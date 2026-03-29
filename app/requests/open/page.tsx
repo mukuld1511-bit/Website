@@ -8,6 +8,7 @@ import { collection, query, orderBy, getDocs, addDoc, serverTimestamp, doc, getD
 import { db, auth } from "../../../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import Footer from "../../components/Footer";
+import VideoBackground from "../../components/VideoBackground";
 
 interface ProjectApplication {
   id: string;
@@ -246,19 +247,17 @@ export default function RequestsPage() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans text-white">
+      <VideoBackground variant="aurora" color="#5B4BDB" intensity={0.4} />
       <div className="relative z-10 pt-28 pb-24 px-4 flex-grow">
-        {/* Decorative colorful background elements */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-[-1]" />
-        <div className="absolute top-60 right-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 z-[-1]" />
         
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="mb-12 flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-center">
             <div>
               <h1 className="text-5xl md:text-6xl font-black tracking-tight text-white mb-4 leading-tight">
-                Explore <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500">Learn & Build</span>
+                Explore <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C6EF6] to-[#06B6D4]">Learn & Build</span>
               </h1>
-              <p className="text-gray-600 text-lg md:text-xl font-bold max-w-xl">
+              <p className="text-[#9494AD] text-lg md:text-xl font-bold max-w-xl">
                 Find exciting collaborative projects, connect with peers, and start building AR/VR learning experiences today!
               </p>
             </div>
@@ -276,14 +275,14 @@ export default function RequestsPage() {
 
           {/* Search */}
           <div className="mb-12 relative">
-            <svg className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-[#5B4BDB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search by title, skill, or AR/VR category..."
-              className="w-full bg-white border-2 border-indigo-100 text-white font-bold placeholder-gray-400 text-lg rounded-3xl pl-16 pr-6 py-5 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition shadow-lg"
+              className="w-full bg-[#141420]/80 border-2 border-[#2A2A3E] text-white font-bold placeholder-[#6B6B85] text-lg rounded-3xl pl-16 pr-6 py-5 focus:outline-none focus:border-[#5B4BDB]/60 transition backdrop-blur-md"
             />
           </div>
 

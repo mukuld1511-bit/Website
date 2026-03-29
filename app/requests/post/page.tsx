@@ -8,6 +8,7 @@ import { db, auth } from "../../../lib/firebase";
 import Footer from "../../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import VideoBackground from "../../components/VideoBackground";
 
 const CATEGORIES = ["3D Modeling", "AR App", "VR Experience", "WebXR", "Industrial Design", "Other"];
 const BUDGET_RANGES = ["Flexible", "Under $100", "$100 - $500", "$500 - $1000", "$1000+"];
@@ -95,7 +96,8 @@ export default function PostRequestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] font-sans flex flex-col">
+    <div className="min-h-screen bg-[#0A0A0F] font-sans flex flex-col relative">
+      <VideoBackground variant="aurora" color="#5B4BDB" intensity={0.4} />
       <main className="relative z-10 pt-32 pb-24 px-4 max-w-3xl mx-auto w-full flex-grow">
         <AnimatePresence>
           {success && (
@@ -142,7 +144,7 @@ export default function PostRequestPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="rounded-[2.5rem] border-4 border-indigo-50 bg-white/80 backdrop-blur p-8 md:p-12 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)]">
+            <div className="rounded-[2.5rem] border border-[#2A2A3E] bg-[#141420]/80 backdrop-blur-md p-8 md:p-12 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)]">
               {error && (
                 <div className="mb-8 p-4 rounded-2xl border-2 border-red-200 bg-red-50 text-red-700 text-sm font-black flex items-center gap-3">
                   <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -152,37 +154,37 @@ export default function PostRequestPage() {
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-[11px] font-black uppercase tracking-widest text-indigo-400 mb-2">Project Title *</label>
+                  <label className="block text-[11px] font-black uppercase tracking-widest text-[#7C6EF6] mb-2">Project Title *</label>
                   <input value={title} onChange={e => setTitle(e.target.value)} required
-                    placeholder="e.g. Need a 3D architecture model for training" className="w-full bg-white border-2 border-indigo-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
+                    placeholder="e.g. Need a 3D architecture model for training" className="w-full bg-[#0A0A0F] border border-[#2A2A3E] text-white font-bold placeholder-[#6B6B85] text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-[#5B4BDB]/60 transition shadow-sm" />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-black uppercase tracking-widest text-pink-400 mb-2">Description *</label>
+                  <label className="block text-[11px] font-black uppercase tracking-widest text-[#06B6D4] mb-2">Description *</label>
                   <textarea value={description} onChange={e => setDescription(e.target.value)} required rows={4}
-                    placeholder="Describe exactly what you need built, references, requirements…" className="w-full bg-white border-2 border-pink-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100 transition shadow-sm resize-none" />
+                    placeholder="Describe exactly what you need built, references, requirements…" className="w-full bg-[#0A0A0F] border border-[#2A2A3E] text-white font-bold placeholder-[#6B6B85] text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-[#06B6D4]/60 transition shadow-sm resize-none" />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-[11px] font-black uppercase tracking-widest text-blue-400 mb-2">Category</label>
+                    <label className="block text-[11px] font-black uppercase tracking-widest text-[#5B4BDB] mb-2">Category</label>
                     <div className="relative">
-                      <select value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-white border-2 border-blue-100 text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm">
-                        {CATEGORIES.map(c => <option key={c} value={c} className="bg-white text-white font-bold">{c}</option>)}
+                      <select value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-[#0A0A0F] border border-[#2A2A3E] text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-[#5B4BDB]/60 transition shadow-sm">
+                        {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#0A0A0F] text-white font-bold">{c}</option>)}
                       </select>
-                      <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5B4BDB] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
                       </svg>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-black uppercase tracking-widest text-emerald-400 mb-2">Budget</label>
+                    <label className="block text-[11px] font-black uppercase tracking-widest text-[#00E5FF] mb-2">Budget</label>
                     <div className="relative">
-                      <select value={budget} onChange={e => setBudget(e.target.value)} className="w-full bg-white border-2 border-emerald-100 text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition shadow-sm">
-                        {BUDGET_RANGES.map(b => <option key={b} value={b} className="bg-white text-white font-bold">{b}</option>)}
+                      <select value={budget} onChange={e => setBudget(e.target.value)} className="w-full bg-[#0A0A0F] border border-[#2A2A3E] text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-[#00E5FF]/60 transition shadow-sm">
+                        {BUDGET_RANGES.map(b => <option key={b} value={b} className="bg-[#0A0A0F] text-white font-bold">{b}</option>)}
                       </select>
-                      <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#00E5FF] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
                       </svg>
                     </div>
@@ -190,23 +192,23 @@ export default function PostRequestPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-black uppercase tracking-widest text-amber-400 mb-2">Timeline</label>
+                  <label className="block text-[11px] font-black uppercase tracking-widest text-[#FF0055] mb-2">Timeline</label>
                   <div className="relative">
-                    <select value={timeline} onChange={e => setTimeline(e.target.value)} className="w-full bg-white border-2 border-amber-100 text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-100 transition shadow-sm">
-                      {TIMELINES.map(t => <option key={t} value={t} className="bg-white text-white font-bold">{t}</option>)}
+                    <select value={timeline} onChange={e => setTimeline(e.target.value)} className="w-full bg-[#0A0A0F] border border-[#2A2A3E] text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-[#FF0055]/60 transition shadow-sm">
+                      {TIMELINES.map(t => <option key={t} value={t} className="bg-[#0A0A0F] text-white font-bold">{t}</option>)}
                     </select>
-                    <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#FF0055] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t-2 border-dashed border-indigo-100">
-                  <label className="block text-[11px] font-black uppercase tracking-widest text-indigo-400 mb-3">Required Skills (Optional)</label>
+                <div className="pt-6 border-t border-dashed border-[#2A2A3E]">
+                  <label className="block text-[11px] font-black uppercase tracking-widest text-[#9494AD] mb-3">Required Skills (Optional)</label>
                   <div className="flex gap-2 mb-3 flex-wrap">
                     {skills.map(s => (
                       <button key={s} type="button" onClick={() => setSkills(skills.filter(x => x !== s))}
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-red-50 hover:text-red-700 hover:border-red-200 transition">
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#5B4BDB]/30 bg-[#5B4BDB]/10 text-[#7C6EF6] hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 transition">
                         {s} <span className="ml-1 opacity-60">✕</span>
                       </button>
                     ))}
@@ -214,9 +216,9 @@ export default function PostRequestPage() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <input value={skillInput} onChange={e => setSkillInput(e.target.value)}
                       onKeyDown={e => e.key === "Enter" && (e.preventDefault(), handleAddSkill())}
-                      placeholder="e.g. Unity, Blender, WebXR…" className="flex-1 bg-white border-2 border-indigo-100 text-white font-bold placeholder-gray-400 text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 transition shadow-sm" />
+                      placeholder="e.g. Unity, Blender, WebXR…" className="flex-1 bg-[#0A0A0F] border border-[#2A2A3E] text-white font-bold placeholder-[#6B6B85] text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-[#5B4BDB]/60 transition shadow-sm" />
                     <button type="button" onClick={handleAddSkill}
-                      className="px-8 py-4 rounded-2xl bg-indigo-100 text-indigo-700 font-black text-lg hover:bg-indigo-200 transition shadow-sm whitespace-nowrap">
+                      className="px-8 py-4 rounded-2xl bg-[#2A2A3E] text-white font-black text-lg hover:bg-[#34344A] transition shadow-sm whitespace-nowrap border border-[#5B4BDB]/30">
                       Add Skill
                     </button>
                   </div>
@@ -225,7 +227,7 @@ export default function PostRequestPage() {
             </div>
 
             <button type="submit" disabled={loading || success}
-              className="w-full py-5 rounded-3xl bg-pink-500 hover:bg-pink-400 border-b-4 border-pink-700 active:border-b-0 active:translate-y-1 text-white font-black text-xl shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-4">
+              className="w-full py-5 rounded-3xl bg-[#5B4BDB] hover:bg-[#4c3ec7] text-white font-black text-xl shadow-[0_0_20px_rgba(91,75,219,0.3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-4">
               {loading ? (
                  <span className="flex items-center justify-center gap-2">
                    <svg className="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>

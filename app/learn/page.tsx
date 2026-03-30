@@ -144,10 +144,11 @@ function GeminiChat({ userRole }: { userRole: string }) {
   }, [loading, userRole]);
 
   return (
-    <div className="flex flex-col bg-[#141420] border border-[#2A2A3E] rounded-2xl overflow-hidden shadow-lg" style={{ height: 480 }}>
-      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[#2A2A3E] bg-[#0A0A0F] shrink-0">
-        <div className="w-8 h-8 rounded-xl bg-[#5B4BDB]/20 border border-[#5B4BDB]/30 flex items-center justify-center">
-          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#7C6EF6" strokeWidth="2.5">
+    <div className="flex flex-col bg-[#101015]/60 backdrop-blur-3xl border border-white/10 rounded-[2rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]" style={{ height: 520 }}>
+      <div className="relative flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-[#0A0A0F]/80 shrink-0">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#5B4BDB]/10 to-transparent pointer-events-none" />
+        <div className="relative w-8 h-8 rounded-xl bg-[#5B4BDB]/20 border border-[#5B4BDB]/30 flex items-center justify-center shadow-[0_0_15px_rgba(91,75,219,0.3)]">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#A594FF" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
           </svg>
         </div>
@@ -213,14 +214,14 @@ function GeminiChat({ userRole }: { userRole: string }) {
         <div ref={bottomRef} />
       </div>
 
-      <div className="px-4 py-3 border-t border-[#2A2A3E] bg-[#0A0A0F] shrink-0">
-        <form onSubmit={e => { e.preventDefault(); send(input); }} className="flex gap-2">
+      <div className="px-6 py-5 border-t border-white/5 bg-[#0A0A0F]/80 backdrop-blur-xl shrink-0">
+        <form onSubmit={e => { e.preventDefault(); send(input); }} className="flex gap-3">
           <input value={input} onChange={e => setInput(e.target.value)}
             placeholder="What is spatial computing?"
-            className="flex-1 bg-[#141420] border border-[#2A2A3E] focus:border-[#5B4BDB]/60 rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#6B6B85] outline-none transition-colors" />
+            className="flex-1 bg-[#1A1A2E]/50 backdrop-blur-md border border-white/5 focus:bg-[#1A1A2E]/80 focus:border-[#5B4BDB]/50 focus:ring-4 focus:ring-[#5B4BDB]/10 rounded-2xl px-5 py-3.5 text-sm text-white placeholder-[#6B6B85] outline-none transition-all shadow-inner" />
           <button type="submit" disabled={!input.trim() || loading}
-            className="px-4 py-2.5 bg-[#5B4BDB] hover:bg-[#4c3ec7] disabled:opacity-40 rounded-xl text-white text-sm font-bold transition-colors">
-            Ask
+            className="px-6 py-3.5 bg-[#5B4BDB] hover:bg-[#4c3ec7] disabled:opacity-40 rounded-2xl text-white text-sm font-bold border-b-[3px] border-[#4438b8] transition-all shadow-[0_0_20px_rgba(91,75,219,0.3)] active:border-b-0 active:translate-y-[3px] shrink-0">
+            Ask Gemini
           </button>
         </form>
       </div>
@@ -769,23 +770,24 @@ export default function LearnPage() {
         </div>
 
         {/* ── HUB NAV CARDS ── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-10 relative z-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-10 relative z-10">
           {HUB_CARDS.map((card, i) => (
-            <motion.div key={card.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}>
-              <Link href={card.href}>
-                <div className="group p-4 rounded-2xl border border-[#2A2A3E] bg-[#141420] hover:shadow-[0_8px_30px_rgba(91,75,219,0.15)] hover:border-[#5B4BDB]/40 hover:-translate-y-1 transition-all duration-300 cursor-pointer h-full">
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: card.bg }}>
+            <motion.div key={card.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }} className="h-full">
+              <Link href={card.href} className="block h-full">
+                <div className="group relative p-5 rounded-3xl border border-white/5 bg-[#141420]/60 backdrop-blur-2xl hover:shadow-[0_15px_40px_rgba(0,0,0,0.4)] hover:border-white/20 hover:-translate-y-1.5 overflow-hidden transition-all duration-500 cursor-pointer h-full">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                  <div className="relative z-10 w-9 h-9 rounded-xl flex items-center justify-center mb-4 border border-white/10 shadow-inner group-hover:scale-110 transition-transform duration-300" style={{ background: card.bg }}>
                     <svg className="w-4 h-4" fill="none" stroke={card.color} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={card.icon} />
                     </svg>
                   </div>
-                  <div className="flex items-center gap-1.5 mb-1">
+                  <div className="relative z-10 flex items-center gap-1.5 mb-2">
                     <p className="text-sm font-black text-white group-hover:text-[#7C6EF6] transition-colors leading-tight">{card.label}</p>
                     {card.badge && (
-                      <span className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-md flex-shrink-0 ${card.badgeStyle}`}>{card.badge}</span>
+                      <span className={`text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md flex-shrink-0 ${card.badgeStyle}`}>{card.badge}</span>
                     )}
                   </div>
-                  <p className="text-xs text-[#6B6B85] leading-snug">{card.desc}</p>
+                  <p className="relative z-10 text-[11px] font-medium text-[#9494AD] leading-snug">{card.desc}</p>
                 </div>
               </Link>
             </motion.div>
@@ -807,22 +809,24 @@ export default function LearnPage() {
             <GeminiChat userRole={userRole} />
           </div>
 
-          <div className="lg:col-span-2 flex flex-col gap-4">
-            <div className="grid grid-cols-3 gap-3">
+          <div className="lg:col-span-2 flex flex-col gap-5">
+            <div className="grid grid-cols-3 gap-4">
               {[
                 { label: "Live now",  value: workshops.filter(w => w.status === "live").length || "—" },
                 { label: "Upcoming",  value: workshops.filter(w => w.status === "upcoming").length },
                 { label: "Joined",    value: myRegistered.length },
               ].map(({ label, value }) => (
-                <div key={label} className="bg-[#141420] border border-[#2A2A3E] rounded-2xl p-4 text-center">
-                  <p className="text-2xl font-black text-white">{value}</p>
-                  <p className="text-xs text-[#6B6B85] font-semibold mt-0.5">{label}</p>
+                <div key={label} className="bg-[#141420]/60 backdrop-blur-2xl border border-white/5 rounded-[2rem] p-5 text-center shadow-lg relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <p className="relative z-10 text-3xl font-black text-white drop-shadow-md">{value}</p>
+                  <p className="relative z-10 text-[10px] text-[#9494AD] font-bold mt-1.5 uppercase tracking-widest">{label}</p>
                 </div>
               ))}
             </div>
 
-            <div className="bg-[#141420] border border-[#2A2A3E] rounded-2xl p-5 flex-1">
-              <p className="text-xs font-bold text-[#6B6B85] uppercase tracking-wide mb-4">Quick links</p>
+            <div className="bg-[#141420]/60 backdrop-blur-2xl border border-white/5 rounded-[2rem] p-6 flex-1 shadow-lg relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#5B4BDB]/5 to-transparent pointer-events-none" />
+              <p className="relative z-10 text-[10px] font-black text-[#6B6B85] uppercase tracking-widest mb-4">Quick links</p>
               <div className="space-y-2">
                 {[
                   { label: "Generate my XR roadmap",     href: "/learn/roadmap",           badge: "AI" },

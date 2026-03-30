@@ -205,14 +205,14 @@ function DevCard({ dev, user, onRequest, onChat }: { dev:Developer; user:any; on
         {/* Header */}
         <div className="flex items-start gap-3 mb-4">
           <div className="relative flex-shrink-0">
-            <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200">
+            <div className="w-14 h-14 rounded-2xl overflow-hidden bg-[#1A1A2E] border border-white/10 shadow-inner">
               {dev.profileImage
                 ? <img src={dev.profileImage} className="w-full h-full object-cover" alt=""
                     onError={e=>{(e.target as HTMLImageElement).style.display="none"}}/>
-                : <div className="w-full h-full flex items-center justify-center font-black text-gray-400 text-lg">{dev.name?.[0]}</div>
+                : <div className="w-full h-full flex items-center justify-center font-black text-[#6B6B85] text-lg">{dev.name?.[0]}</div>
               }
             </div>
-            <span className={`absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white ${AVAIL_DOT[avail]}`}/>
+            <span className={`absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-[#141420] ${AVAIL_DOT[avail]}`}/>
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
@@ -258,9 +258,9 @@ function DevCard({ dev, user, onRequest, onChat }: { dev:Developer; user:any; on
         {dev.skills?.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-4">
             {dev.skills.slice(0,5).map(s => (
-              <span key={s} className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium border border-gray-200">{s}</span>
+              <span key={s} className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/5 text-[#9494AD] font-bold border border-white/10">{s}</span>
             ))}
-            {dev.skills.length > 5 && <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-400 font-medium">+{dev.skills.length-5}</span>}
+            {dev.skills.length > 5 && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/5 text-[#6B6B85] font-bold border border-white/10">+{dev.skills.length-5}</span>}
           </div>
         )}
 
@@ -293,11 +293,11 @@ function DevCard({ dev, user, onRequest, onChat }: { dev:Developer; user:any; on
             </button>
             <div className="flex gap-2">
               <button onClick={()=>onChat(dev)}
-                className="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-bold text-sm hover:bg-[#0A0A0F] transition-colors">
+                className="flex-1 py-2.5 rounded-xl border border-white/10 text-[#9494AD] font-bold text-sm hover:bg-white/5 hover:text-white transition-colors">
                 Message
               </button>
               <Link href={`/developer/${dev.userId||dev.id}`} className="flex-1">
-                <button className="w-full py-2.5 rounded-xl border border-gray-200 text-gray-700 font-bold text-sm hover:bg-[#0A0A0F] transition-colors">
+                <button className="w-full py-2.5 rounded-xl border border-white/10 text-[#9494AD] font-bold text-sm hover:bg-white/5 hover:text-white transition-colors">
                   Profile
                 </button>
               </Link>
@@ -305,7 +305,7 @@ function DevCard({ dev, user, onRequest, onChat }: { dev:Developer; user:any; on
           </>
         ) : (
           <Link href="/login">
-            <button className="w-full py-2.5 rounded-xl bg-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-200 transition-colors">
+            <button className="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-[#9494AD] hover:text-white font-bold text-sm hover:bg-white/10 transition-colors">
               Sign in to connect
             </button>
           </Link>
@@ -426,28 +426,29 @@ export default function ConnectPage() {
         </div>
 
         {/* Gemini matcher */}
-        <div className="bg-white border border-violet-200 rounded-2xl p-5 mb-8 shadow-sm">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-7 h-7 rounded-lg bg-[#5B4BDB] flex items-center justify-center flex-shrink-0">
-              <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <div className="bg-[#101015]/80 backdrop-blur-2xl border border-violet-500/20 rounded-3xl p-6 mb-8 shadow-[0_15px_40px_-10px_rgba(91,75,219,0.15)] relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#5B4BDB]/5 to-transparent pointer-events-none" />
+          <div className="flex items-center gap-3 mb-5 relative z-10">
+            <div className="w-8 h-8 rounded-xl bg-[#5B4BDB] flex items-center justify-center flex-shrink-0 shadow-[0_0_20px_rgba(91,75,219,0.4)]">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             </div>
-            <p className="text-sm font-bold text-white">AI Creator Matcher</p>
-            <span className="text-xs bg-violet-50 text-violet-700 border border-violet-200 px-2 py-0.5 rounded-full font-semibold">Gemini</span>
+            <p className="text-base font-black text-white">AI Creator Matcher</p>
+            <span className="text-[10px] bg-[#5B4BDB]/10 text-[#A594FF] border border-[#5B4BDB]/20 px-2 py-0.5 rounded-md font-bold uppercase tracking-widest">Gemini</span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3 relative z-10">
             <input value={aiGoal} onChange={e=>setAiGoal(e.target.value)}
               onKeyDown={e=>e.key==="Enter"&&handleAiMatch()}
-              placeholder="What do you need? e.g. AR app for Android, VR game in Unity..."
-              className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#5B4BDB] transition-colors"/>
+              placeholder="Describe your project needs... (e.g. AR app for Android, VR multiplayer)"
+              className="flex-1 bg-[#1A1A2E]/50 backdrop-blur-md border border-white/5 rounded-2xl py-3 px-5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#5B4BDB]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#5B4BDB]/10 transition duration-300"/>
             <button onClick={handleAiMatch} disabled={!aiGoal.trim()||aiLoading}
-              className="px-4 py-2.5 bg-[#5B4BDB] hover:bg-[#4c3ec7] disabled:opacity-40 text-white text-sm font-bold rounded-xl transition-colors shrink-0">
-              {aiLoading?"...":"Match →"}
+              className="px-6 py-3 bg-[#5B4BDB] hover:bg-[#4c3ec7] disabled:opacity-40 text-white text-sm font-bold rounded-2xl transition-all shadow-[0_0_20px_rgba(91,75,219,0.3)] shrink-0 border-b-2 border-[#4438b8] active:translate-y-[2px]">
+              {aiLoading?"Thinking...":"Match Creators →"}
             </button>
           </div>
           <AnimatePresence>
             {aiResult && (
-              <motion.div initial={{opacity:0,y:6}} animate={{opacity:1,y:0}}
-                className="mt-3 bg-violet-50 border border-violet-200 rounded-xl p-4 text-sm text-violet-900 leading-relaxed whitespace-pre-wrap">
+              <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}}
+                className="mt-4 bg-[#141420]/80 border border-[#5B4BDB]/30 rounded-2xl p-5 text-sm text-[#A594FF] font-medium leading-relaxed shadow-inner">
                 {aiResult}
               </motion.div>
             )}
@@ -455,31 +456,31 @@ export default function ConnectPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-8 shadow-sm space-y-4">
-          <div className="flex flex-wrap gap-3 items-center">
-            <div className="relative flex-1 min-w-[200px]">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name or skill..."
-                className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#5B4BDB] transition-colors"/>
+        <div className="bg-[#101015]/40 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-6 mb-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] space-y-5">
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="relative flex-1 min-w-[200px] group">
+              <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-[#5B4BDB] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name or technical skill..."
+                className="w-full pl-12 pr-5 py-3.5 bg-[#1A1A2E]/50 border border-white/5 rounded-2xl text-sm text-white placeholder-[#6B6B85] focus:outline-none focus:border-[#5B4BDB]/50 focus:bg-[#1A1A2E]/80 transition duration-300"/>
             </div>
             <button onClick={()=>setCertOnly(!certOnly)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold transition-all ${certOnly?"bg-[#5B4BDB] border-[#5B4BDB] text-white":"bg-white border-gray-200 text-gray-600 hover:border-gray-400"}`}>
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+              className={`flex items-center gap-2 px-5 py-3.5 rounded-2xl border text-sm font-bold transition-all shadow-sm ${certOnly?"bg-[#5B4BDB] border-[#5B4BDB] text-white shadow-[0_0_20px_rgba(91,75,219,0.3)]":"bg-[#1A1A2E]/50 border-white/5 text-[#9494AD] hover:border-white/20 hover:text-white"}`}>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
               Certified only
             </button>
           </div>
           <div className="flex gap-2 flex-wrap">
             {SKILL_FILTERS.map(s=>(
               <button key={s} onClick={()=>setSkillFilter(s)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${skillFilter===s?"bg-[#5B4BDB] text-white border-[#5B4BDB]":"bg-white text-gray-500 border-gray-200 hover:border-gray-400"}`}>
+                className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${skillFilter===s?"bg-[#5B4BDB] text-white border-[#5B4BDB] shadow-[0_0_15px_rgba(91,75,219,0.3)]":"bg-[#1A1A2E]/50 text-[#9494AD] border-white/5 hover:border-white/20 hover:text-white"}`}>
                 {s}
               </button>
             ))}
           </div>
-          <div className="flex justify-between items-center pt-1 border-t border-gray-100 text-xs text-gray-400 font-medium">
+          <div className="flex justify-between items-center pt-3 border-t border-white/5 text-[11px] font-bold tracking-widest uppercase text-[#6B6B85]">
             <span>{filtered.length} creator{filtered.length!==1?"s":""}</span>
             {(search||skillFilter!=="All"||certOnly)&&(
-              <button onClick={()=>{setSearch("");setSkillFilter("All");setCertOnly(false);}} className="text-[#5B4BDB] font-bold hover:underline">Clear filters</button>
+              <button onClick={()=>{setSearch("");setSkillFilter("All");setCertOnly(false);}} className="text-[#A594FF] hover:text-white transition-colors">Clear filters</button>
             )}
           </div>
         </div>
@@ -492,13 +493,19 @@ export default function ConnectPage() {
             ))}
           </div>
         ) : filtered.length===0 ? (
-          <div className="text-center py-24 bg-white rounded-2xl border border-gray-200">
-            <p className="text-4xl mb-4">👀</p>
-            <p className="font-bold text-white mb-2">No creators found</p>
-            <button onClick={()=>{setSearch("");setSkillFilter("All");setCertOnly(false);}}
-              className="mt-4 px-6 py-2.5 rounded-xl bg-[#5B4BDB] text-white font-bold text-sm hover:bg-[#4c3ec7] transition-colors">
-              Clear filters
-            </button>
+          <div className="text-center py-24 bg-[#141420]/60 backdrop-blur-xl rounded-[2rem] border border-white/5 shadow-2xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(91,75,219,0.05)_0%,transparent_50%)]" />
+            <div className="relative z-10 flex flex-col items-center justify-center">
+              <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6 border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                <svg className="w-10 h-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+              </div>
+              <p className="font-black text-2xl text-white mb-2 tracking-tight">No creators found</p>
+              <p className="text-[#9494AD] font-medium text-sm mb-6 max-w-sm">Try adjusting your technical skills or certification filters to find the right talent.</p>
+              <button onClick={()=>{setSearch("");setSkillFilter("All");setCertOnly(false);}}
+                className="px-8 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-white font-bold text-sm hover:bg-white/10 hover:border-white/20 transition-all active:scale-95 shadow-sm">
+                Clear all filters
+              </button>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

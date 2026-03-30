@@ -192,14 +192,15 @@ export default function Navbar() {
 
   return (
     <>
-      <nav
-        ref={navRef}
-        className={`fixed top-0 left-0 right-0 z-50 h-14 md:h-16 flex items-center transition-all duration-300 ${
-          scrolled
-            ? "bg-[#07060B]/80 backdrop-blur-xl shadow-sm border-b border-[#2A2A3E]"
-            : "bg-transparent border-b border-white/5"
-        }`}
-      >
+      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4 pointer-events-none transition-all duration-300">
+        <nav
+          ref={navRef}
+          className={`pointer-events-auto h-14 md:h-16 flex items-center transition-all duration-500 rounded-2xl w-full ${
+            scrolled
+              ? "max-w-5xl bg-[#07060B]/70 backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-white/10"
+              : "max-w-7xl bg-transparent border border-transparent"
+          }`}
+        >
         <div className="w-full max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between">
 
           {/* Logo */}
@@ -375,7 +376,8 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-      </nav>
+        </nav>
+      </div>
 
       {/* Mobile drawer */}
       <AnimatePresence>

@@ -127,7 +127,7 @@ function BentoCard({ s, i }: { s: typeof PLATFORM_SECTIONS[0]; i: number }) {
     <motion.div
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      className={`relative group rounded-[2.5rem] overflow-hidden bg-[#101015] border border-white/5 ${s.hoverBorder} transition-colors duration-500 ${s.gridSpan}`}
+      className={`relative group rounded-[2.5rem] overflow-hidden bg-[#101015]/60 backdrop-blur-3xl border border-white/10 hover:border-white/20 hover:scale-[1.01] ${s.hoverBorder} transition-all duration-500 ${s.gridSpan} shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]`}
     >
       <Link href={s.href} className="absolute inset-0 z-20" />
       

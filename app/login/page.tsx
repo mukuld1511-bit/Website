@@ -106,9 +106,11 @@ export default function Login() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="rounded-3xl border border-[#2A2A3E] bg-[#141420]/80 backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]"
+          className="rounded-[2.5rem] border border-white/10 bg-[#101015]/40 backdrop-blur-3xl shadow-[0_30px_80px_-15px_rgba(0,0,0,0.8)] overflow-hidden relative"
         >
-          <form onSubmit={handleLogin} className="p-8 md:p-10 flex flex-col gap-6">
+          {/* Subtle inner glow */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#5B4BDB]/10 to-transparent opacity-50 pointer-events-none" />
+          <form onSubmit={handleLogin} className="p-8 md:p-10 flex flex-col gap-6 relative z-10">
 
             {/* Error */}
             {error && (
@@ -126,20 +128,20 @@ export default function Login() {
 
             {/* Email */}
             <div>
-              <label className="block text-[11px] font-bold text-[#7C6EF6] uppercase tracking-[0.15em] mb-2.5">Email Address</label>
+              <label className="block text-xs font-semibold text-[#9494AD] mb-2.5">Email Address</label>
               <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B85] group-focus-within:text-[#7C6EF6] transition duration-300">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B85] group-focus-within:text-[#A594FF] transition duration-300">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                   </svg>
                 </div>
                 <input
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="name@domain.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full bg-[#1A1A2E] border border-[#2A2A3E] text-white placeholder-[#4A4A60] font-medium text-sm rounded-xl pl-12 pr-5 py-4 focus:outline-none focus:border-[#5B4BDB] focus:ring-2 focus:ring-[#5B4BDB]/20 transition duration-300 hover:border-[#3A3A52]"
+                  className="w-full bg-[#1A1A2E]/50 backdrop-blur-md border border-white/5 text-white placeholder-[#4A4A60] font-medium text-sm rounded-2xl pl-12 pr-5 py-4 focus:outline-none focus:border-[#5B4BDB]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#5B4BDB]/10 transition duration-300 hover:border-white/10"
                 />
               </div>
             </div>
@@ -147,13 +149,13 @@ export default function Login() {
             {/* Password */}
             <div>
               <div className="flex items-center justify-between mb-2.5">
-                <label className="block text-[11px] font-bold text-[#7C6EF6] uppercase tracking-[0.15em]">Password</label>
+                <label className="block text-xs font-semibold text-[#9494AD]">Password</label>
                 <Link href="/forgot-password">
-                  <span className="text-[11px] text-[#6B6B85] font-bold tracking-wider uppercase hover:text-[#A594FF] transition duration-300 cursor-pointer">Forgot?</span>
+                  <span className="text-[11px] text-[#6B6B85] font-bold tracking-wider hover:text-[#A594FF] transition duration-300 cursor-pointer">Recover</span>
                 </Link>
               </div>
               <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B85] group-focus-within:text-[#7C6EF6] transition duration-300">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B85] group-focus-within:text-[#A594FF] transition duration-300">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
@@ -164,7 +166,7 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full bg-[#1A1A2E] border border-[#2A2A3E] text-white placeholder-[#4A4A60] font-medium text-sm rounded-xl pl-12 pr-12 py-4 focus:outline-none focus:border-[#5B4BDB] focus:ring-2 focus:ring-[#5B4BDB]/20 transition duration-300 hover:border-[#3A3A52]"
+                  className="w-full bg-[#1A1A2E]/50 backdrop-blur-md border border-white/5 text-white placeholder-[#4A4A60] font-medium text-sm rounded-2xl pl-12 pr-12 py-4 focus:outline-none focus:border-[#5B4BDB]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#5B4BDB]/10 transition duration-300 hover:border-white/10"
                 />
                 <button
                   type="button"

@@ -263,7 +263,7 @@ export default function RequestsPage() {
             </div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <Link href="/requests/post">
-                <button className="flex items-center gap-2 px-8 py-4 rounded-2xl font-black text-white bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 hover:border-blue-600 active:border-b-0 active:translate-y-1 transition-all shadow-xl text-lg group">
+                <button className="flex items-center gap-2 px-8 py-4 rounded-2xl font-black text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] active:border-b-0 active:translate-y-[3px] transition-all shadow-[0_10px_30px_rgba(91,75,219,0.3)] text-lg group">
                   <svg className="w-6 h-6 transform group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
                   </svg>
@@ -274,15 +274,15 @@ export default function RequestsPage() {
           </div>
 
           {/* Search */}
-          <div className="mb-12 relative">
-            <svg className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-[#5B4BDB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="mb-12 relative group">
+            <svg className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-[#6B6B85] group-focus-within:text-[#5B4BDB] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search by title, skill, or AR/VR category..."
-              className="w-full bg-[#141420]/80 border-2 border-[#2A2A3E] text-white font-bold placeholder-[#6B6B85] text-lg rounded-3xl pl-16 pr-6 py-5 focus:outline-none focus:border-[#5B4BDB]/60 transition backdrop-blur-md"
+              className="w-full bg-[#1A1A2E]/50 border border-white/5 text-white font-bold placeholder-[#6B6B85] text-lg rounded-3xl pl-16 pr-6 py-5 focus:outline-none focus:border-[#5B4BDB]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#5B4BDB]/10 transition-all backdrop-blur-md shadow-inner"
             />
           </div>
 
@@ -293,17 +293,20 @@ export default function RequestsPage() {
               <p className="text-blue-600 text-lg font-black animate-pulse">Loading amazing projects... 🚀</p>
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-32 border-4 border-dashed border-indigo-100 rounded-[3rem] bg-white/50 backdrop-blur-sm">
-              <div className="text-6xl mb-6">🏜️</div>
-              <h3 className="text-3xl font-black text-white mb-4">No projects right now</h3>
-              <p className="text-gray-500 font-bold mb-8 max-w-md mx-auto text-lg">
-                {search ? `We couldn't find anything matching "${search}". Try a different keyword.` : "Check back later or be the first to post a new learning project."}
-              </p>
-              <Link href="/requests/post">
-                <button className="px-8 py-4 rounded-2xl text-white font-black text-lg bg-pink-500 hover:bg-pink-400 border-b-4 border-pink-700 active:border-b-0 active:translate-y-1 transition-all shadow-xl">
-                  Create the first project ✨
-                </button>
-              </Link>
+            <div className="text-center py-32 border-2 border-dashed border-white/10 rounded-[3rem] bg-[#1A1A2E]/30 backdrop-blur-md shadow-inner relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-[#5B4BDB]/5 to-transparent pointer-events-none" />
+              <div className="relative z-10">
+                <div className="text-6xl mb-6 drop-shadow-lg">🏜️</div>
+                <h3 className="text-3xl font-black text-white mb-4">No projects right now</h3>
+                <p className="text-[#9494AD] font-bold mb-8 max-w-md mx-auto text-lg">
+                  {search ? `We couldn't find anything matching "${search}". Try a different keyword.` : "Check back later or be the first to post a new learning project."}
+                </p>
+                <Link href="/requests/post">
+                  <button className="px-8 py-4 rounded-2xl text-white font-black text-lg bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] active:border-b-0 active:translate-y-[3px] transition-all shadow-[0_10px_30px_rgba(91,75,219,0.3)]">
+                    Create the first project ✨
+                  </button>
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -319,42 +322,43 @@ export default function RequestsPage() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ duration: 0.4, delay: i * 0.05, type: "spring", bounce: 0.4 }}
-                      className="group bg-white rounded-[2.5rem] p-2 hover:-translate-y-2 transition-transform duration-300 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_50px_-15px_rgba(59,130,246,0.3)] flex flex-col border-2 border-transparent hover:border-blue-100"
+                      className="group relative bg-[#141420]/60 backdrop-blur-xl rounded-[2.5rem] p-2 hover:-translate-y-2 transition-all duration-500 shadow-[0_15px_40px_rgba(0,0,0,0.5)] border border-white/5 hover:border-white/20 hover:shadow-[0_20px_50px_rgba(91,75,219,0.2)] flex flex-col overflow-hidden"
                     >
-                      <div className="bg-indigo-50/50 rounded-[2rem] p-6 lg:p-8 flex flex-col flex-grow relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#5B4BDB]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10" />
+                      <div className="bg-[#1A1A2E]/50 border border-white/5 rounded-[2rem] p-6 lg:p-8 flex flex-col flex-grow relative overflow-hidden z-20">
                         {/* Header: Category & Time */}
                         <div className="flex justify-between items-center mb-6">
                           <div className="flex items-center gap-2">
-                            <span className="text-3xl bg-white p-2 rounded-2xl shadow-sm">{icon}</span>
-                            <span className="text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md">
+                            <span className="text-3xl bg-[#0A0A0F]/50 border border-white/5 p-2 rounded-2xl shadow-sm">{icon}</span>
+                            <span className="text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#5B4BDB] to-[#7C6EF6] text-white shadow-[0_0_15px_rgba(91,75,219,0.3)] border border-[#5B4BDB]/50">
                               {req.category || "Project"}
                             </span>
                           </div>
                           {req.createdAt && (
-                            <span className="text-gray-500 text-xs font-bold bg-white px-2.5 py-1 rounded-lg shadow-sm">
+                            <span className="text-[#6B6B85] text-xs font-bold bg-[#0A0A0F]/50 border border-white/5 px-2.5 py-1 rounded-lg shadow-sm">
                               {timeAgo(req.createdAt.toDate())}
                             </span>
                           )}
                         </div>
 
                         {/* Title & Desc */}
-                        <h3 className="text-white font-black text-2xl mb-4 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
+                        <h3 className="text-white font-black text-2xl mb-4 line-clamp-2 leading-tight group-hover:text-[#A594FF] transition-colors drop-shadow-md">
                           {req.title}
                         </h3>
-                        <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-6 flex-grow font-semibold">
+                        <p className="text-[#9494AD] text-sm leading-relaxed line-clamp-3 mb-6 flex-grow font-semibold">
                           {req.description}
                         </p>
 
                         {/* Details Grid */}
                         <div className="grid grid-cols-2 gap-4 mb-6">
-                          <div className="p-4 rounded-2xl bg-white shadow-sm border border-indigo-50 group-hover:border-blue-100 transition-colors">
-                            <p className="text-blue-500 text-[10px] font-black uppercase tracking-widest mb-1.5">Commitment ⏳</p>
+                          <div className="p-4 rounded-2xl bg-[#0A0A0F]/50 shadow-inner border border-white/5 group-hover:border-[#5B4BDB]/40 transition-colors">
+                            <p className="text-[#A594FF] text-[10px] font-black uppercase tracking-widest mb-1.5">Commitment ⏳</p>
                             <p className="font-extrabold text-white text-sm md:text-base truncate">
                               {req.budget || "Flexible"}
                             </p>
                           </div>
-                          <div className="p-4 rounded-2xl bg-white shadow-sm border border-indigo-50 group-hover:border-blue-100 transition-colors">
-                            <p className="text-pink-500 text-[10px] font-black uppercase tracking-widest mb-1.5">Timeline ⏱️</p>
+                          <div className="p-4 rounded-2xl bg-[#0A0A0F]/50 shadow-inner border border-white/5 group-hover:border-[#5B4BDB]/40 transition-colors">
+                            <p className="text-[#A594FF] text-[10px] font-black uppercase tracking-widest mb-1.5">Timeline ⏱️</p>
                             <p className="font-extrabold text-white text-sm md:text-base truncate">
                               {req.timeline || "Flexible"}
                             </p>
@@ -365,12 +369,12 @@ export default function RequestsPage() {
                         {req.skills && req.skills.length > 0 && (
                           <div className="flex flex-wrap gap-2 mb-8">
                             {req.skills.slice(0, 3).map((skill, j) => (
-                              <span key={j} className="text-xs font-black text-indigo-600 bg-white shadow-sm border border-indigo-100 px-3 py-1.5 rounded-xl">
+                              <span key={j} className="text-xs font-black text-[#A594FF] bg-[#5B4BDB]/10 shadow-[0_0_10px_rgba(91,75,219,0.1)] border border-[#5B4BDB]/30 px-3 py-1.5 rounded-xl">
                                 {skill}
                               </span>
                             ))}
                             {req.skills.length > 3 && (
-                              <span className="text-xs font-black text-gray-500 bg-gray-100 px-3 py-1.5 rounded-xl">
+                              <span className="text-xs font-black text-[#6B6B85] bg-[#1A1A2E]/50 border border-white/5 px-3 py-1.5 rounded-xl shadow-inner">
                                 +{req.skills.length - 3}
                               </span>
                             )}
@@ -378,24 +382,24 @@ export default function RequestsPage() {
                         )}
 
                         {/* Footer User Info & CTA */}
-                        <div className="pt-6 border-t-[3px] border-indigo-100 border-dashed flex items-center justify-between mt-auto gap-4 flex-wrap">
+                        <div className="pt-6 border-t border-white/10 border-dashed flex items-center justify-between mt-auto gap-4 flex-wrap">
                           <div className="flex items-center gap-3">
                             <img
                               src={req.userPhoto || "/avatar.png"}
                               onError={e => { (e.target as any).src = "/avatar.png"; }}
-                              className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md bg-white p-0.5 flex-shrink-0"
+                              className="w-10 h-10 rounded-full object-cover border-2 border-white/10 shadow-md bg-[#0A0A0F] p-0.5 flex-shrink-0"
                               alt={req.userName}
                             />
                             <div>
-                              <p className="text-white text-sm font-black break-words max-w-[150px] sm:max-w-[200px]">{req.userName || "Anonymous"}</p>
-                              <p className="text-blue-500 text-[10px] font-black uppercase tracking-wider">Creator</p>
+                              <p className="text-white text-sm font-black break-words max-w-[150px] sm:max-w-[200px] drop-shadow-sm">{req.userName || "Anonymous"}</p>
+                              <p className="text-[#7C6EF6] text-[10px] font-black uppercase tracking-wider">Creator</p>
                             </div>
                           </div>
 
                           {isMine ? (
                             <button
                               onClick={() => openApplicants(req)}
-                              className="px-5 py-3 border-2 border-indigo-200 hover:border-indigo-400 bg-white text-indigo-600 text-[11px] font-black uppercase tracking-wide rounded-2xl transition shadow-sm whitespace-nowrap"
+                              className="px-5 py-3 border border-white/20 hover:border-[#5B4BDB]/50 bg-[#1A1A2E]/50 text-[#A594FF] text-[11px] font-black uppercase tracking-wide rounded-2xl transition shadow-inner whitespace-nowrap"
                             >
                               Connections
                             </button>
@@ -404,21 +408,21 @@ export default function RequestsPage() {
                                 <button
                                   onClick={() => chatWithClient(req)}
                                   disabled={initiatingChatWithClient === req.id}
-                                  className="w-10 h-10 flex items-center justify-center border-2 border-blue-200 bg-white hover:bg-blue-50 text-blue-600 rounded-xl transition shadow-sm disabled:opacity-50"
+                                  className="w-10 h-10 flex items-center justify-center border border-white/20 bg-[#1A1A2E]/50 hover:bg-[#5B4BDB]/20 hover:border-[#5B4BDB]/40 text-[#A594FF] rounded-xl transition shadow-inner disabled:opacity-50"
                                   title="Chat with Creator"
                                 >
                                   {initiatingChatWithClient === req.id ? "..." : <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>}
                                 </button>
                                 <button
                                   onClick={() => setApplyingTo(req)}
-                                  className="px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white text-[12px] font-black uppercase tracking-wide rounded-2xl border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 transition-all shadow-md whitespace-nowrap"
+                                  className="px-5 py-3 bg-[#5B4BDB] hover:bg-[#4c3ec7] text-white text-[12px] font-black uppercase tracking-wide rounded-2xl border-b-[3px] border-[#4438b8] active:border-b-0 active:translate-y-[3px] transition-all shadow-[0_0_15px_rgba(91,75,219,0.3)] whitespace-nowrap"
                                 >
                                   Join Project 🚀
                                 </button>
                             </div>
                           ) : (
                             <Link href="/login">
-                              <button className="px-5 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-[11px] font-black uppercase tracking-wide rounded-2xl transition whitespace-nowrap">
+                              <button className="px-5 py-3 bg-white/5 hover:bg-white/10 text-[#9494AD] hover:text-white border border-white/10 text-[11px] font-black uppercase tracking-wide rounded-2xl transition whitespace-nowrap shadow-inner">
                                 Login
                               </button>
                             </Link>
@@ -440,33 +444,34 @@ export default function RequestsPage() {
         {/** Apply Modal */}
         {applyingTo && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="absolute inset-0 bg-blue-900/20 backdrop-blur-md" onClick={() => !isApplying && setApplyingTo(null)} />
+            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="absolute inset-0 bg-[#0A0A0F]/80 backdrop-blur-xl" onClick={() => !isApplying && setApplyingTo(null)} />
             <motion.div initial={{ opacity:0, scale:0.9, y:30 }} animate={{ opacity:1, scale:1, y:0 }} exit={{ opacity:0, scale:0.95, y:20 }} transition={{ type: "spring", bounce: 0.5 }}
-              className="relative w-full max-w-md bg-white border-4 border-white rounded-[2.5rem] shadow-2xl p-2">
-              <div className="bg-indigo-50/50 rounded-[2rem] p-6 md:p-8">
+              className="relative w-full max-w-md bg-[#141420]/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.6)] overflow-hidden p-0.5">
+              <div className="absolute inset-0 bg-gradient-to-b from-[#5B4BDB]/10 to-transparent pointer-events-none" />
+              <div className="relative z-10 p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-3xl">🚀</span>
+                  <span className="text-3xl drop-shadow-md">🚀</span>
                   <h2 className="text-3xl font-black text-white tracking-tight">Connect on this Project</h2>
                 </div>
-                <p className="text-gray-600 font-bold mb-6 pb-6 border-b-2 border-indigo-100 border-dashed">Joining: <span className="text-blue-600">"{applyingTo.title}"</span></p>
+                <p className="text-[#9494AD] font-bold mb-6 pb-6 border-b border-white/10 border-dashed">Joining: <span className="text-[#A594FF] drop-shadow-sm">"{applyingTo.title}"</span></p>
                 
                 <div className="space-y-6 mb-8">
                   <div>
-                    <label className="block text-[11px] font-black uppercase tracking-widest text-gray-500 mb-2">Your Pitch / Points</label>
+                    <label className="block text-[11px] font-black uppercase tracking-widest text-[#6B6B85] mb-2">Your Pitch / Points</label>
                     <input type="number" placeholder="50" value={applyBid} onChange={e=>setApplyBid(e.target.value)}
-                      className="w-full bg-white border-2 border-indigo-100 rounded-2xl px-5 py-4 text-white font-bold text-lg placeholder-gray-300 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition shadow-sm" />
+                      className="w-full bg-[#1A1A2E]/50 border border-white/5 rounded-2xl px-5 py-4 text-white font-bold text-lg placeholder-[#6B6B85] focus:outline-none focus:border-[#5B4BDB]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#5B4BDB]/10 transition-all shadow-inner" />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-black uppercase tracking-widest text-gray-500 mb-2">Why do you want to collaborate?</label>
+                    <label className="block text-[11px] font-black uppercase tracking-widest text-[#6B6B85] mb-2">Why do you want to collaborate?</label>
                     <textarea placeholder="Share your experience and what you hope to learn or contribute..." rows={5} value={applyMessage} onChange={e=>setApplyMessage(e.target.value)}
-                      className="w-full bg-white border-2 border-indigo-100 rounded-2xl px-5 py-4 text-white font-bold placeholder-gray-300 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition resize-none shadow-sm" />
+                      className="w-full bg-[#1A1A2E]/50 border border-white/5 rounded-2xl px-5 py-4 text-white font-bold placeholder-[#6B6B85] focus:outline-none focus:border-[#5B4BDB]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#5B4BDB]/10 transition-all resize-none shadow-inner" />
                   </div>
                 </div>
 
                 <div className="flex gap-4">
-                  <button onClick={() => setApplyingTo(null)} disabled={isApplying} className="flex-1 py-4 bg-white border-2 border-gray-200 text-gray-600 font-bold rounded-2xl hover:bg-[#0A0A0F] hover:border-gray-300 transition shadow-sm">Cancel</button>
+                  <button onClick={() => setApplyingTo(null)} disabled={isApplying} className="flex-1 py-4 bg-[#1A1A2E]/50 border border-white/10 text-[#9494AD] hover:text-white font-bold rounded-2xl hover:bg-white/10 transition-all shadow-sm">Cancel</button>
                   <button onClick={submitApplication} disabled={isApplying || !applyBid || !applyMessage} 
-                    className="flex-1 py-4 text-white font-black text-lg bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 rounded-2xl transition-all shadow-lg disabled:opacity-50">
+                    className="flex-1 py-4 text-white font-black text-lg bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] active:border-b-0 active:translate-y-[3px] rounded-2xl transition-all shadow-[0_0_20px_rgba(91,75,219,0.3)] disabled:opacity-50">
                     {isApplying ? "Sending..." : "Submit Pitch"}
                   </button>
                 </div>
@@ -478,53 +483,58 @@ export default function RequestsPage() {
         {/** View Applicants Modal */}
         {viewingApplicantsFor && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="absolute inset-0 bg-blue-900/20 backdrop-blur-md" onClick={() => setViewingApplicantsFor(null)} />
+            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="absolute inset-0 bg-[#0A0A0F]/80 backdrop-blur-xl" onClick={() => setViewingApplicantsFor(null)} />
             <motion.div initial={{ opacity:0, scale:0.9, y:30 }} animate={{ opacity:1, scale:1, y:0 }} exit={{ opacity:0, scale:0.95, y:20 }} transition={{ type: "spring", bounce: 0.4 }}
-              className="relative w-full max-w-2xl max-h-[85vh] flex flex-col bg-white border-4 border-white rounded-[2.5rem] shadow-2xl overflow-hidden">
-              <div className="bg-indigo-50/30 p-6 md:p-8 flex flex-col h-full border-2 border-indigo-50 rounded-[2rem] m-2">
-                <div className="flex justify-between items-start mb-6 pb-6 border-b-2 border-indigo-100 border-dashed">
+              className="relative w-full max-w-2xl max-h-[85vh] flex flex-col bg-[#141420]/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.6)] overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-[#5B4BDB]/10 to-transparent pointer-events-none" />
+              <div className="relative z-10 p-6 md:p-8 flex flex-col h-full m-2">
+                <div className="flex justify-between items-start mb-6 pb-6 border-b border-white/10 border-dashed">
                   <div>
-                    <h2 className="text-3xl font-black text-white mb-2">Connections <span className="text-blue-600 bg-blue-100 px-3 py-1 rounded-xl text-2xl">{applicants.length}</span></h2>
-                    <p className="text-gray-600 font-bold">"{viewingApplicantsFor.title}"</p>
+                    <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-3">
+                      Connections 
+                      <span className="text-[#A594FF] bg-[#5B4BDB]/20 border border-[#5B4BDB]/30 shadow-[0_0_15px_rgba(91,75,219,0.2)] px-3 py-1 rounded-xl text-2xl">{applicants.length}</span>
+                    </h2>
+                    <p className="text-[#9494AD] font-bold">"{viewingApplicantsFor.title}"</p>
                   </div>
-                  <button onClick={() => setViewingApplicantsFor(null)} className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-white transition font-bold text-xl">✕</button>
+                  <button onClick={() => setViewingApplicantsFor(null)} className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-[#6B6B85] hover:bg-white/10 hover:border-white/20 hover:text-white transition-all font-bold text-xl">✕</button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto space-y-4 pr-2">
+                <div className="flex-1 overflow-y-auto space-y-4 pr-2 scrollbar-hide">
                   {loadingApplicants ? (
                     <div className="flex flex-col items-center justify-center py-20">
-                       <div className="w-12 h-12 rounded-full border-4 border-blue-100 border-t-blue-600 animate-spin mb-4" />
-                       <p className="text-blue-600 font-bold text-center">Loading talent...</p>
+                       <div className="w-12 h-12 rounded-full border-4 border-white/10 border-t-[#5B4BDB] animate-spin mb-4" />
+                       <p className="text-[#7C6EF6] font-bold text-center animate-pulse">Loading talent...</p>
                     </div>
                   ) : applicants.length === 0 ? (
-                    <div className="text-center py-20 px-4 bg-white rounded-3xl border border-indigo-50">
-                      <div className="text-5xl mb-4">👀</div>
+                    <div className="text-center py-20 px-4 bg-[#1A1A2E]/30 rounded-3xl border border-white/5 shadow-inner">
+                      <div className="text-5xl mb-4 drop-shadow-md">👀</div>
                       <p className="text-white font-black text-xl mb-2">No connections yet</p>
-                      <p className="text-gray-500 font-semibold">When peers want to collaborate, they'll appear here.</p>
+                      <p className="text-[#6B6B85] font-semibold">When peers want to collaborate, they'll appear here.</p>
                     </div>
                   ) : (
                     applicants.map((app) => (
-                      <div key={app.id} className="p-6 rounded-3xl border-2 border-indigo-50 bg-white hover:border-blue-200 transition-colors flex flex-col sm:flex-row gap-6 shadow-sm group">
-                        <div className="flex-1">
+                      <div key={app.id} className="p-6 rounded-3xl border border-white/5 bg-[#141420]/60 backdrop-blur-md hover:border-[#5B4BDB]/40 transition-colors flex flex-col sm:flex-row gap-6 shadow-sm group relative overflow-hidden">
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(91,75,219,0.05)_0%,transparent_50%)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="flex-1 relative z-10">
                           <div className="flex items-start gap-4 mb-4">
-                            <img src={app.developerPhoto || "/avatar.png"} alt={app.developerName} className="w-16 h-16 rounded-2xl object-cover border-2 border-indigo-50 shadow-sm" />
+                            <img src={app.developerPhoto || "/avatar.png"} alt={app.developerName} className="w-16 h-16 rounded-2xl object-cover border border-white/10 shadow-sm bg-[#0A0A0F]" />
                             <div className="flex-1 mt-1">
                               <div className="flex items-center justify-between">
-                                <Link href={`/developer/${app.developerId}`} className="text-white font-black text-lg hover:text-blue-600 transition tracking-tight">{app.developerName}</Link>
-                                <span className="text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wide border border-indigo-100">Pitch: {app.bidAmount}</span>
+                                <Link href={`/developer/${app.developerId}`} className="text-white font-black text-lg hover:text-[#7C6EF6] transition tracking-tight">{app.developerName}</Link>
+                                <span className="text-[#A594FF] bg-[#5B4BDB]/10 px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wide border border-[#5B4BDB]/30 shadow-inner">Pitch: {app.bidAmount}</span>
                               </div>
-                              <p className="text-gray-500 text-xs font-bold mt-1 bg-[#0A0A0F] inline-block px-2 py-1 rounded-md">{timeAgo(app.createdAt?.toDate())}</p>
+                              <p className="text-[#6B6B85] text-xs font-bold mt-1 bg-[#1A1A2E]/50 border border-white/5 inline-block px-2 py-1 rounded-md">{timeAgo(app.createdAt?.toDate())}</p>
                             </div>
                           </div>
-                          <div className="p-5 rounded-2xl bg-indigo-50/50 border border-indigo-100 text-gray-700 font-semibold text-sm leading-relaxed">
+                          <div className="p-5 rounded-2xl bg-[#1A1A2E]/50 border border-white/5 text-[#9494AD] shadow-inner font-semibold text-sm leading-relaxed">
                             {app.message}
                           </div>
                         </div>
-                        <div className="flex flex-col justify-end pt-2 sm:pt-0">
+                        <div className="flex flex-col justify-end pt-2 sm:pt-0 relative z-10">
                           <button
                             onClick={() => approveApplicant(app, viewingApplicantsFor)}
                             disabled={initiatingChat === app.id}
-                            className="w-full sm:w-auto px-6 py-4 rounded-2xl font-black text-white bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 transition-all shadow-md disabled:opacity-70 whitespace-nowrap"
+                            className="w-full sm:w-auto px-6 py-4 rounded-2xl font-black text-white bg-[#5B4BDB] hover:bg-[#4c3ec7] border-b-[3px] border-[#4438b8] active:border-b-0 active:translate-y-[3px] transition-all shadow-[0_0_15px_rgba(91,75,219,0.3)] disabled:opacity-50 whitespace-nowrap"
                           >
                             {initiatingChat === app.id ? "Opening..." : "Approve Match 🤝"}
                           </button>

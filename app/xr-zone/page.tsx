@@ -41,7 +41,8 @@ function ModelCard({ model, index }: { model: Model; index: number }) {
         transition={{ delay: index * 0.04, duration: 0.35 }}
       >
         <Link href={`/gallery/${model.id}`}>
-          <div className="group bg-[#141420] border border-[#2A2A3E] rounded-2xl overflow-hidden hover:shadow-[0_8px_30px_rgba(91,75,219,0.15)] hover:border-[#5B4BDB]/40 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+          <div className="group relative bg-[#141420]/60 backdrop-blur-xl border border-white/5 rounded-[2rem] overflow-hidden hover:shadow-[0_15px_40px_rgba(0,0,0,0.5)] hover:border-white/20 hover:-translate-y-1.5 transition-all duration-500 cursor-pointer">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#5B4BDB]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10" />
             {/* Thumbnail */}
             <div className="relative aspect-[4/3] bg-[#0A0A0F] overflow-hidden">
               {model.thumbnailUrl ? (
@@ -235,21 +236,22 @@ export default function XRZonePage() {
       <div className="max-w-7xl mx-auto px-4 pb-20 w-full flex-grow">
 
         {/* ── STATS ROW ── */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 -mt-8 relative z-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 -mt-8 relative z-10">
           {AR_STATS.map((s, i) => (
             <motion.div key={s.label}
-              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 + i * 0.06 }}
-              className="glass-synthe rounded-2xl p-4 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-[#5B4BDB]/20 flex items-center justify-center shrink-0">
-                <svg className="w-4 h-4 text-[#7C6EF6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 + i * 0.06 }}
+              className="bg-[#141420]/60 backdrop-blur-2xl border border-white/5 shadow-lg rounded-[2rem] p-5 flex items-center gap-4 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="w-12 h-12 rounded-2xl bg-[#5B4BDB]/10 border border-[#5B4BDB]/30 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(91,75,219,0.2)]">
+                <svg className="w-6 h-6 text-[#A594FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d={s.icon} />
                 </svg>
               </div>
-              <div>
-                <p className="text-base font-black text-white">
+              <div className="relative z-10">
+                <p className="text-2xl font-black text-white drop-shadow-md">
                   <CountUp target={s.value} suffix={s.suffix} duration={1500} />
                 </p>
-                <p className="text-[11px] text-[#6B6B85]">{s.label}</p>
+                <p className="text-[10px] uppercase tracking-widest font-bold text-[#6B6B85] mt-0.5">{s.label}</p>
               </div>
             </motion.div>
           ))}
@@ -278,20 +280,20 @@ export default function XRZonePage() {
         </div>
 
         {/* ── AR / VR TABS with layoutId ── */}
-        <div className="flex gap-1 p-1 rounded-2xl bg-[#141420] border border-[#2A2A3E] w-fit mb-8">
+        <div className="flex gap-1.5 p-1.5 rounded-[1.5rem] bg-[#1A1A2E]/50 backdrop-blur-md border border-white/5 w-fit mb-8 shadow-inner">
           {(["AR", "VR"] as Mode[]).map(m => (
             <button key={m} onClick={() => setMode(m)}
-              className={`relative flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+              className={`relative flex items-center gap-2 px-8 py-3 rounded-2xl text-sm font-bold transition-all ${
                 mode === m ? "text-white" : "text-[#6B6B85] hover:text-white"
               }`}>
               {mode === m && (
                 <motion.div
                   layoutId="xr-tab-indicator"
-                  className="absolute inset-0 rounded-xl bg-[#5B4BDB] shadow-[0_0_20px_rgba(91,75,219,0.3)]"
+                  className="absolute inset-0 rounded-2xl bg-[#5B4BDB] shadow-[0_0_20px_rgba(91,75,219,0.4)] border-b-[3px] border-[#4438b8]"
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
-              <span className="relative z-10 flex items-center gap-2">
+              <span className="relative z-10 flex items-center gap-2 drop-shadow-sm">
                 <span className="text-base">{m === "AR" ? "📱" : "🥽"}</span>
                 {m === "AR" ? "Augmented Reality" : "Virtual Reality"}
               </span>
@@ -300,31 +302,31 @@ export default function XRZonePage() {
         </div>
 
         {/* ── SEARCH + FILTERS ── */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <div className="relative flex-1">
-            <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6B85]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <div className="relative flex-1 group">
+            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#6B6B85] group-focus-within:text-[#5B4BDB] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
               value={search} onChange={e => setSearch(e.target.value)}
               placeholder={`Search ${mode} projects...`}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#141420] border border-[#2A2A3E] rounded-xl text-sm text-white placeholder-[#6B6B85] outline-none focus:border-[#5B4BDB]/60 transition-colors"
+              className="w-full pl-12 pr-5 py-3.5 bg-[#1A1A2E]/50 backdrop-blur-md border border-white/5 rounded-2xl text-sm text-white placeholder-[#6B6B85] outline-none focus:border-[#5B4BDB]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#5B4BDB]/10 transition-all shadow-inner"
             />
           </div>
           <select value={sort} onChange={e => setSort(e.target.value)}
-            className="px-4 py-2.5 bg-[#141420] border border-[#2A2A3E] rounded-xl text-sm text-white font-semibold outline-none focus:border-[#5B4BDB]/60 transition-colors">
-            {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            className="px-5 py-3.5 bg-[#1A1A2E]/50 backdrop-blur-md border border-white/5 rounded-2xl text-sm text-white font-semibold outline-none focus:border-[#5B4BDB]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#5B4BDB]/10 transition-all shadow-inner appearance-none pr-10">
+            {SORT_OPTIONS.map(o => <option key={o.value} value={o.value} className="bg-[#101015]">{o.label}</option>)}
           </select>
         </div>
 
         {/* Category pills */}
-        <div className="flex gap-2 flex-wrap mb-8">
+        <div className="flex gap-2.5 flex-wrap mb-10">
           {CATEGORIES.map(cat => (
             <button key={cat} onClick={() => setCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
                 category === cat
-                  ? "bg-[#5B4BDB] text-white border-[#4438b8] shadow-[0_0_15px_rgba(91,75,219,0.2)]"
-                  : "glass-synthe text-[#6B6B85] hover:text-white hover:border-[#5B4BDB]/40"
+                  ? "bg-[#5B4BDB] text-white border-[#4438b8] shadow-[0_0_15px_rgba(91,75,219,0.3)]"
+                  : "bg-[#1A1A2E]/50 border-white/5 text-[#9494AD] hover:border-white/20 hover:text-white shadow-sm"
               }`}>
               {cat}
             </button>

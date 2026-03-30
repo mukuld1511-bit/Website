@@ -82,14 +82,17 @@ export default function PostRequestPage() {
   if (authChecked && !user) {
     return (
       <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center font-sans">
-        <div className="text-center p-10 bg-white rounded-3xl border border-gray-200 shadow-sm max-w-sm w-full mx-4">
-          <h1 className="text-white text-3xl font-extrabold mb-3">Sign in required</h1>
-          <p className="text-gray-500 mb-8 font-medium">You need to log in to post a project request.</p>
-          <Link href="/login">
-            <button className="w-full px-6 py-3.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition shadow-sm">
-              Sign In
-            </button>
-          </Link>
+        <div className="text-center p-10 bg-[#141420]/80 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.6)] max-w-sm w-full mx-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#5B4BDB]/10 to-transparent pointer-events-none" />
+          <div className="relative z-10">
+            <h1 className="text-white text-3xl font-extrabold mb-3">Sign in required</h1>
+            <p className="text-[#9494AD] mb-8 font-medium">You need to log in to post a project request.</p>
+            <Link href="/login">
+              <button className="w-full px-6 py-4 rounded-2xl bg-[#5B4BDB] hover:bg-[#4c3ec7] text-white font-bold border-b-[3px] border-[#4438b8] active:border-b-0 active:translate-y-[3px] transition-all shadow-[0_10px_30px_rgba(91,75,219,0.3)]">
+                Sign In
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -106,39 +109,42 @@ export default function PostRequestPage() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none bg-gray-900/40 backdrop-blur-sm"
+              className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none bg-[#0A0A0F]/80 backdrop-blur-xl"
             >
-              <div className="bg-white border border-gray-200 rounded-3xl p-10 text-center pointer-events-auto shadow-2xl max-w-sm mx-4">
-                <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-6">
-                  <motion.svg
-                    className="w-10 h-10 text-green-500"
-                    animate={{ scale: [0.8, 1.1, 1] }}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </motion.svg>
+              <div className="bg-[#141420]/90 border border-white/10 backdrop-blur-2xl rounded-[2.5rem] p-10 text-center pointer-events-auto shadow-[0_30px_60px_rgba(0,0,0,0.6)] max-w-sm mx-4 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-b from-green-500/10 to-transparent pointer-events-none" />
+                <div className="relative z-10">
+                  <div className="w-20 h-20 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(74,222,128,0.2)]">
+                    <motion.svg
+                      className="w-10 h-10 text-green-400"
+                      animate={{ scale: [0.8, 1.1, 1] }}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </motion.svg>
+                  </div>
+                  <h2 className="text-white text-2xl font-black mb-2">Request Posted!</h2>
+                  <p className="text-[#9494AD] font-medium text-sm">Redirecting to public feed...</p>
                 </div>
-                <h2 className="text-white text-2xl font-black mb-2">Request Posted!</h2>
-                <p className="text-gray-500 font-medium text-sm">Redirecting to public feed...</p>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <div className="mb-10 text-center">
+          <div className="mb-10 text-center relative z-10">
             <Link href="/requests/open">
-              <p className="inline-flex items-center gap-2 text-indigo-500 text-sm font-bold mb-6 hover:text-indigo-700 transition">
+              <p className="inline-flex items-center gap-2 text-[#7C6EF6] text-sm font-bold mb-6 hover:text-[#A594FF] transition">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                 Back to Projects
               </p>
             </Link>
             <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white mb-4">
-              Post a <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-500">Project</span>
+              Post a <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C6EF6] to-[#06B6D4]">Project</span>
             </h1>
-            <p className="text-gray-600 text-lg md:text-xl font-bold max-w-xl mx-auto">
+            <p className="text-[#9494AD] text-lg md:text-xl font-bold max-w-xl mx-auto">
               Describe what you want to build and connect with peers to collaborate.
             </p>
           </div>
@@ -146,7 +152,7 @@ export default function PostRequestPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="rounded-[2.5rem] border border-[#2A2A3E] bg-[#141420]/80 backdrop-blur-md p-8 md:p-12 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)]">
               {error && (
-                <div className="mb-8 p-4 rounded-2xl border-2 border-red-200 bg-red-50 text-red-700 text-sm font-black flex items-center gap-3">
+                <div className="mb-8 p-4 rounded-2xl border border-red-500/30 bg-red-500/10 text-red-400 text-sm font-black flex items-center gap-3 shadow-inner">
                   <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   {error}
                 </div>
@@ -156,21 +162,21 @@ export default function PostRequestPage() {
                 <div>
                   <label className="block text-[11px] font-black uppercase tracking-widest text-[#7C6EF6] mb-2">Project Title *</label>
                   <input value={title} onChange={e => setTitle(e.target.value)} required
-                    placeholder="e.g. Need a 3D architecture model for training" className="w-full bg-[#0A0A0F] border border-[#2A2A3E] text-white font-bold placeholder-[#6B6B85] text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-[#5B4BDB]/60 transition shadow-sm" />
+                    placeholder="e.g. Need a 3D architecture model for training" className="w-full bg-[#1A1A2E]/50 border border-white/5 backdrop-blur-md text-white font-bold placeholder-[#6B6B85] text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-[#5B4BDB]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#5B4BDB]/10 transition-all shadow-inner" />
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-black uppercase tracking-widest text-[#06B6D4] mb-2">Description *</label>
                   <textarea value={description} onChange={e => setDescription(e.target.value)} required rows={4}
-                    placeholder="Describe exactly what you need built, references, requirements…" className="w-full bg-[#0A0A0F] border border-[#2A2A3E] text-white font-bold placeholder-[#6B6B85] text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-[#06B6D4]/60 transition shadow-sm resize-none" />
+                    placeholder="Describe exactly what you need built, references, requirements…" className="w-full bg-[#1A1A2E]/50 border border-white/5 backdrop-blur-md text-white font-bold placeholder-[#6B6B85] text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-[#06B6D4]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#06B6D4]/10 transition-all shadow-inner resize-none" />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-[11px] font-black uppercase tracking-widest text-[#5B4BDB] mb-2">Category</label>
                     <div className="relative">
-                      <select value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-[#0A0A0F] border border-[#2A2A3E] text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-[#5B4BDB]/60 transition shadow-sm">
-                        {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#0A0A0F] text-white font-bold">{c}</option>)}
+                      <select value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-[#1A1A2E]/50 border border-white/5 backdrop-blur-md text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-[#5B4BDB]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#5B4BDB]/10 transition-all shadow-inner">
+                        {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#101015] text-white font-bold">{c}</option>)}
                       </select>
                       <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5B4BDB] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
@@ -181,8 +187,8 @@ export default function PostRequestPage() {
                   <div>
                     <label className="block text-[11px] font-black uppercase tracking-widest text-[#00E5FF] mb-2">Budget</label>
                     <div className="relative">
-                      <select value={budget} onChange={e => setBudget(e.target.value)} className="w-full bg-[#0A0A0F] border border-[#2A2A3E] text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-[#00E5FF]/60 transition shadow-sm">
-                        {BUDGET_RANGES.map(b => <option key={b} value={b} className="bg-[#0A0A0F] text-white font-bold">{b}</option>)}
+                      <select value={budget} onChange={e => setBudget(e.target.value)} className="w-full bg-[#1A1A2E]/50 border border-white/5 backdrop-blur-md text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-[#00E5FF]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#00E5FF]/10 transition-all shadow-inner">
+                        {BUDGET_RANGES.map(b => <option key={b} value={b} className="bg-[#101015] text-white font-bold">{b}</option>)}
                       </select>
                       <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#00E5FF] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
@@ -194,8 +200,8 @@ export default function PostRequestPage() {
                 <div>
                   <label className="block text-[11px] font-black uppercase tracking-widest text-[#FF0055] mb-2">Timeline</label>
                   <div className="relative">
-                    <select value={timeline} onChange={e => setTimeline(e.target.value)} className="w-full bg-[#0A0A0F] border border-[#2A2A3E] text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-[#FF0055]/60 transition shadow-sm">
-                      {TIMELINES.map(t => <option key={t} value={t} className="bg-[#0A0A0F] text-white font-bold">{t}</option>)}
+                    <select value={timeline} onChange={e => setTimeline(e.target.value)} className="w-full bg-[#1A1A2E]/50 border border-white/5 backdrop-blur-md text-white font-bold text-lg rounded-2xl px-5 py-4 appearance-none cursor-pointer focus:outline-none focus:border-[#FF0055]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#FF0055]/10 transition-all shadow-inner">
+                      {TIMELINES.map(t => <option key={t} value={t} className="bg-[#101015] text-white font-bold">{t}</option>)}
                     </select>
                     <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#FF0055] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
@@ -203,12 +209,12 @@ export default function PostRequestPage() {
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-dashed border-[#2A2A3E]">
+                <div className="pt-6 border-t border-dashed border-white/10">
                   <label className="block text-[11px] font-black uppercase tracking-widest text-[#9494AD] mb-3">Required Skills (Optional)</label>
                   <div className="flex gap-2 mb-3 flex-wrap">
                     {skills.map(s => (
                       <button key={s} type="button" onClick={() => setSkills(skills.filter(x => x !== s))}
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#5B4BDB]/30 bg-[#5B4BDB]/10 text-[#7C6EF6] hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 transition">
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#5B4BDB]/30 bg-[#5B4BDB]/10 text-[#A594FF] hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 transition shadow-inner">
                         {s} <span className="ml-1 opacity-60">✕</span>
                       </button>
                     ))}
@@ -216,9 +222,9 @@ export default function PostRequestPage() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <input value={skillInput} onChange={e => setSkillInput(e.target.value)}
                       onKeyDown={e => e.key === "Enter" && (e.preventDefault(), handleAddSkill())}
-                      placeholder="e.g. Unity, Blender, WebXR…" className="flex-1 bg-[#0A0A0F] border border-[#2A2A3E] text-white font-bold placeholder-[#6B6B85] text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-[#5B4BDB]/60 transition shadow-sm" />
+                      placeholder="e.g. Unity, Blender, WebXR…" className="flex-1 bg-[#1A1A2E]/50 border border-white/5 text-white font-bold placeholder-[#6B6B85] text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-[#5B4BDB]/50 focus:bg-[#1A1A2E]/80 focus:ring-4 focus:ring-[#5B4BDB]/10 transition-all backdrop-blur-md shadow-inner" />
                     <button type="button" onClick={handleAddSkill}
-                      className="px-8 py-4 rounded-2xl bg-[#2A2A3E] text-white font-black text-lg hover:bg-[#34344A] transition shadow-sm whitespace-nowrap border border-[#5B4BDB]/30">
+                      className="px-8 py-4 rounded-2xl bg-[#1A1A2E]/80 text-[#A594FF] font-black text-lg hover:text-white hover:border-[#5B4BDB]/60 transition-all shadow-sm whitespace-nowrap border border-[#5B4BDB]/30 backdrop-blur-md">
                       Add Skill
                     </button>
                   </div>
@@ -227,7 +233,7 @@ export default function PostRequestPage() {
             </div>
 
             <button type="submit" disabled={loading || success}
-              className="w-full py-5 rounded-3xl bg-[#5B4BDB] hover:bg-[#4c3ec7] text-white font-black text-xl shadow-[0_0_20px_rgba(91,75,219,0.3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-4">
+              className="w-full py-5 rounded-3xl bg-[#5B4BDB] hover:bg-[#4c3ec7] text-white font-black text-xl border-b-[3px] border-[#4438b8] active:border-b-0 active:translate-y-[3px] shadow-[0_10px_30px_rgba(91,75,219,0.3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-4">
               {loading ? (
                  <span className="flex items-center justify-center gap-2">
                    <svg className="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
